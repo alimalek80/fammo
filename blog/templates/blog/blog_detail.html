@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load markdownify %}
+{% block title %}{{ post.title }} | FAMO{% endblock %}
+
+{% block meta_description %}
+    {{ post.meta_description|default:post.content|truncatewords:25|striptags }}
+{% endblock %}
+{% block meta_keywords %}
+    {{ post.meta_keywords|default:post.title }}, {{ post.category.name }}, FAMO, pet blog, pet health, pet nutrition
+{% endblock %}
+
+{% block content %}
+<article class="max-w-3xl mx-auto bg-white rounded-xl shadow-lg p-8 mb-12">
+    {% if post.image %}
+    <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full h-64 object-cover rounded-lg mb-6">
+    {% endif %}
+    <h1 class="text-3xl font-extrabold text-indigo-700 mb-2">{{ post.title }}</h1>
+    <div class="flex items-center space-x-4 text-gray-500 mb-6 text-sm">
+        <span><i class="fa-solid fa-user"></i>
+    {% if post.author.get_full_name %}
+        {{ post.author.get_full_name }}
+    {% else %}
+        {{ post.author.email }}
+    {% endif %}
+</span>
+        <span><i class="fa-solid fa-calendar"></i> {{ post.created_at|date:"M d, Y" }}</span>
+        <span>
+            <i class="fa-solid fa-star text-yellow-500"></i>
+            {% with avg=post.average_rating %}
+                {% if avg %}
+                    <span class="font-semibold">{{ avg }}</span>
+                {% else %}
+                    <span class="text-gray-400">{% trans "No ratings" %}</span>
+                {% endif %}
+            {% endwith %}
+        </span>
+        <span>
+            <i class="fa-solid fa-comments"></i> {{ post.comments.count }} {% trans "Comments" %}
+        </span>
+    </div>
+    <div class="prose max-w-none mb-8">
+        {{ post.content|markdownify }}
+    </div>
+
+    <!-- Category Badge -->
+    <span class="text-sm bg-indigo-100 text-indigo-700 px-2 py-1 rounded">
+        {{ post.category.name }}
+    </span>
+
+    <!-- Rating Form -->
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'rate_post' post.slug %}" class="mb-8 flex items-center space-x-2">
+        {% csrf_token %}
+        <label class="font-semibold">{% trans "Your Rating:" %}</label>
+        <select name="rating" class="border rounded p-1">
+            {% for i in "12345" %}
+                <option value="{{ forloop.counter }}" {% if user_rating and user_rating.value == forloop.counter %}selected{% endif %}>{{ forloop.counter }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700 transition">{% trans "Submit" %}</button>
+        {% if user_rating %}
+            <span class="ml-2 text-sm text-gray-500">{% trans "You rated:" %} {{ user_rating.value }}</span>
+        {% endif %}
+    </form>
+    {% else %}
+    <div class="mb-8 text-gray-500 text-sm">{% trans "Login to rate this post." %}</div>
+    {% endif %}
+
+    <!-- Comments -->
+    <section class="mt-8">
+        <h2 class="text-2xl font-bold mb-4">{% trans "Comments" %}</h2>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'comment_post' post.slug %}" class="mb-6">
+            {% csrf_token %}
+            <textarea name="content" rows="3" class="w-full border rounded p-2 mb-2" placeholder="{% trans 'Add a comment...' %}"></textarea>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-1 rounded hover:bg-indigo-700 transition">{% trans "Post Comment" %}</button>
+        </form>
+        {% else %}
+        <div class="mb-6 text-gray-500 text-sm">{% trans "Login to comment." %}</div>
+        {% endif %}
+        <div class="space-y-4">
+            {% for comment in post.comments.all %}
+            <div class="bg-gray-50 rounded p-3">
+                <div class="flex items-center space-x-2 text-sm text-gray-600 mb-1">
+                    <i class="fa-solid fa-user"></i>
+                    <span class="font-semibold">{{ comment.user.get_full_name|default:comment.user.username }}</span>
+                    <span>·</span>
+                    <span>{{ comment.created_at|date:"M d, Y H:i" }}</span>
+                </div>
+                <div class="text-gray-800">{{ comment.content|linebreaks }}</div>
+            </div>
+            {% empty %}
+            <div class="text-gray-400">{% trans "No comments yet." %}</div>
+            {% endfor %}
+        </div>
+    </section>
+</article>
+{% endblock %}

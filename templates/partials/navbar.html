@@ -1,0 +1,107 @@
+{% load i18n %}
+{% load static %}
+<nav id="main-navbar" class="bg-white shadow-md p-4 fixed w-full z-50 transition-transform duration-300">
+    <div class="container mx-auto flex justify-between items-center flex-wrap">
+        <!-- Brand Logo/Name -->
+        <a href="{% url 'home' %}" class="flex items-center">
+            <img src="{% static 'images/logo.png' %}" alt="FAMO Logo" class="h-10 w-auto mr-2">
+        </a>
+
+        <!-- Mobile Menu Button -->
+        <div class="block lg:hidden">
+            <button id="mobile-menu-button" class="text-gray-800 hover:text-indigo-600 focus:outline-none focus:text-indigo-600 rounded-lg p-2">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Desktop Menu Items -->
+        <div id="navbar-menu" class="hidden lg:flex flex-grow items-center justify-between">
+            <!-- Left Aligned Menu Items -->
+            <div class="flex items-center space-x-6 ml-10">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'pet:create_pet' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                        {% trans "Make Your Plan" %}
+                    </a>
+                    <a href="{% url 'pet:my_pets' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                        {% trans "My Pets" %}
+                    </a>
+                    <a href="{% url 'ai_history' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                        {% trans "AI History" %}
+                    </a>
+                {% endif %}
+                <a href="{% url 'blog_list' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    {% trans "Blog" %}
+                </a>
+            </div>
+
+            <!-- Right Aligned Menu Items -->
+            <div class="flex items-center space-x-4 mr-10">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard' %}" class="text-gray-800 hover:text-indigo-600 font-medium px-2 py-1 text-sm">
+                        <i class="fa-solid fa-gauge-high mr-1"></i>{% trans "Dashboard" %}
+                    </a>
+                    <a href="{% url 'logout' %}" class="text-gray-800 hover:text-indigo-600 font-medium px-2 py-1 text-sm">
+                        <i class="fa-solid fa-right-from-bracket mr-1"></i>{% trans "Logout" %}
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="text-gray-800 hover:text-indigo-600 font-medium px-2 py-1 text-sm">
+                        <i class="fa-solid fa-right-to-bracket mr-1"></i>{% trans "Login" %}
+                    </a>
+                    <a href="{% url 'register' %}" class="text-purple-600 hover:text-purple-700 font-medium px-2 py-1 text-sm">
+                        <i class="fa-solid fa-user-plus mr-1"></i>{% trans "Signup" %}
+                    </a>
+                {% endif %}
+
+                <!-- Language Switcher -->
+                <form action="{% url 'set_language' %}" method="post" class="ml-3">
+                    {% csrf_token %}
+                    <select name="language" onchange="this.form.submit()" class="border border-gray-300 text-sm rounded p-1 focus:ring-indigo-500 focus:border-indigo-500">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% for lang in LANGUAGES %}
+                            <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %}selected{% endif %}>{{ lang.1 }}</option>
+                        {% endfor %}
+                    </select>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="lg:hidden hidden mt-3 px-4 space-y-2 bg-white rounded shadow-md">
+        {% if user.is_authenticated %}
+            <a href="{% url 'pet:create_pet' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Make Your Plan" %}</a>
+            <a href="{% url 'pet:my_pets' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "My Pets" %}</a>
+            <a href="{% url 'ai_history' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "AI History" %}</a>
+        {% endif %}
+        <a href="{% url 'blog_list' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Blog" %}</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
+                <i class="fa-solid fa-gauge-high mr-1"></i>{% trans "Dashboard" %}
+            </a>
+            <a href="{% url 'logout' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
+                <i class="fa-solid fa-right-from-bracket mr-1"></i>{% trans "Logout" %}
+            </a>
+        {% else %}
+            <a href="{% url 'login' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
+                <i class="fa-solid fa-right-to-bracket mr-1"></i>{% trans "Login" %}
+            </a>
+            <a href="{% url 'register' %}" class="block text-purple-600 hover:text-purple-700 font-medium py-2 text-sm text-center">
+                <i class="fa-solid fa-user-plus mr-1"></i>{% trans "Signup" %}
+            </a>
+        {% endif %}
+
+        <!-- Mobile Language Switcher -->
+        <form action="{% url 'set_language' %}" method="post" class="mt-3 py-2 text-center">
+            {% csrf_token %}
+            <select name="language" onchange="this.form.submit()" class="border border-gray-300 text-sm rounded p-1 w-full max-w-[150px] mx-auto">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% for lang in LANGUAGES %}
+                    <option value="{{ lang.0 }}" {% if lang.0 == LANGUAGE_CODE %}selected{% endif %}>{{ lang.1 }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+</nav>

@@ -1,0 +1,33 @@
+{% extends "userapp/dashboard_base.html" %}
+{% load i18n %}
+
+{% block dashboard_content %}
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-lg mt-10 rounded-lg">
+    <h2 class="text-2xl font-bold mb-6">{% trans "Choose Your Plan" %}</h2>
+
+    <form method="post" class="grid gap-4">
+        {% csrf_token %}
+        {% for plan in plans %}
+            <div class="p-4 border rounded {% if current_plan == plan %}border-green-500 bg-green-50{% else %}border-gray-300{% endif %}">
+                <label class="block">
+                    <input type="radio" name="plan_id" value="{{ plan.id }}" {% if current_plan == plan %}checked{% endif %}>
+                    <span class="ml-2 font-semibold text-lg">{{ plan.get_name_display }}</span>
+                    {% if plan.price_eur > 0 %}
+                        <span class="text-sm text-gray-500">€{{ plan.price_eur }} / mo</span>
+                    {% else %}
+                        <span class="text-sm text-gray-500">Free</span>
+                    {% endif %}
+                </label>
+                <ul class="text-sm mt-2 ml-6 text-gray-600 list-disc">
+                    <li>{{ plan.monthly_meal_limit }} AI meal suggestions / month</li>
+                    <li>{{ plan.monthly_health_limit }} health reports / month</li>
+                </ul>
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+            {% trans "Update Plan" %}
+        </button>
+    </form>
+</div>
+{% endblock %}

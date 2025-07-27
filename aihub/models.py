@@ -1,0 +1,26 @@
+from django.db import models
+from pet.models import Pet
+from django.utils.translation import gettext_lazy as _
+
+class RecommendationType(models.TextChoices):
+    MEAL = 'meal', _('Meal')
+    HEALTH = 'health', _('Health')
+
+class AIRecommendation(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='ai_recommendations')
+    type = models.CharField(max_length=20, choices=RecommendationType.choices)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.pet.name} - {self.get_type_display()} - {self.created_at.strftime('%Y-%m-%d')}"
+
+class AIHealthReport(models.Model):
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='ai_health_reports')
+    summary = models.TextField()
+    suggestions = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.pet.name} - Health Report - {self.created_at.strftime('%Y-%m-%d')}"
+    

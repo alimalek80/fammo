@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto p-6 bg-white shadow-lg mt-10 rounded-lg">
+    <h2 class="text-2xl font-bold mb-4 text-red-600">AI Health Report for {{ pet.name }}</h2>
+
+    <div class="bg-gray-100 p-4 rounded-lg text-gray-800 whitespace-pre-line">
+        {{ report.summary }}
+    </div>
+
+    <a href="{% url 'pet:my_pets' %}" class="mt-6 inline-block bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+        Back to Pets
+    </a>
+</div>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% extends "userapp/dashboard_base.html" %}
+{% load i18n %}
+
+{% block dashboard_content %}
+<!-- Main container for My Pets section -->
+<div class="w-full p-6">
+
+    <!-- Page Heading -->
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-semibold">
+            {% trans "My Pets" %}
+        </h2>
+        <!-- Add New Pet Button -->
+        <a href="{% url 'pet:create_pet' %}" 
+            class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+            {% trans "Add New Pet" %}
+        </a>
+    </div>
+
+    {% if pets %}
+        <!-- List layout for displaying pets as row cards -->
+        <div class="space-y-4">
+            {% for pet in pets %}
+                <!-- Single Pet Row Card -->
+                <div class="flex items-center bg-white rounded-xl shadow p-4">
+                    
+                    <!-- Pet Icon -->
+                    <div class="flex-shrink-0 w-16 h-16 flex items-center justify-center rounded-full 
+                                {% if pet.pet_type.name == 'Dog' %}bg-blue-100 text-blue-600{% elif pet.pet_type.name == 'Cat' %}bg-pink-100 text-pink-600{% else %}bg-gray-100 text-gray-600{% endif %}">
+                        {% if pet.pet_type.name == 'Dog' %}
+                            <i class="fa-solid fa-dog text-2xl"></i>
+                        {% elif pet.pet_type.name == 'Cat' %}
+                            <i class="fa-solid fa-cat text-2xl"></i>
+                        {% else %}
+                            <i class="fa-solid fa-paw text-2xl"></i>
+                        {% endif %}
+                    </div>
+
+                    <!-- Pet Details -->
+                    <div class="flex-grow ml-4">
+                        <h3 class="text-lg font-semibold">{{ pet.name }}</h3>
+                        <p class="text-gray-600">
+                            {% if pet.pet_type %}
+                                {{ pet.pet_type.name }}
+                            {% else %}
+                                {% trans "No type selected" %}
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Edit, Delete, AI Meal Buttons -->
+                    <div class="flex flex-wrap gap-2">
+                        <!-- Edit Button -->
+                        <a href="{% url 'pet:edit_pet' pk=pet.id %}"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                            {% trans "Edit" %}
+                        </a>
+
+                        <!-- Delete Button -->
+                        <form method="post" action="{% url 'pet:delete_pet' pet.id %}" 
+                            onsubmit="return confirm('{% trans "Are you sure you want to delete this pet?" %}');">
+                            {% csrf_token %}
+                            <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
+                                {% trans "Delete" %}
+                            </button>
+                        </form>
+
+                        <!-- Generate AI Meal Button -->
+                        <a href="{% url 'generate_meal' pet.id %}" 
+                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                            {% trans "AI Meal" %}
+                        </a>
+
+                        <!-- Generate AI Health Button -->
+                        <a href="{% url 'generate_health' pet.id %}" 
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                            {% trans "AI Health" %}
+                        </a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Message when user has no pets -->
+        <p class="text-gray-500">
+            {% trans "You have not added any pets yet." %}
+        </p>
+    {% endif %}
+
+</div>
+{% endblock %}

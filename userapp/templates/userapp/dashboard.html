@@ -1,0 +1,26 @@
+{% extends 'userapp/dashboard_base.html' %}
+{% load i18n %}
+
+{% block dashboard_content %}
+<div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl p-10">
+    <h1 class="text-4xl font-extrabold text-gray-800 mb-4">{% trans "Dashboard" %}</h1>
+    <p class="text-gray-600 text-lg mb-6">{% trans "Welcome to your dashboard!" %}</p>
+    <!-- Example widget -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-6 flex items-center">
+            <i class="fa-solid fa-user text-blue-500 text-2xl mr-4"></i>
+            <div>
+                <div class="text-sm text-gray-500">{% trans "Profile" %}</div>
+                <div class="font-bold text-gray-700">{% trans "Edit your personal info" %}</div>
+            </div>
+        </div>
+        <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-6 flex items-center">
+            <i class="fa-solid fa-chart-line text-indigo-500 text-2xl mr-4"></i>
+            <div>
+                <div class="text-sm text-gray-500">{% trans "Statistics" %}</div>
+                <div class="font-bold text-gray-700">{% trans "View your activity" %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
