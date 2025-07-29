@@ -1,23 +1,36 @@
 import os
 from pathlib import Path
 from decouple import config
+import logging
+import sys
+from dotenv import load_dotenv
 
-# OpenAI API Key
-OPENAI_API_KEY = config("OPENAI_API_KEY")
+load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-a-cmg)jy(6pdt3uz2*n-fjsh-y_20_#&_8x*+(%lx*bju#xo7z'
+# SECURITY
+SECRET_KEY = config("SECRET_KEY")
+DEBUG = True
+ALLOWED_HOSTS = ['fammo.ai', 'localhost', '127.0.0.1']
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# LOGGING
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
-ALLOWED_HOSTS = ['fammo.ai', 'localhost', 'your_project_id.appspot.com', '*']
-
-# Application definition
+# APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -25,24 +38,26 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'userapp',
     'core',
     'tailwind',
     'theme',
     'pet',
-    "widget_tweaks",
     'aihub',
     'subscription',
     'blog',
     'markdownify',
+    'widget_tweaks',
 ]
 
 TAILWIND_APP_NAME = 'theme'
 NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
+
 if DEBUG:
-    # Add django_browser_reload only in DEBUG mode
     INSTALLED_APPS += ['django_browser_reload']
 
+# MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -55,13 +70,30 @@ MIDDLEWARE = [
 ]
 
 if DEBUG:
-    # Add django_browser_reload middleware only in DEBUG mode
-    MIDDLEWARE += [
-        "django_browser_reload.middleware.BrowserReloadMiddleware",
-    ]
+    MIDDLEWARE += ['django_browser_reload.middleware.BrowserReloadMiddleware']
 
 ROOT_URLCONF = 'famo.urls'
+WSGI_APPLICATION = 'famo.wsgi.application'
 
+# DATABASE
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST_LOCAL'),
+        'PORT': '5432',
+    }
+}
+
+# AUTH
+AUTH_USER_MODEL = 'userapp.CustomUser'
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'login'
+
+# TEMPLATES
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -78,82 +110,29 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'famo.wsgi.application'
-
-# Database
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-# Password validation
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-# Internationalization
+# LANGUAGE & TIMEZONE
 LANGUAGE_CODE = 'en'
-
 LANGUAGES = [
     ('en', 'English'),
     ('tr', 'Türkçe'),
     ('nl', 'Nederlands'),
 ]
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
 LOCALE_PATHS = [BASE_DIR / 'locale']
 
-# Static files (CSS, JavaScript, Images)
+# STATIC FILES
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # where you place custom static files
-]
-
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # where collectstatic will gather everything
-
-# Media files setup (uploads)
+# MEDIA FILES
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Set media root for local development
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  
-
-# Production media configuration with Google Cloud Storage
-if not DEBUG:
-    INSTALLED_APPS += ['storages']
-    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    GS_BUCKET_NAME = 'ali2087.appspot.com'  # Use your bucket name here (either ali2087.appspot.com or staging.ali2087.appspot.com)
-    MEDIA_URL = f'https://storage.googleapis.com/{GS_BUCKET_NAME}/'
-
-# Default primary key field type
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = 'userapp.CustomUser'
-
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = 'dashboard'         # After login
-LOGOUT_REDIRECT_URL = 'login'
-
+# MARKDOWNIFY
 MARKDOWNIFY = {
     "default": {
         "WHITELIST_TAGS": [
@@ -168,3 +147,8 @@ MARKDOWNIFY = {
         ],
     }
 }
+
+# OPENAI KEY
+OPENAI_API_KEY = config("OPENAI_API_KEY")
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
