@@ -6,16 +6,33 @@ from .models import Profile
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.contrib.auth import get_user_model
+from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
 
 
 def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)
-            messages.success(request, _("Registration successful. Please complete your profile."))
-            return redirect('update_profile')
+            user = form.save(commit=False)
+            user.is_active = False  # User inactive until email confirmation
+            user.save()
+            # Send activation email
+            current_site = get_current_site(request)
+            subject = "Activate your FAMO account"
+            message = render_to_string('userapp/account_activation_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            send_mail(subject, message, None, [user.email])
+            messages.success(request, _("Registration successful. Please check your email to activate your account."))
+            return redirect('login')
         else:
             messages.error(request, _("Please correct the errors below."))
     else:
@@ -76,3 +93,19 @@ def users_admin_view(request):
         'users': users,
         
     })
+
+def activate(request, uidb64, token):
+    User = get_user_model()
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        messages.success(request, _("Your account has been activated. You can now log in."))
+        return redirect('login')
+    else:
+        messages.error(request, _("Activation link is invalid!"))
+        return redirect('login')

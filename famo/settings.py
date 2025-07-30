@@ -87,6 +87,18 @@ DATABASES = {
     }
 }
 
+# DATABASE ON CPANEL HOST
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST_LOCAL'),
+#         'PORT': '3306',
+#     }
+# }
+
 # AUTH
 AUTH_USER_MODEL = 'userapp.CustomUser'
 LOGIN_URL = '/login/'
@@ -125,11 +137,15 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 
 # STATIC FILES
 STATIC_URL = '/static/'
+# For Cpanel
+# STATIC_URL = 'fammo/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # MEDIA FILES
 MEDIA_URL = '/media/'
+# For Cpanel
+# MEDIA_URL = 'fammo/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # MARKDOWNIFY
@@ -152,3 +168,12 @@ MARKDOWNIFY = {
 OPENAI_API_KEY = config("OPENAI_API_KEY")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'fammo.ai.official@gmail.com'
+EMAIL_HOST_PASSWORD = 'fkdx irwo krwq prvf'
+DEFAULT_FROM_EMAIL = 'FAMO <fammo.ai.official@gmail.com>'
