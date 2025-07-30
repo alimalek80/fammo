@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from .models import HeroSection
-from .forms import HeroSectionForm
+from .models import HeroSection, SocialLinks
+from .forms import HeroSectionForm, SocialLinksForm
 
 def home(request):
     # Get the currently active hero section
@@ -33,3 +33,17 @@ def manage_hero_section(request):
         form = HeroSectionForm(instance=hero_section)
         
     return render(request, 'core/manage_hero_section.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def manage_social_links(request):
+    links, created = SocialLinks.objects.get_or_create(id=1)
+    if request.method == 'POST':
+        form = SocialLinksForm(request.POST, instance=links)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Social media links updated!")
+            return redirect('manage_social_links')
+    else:
+        form = SocialLinksForm(instance=links)
+    return render(request, 'core/manage_social_links.html', {'form': form})

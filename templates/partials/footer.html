@@ -1,5 +1,28 @@
-
 <footer class="bg-white text-center text-gray-500 text-sm py-4 mt-10 border-t">
-    <p>&copy; {{ now|date:"Y" }} FAMO. All rights reserved.</p>
+    <div class="flex justify-center items-center space-x-6 mb-2">
+        {% if social_links %}
+            {% if social_links.instagram %}
+                <a href="{{ social_links.instagram }}" target="_blank" rel="noopener" class="hover:text-pink-500">
+                    <i class="fab fa-instagram fa-lg"></i>
+                </a>
+            {% endif %}
+            {% if social_links.x %}
+                <a href="{{ social_links.x }}" target="_blank" rel="noopener" class="hover:text-black">
+                    <i class="fab fa-x-twitter fa-lg"></i>
+                </a>
+            {% endif %}
+            {% if social_links.facebook %}
+                <a href="{{ social_links.facebook }}" target="_blank" rel="noopener" class="hover:text-blue-600">
+                    <i class="fab fa-facebook fa-lg"></i>
+                </a>
+            {% endif %}
+            {% if social_links.linkedin %}
+                <a href="{{ social_links.linkedin }}" target="_blank" rel="noopener" class="hover:text-blue-700">
+                    <i class="fab fa-linkedin fa-lg"></i>
+                </a>
+            {% endif %}
+        {% endif %}
+    </div>
+    <p>&copy; {{ now|date:"Y" }} FAMMO.ai. All rights reserved.</p>
 </footer>
 

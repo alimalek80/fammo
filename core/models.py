@@ -26,3 +26,16 @@ class HeroSection(models.Model):
     class Meta:
         verbose_name = "Homepage Hero Section"
         verbose_name_plural = "Homepage Hero Sections"
+
+class SocialLinks(models.Model):
+    instagram = models.URLField(blank=True, null=True)
+    x = models.URLField("X (Twitter)", blank=True, null=True)
+    facebook = models.URLField(blank=True, null=True)
+    linkedin = models.URLField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Social Links"
+        verbose_name_plural = "Social Links"
+
+    def __str__(self):
+        return "Social Media Links"

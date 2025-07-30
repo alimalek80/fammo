@@ -117,6 +117,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'subscription.context_processors.ai_usage_status',
+                'famo.context_processors.social_links',
             ],
         },
     },
