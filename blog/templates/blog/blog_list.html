@@ -22,8 +22,8 @@
                     <div class="flex items-center space-x-2 text-sm text-gray-500">
                         <i class="fa-solid fa-user"></i>
                         <span>
-                            {% if post.author.get_full_name %}
-                                {{ post.author.get_full_name }}
+                            {% if post.author.profile.first_name or post.author.profile.last_name %}
+                                {{ post.author.profile.first_name }} {{ post.author.profile.last_name }}
                             {% else %}
                                 {{ post.author.email }}
                             {% endif %}
