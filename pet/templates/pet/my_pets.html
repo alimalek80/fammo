@@ -48,7 +48,7 @@
                         </p>
                     </div>
 
-                    <!-- Edit, Delete, AI Meal Buttons -->
+                    <!-- Edit, Delete, AI Meal, AI Health Buttons -->
                     <div class="flex flex-wrap gap-2">
                         <!-- Edit Button -->
                         <a href="{% url 'pet:edit_pet' pk=pet.id %}"
@@ -66,16 +66,20 @@
                         </form>
 
                         <!-- Generate AI Meal Button -->
-                        <a href="{% url 'generate_meal' pet.id %}" 
-                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                        <button 
+                            type="button"
+                            data-url="{% url 'generate_meal' pet.id %}" 
+                            class="ai-action px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
                             {% trans "AI Meal" %}
-                        </a>
-
+                        </button>
+                        
                         <!-- Generate AI Health Button -->
-                        <a href="{% url 'generate_health' pet.id %}" 
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
+                        <button 
+                            type="button"
+                            data-url="{% url 'generate_health' pet.id %}" 
+                            class="ai-action px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
                             {% trans "AI Health" %}
-                        </a>
+                        </button>
                     </div>
                 </div>
             {% endfor %}
@@ -87,5 +91,36 @@
         </p>
     {% endif %}
 
+    <!-- Loader Overlay (hidden by default) -->
+    <div id="ai-loader-overlay" style="display:none"
+         class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-xl shadow-lg flex flex-col items-center">
+            <svg class="animate-spin h-10 w-10 text-indigo-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+            </svg>
+            <strong>{% trans "Processing, please wait..." %}</strong>
+        </div>
+    </div>
+
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Select all AI Meal and AI Health buttons (now <button> with .ai-action)
+    document.querySelectorAll('button.ai-action').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Show loader
+            document.getElementById('ai-loader-overlay').style.display = 'flex';
+            // Redirect after a very short delay to allow loader to render
+            setTimeout(() => {
+                window.location = btn.getAttribute('data-url');
+            }, 200);
+        });
+    });
+});
+</script>
 {% endblock %}

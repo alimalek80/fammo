@@ -4,6 +4,7 @@ from .models import Pet
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .models import Breed
+from django.contrib import messages
 
 
 @login_required
@@ -35,8 +36,10 @@ def load_breeds(request):
     breeds = Breed.objects.filter(pet_type_id=pet_type_id).order_by('name')
     return JsonResponse(list(breeds.values('id', 'name')), safe=False)
 
-@login_required
 def my_pets_view(request):
+    if not request.user.is_authenticated:
+        messages.info(request, "Please log in to view your pets.")
+        return redirect('login')  # Use your login URL name
     pets = request.user.pets.all()
     return render(request, 'pet/my_pets.html', {'pets': pets})
 
