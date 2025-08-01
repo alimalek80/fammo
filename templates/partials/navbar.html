@@ -32,6 +32,9 @@
                 <a href="{% url 'blog_list' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
                     {% trans "Blog" %}
                 </a>
+                <a href="{% url 'about' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    {% trans "About Us" %}
+                </a>
             </div>
 
             <!-- Right Aligned Menu Items -->
@@ -75,6 +78,7 @@
             <a href="{% url 'ai_history' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "AI History" %}</a>
         {% endif %}
         <a href="{% url 'blog_list' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Blog" %}</a>
+        <a href="{% url 'about' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "About Us" %}</a>
 
         {% if user.is_authenticated %}
             <a href="{% url 'dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
