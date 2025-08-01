@@ -154,13 +154,17 @@ MARKDOWNIFY = {
     "default": {
         "WHITELIST_TAGS": [
             'a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li',
-            'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'p', 'img', 'hr', 'br'
+            'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'img', 'hr', 'br', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
         ],
-        "WHITELIST_ATTRS": ['href', 'src', 'alt', 'class'],
+        "WHITELIST_ATTRS": ['href', 'src', 'alt', 'class', 'align'],
         "MARKDOWN_EXTENSIONS": [
             'markdown.extensions.fenced_code',
             'markdown.extensions.codehilite',
             'markdown.extensions.tables',
+            'markdown.extensions.toc',
+            'markdown.extensions.nl2br',
+            'markdown.extensions.sane_lists',
+            'markdown.extensions.smarty',
         ],
     }
 }

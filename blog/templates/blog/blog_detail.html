@@ -39,7 +39,7 @@
             <i class="fa-solid fa-comments"></i> {{ post.comments.count }} {% trans "Comments" %}
         </span>
     </div>
-    <div class="prose max-w-none mb-8">
+    <div class="markdown-content prose prose-lg prose-indigo max-w-none mb-8">
         {{ post.content|markdownify }}
     </div>
 

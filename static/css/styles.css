@@ -12,3 +12,70 @@
     background-color: #dbeafe; /* blue-100 */
     display: none;
 }
+
+.markdown-content h1 {
+    font-size: 2.25rem;
+    margin-top: 2rem;
+    margin-bottom: 1.2rem;
+    font-weight: bold;
+    color: #3730a3; /* indigo-800 */
+}
+.markdown-content h2 {
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    color: #4338ca; /* indigo-700 */
+}
+.markdown-content h3 {
+    font-size: 1.25rem;
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
+    font-weight: bold;
+    color: #6366f1; /* indigo-500 */
+}
+.markdown-content p {
+    margin-bottom: 1.1em;
+    line-height: 1.7;
+}
+.markdown-content ul, .markdown-content ol {
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+.markdown-content li {
+    margin-bottom: 0.5em;
+}
+.markdown-content blockquote {
+    border-left: 4px solid #a5b4fc;
+    padding-left: 1em;
+    color: #6b7280;
+    margin: 1em 0;
+    background: #f3f4f6;
+}
+.markdown-content code {
+    background: #f3f4f6;
+    padding: 0.2em 0.4em;
+    border-radius: 0.3em;
+    font-size: 0.95em;
+}
+.markdown-content pre {
+    background: #f3f4f6;
+    padding: 1em;
+    border-radius: 0.5em;
+    overflow-x: auto;
+    margin-bottom: 1.5em;
+}
+.markdown-content img {
+    max-width: 100%;
+    border-radius: 0.5em;
+    margin: 1em 0;
+}
+.markdown-content a {
+    color: #2563eb; /* Tailwind blue-600 */
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+.markdown-content a:hover {
+    color: #1d4ed8; /* Tailwind blue-700 */
+    text-decoration: underline;
+}
