@@ -55,19 +55,31 @@ class BodyType(models.Model):
     
 class ActivityLevel(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    description = models.TextField(max_length=255)
+    description = models.TextField(max_length=255, blank=True)
+    order = models.PositiveIntegerField(default=0)  # Add this field
+
+    class Meta:
+        ordering = ['order', 'name']  # Default ordering
 
     def __str__(self):
         return self.name
 
 class FoodAllergy(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    order = models.PositiveIntegerField(default=0)  # Add this
+
+    class Meta:
+        ordering = ['order', 'name']
 
     def __str__(self):
         return self.name
     
 class HealthIssue(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    order = models.PositiveIntegerField(default=0)  # Add this
+
+    class Meta:
+        ordering = ['order', 'name']
 
     def __str__(self):
         return self.name
