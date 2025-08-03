@@ -37,24 +37,27 @@ def generate_meal_recommendation(request, pet_id):
 
     pet_profile = pet.get_full_profile_for_ai()
     prompt = (
-        "You are a professional pet nutritionist. Based on the following pet profile, "
-        "suggest a balanced daily meal plan for one day. "
-        "Please use this format:\n\n"
-        "1. Home-cooked meals:\n"
-        "   - For each meal (breakfast, lunch, dinner), specify:\n"
-        "     • The recipe (ingredients and how to cook it, step by step)\n"
-        "     • The nutrition values (calories, protein, fat, carbs, fiber, etc) for each meal\n"
-        "2. Ready-made foods:\n"
-        "   - Suggest suitable wet and/or dry foods available in the market\n"
-        "   - Write their estimated nutrition values\n"
-        "3. Separate home-cooked and ready-made foods clearly.\n"
-        "4. Ensure the plan is suitable for the pet's age, weight, breed, and health conditions.\n"
-        "5. Please use clear headings for each section and use bullet points or tables for nutrition values if possible."
-        "6. for ready made food please No Brand food suggest.\n"
-        "7. Explain why this plan is suitable for this pet.\n\n"
-        "Pet Profile:\n"
-        f"{pet_profile}"
+        "You are a professional pet nutritionist. Based on the pet profile below, generate a detailed one-day meal plan.\n\n"
+        "Format the response using structured Markdown, with clear section titles, bullet points, and tables.\n"
+        "Use relevant emoji at the start of each section and meal (e.g., 🍽️ for meals, 🐾 for recommendations, 🥦 for vegetables).\n"
+        "Be helpful, clear, and visually engaging — but do not overuse emojis.\n\n"
+        "Structure:\n"
+        "🍲 **1. Home-Cooked Meals**\n"
+        "- Provide plans for **🍳 Breakfast**, **🍗 Lunch**, and **🐟 Dinner**.\n"
+        "- Each meal should include:\n"
+        "  - **Meal Title**\n"
+        "  - **Ingredients** (list with emoji where appropriate)\n"
+        "  - **Preparation** steps\n"
+        "  - **Nutrition Table**: with columns (Calories, Protein, Fat, Carbs, Fiber)\n\n"
+        "🥫 **2. Ready-Made Food Options**\n"
+        "- Suggest non-branded wet/dry food with estimated nutrition in table format\n"
+        "- Use emoji like 🥫 for wet food and 🐶 for dry food\n\n"
+        "✅ **3. Suitability Explanation**\n"
+        "- Bullet points explaining why this plan fits the pet’s breed, age, activity, or health\n"
+        "- Use icons like ❤️, ⚠️, 💡 if relevant\n\n"
+        f"Pet Profile:\n{pet_profile}"
     )
+    
 
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
@@ -109,11 +112,26 @@ def generate_health_report(request, pet_id):
 
     pet_profile = pet.get_full_profile_for_ai()
     prompt = (
-        "You are a professional pet health consultant. Based on the following pet profile, "
-        "provide a short health insight report. Mention risks, diet, or activity suggestions. "
-        "Highlight any critical health issues.\n\n"
+        "You are a professional pet health consultant. Based on the pet profile below, generate a health insight report "
+        "in structured Markdown format with appropriate section headers, bullet points, and relevant emojis for clarity and friendliness.\n\n"
+        "Please use the following sections:\n\n"
+        "🩺 **Health Summary**\n"
+        "- A short paragraph summarizing the pet’s current health status\n\n"
+        "🧬 **Breed-Specific Health Risks**\n"
+        "- Bullet list of common genetic or breed-specific issues (if any)\n\n"
+        "⚖️ **Weight and Diet Overview**\n"
+        "- A paragraph about the pet’s current weight, appetite, and dietary suggestions\n\n"
+        "🍽️ **Feeding Recommendations**\n"
+        "- 2–3 bullet points offering practical, concise feeding tips\n\n"
+        "🏃 **Activity Recommendations**\n"
+        "- A short paragraph encouraging proper activity level or play for this pet\n\n"
+        "⚠️ **Critical Alerts**\n"
+        "- If there are urgent risks (e.g., obesity, kidney disease), list them\n"
+        "- If none, write: `No critical issues detected ✅`\n\n"
+        "Be informative but concise. Make it easy to scan. Use bullet points and emojis only to enhance clarity — do not overuse them.\n\n"
         f"Pet Profile:\n{pet_profile}"
     )
+
 
     chat_response = client.chat.completions.create(
         model="gpt-4",
