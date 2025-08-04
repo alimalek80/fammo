@@ -69,10 +69,12 @@ def generate_meal_recommendation(request, pet_id):
 
     result = chat_response.choices[0].message.content
 
+    ip_address = get_client_ip(request)
     recommendation = AIRecommendation.objects.create(
         pet=pet,
         type=RecommendationType.MEAL,
-        content=result
+        content=result,
+        ip_address=ip_address  # Save IP
     )
 
     # Only track usage for normal users
@@ -141,10 +143,11 @@ def generate_health_report(request, pet_id):
 
     result = chat_response.choices[0].message.content
 
-    # Split into summary + suggestions if needed
+    ip_address = get_client_ip(request)
     report = AIHealthReport.objects.create(
         pet=pet,
-        summary=result
+        summary=result,
+        ip_address=ip_address  # Save IP
     )
 
     if not request.user.is_superuser:
@@ -171,3 +174,11 @@ class AIHistoryView(TemplateView):
         context['recommendations'] = AIRecommendation.objects.filter(pet__in=user_pets).order_by('-created_at')
         context['reports'] = AIHealthReport.objects.filter(pet__in=user_pets).order_by('-created_at')
         return context
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip

@@ -11,6 +11,7 @@ class AIRecommendation(models.Model):
     type = models.CharField(max_length=20, choices=RecommendationType.choices)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)  # Add this field
 
     def __str__(self):
         return f"{self.pet.name} - {self.get_type_display()} - {self.created_at.strftime('%Y-%m-%d')}"
@@ -20,7 +21,8 @@ class AIHealthReport(models.Model):
     summary = models.TextField()
     suggestions = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)  # Add this field
 
     def __str__(self):
         return f"{self.pet.name} - Health Report - {self.created_at.strftime('%Y-%m-%d')}"
-    
+
