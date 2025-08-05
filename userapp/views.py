@@ -81,8 +81,17 @@ def update_profile(request):
 
 @login_required
 def dashboard_view(request):
+    user = request.user
+    pets = getattr(user, 'pets', None)
+    if pets is not None:
+        pets = user.pets.all()
+    else:
+        pets = []
+    has_pets = pets.exists() if hasattr(pets, 'exists') else False
     messages.info(request, _("Welcome to your dashboard!"))
-    return render(request, 'userapp/dashboard.html')
+    return render(request, 'userapp/dashboard.html', {
+        'has_pets': has_pets,
+    })
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def users_admin_view(request):
