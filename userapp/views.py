@@ -12,6 +12,10 @@ from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from collections import Counter
+from pet.models import Pet
+from aihub.models import AIRecommendation, AIHealthReport
+from aihub.utils import get_country_from_ip
 
 
 def register_view(request):
@@ -118,3 +122,34 @@ def activate(request, uidb64, token):
     else:
         messages.error(request, _("Activation link is invalid!"))
         return redirect('login')
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def admin_dashboard_view(request):
+    User = get_user_model()
+    total_users = User.objects.count()
+    total_pets = Pet.objects.count()
+    total_dogs = Pet.objects.filter(pet_type__name__iexact="Dog").count()
+    total_cats = Pet.objects.filter(pet_type__name__iexact="Cat").count()
+    total_ai_meals = AIRecommendation.objects.count()
+    total_ai_health = AIHealthReport.objects.count()
+
+    # Gather all IPs from AIRecommendation and AIHealthReport
+    ai_meal_ips = AIRecommendation.objects.values_list('ip_address', flat=True)
+    ai_health_ips = AIHealthReport.objects.values_list('ip_address', flat=True)
+    all_ips = list(ai_meal_ips) + list(ai_health_ips)
+
+    # Get country for each IP (skip empty/null)
+    countries = [get_country_from_ip(ip) for ip in all_ips if ip]
+    country_counts = Counter(countries)
+    top_countries = country_counts.most_common(10)
+
+    context = {
+        'total_users': total_users,
+        'total_pets': total_pets,
+        'total_dogs': total_dogs,
+        'total_cats': total_cats,
+        'total_ai_meals': total_ai_meals,
+        'total_ai_health': total_ai_health,
+        'top_countries': top_countries,
+    }
+    return render(request, 'userapp/admin_dashboard.html', context)

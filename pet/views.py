@@ -54,4 +54,9 @@ def delete_pet_view(request, pk):
     # If somehow accessed via GET (not expected), redirect safely
     return redirect('pet:my_pets')
 
+@login_required
+def pet_detail_view(request, pk):
+    pet = get_object_or_404(Pet, pk=pk, user=request.user)
+    return render(request, 'pet/pet_detail.html', {'pet': pet})
+
 

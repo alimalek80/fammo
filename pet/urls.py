@@ -7,4 +7,5 @@ urlpatterns = [
     path('my-pets/', views.my_pets_view, name='my_pets'),
     path('delete/<int:pk>/', views.delete_pet_view, name='delete_pet'),
     path('ajax/load-breeds/', views.load_breeds, name='ajax_load_breeds'),
+    path('detail/<int:pk>/', views.pet_detail_view, name='pet_detail'),
 ]
