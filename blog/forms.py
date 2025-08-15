@@ -5,7 +5,7 @@ from .models import BlogPost
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = BlogPost
-        fields = ['title', 'slug', 'content', 'category', 'meta_description', 'meta_keywords']
+        fields = ['title', 'slug', 'content', 'category', 'author', 'meta_description', 'meta_keywords']
         widgets = {
             'content': MarkdownxWidget()  # ensures editor + uploads on front-end forms
         }

@@ -41,5 +41,7 @@ class Profile(models.Model):
         related_name='profiles'
     )
 
+    is_writer = models.BooleanField(default=False, verbose_name="Writer")
+
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.user.email}"
