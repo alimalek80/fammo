@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import export_users_csv
 
 urlpatterns = [
     path('register/', views.register_view, name='register'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path('admin/users/', views.users_admin_view, name='users_admin'),
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('admin-dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
+    path('export/users/', export_users_csv, name='export_users_csv'),
 ]

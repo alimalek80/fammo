@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import PetForm
 from .models import Pet
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from .models import Breed
 from django.contrib import messages
+import csv
+from django.http import HttpResponse
 
 
 @login_required
@@ -58,5 +60,48 @@ def delete_pet_view(request, pk):
 def pet_detail_view(request, pk):
     pet = get_object_or_404(Pet, pk=pk, user=request.user)
     return render(request, 'pet/pet_detail.html', {'pet': pet})
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def export_pets_csv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="pets.csv"'
+
+    writer = csv.writer(response)
+    # Write header (all fields)
+    writer.writerow([
+        'ID', 'Name', 'User Email', 'Type', 'Gender', 'Neutered', 'Age Category',
+        'Age (years)', 'Age (months)', 'Age (weeks)', 'Breed', 'Food Types',
+        'Food Feeling', 'Food Importance', 'Body Type', 'Weight', 'Activity Level',
+        'Food Allergies', 'Other Food Allergy', 'Health Issues', 'Treat Frequency'
+    ])
+    # Write data
+    for pet in Pet.objects.select_related(
+        'user', 'pet_type', 'gender', 'age_category', 'breed', 'food_feeling',
+        'food_importance', 'body_type', 'activity_level', 'treat_frequency'
+    ).prefetch_related('food_types', 'food_allergies', 'health_issues').all():
+        writer.writerow([
+            pet.id,
+            pet.name,
+            pet.user.email,
+            pet.pet_type.name if pet.pet_type else '',
+            pet.gender.name if pet.gender else '',
+            'Yes' if pet.neutered else 'No',
+            pet.age_category.name if pet.age_category else '',
+            pet.age_years or '',
+            pet.age_months or '',
+            pet.age_weeks or '',
+            pet.breed.name if pet.breed else '',
+            ', '.join([ft.name for ft in pet.food_types.all()]),
+            pet.food_feeling.name if pet.food_feeling else '',
+            pet.food_importance.name if pet.food_importance else '',
+            pet.body_type.name if pet.body_type else '',
+            pet.weight or '',
+            pet.activity_level.name if pet.activity_level else '',
+            ', '.join([fa.name for fa in pet.food_allergies.all()]),
+            pet.food_allergy_other or '',
+            ', '.join([hi.name for hi in pet.health_issues.all()]),
+            pet.treat_frequency.name if pet.treat_frequency else '',
+        ])
+    return response
 
 

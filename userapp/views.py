@@ -16,6 +16,8 @@ from collections import Counter
 from pet.models import Pet
 from aihub.models import AIRecommendation, AIHealthReport
 from aihub.utils import get_country_from_ip
+import csv
+from django.http import HttpResponse
 
 
 def register_view(request):
@@ -153,3 +155,29 @@ def admin_dashboard_view(request):
         'top_countries': top_countries,
     }
     return render(request, 'userapp/admin_dashboard.html', context)
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def export_users_csv(request):
+    User = get_user_model()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="users.csv"'
+
+    writer = csv.writer(response)
+    # Write header
+    writer.writerow(['ID', 'Email', 'Full Name', 'Date Joined', 'Is Staff', 'Is Superuser'])
+    # Write data
+    for user in User.objects.all():
+        # Get full name from profile if exists
+        if hasattr(user, 'profile'):
+            full_name = f"{user.profile.first_name} {user.profile.last_name}".strip()
+        else:
+            full_name = ""
+        writer.writerow([
+            user.id,
+            user.email,
+            full_name,
+            user.date_joined,
+            user.is_staff,
+            user.is_superuser
+        ])
+    return response

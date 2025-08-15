@@ -1,5 +1,6 @@
 from django.urls import path
 from . import views
+from .views import export_pets_csv
 
 urlpatterns = [
     path('create/', views.pet_form_view, name='create_pet'),
@@ -8,4 +9,5 @@ urlpatterns = [
     path('delete/<int:pk>/', views.delete_pet_view, name='delete_pet'),
     path('ajax/load-breeds/', views.load_breeds, name='ajax_load_breeds'),
     path('detail/<int:pk>/', views.pet_detail_view, name='pet_detail'),
+    path('export/pets/', export_pets_csv, name='export_pets_csv'),
 ]

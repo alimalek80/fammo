@@ -9,6 +9,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     # ✅ This is required for {% url 'set_language' %} to work
     path('i18n/', include('django.conf.urls.i18n')),
+    path('markdownx/', include('markdownx.urls')),  # move outside i18n for uploads
 ]
 
 # Your actual app routes

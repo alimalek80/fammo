@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
+
     'userapp',
     'core',
     'tailwind',
@@ -57,6 +58,7 @@ INSTALLED_APPS = [
     'blog',
     'markdownify',
     'widget_tweaks',
+    'markdownx',
 ]
 
 TAILWIND_APP_NAME = 'theme'
@@ -182,6 +184,16 @@ MARKDOWNIFY = {
         ],
     }
 }
+
+# Optional Markdownx config
+MARKDOWNX_MEDIA_PATH = 'markdownx/'
+MARKDOWNX_UPLOAD_CONTENT_TYPES = ('image/jpeg', 'image/png', 'image/gif', 'image/webp')
+MARKDOWNX_UPLOAD_MAX_SIZE = 10 * 1024 * 1024  # 10MB
+MARKDOWNX_MARKDOWN_EXTENSIONS = [
+    'markdown.extensions.extra',
+    'markdown.extensions.codehilite',
+    'markdown.extensions.toc',
+]
 
 # OPENAI KEY
 OPENAI_API_KEY = config("OPENAI_API_KEY")
