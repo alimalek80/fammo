@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.utils.timezone import now
 from datetime import date
+from markdownx.models import MarkdownxField
 
 def first_day_of_current_month():
     today = date.today()
@@ -19,6 +20,7 @@ class SubscriptionPlan(models.Model):
     monthly_meal_limit = models.PositiveIntegerField(default=3)
     monthly_health_limit = models.PositiveIntegerField(default=1)
     price_eur = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
+    description = MarkdownxField(blank=True, default="")
 
     def __str__(self):
         return self.get_name_display()

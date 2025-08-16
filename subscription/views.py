@@ -1,9 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from subscription.models import SubscriptionPlan
+from django.contrib import messages
 
-@login_required
+
 def subscription_plans_view(request):
+    if not request.user.is_authenticated:
+        messages.info(request, "Please log in to view see this page")
+        return redirect('login')  # Use your login URL name
+    
     plans = SubscriptionPlan.objects.all().order_by('price_eur')
 
     if request.method == "POST":
