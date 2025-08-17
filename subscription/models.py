@@ -19,6 +19,8 @@ class SubscriptionPlan(models.Model):
     name = models.CharField(max_length=50, choices=PLAN_CHOICES, unique=True)
     monthly_meal_limit = models.PositiveIntegerField(default=3)
     monthly_health_limit = models.PositiveIntegerField(default=1)
+    unlimited_meals = models.BooleanField(default=False, verbose_name="Unlimited AI Meals")
+    unlimited_health = models.BooleanField(default=False, verbose_name="Unlimited Health Reports")
     price_eur = models.DecimalField(max_digits=6, decimal_places=2, default=0.00)
     description = MarkdownxField(blank=True, default="")
 

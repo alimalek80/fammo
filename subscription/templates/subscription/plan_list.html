@@ -64,7 +64,13 @@
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                     </svg>
                                 </span>
-                                <p class="ml-3 text-base {% if current_plan == plan %}text-indigo-100{% else %}text-gray-600{% endif %}">{{ plan.monthly_meal_limit }} AI meal suggestions / month</p>
+                                <p class="ml-3 text-base {% if current_plan == plan %}text-indigo-100{% else %}text-gray-600{% endif %}">
+                                    {% if plan.unlimited_meals %}
+                                        Unlimited AI meal suggestions / month
+                                    {% else %}
+                                        {{ plan.monthly_meal_limit }} AI meal suggestions / month
+                                    {% endif %}
+                                </p>
                             </li>
                             <li class="flex items-start">
                                 <span class="flex-shrink-0">
@@ -72,7 +78,13 @@
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                                     </svg>
                                 </span>
-                                <p class="ml-3 text-base {% if current_plan == plan %}text-indigo-100{% else %}text-gray-600{% endif %}">{{ plan.monthly_health_limit }} health reports / month</p>
+                                <p class="ml-3 text-base {% if current_plan == plan %}text-indigo-100{% else %}text-gray-600{% endif %}">
+                                    {% if plan.unlimited_health %}
+                                        Unlimited health reports / month
+                                    {% else %}
+                                        {{ plan.monthly_health_limit }} health reports / month
+                                    {% endif %}
+                                </p>
                             </li>
                         </ul>
                         <!-- Markdownx description: rich offers rendered as HTML -->
