@@ -17,6 +17,15 @@
         </a>
     </div>
 
+    <!-- Pet limit info: show user's allowed number of pets -->
+    {% if request.user.is_staff %}
+        <p class="mb-4 text-green-700 font-semibold">{% trans "You can add unlimited pets." %}</p>
+    {% else %}
+        <p class="mb-4 text-indigo-700 font-semibold">
+            {% trans "Your plan allows up to" %} {{ request.user.profile.subscription_plan.pet_limit }} {% trans "pets." %}
+        </p>
+    {% endif %}
+
     {% if pets %}
         <!-- List layout for displaying pets as row cards -->
         <div class="space-y-4">

@@ -16,6 +16,19 @@ def pet_form_view(request, pk=None):
     else:
         pet = None
 
+    # --- LIMITATION LOGIC: Only when adding a new pet ---
+    if not pet:  # Only check limit when adding, not editing
+        user = request.user
+        if not user.is_staff:
+            profile = getattr(user, 'profile', None)
+            plan = getattr(profile, 'subscription_plan', None)
+            if plan:
+                pet_limit = plan.pet_limit() if hasattr(plan, 'pet_limit') else 1
+                current_pet_count = Pet.objects.filter(user=user).count()
+                if current_pet_count >= pet_limit:
+                    messages.error(request, f"You can only add up to {pet_limit} pets with your current plan.")
+                    return redirect('pet:my_pets')
+
     if request.method == 'POST':
         form = PetForm(request.POST, instance=pet)
         if form.is_valid():

@@ -11,9 +11,9 @@ def first_day_of_current_month():
 
 class SubscriptionPlan(models.Model):
     PLAN_CHOICES = [
-        ('free', _('Free')),
-        ('pro', _('Pro')),
-        ('custom', _('Custom')),
+        ('essentials', _('Essentials')),
+        ('wellness', _('Wellness')),
+        ('optimal', _('Optimal')),
     ]
 
     name = models.CharField(max_length=50, choices=PLAN_CHOICES, unique=True)
@@ -26,6 +26,15 @@ class SubscriptionPlan(models.Model):
 
     def __str__(self):
         return self.get_name_display()
+
+    def pet_limit(self):
+        if self.name == 'essentials':
+            return 1
+        elif self.name == 'wellness':
+            return 2
+        elif self.name == 'optimal':
+            return 5
+        return 0  # fallback
 
 
 class AIUsage(models.Model):
