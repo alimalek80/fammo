@@ -6,6 +6,7 @@ class HeroSection(models.Model):
     """Model to store the content for the homepage hero section."""
     heading = models.CharField(max_length=200, help_text="The main title, e.g., 'Healthy Meals, Happy Pets!'")
     subheading = models.TextField(help_text="The paragraph text below the main title.")
+    subheading_secondary = models.CharField(max_length=200, blank=True, help_text="An extra line under the main subheading, e.g., in red.")
     button_text = models.CharField(max_length=50, help_text="The text for the call-to-action button.")
     button_url = models.CharField(max_length=200, help_text="The URL the button links to. Can be a full URL or a Django URL name like '/pets/create/'.")
     

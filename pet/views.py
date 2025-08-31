@@ -3,7 +3,7 @@ from .forms import PetForm
 from .models import Pet
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
-from .models import Breed
+from .models import Breed, PetType, AgeCategory
 from django.contrib import messages
 import csv
 from django.http import HttpResponse
@@ -40,9 +40,17 @@ def pet_form_view(request, pk=None):
     else:
         form = PetForm(instance=pet)
 
+    # Get PetType objects for Cat and Dog
+    cat_type = PetType.objects.filter(name__iexact='Cat').first()
+    dog_type = PetType.objects.filter(name__iexact='Dog').first()
+    cat_ages = AgeCategory.objects.filter(pet_type=cat_type) if cat_type else []
+    dog_ages = AgeCategory.objects.filter(pet_type=dog_type) if dog_type else []
+
     context = {
         'form': form,
         'is_edit': bool(pet),
+        'cat_ages': cat_ages,
+        'dog_ages': dog_ages,
     }
     return render(request, 'pet/pet_form.html', context)
 

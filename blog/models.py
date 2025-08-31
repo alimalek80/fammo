@@ -13,7 +13,7 @@ class BlogCategory(models.Model):
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)  # Allow blank for auto-generation
-    category = models.ForeignKey(BlogCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='posts')
+    category = models.ManyToManyField(BlogCategory, null=True, blank=True, related_name='posts')
     content = MarkdownxField()  # stores markdown text; safe to keep existing data
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)

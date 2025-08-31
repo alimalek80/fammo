@@ -11,13 +11,18 @@ class BlogCategoryAdmin(admin.ModelAdmin):
 @admin.register(BlogPost)
 class BlogPostAdmin(MarkdownxModelAdmin):  # use MarkdownxModelAdmin for assets
     prepopulated_fields = {"slug": ("title",)}
-    list_display = ("title", "category", "author", "created_at")
+    list_display = ("title", "category_list", "author", "created_at")  # <-- use category_list
     list_filter = ("category", "author")
     search_fields = ("title", "content")
     fields = (
         "title", "slug", "category", "content", "image", "author",
         "meta_description", "meta_keywords"
     )
+    filter_horizontal = ("category",)
+
+    def category_list(self, obj):
+        return ", ".join([c.name for c in obj.category.all()])
+    category_list.short_description = "Category"
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "author":

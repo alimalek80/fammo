@@ -17,7 +17,7 @@ class PetForm(forms.ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={
-                'class': 'w-full px-4 py-2 border border-gray-300 rounded-md',
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-full shadow-xl',
                 'placeholder': 'e.g. Manti'
             }),
             'pet_type': forms.RadioSelect(),  # <-- Use RadioSelect, not Select
@@ -51,9 +51,13 @@ class PetForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
+        self.fields['name'].label = "What is your pet's name?"
+        self.fields['pet_type'].label = "What type of pet do you have?"
+        self.fields['gender'].label = "Is your pet a girl or a boy?"
+        self.fields['age_category'].label = "What is your pet's age category?"
         # Set breed queryset to empty initially for create form
         self.fields['breed'].queryset = Breed.objects.none()
+
 
         # If form is bound to data (POST request)
         if 'pet_type' in self.data:

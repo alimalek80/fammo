@@ -14,11 +14,15 @@ class Gender(models.Model):
         return self.name
     
 class AgeCategory(models.Model):
-    pet_type = models.ForeignKey(PetType, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
+    pet_type = models.ForeignKey(PetType, on_delete=models.CASCADE, related_name='age_categories')
+    order = models.PositiveIntegerField(default=0, help_text="Controls display order (smallest first)")
+
+    class Meta:
+        ordering = ['order', 'name']
 
     def __str__(self):
-        return f"{self.name} ({self.pet_type})"
+        return f"{self.name} ({self.pet_type.name})"
     
 class Breed(models.Model):
     pet_type = models.ForeignKey(PetType, on_delete=models.CASCADE, related_name='breeds')
