@@ -1,5 +1,5 @@
 from django import forms
-from .models import HeroSection, SocialLinks, FAQ
+from .models import HeroSection, SocialLinks, FAQ, ContactMessage
 
 class HeroSectionForm(forms.ModelForm):
     class Meta:
@@ -44,3 +44,54 @@ class FAQForm(forms.ModelForm):
             "sort_order": forms.NumberInput(attrs={"class": "w-full px-4 py-2 border rounded"}),
             "is_published": forms.CheckboxInput(attrs={"class": "h-5 w-5"}),
         }
+
+class ContactForm(forms.ModelForm):
+    # Honeypot (hidden)
+    website = forms.CharField(required=False, widget=forms.HiddenInput)
+
+    # Keep consent required
+    consent = forms.BooleanField(
+        required=True,
+        label="You may contact me about my request."
+    )
+
+    class Meta:
+        model = ContactMessage
+        fields = ["name", "email", "subject", "message", "consent"]
+        widgets = {
+            "name": forms.TextInput(attrs={
+                "id": "name",
+                "placeholder": "John Doe",
+                "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
+                "required": "required",
+            }),
+            "email": forms.EmailInput(attrs={
+                "id": "email",
+                "placeholder": "you@example.com",
+                "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
+                "required": "required",
+            }),
+            "subject": forms.TextInput(attrs={
+                "id": "subject",
+                "placeholder": "General Inquiry",
+                "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
+                "required": "required",
+            }),
+            "message": forms.Textarea(attrs={
+                "id": "message",
+                "rows": 5,
+                "placeholder": "Your message...",
+                "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
+                "required": "required",
+            }),
+            "consent": forms.CheckboxInput(attrs={
+                "id": "consent",
+                "class": "rounded text-indigo-600 focus:ring-indigo-500",
+                "required": "required",
+            }),
+        }
+
+    def clean_website(self):
+        if self.cleaned_data.get("website"):
+            raise forms.ValidationError("Spam detected.")
+        return ""

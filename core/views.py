@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import HeroSection, SocialLinks
-from .models import HeroSection, SocialLinks, FAQ
-from .forms import HeroSectionForm, SocialLinksForm, FAQForm
+from .models import HeroSection, SocialLinks, FAQ, ContactMessage
+from .forms import HeroSectionForm, SocialLinksForm, FAQForm, ContactForm
+from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 
 def home(request):
     # Get the currently active hero section
@@ -86,3 +88,32 @@ def delete_faq(request, pk):
     faq.delete()
     messages.success(request, "FAQ deleted.")
     return redirect("manage_faqs")
+
+def contact(request):
+    links = SocialLinks.objects.first()  # show social icons/links if you want
+    if request.method == "POST":
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            msg = form.save()
+            # OPTIONAL: email notification to your inbox if SMTP is configured
+            to_email = getattr(settings, "CONTACT_EMAIL", None)
+            if to_email:
+                try:
+                    send_mail(
+                        subject=f"[FAMO Contact] {msg.subject or 'New Message'}",
+                        message=f"From: {msg.name} <{msg.email}>\n\n{msg.message}",
+                        from_email=getattr(settings, "DEFAULT_FROM_EMAIL", None) or to_email,
+                        recipient_list=[to_email],
+                        fail_silently=True,
+                    )
+                except BadHeaderError:
+                    pass
+
+            messages.success(request, "Thanks! Your message has been sent.")
+            return redirect("contact")
+        else:
+            messages.error(request, "Please fix the errors below.")
+    else:
+        form = ContactForm()
+
+    return render(request, "core/contact.html", {"form": form, "links": links})

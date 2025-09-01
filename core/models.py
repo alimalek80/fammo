@@ -56,3 +56,18 @@ class FAQ(models.Model):
 
     def __str__(self):
         return self.question
+
+class ContactMessage(models.Model):
+    name = models.CharField(max_length=120)
+    email = models.EmailField()
+    subject = models.CharField(max_length=180, blank=True)
+    message = models.TextField()
+    consent = models.BooleanField(default=False, help_text="User consented to be contacted")
+    is_resolved = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.name} — {self.subject or 'No subject'}"

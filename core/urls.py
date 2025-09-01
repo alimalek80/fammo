@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import home, manage_hero_section, manage_social_links, manage_faqs, edit_faq, delete_faq
+from .views import home, manage_hero_section, manage_social_links, manage_faqs, edit_faq, delete_faq, contact
 from django.views.generic import TemplateView
 
 urlpatterns = [
     path('', home, name='home'),
+    path("contact/", contact, name="contact"),
     path('dashboard/hero-section/', manage_hero_section, name='manage_hero_section'),
     path('dashboard/social-links/', manage_social_links, name='manage_social_links'),
     path("manage/faqs/", manage_faqs, name="manage_faqs"),

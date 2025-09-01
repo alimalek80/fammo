@@ -223,3 +223,5 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_ADAPTER = 'userapp.adapters.CustomAccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'userapp.adapters.CustomSocialAccountAdapter'
+
+CONTACT_EMAIL = "info@fammo.ai"

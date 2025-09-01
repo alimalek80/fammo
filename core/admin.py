@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import HeroSection, SocialLinks, FAQ
+from .models import HeroSection, SocialLinks, FAQ, ContactMessage
 
 @admin.register(HeroSection)
 class HeroSectionAdmin(admin.ModelAdmin):
@@ -17,3 +17,9 @@ class FAQAdmin(admin.ModelAdmin):
     list_editable = ("is_published", "sort_order")
     search_fields = ("question", "answer")
     ordering = ("sort_order", "-updated_at")
+
+@admin.register(ContactMessage)
+class ContactMessageAdmin(admin.ModelAdmin):
+    list_display = ("name", "email", "subject", "is_resolved", "created_at")
+    list_filter = ("is_resolved", "created_at")
+    search_fields = ("name", "email", "subject", "message")
