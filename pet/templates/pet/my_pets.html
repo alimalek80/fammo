@@ -1,5 +1,6 @@
 {% extends "userapp/dashboard_base.html" %}
 {% load i18n %}
+{% load static %}
 
 {% block dashboard_content %}
 <!-- Main container for My Pets section -->
@@ -102,8 +103,15 @@
                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
             </svg>
             <strong>{% trans "Processing, please wait..." %}</strong>
+            <p class="text-gray-500 mb-4">{% trans "Your AI request is being generated. This usually takes a few seconds." %}</p>
+            <img src="{% static 'images\pet-waiting.gif' %}" alt="Pet waiting" class="w-16 h-16 mb-2 rounded-full shadow">
+            <p class="inline-block text-lg font-bold text-white uppercase tracking-wider bg-green-600 py-1 px-4 rounded-full shadow-xl mb-2">
+            Powered by the FAMMO Diet Engine
+        </p>
         </div>
     </div>
+    
+    
 
 </div>
 {% endblock %}
