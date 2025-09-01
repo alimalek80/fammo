@@ -40,3 +40,19 @@ class SocialLinks(models.Model):
 
     def __str__(self):
         return "Social Media Links"
+
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=255)
+    answer = models.TextField()
+    sort_order = models.PositiveIntegerField(default=0, help_text="Lower appears first")
+    is_published = models.BooleanField(default=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "-updated_at"]
+
+    def __str__(self):
+        return self.question

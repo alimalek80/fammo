@@ -2,12 +2,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .models import HeroSection, SocialLinks
-from .forms import HeroSectionForm, SocialLinksForm
+from .models import HeroSection, SocialLinks, FAQ
+from .forms import HeroSectionForm, SocialLinksForm, FAQForm
 
 def home(request):
     # Get the currently active hero section
     hero_section = HeroSection.objects.filter(is_active=True).first()
-    return render(request, 'core/home.html', {'hero': hero_section})
+    faqs = FAQ.objects.filter(is_published=True).order_by("sort_order", "-updated_at")
+    return render(request, 'core/home.html', {'hero': hero_section, "faqs": faqs})
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)
@@ -47,3 +49,40 @@ def manage_social_links(request):
     else:
         form = SocialLinksForm(instance=links)
     return render(request, 'core/manage_social_links.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def manage_faqs(request):
+    if request.method == "POST":
+        form = FAQForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "FAQ added!")
+            return redirect("manage_faqs")
+    else:
+        form = FAQForm()
+    items = FAQ.objects.order_by("sort_order", "-updated_at")
+    return render(request, "core/manage_faqs.html", {"form": form, "items": items})
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def edit_faq(request, pk):
+    faq = get_object_or_404(FAQ, pk=pk)
+    if request.method == "POST":
+        form = FAQForm(request.POST, instance=faq)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "FAQ updated!")
+            return redirect("manage_faqs")
+    else:
+        form = FAQForm(instance=faq)
+    items = FAQ.objects.order_by("sort_order", "-updated_at")
+    return render(request, "core/manage_faqs.html", {"form": form, "items": items, "edit_id": faq.id})
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def delete_faq(request, pk):
+    faq = get_object_or_404(FAQ, pk=pk)
+    faq.delete()
+    messages.success(request, "FAQ deleted.")
+    return redirect("manage_faqs")

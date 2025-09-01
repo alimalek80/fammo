@@ -1,5 +1,5 @@
 from django import forms
-from .models import HeroSection, SocialLinks
+from .models import HeroSection, SocialLinks, FAQ
 
 class HeroSectionForm(forms.ModelForm):
     class Meta:
@@ -32,4 +32,15 @@ class SocialLinksForm(forms.ModelForm):
             'x': forms.URLInput(attrs={'class': 'w-full px-4 py-2 border rounded'}),
             'facebook': forms.URLInput(attrs={'class': 'w-full px-4 py-2 border rounded'}),
             'linkedin': forms.URLInput(attrs={'class': 'w-full px-4 py-2 border rounded'}),
+        }
+
+class FAQForm(forms.ModelForm):
+    class Meta:
+        model = FAQ
+        fields = ["question", "answer", "sort_order", "is_published"]
+        widgets = {
+            "question": forms.TextInput(attrs={"class": "w-full px-4 py-2 border rounded"}),
+            "answer": forms.Textarea(attrs={"class": "w-full px-4 py-2 border rounded h-28"}),
+            "sort_order": forms.NumberInput(attrs={"class": "w-full px-4 py-2 border rounded"}),
+            "is_published": forms.CheckboxInput(attrs={"class": "h-5 w-5"}),
         }

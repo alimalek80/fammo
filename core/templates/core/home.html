@@ -4,6 +4,29 @@
 
 {% block title %}{% trans "Welcome to FAMO" %}{% endblock %}
 
+{% block extra_head %}
+    <style>
+        .faq-answer {
+            max-height: 0;
+            transition: max-height 0.3s ease-in-out;
+            overflow: hidden;
+        }
+
+        .faq-answer.expanded {
+            max-height: 500px; /* Adjust as needed for long answers */
+            transition: max-height 0.3s ease-in-out;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .faq-icon.expanded {
+            transform: rotate(180deg);
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
 
 <!-- 1. HERO / LANDING SECTION (Admin Editable) -->
@@ -84,20 +107,26 @@
 <!-- 4. FAQ SECTION -->
 <section id="faqs" class="mb-12">
     <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">{% trans "Frequently Asked Questions" %}</h2>
-    <div class="space-y-4 max-w-3xl mx-auto">
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-            <h3 class="font-semibold text-gray-800 mb-2">{% trans "Is FAMO suitable for all pets?" %}</h3>
-            <p class="text-gray-700">{% trans "FAMO currently supports dogs and cats. We plan to expand to other species in the future!" %}</p>
+
+    {% if faqs %}
+        <div id="faq-container" class="space-y-4 max-w-3xl mx-auto">
+            {% for f in faqs %}
+                <div class="bg-gray-50 rounded-xl p-6 transition-all duration-300 shadow-md hover:shadow-lg">
+                    <button class="w-full flex justify-between items-center text-left faq-question-btn">
+                        <span class="text-lg font-semibold text-gray-800">{{ f.question }}</span>
+                        <svg class="w-6 h-6 text-gray-500 faq-icon transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div class="mt-3 faq-answer">
+                        <p class="text-gray-600 pl-6">{{ f.answer|linebreaksbr }}</p>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-            <h3 class="font-semibold text-gray-800 mb-2">{% trans "How does FAMO generate recommendations?" %}</h3>
-            <p class="text-gray-700">{% trans "Our AI analyzes your pet's profile data (breed, weight, age, activity, allergies, health issues) to create highly personalized meal plans and health insights." %}</p>
-        </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm">
-            <h3 class="font-semibold text-gray-800 mb-2">{% trans "Do you sell pet food?" %}</h3>
-            <p class="text-gray-700">{% trans "No, FAMO is a pure AI and data platform. We provide recommendations and insights, but do not produce or deliver any physical products." %}</p>
-        </div>
-    </div>
+    {% else %}
+        <p class="text-center text-gray-600">{% trans "No FAQs have been published yet." %}</p>
+    {% endif %}
 </section>
 
 <!-- 5. CALL TO ACTION SECTION -->
@@ -113,4 +142,28 @@
     </div>
 </section>
 
+{% endblock %}
+
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqContainer = document.getElementById('faq-container');
+
+            if (faqContainer) {
+                faqContainer.addEventListener('click', (event) => {
+                    const questionButton = event.target.closest('.faq-question-btn');
+                    
+                    if (questionButton) {
+                        const parentItem = questionButton.closest('div');
+                        const answer = parentItem.querySelector('.faq-answer');
+                        const icon = parentItem.querySelector('.faq-icon');
+
+                        // Toggle the classes to expand/collapse the answer and rotate the icon
+                        answer.classList.toggle('expanded');
+                        icon.classList.toggle('expanded');
+                    }
+                });
+            }
+        });
+    </script>
 {% endblock %}
