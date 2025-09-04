@@ -11,4 +11,7 @@ urlpatterns = [
     path("manage/faqs/<int:pk>/edit/", edit_faq, name="edit_faq"),
     path("manage/faqs/<int:pk>/delete/", delete_faq, name="delete_faq"),
     path('about/', TemplateView.as_view(template_name='core/about.html'), name='about'),
+    path("how-it-works/", TemplateView.as_view(
+        template_name="core/how_it_works.html"
+    ), name="how_it_works"),
 ]

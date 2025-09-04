@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost, BlogComment, BlogRating
 from django.contrib.auth.decorators import login_required
+from django.db.models import Avg, Count
 
 def blog_list(request):
     posts = BlogPost.objects.order_by('-created_at')
@@ -11,9 +12,18 @@ def blog_detail(request, slug):
     user_rating = None
     if request.user.is_authenticated:
         user_rating = BlogRating.objects.filter(post=post, user=request.user).first()
+
+    agg = post.ratings.aggregate(avg=Avg('value'), cnt=Count('id'))
+    avg_rating = agg['avg'] or 0
+    rating_count = agg['cnt'] or 0
+    avg_rounded = int(round(avg_rating))
+
     return render(request, 'blog/blog_detail.html', {
         'post': post,
         'user_rating': user_rating,
+        'avg_rating': avg_rating,
+        'avg_rounded': avg_rounded,
+        'rating_count': rating_count,
     })
 
 @login_required
