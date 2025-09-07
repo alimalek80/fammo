@@ -9,14 +9,15 @@
 <!-- Header Section -->
 <header class="bg-blue-600 text-white p-6 shadow-lg rounded-2xl mb-6">
   <div class="container mx-auto">
-    <h1 class="text-3xl font-bold">FAMMO.ai User Journey</h1>
-    <p class="mt-2 text-blue-100">A step-by-step guide for new pet owners</p>
+    <h1 class="text-3xl font-bold">How FAMMO Works</h1>
+    <p class="mt-2 text-blue-100">At FAMMO, we make it easy to give your pet the nutrition and care they truly deserve. Here’s how our platform helps you step by step:</p>
   </div>
 </header>
 
 <!-- Content Wrapper (DON'T add another <main>; base already has one) -->
-<section class="container mx-auto p-4 md:p-8 space-y-6">
+<section class="container mx-auto p-4 md:p-8 ">
 
+  <!-- First Card -->
   <div class="p-4 sm:p-6 lg:p-8">
     <div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-6xl mx-auto w-full">
       <div class="p-6 md:p-12">
@@ -25,11 +26,11 @@
 
           <!-- Left: Text -->
           <div class="text-center md:text-left">
-            <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight mb-4">
-              1. Landing & Call-to-Action
+            <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              1. Sign Up & Log In
             </h1>
             <p class="text-lg text-gray-600 mb-6">
-              When you arrive at FAMMO, you’ll see our promise: personalized pet nutrition and preventive health insights—powered by AI.
+              Getting started is simple! Create an account with your email or Google login. In just a minute, you’ll have your own dashboard.
             </p>
             <a href="{% url 'register' %}"
                class="inline-block bg-indigo-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-indigo-700 transition-transform hover:scale-105 duration-300 ease-in-out">
@@ -40,9 +41,9 @@
           <!-- Right: Image -->
           <div class="w-full md:w-auto flex justify-center md:justify-end">
             <img
-              src="{% static 'images/cta.png' %}"
-              alt="A stylized placeholder image representing learning and growth"
-              class="rounded-xl shadow-xl w-full h-auto object-cover max-w-[640px]"
+              src="{% static 'images/01-1.jpg' %}"
+              alt="fammo login and register page"
+              class="rounded-xl shadow-xl w-full h-auto object-cover max-w-[640px] hover:scale-105 duration-300 ease-in-out"
             />
           </div>
 
@@ -51,41 +52,165 @@
     </div>
   </div>
 
-  <!-- Second card: image left, text right -->
-<div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-6xl mx-auto w-full mt-8">
-  <div class="p-6 md:p-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+  <!-- Second test Card-->
+   <div class="p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-6xl mx-auto w-full">
+      <div class="p-6 md:p-12">
+        <!-- Grid enforces text-left (col 1) / image-right (col 2) on md+ -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+          
+          <!-- Left: Image -->
+          <div class="w-full md:w-auto flex justify-center md:justify-start">
+            <img
+              src="{% static 'images/02.jpg' %}"
+              alt="Illustration showcasing FAMMO features"
+              class="rounded-xl shadow-xl w-full h-auto object-cover max-w-[640px] hover:scale-105 duration-300 ease-in-out"
+            />
+          </div>
 
-      <!-- Left: Image -->
-      <div class="w-full md:w-auto flex justify-center md:justify-start">
-        <img
-          src="{% static 'images/login-register.jpg' %}"
-          alt="Illustration showcasing FAMMO features"
-          class="rounded-xl shadow-xl w-72 h-auto object-cover max-w-[640px]"
-        />
+          <!-- Right: Text -->
+          <div class="text-center md:text-left">
+            <h2 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              2. Create Your Pet’s Profile
+            </h2>
+            <p class="text-lg text-gray-600 mb-6">
+              Every pet is unique — that’s why we ask a few quick questions about your furry friend:
+              <br><br>
+              Name, breed, and age, 
+
+              Weight & activity level, 
+
+              Any allergies or health conditions. <br>
+
+              <strong>Dashboard -> My Pets -> Add New Pet</strong><br>
+
+              This helps our AI understand what makes your pet special.
+            </p>
+            
+          </div>
+
+        </div>
       </div>
-
-      <!-- Right: Text -->
-      <div class="text-center md:text-left">
-        <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
-          Stay in Control
-        </h2>
-        <p class="text-lg text-gray-600 mb-6">
-          Use the primary actions — <strong>Sign Up</strong> or <strong>Log In</strong> — to get started in seconds.
-        </p>
-        <a href="{% url 'login' %}"
-           class="inline-block bg-indigo-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-indigo-700 transition-transform hover:scale-105 duration-300 ease-in-out">
-          Log in
-        </a>
-        <a href="{% url 'register' %}"
-           class="inline-block bg-indigo-600 text-white font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-indigo-700 transition-transform hover:scale-105 duration-300 ease-in-out">
-          Register
-        </a>
-      </div>
-
     </div>
   </div>
-</div>
+
+  <!-- Third Card -->
+   <div class="p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-6xl mx-auto w-full">
+      <div class="p-6 md:p-12">
+        <!-- Grid enforces text-left (col 1) / image-right (col 2) on md+ -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+
+          <!-- Left: Text -->
+          <div class="text-center md:text-left">
+            <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              3. Get AI-Powered Recommendations
+            </h1>
+            <p class="text-lg text-gray-600 mb-6">
+              With your pet’s profile ready, you can access two powerful tools:<br>
+
+              <strong>AI Meal Suggestions</strong> → Tailored meal plans based on your pet’s needs.<br>
+
+              <strong>AI Health Reports</strong> → Preventive insights to keep your pet healthier for longer.<br>
+              <p class="text-s text-green-600 mb-6">(Meal suggestions currently focus on nutrition. Specific brand recommendations will be added soon as we partner with trusted pet food suppliers.)</p>
+            </p>
+          </div>
+
+          <!-- Right: Image -->
+          <div class="w-full md:w-auto flex justify-center md:justify-end">
+            <img
+              src="{% static 'images/03.jpg' %}"
+              alt="A stylized placeholder image representing learning and growth"
+              class="rounded-xl shadow-xl w-full h-auto object-cover max-w-[640px] hover:scale-105 duration-300 ease-in-out"
+            />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- forth test Card-->
+   <div class="p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-6xl mx-auto w-full">
+      <div class="p-6 md:p-12">
+        <!-- Grid enforces text-left (col 1) / image-right (col 2) on md+ -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+          
+          <!-- Left: Image -->
+          <div class="w-full md:w-auto flex justify-center md:justify-start">
+            <img
+              src="{% static 'images/04.jpg' %}"
+              alt="Illustration showcasing FAMMO features"
+              class="rounded-xl shadow-xl w-full h-auto object-cover max-w-[640px] hover:scale-105 duration-300 ease-in-out"
+            />
+          </div>
+
+          <!-- Right: Text -->
+          <div class="text-center md:text-left">
+            <h2 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              4. Track Progress Over Time
+            </h2>
+            <p class="text-lg text-gray-600 mb-6">
+          Every suggestion and report is stored in your AI History, so you can follow your pet’s journey and see how their needs evolve.</p>
+            
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- fifth Card -->
+   <div class="p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-6xl mx-auto w-full">
+      <div class="p-6 md:p-12">
+        <!-- Grid enforces text-left (col 1) / image-right (col 2) on md+ -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
+
+          <!-- Left: Text -->
+          <div class="text-center md:text-left">
+            <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+              5. Your Dashboard at a Glance
+            </h1>
+            <p class="text-lg text-gray-600 mb-6">
+            Your dashboard brings everything together:<br>
+
+            - Quick access to pet profiles <br>
+            - One-click AI tools <br>
+            - edit everything <br>
+            - Upgrade your Plan
+            </p>
+          </div>
+
+          <!-- Right: Image -->
+          <div class="w-full md:w-auto flex justify-center md:justify-end">
+            <img
+              src="{% static 'images/05.jpg' %}"
+              alt="A stylized placeholder image representing learning and growth"
+              class="rounded-xl shadow-xl w-full h-auto object-cover max-w-[640px] hover:scale-105 duration-300 ease-in-out"
+            />
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Six Card -->
+   <div class="p-4 sm:p-6 lg:p-8">
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden max-w-6xl mx-auto w-full">
+      <div class="p-6 md:p-12 text-center">
+        <h2 class="text-2xl sm:text-4xl font-bold text-gray-900 mb-4">{% trans "Why FAMMO?" %}</h2>
+        <p class="text-lg text-gray-600 mb-6 max-w-3xl mx-auto">
+          {% trans "Because no two pets are alike. We believe every dog and cat deserves personalized nutrition and preventive health care — powered by AI, made simple for you." %}
+        </p>
+        <p class="text-lg text-green-600 font-semibold">💚 {% trans "Start today and discover smarter feeding for a healthier, happier pet." %}</p>
+      </div>
+    </div>
+  </div>
+
+  
 
 </section>
 {% endblock %}

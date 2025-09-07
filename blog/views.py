@@ -1,14 +1,37 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import BlogPost, BlogComment, BlogRating
+from .models import BlogPost, BlogComment, BlogRating, BlogCategory
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg, Count
+from urllib.parse import quote
+from django.utils.html import strip_tags
 
 def blog_list(request):
+    categories = BlogCategory.objects.all()
+    selected_slug = request.GET.get('category')
     posts = BlogPost.objects.order_by('-created_at')
-    return render(request, 'blog/blog_list.html', {'posts': posts})
+    if selected_slug:
+        posts = posts.filter(category__slug=selected_slug)
+    return render(request, 'blog/blog_list.html', {
+        'posts': posts,
+        'categories': categories,
+        'selected_slug': selected_slug,
+    })
 
 def blog_detail(request, slug):
     post = get_object_or_404(BlogPost, slug=slug)
+    absolute_url = request.build_absolute_uri(request.path)
+    image_url = request.build_absolute_uri(post.image.url) if getattr(post, "image", None) else ""
+
+    # short description (match template truncation length if you want)
+    share_desc = post.meta_description or strip_tags(post.content)[:200]
+
+    # build plain text with real newlines, then URL-encode once
+    share_text = f"{post.title}\n\n{share_desc}\n\n{absolute_url}"
+    if image_url:
+        share_text += f"\n\n{image_url}"
+
+    share_text_encoded = quote(share_text)  # safe for inserting directly into href
+
     user_rating = None
     if request.user.is_authenticated:
         user_rating = BlogRating.objects.filter(post=post, user=request.user).first()
@@ -24,6 +47,9 @@ def blog_detail(request, slug):
         'avg_rating': avg_rating,
         'avg_rounded': avg_rounded,
         'rating_count': rating_count,
+        'absolute_url': absolute_url,
+        'image_url': image_url,
+        'share_text_encoded': share_text_encoded,
     })
 
 @login_required

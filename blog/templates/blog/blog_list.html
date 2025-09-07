@@ -1,11 +1,26 @@
 {% extends 'base.html' %}
 {% load i18n %}
 {% load markdownify %}
-{% block title %}{% trans "Blog" %} | FAMO{% endblock %}
+{% block title %}{% trans "Blog" %} | FAMMO{% endblock %}
 
 {% block content %}
 <section class="mb-12">
-    <h1 class="text-4xl font-extrabold text-indigo-700 mb-8 text-center">{% trans "FAMO Blog" %}</h1>
+    <h1 class="text-4xl font-extrabold text-indigo-700 mb-8 text-center">{% trans "FAMMO Blog" %}</h1>
+
+    <!-- Category Filter Buttons -->
+    <div class="flex flex-wrap justify-center gap-2 mb-8">
+        <a href="{% url 'blog_list' %}"
+           class="btn btn-sm {% if not selected_slug %}btn-primary text-white{% else %}btn-ghost{% endif %}">
+            {% trans "All" %}
+        </a>
+        {% for cat in categories %}
+            <a href="?category={{ cat.slug }}"
+               class="btn btn-sm {% if selected_slug == cat.slug %}btn-primary text-white{% else %}btn-ghost{% endif %}">
+                {{ cat.name }}
+            </a>
+        {% endfor %}
+    </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {% for post in posts %}
         <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col">
@@ -49,7 +64,9 @@
                     </div>
                 </div>
                 <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded mr-2">
-                    {{ post.category.name }}
+                    {% for cat in post.category.all %}
+                        {{ cat.name }}{% if not forloop.last %}, {% endif %}
+                    {% endfor %}
                 </span>
             </div>
         </div>
