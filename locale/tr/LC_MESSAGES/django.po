@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 01:46+0300\n"
+"POT-Creation-Date: 2025-09-08 15:08+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: .\aihub\models.py:6
 msgid "Meal"
 msgstr "Öğün"
@@ -170,7 +171,10 @@ msgstr "FAMMO Hakkında"
 msgid ""
 "FAMMO is an AI-powered platform that delivers personalized meal plans and "
 "smarter nutrition recommendations to help pets live healthier, happier lives."
-msgstr "FAMMO, evcil hayvanların daha sağlıklı ve mutlu bir yaşam sürmesine yardımcı olmak için kişiselleştirilmiş öğün planları ve akıllı beslenme önerileri sunan yapay zekâ destekli bir platformdur."
+msgstr ""
+"FAMMO, evcil hayvanların daha sağlıklı ve mutlu bir yaşam sürmesine yardımcı "
+"olmak için kişiselleştirilmiş öğün planları ve akıllı beslenme önerileri "
+"sunan yapay zekâ destekli bir platformdur."
 
 #: .\core\templates\core\about.html:22
 msgid "Our Origin Story"
@@ -184,7 +188,13 @@ msgid ""
 "feeding them a daily challenge. That challenge turned into a mission—to "
 "create smarter, personalized pet nutrition using the power of artificial "
 "intelligence."
-msgstr "FAMMO, üç özel evcil hayvandan ilham aldı: Kurucularımızın sevilen kedileri Misho ve Mila ile yakın bir arkadaşımıza ait mutlu ve sadık köpek Manti. Her birinin farklı besin hassasiyetleri ve sağlık ihtiyaçları vardı; bu da beslemeyi günlük bir zorluk hâline getiriyordu. Bu zorluk, yapay zekânın gücüyle daha akıllı ve kişiselleştirilmiş bir hayvan beslenmesi oluşturma misyonuna dönüştü."
+msgstr ""
+"FAMMO, üç özel evcil hayvandan ilham aldı: Kurucularımızın sevilen kedileri "
+"Misho ve Mila ile yakın bir arkadaşımıza ait mutlu ve sadık köpek Manti. Her "
+"birinin farklı besin hassasiyetleri ve sağlık ihtiyaçları vardı; bu da "
+"beslemeyi günlük bir zorluk hâline getiriyordu. Bu zorluk, yapay zekânın "
+"gücüyle daha akıllı ve kişiselleştirilmiş bir hayvan beslenmesi oluşturma "
+"misyonuna dönüştü."
 
 #: .\core\templates\core\about.html:47
 msgid "What We Do"
@@ -196,16 +206,22 @@ msgid ""
 "to health conditions, allergies, and lifestyle. Based on this, we generate "
 "smart, customized meal plans that support your pet’s long-term health and "
 "happiness."
-msgstr "FAMMO, evcil hayvanınızın benzersiz profilini — ırk ve kilodan sağlık durumlarına, alerjilere ve yaşam tarzına kadar — analiz etmek için yapay zekâ kullanır. Buna dayanarak, uzun vadeli sağlık ve mutluluğunu destekleyen akıllı, kişiye özel öğün planları oluştururuz."
+msgstr ""
+"FAMMO, evcil hayvanınızın benzersiz profilini — ırk ve kilodan sağlık "
+"durumlarına, alerjilere ve yaşam tarzına kadar — analiz etmek için yapay "
+"zekâ kullanır. Buna dayanarak, uzun vadeli sağlık ve mutluluğunu destekleyen "
+"akıllı, kişiye özel öğün planları oluştururuz."
 
 #: .\core\templates\core\about.html:54
-#: .\core\templates\core\how_it_works.html:204
+#: .\core\templates\core\how_it_works.html:156
 msgid "Why FAMMO?"
 msgstr "Neden FAMMO?"
 
 #: .\core\templates\core\about.html:56
 msgid "AI-powered personalized nutrition plans for cats and dogs."
-msgstr "Kedi ve köpekler için yapay zekâ destekli kişiselleştirilmiş beslenme planları."
+msgstr ""
+"Kedi ve köpekler için yapay zekâ destekli kişiselleştirilmiş beslenme "
+"planları."
 
 #: .\core\templates\core\about.html:57
 msgid "Smart ingredient matching for sensitivities and goals."
@@ -228,7 +244,10 @@ msgid ""
 "We believe every pet deserves a diet as unique as their personality. Our "
 "mission is to transform pet nutrition through AI, making it accessible, data-"
 "driven, and built with care."
-msgstr "Her evcil hayvanın kişiliği kadar benzersiz bir diyeti hak ettiğine inanıyoruz. Misyonumuz, hayvan beslenmesini yapay zekâ ile dönüştürmek; erişilebilir, veri odaklı ve özenle hazırlanmış hâle getirmektir."
+msgstr ""
+"Her evcil hayvanın kişiliği kadar benzersiz bir diyeti hak ettiğine "
+"inanıyoruz. Misyonumuz, hayvan beslenmesini yapay zekâ ile dönüştürmek; "
+"erişilebilir, veri odaklı ve özenle hazırlanmış hâle getirmektir."
 
 #: .\core\templates\core\about.html:71
 msgid "From Istanbul to the Netherlands"
@@ -240,7 +259,11 @@ msgid ""
 "relocating to the Netherlands to expand our vision, collaborate with "
 "European pet health innovators, and bring personalized nutrition to more "
 "pets across the world."
-msgstr "FAMMO, İstanbul’da başladı ancak yolculuğumuz burada bitmiyor. Vizyonumuzu büyütmek, Avrupa’daki evcil hayvan sağlığı yenilikçileriyle iş birliği yapmak ve kişiselleştirilmiş beslenmeyi dünyadaki daha fazla evcil hayvana ulaştırmak için Hollanda’ya taşınıyoruz."
+msgstr ""
+"FAMMO, İstanbul’da başladı ancak yolculuğumuz burada bitmiyor. Vizyonumuzu "
+"büyütmek, Avrupa’daki evcil hayvan sağlığı yenilikçileriyle iş birliği "
+"yapmak ve kişiselleştirilmiş beslenmeyi dünyadaki daha fazla evcil hayvana "
+"ulaştırmak için Hollanda’ya taşınıyoruz."
 
 #: .\core\templates\core\about.html:78
 msgid "Meet the Founders"
@@ -251,7 +274,10 @@ msgid ""
 "We're a small team of developers, nutrition enthusiasts, and animal lovers — "
 "united by a shared vision to build smarter solutions for our furry "
 "companions. FAMMO isn’t just a platform, it’s a passion."
-msgstr "Geliştiricilerden, beslenme meraklılarından ve hayvanseverlerden oluşan küçük bir ekibiz — tüylü dostlarımız için daha akıllı çözümler üretme vizyonunda birleşiyoruz. FAMMO sadece bir platform değil, bir tutku."
+msgstr ""
+"Geliştiricilerden, beslenme meraklılarından ve hayvanseverlerden oluşan "
+"küçük bir ekibiz — tüylü dostlarımız için daha akıllı çözümler üretme "
+"vizyonunda birleşiyoruz. FAMMO sadece bir platform değil, bir tutku."
 
 #: .\core\templates\core\about.html:85 .\core\templates\core\contact.html:5
 #: .\templates\partials\navbar.html:39 .\templates\partials\navbar.html:88
@@ -260,7 +286,9 @@ msgstr "Bize Ulaşın"
 
 #: .\core\templates\core\about.html:87
 msgid "Have questions, suggestions, or just want to say hi? Reach out to us at"
-msgstr "Sorularınız, önerileriniz mi var ya da sadece merhaba demek mi istiyorsunuz? Bize şu adresten ulaşın:"
+msgstr ""
+"Sorularınız, önerileriniz mi var ya da sadece merhaba demek mi istiyorsunuz? "
+"Bize şu adresten ulaşın:"
 
 #: .\core\templates\core\contact.html:11
 msgid "Contact FAMO"
@@ -268,7 +296,9 @@ msgstr "FAMO ile İletişim"
 
 #: .\core\templates\core\contact.html:12
 msgid "Questions, feedback, or partnership ideas? We’d love to hear from you."
-msgstr "Sorular, geri bildirimler veya iş birliği fikirleri mi var? Sizden haber almak isteriz."
+msgstr ""
+"Sorular, geri bildirimler veya iş birliği fikirleri mi var? Sizden haber "
+"almak isteriz."
 
 #: .\core\templates\core\contact.html:33
 msgid "Get in touch"
@@ -342,7 +372,8 @@ msgstr "Kişiselleştirilmiş Öğün Planları"
 
 #: .\core\templates\core\home.html:68
 msgid "Tailored recommendations based on your pet's unique needs."
-msgstr "Evcil hayvanınızın benzersiz ihtiyaçlarına göre özelleştirilmiş öneriler."
+msgstr ""
+"Evcil hayvanınızın benzersiz ihtiyaçlarına göre özelleştirilmiş öneriler."
 
 #: .\core\templates\core\home.html:72
 msgid "Health Risk Alerts"
@@ -380,7 +411,9 @@ msgstr "Evcil Hayvanınızın Hayatını Değiştirmeye Hazır mısınız?"
 msgid ""
 "Join thousands of satisfied pet owners who trust FAMO for their pets' "
 "nutrition and health."
-msgstr "Evcil hayvanlarının beslenmesi ve sağlığı için FAMO’ya güvenen binlerce mutlu evcil hayvan sahibine katılın."
+msgstr ""
+"Evcil hayvanlarının beslenmesi ve sağlığı için FAMO’ya güvenen binlerce "
+"mutlu evcil hayvan sahibine katılın."
 
 #: .\core\templates\core\home.html:140
 msgid "Get Started Today"
@@ -390,16 +423,151 @@ msgstr "Bugün Başlayın"
 msgid "How it works"
 msgstr "Nasıl çalışır"
 
-#: .\core\templates\core\how_it_works.html:206
+#: .\core\templates\core\how_it_works.html:12
+#| msgid "How it Works"
+msgid "How FAMMO Works"
+msgstr "FAMMO Nasıl Çalışır"
+
+#: .\core\templates\core\how_it_works.html:14
+msgid ""
+"At FAMMO, we make it easy to give your pet the nutrition and care they truly "
+"deserve. Here’s how our platform helps you step by step:"
+msgstr ""
+"FAMMO’da, evcil hayvanınıza gerçekten hak ettiği beslenme ve bakımı vermeyi "
+"kolaylaştırıyoruz. İşte platformumuzun size adım adım nasıl yardımcı olduğu:"
+
+#: .\core\templates\core\how_it_works.html:29
+msgid "1. Sign Up & Log In"
+msgstr "1. Kayıt Ol & Giriş Yap"
+
+#: .\core\templates\core\how_it_works.html:32
+msgid ""
+"Getting started is simple! Create an account with your email or Google "
+"login. In just a minute, you’ll have your own dashboard."
+msgstr ""
+"Başlamak çok kolay! E-posta adresiniz veya Google hesabınızla bir hesap "
+"oluşturun. Sadece bir dakika içinde kendi kontrol panelinize sahip "
+"olacaksınız."
+
+#: .\core\templates\core\how_it_works.html:36
+#| msgid "Register"
+msgid "Register Now"
+msgstr "Hemen Kayıt Ol"
+
+#: .\core\templates\core\how_it_works.html:40
+msgid "fammo login and register page"
+msgstr "FAMMO giriş ve kayıt sayfası"
+
+#: .\core\templates\core\how_it_works.html:54
+#: .\core\templates\core\how_it_works.html:110
+msgid "Illustration showcasing FAMMO features"
+msgstr "FAMMO özelliklerini gösteren illüstrasyon"
+
+#: .\core\templates\core\how_it_works.html:59
+msgid "2. Create Your Pet’s Profile"
+msgstr "2. Evcil Hayvanınızın Profilini Oluşturun"
+
+#: .\core\templates\core\how_it_works.html:62
+msgid ""
+"Every pet is unique — that’s why we ask a few quick questions about your "
+"furry friend:  \n"
+"              Name, breed, and age,  \n"
+"              Weight & activity level,  \n"
+"              Any allergies or health conditions.  \n"
+"\n"
+"              Dashboard → My Pets → Add New Pet  \n"
+"\n"
+"              This helps our AI understand what makes your pet special."
+msgstr ""
+"Her evcil hayvan benzersizdir — bu yüzden tüylü dostunuz hakkında birkaç "
+"kısa soru soruyoruz:  \n"
+"Adı, ırkı ve yaşı,  \n"
+"Kilosu ve aktivite seviyesi,  \n"
+"Herhangi bir alerji veya sağlık durumu.  \n"
+"\n"
+"Kontrol Paneli → Evcil Hayvanlarım → Yeni Evcil Hayvan Ekle  \n"
+"\n"
+"Bu, yapay zekâmızın evcil hayvanınızı özel kılan şeyleri anlamasına yardımcı olur."
+
+#: .\core\templates\core\how_it_works.html:84
+#| msgid "Meal Recommendations"
+msgid "3. Get AI-Powered Recommendations"
+msgstr "3. Yapay Zekâ Destekli Öneriler Alın"
+
+#: .\core\templates\core\how_it_works.html:87
+msgid ""
+"With your pet’s profile ready, you can access two powerful tools:  \n"
+"              AI Meal Suggestions → Tailored meal plans based on your pet’s "
+"needs.  \n"
+"              AI Health Reports → Preventive insights to keep your pet "
+"healthier for longer."
+msgstr ""
+"Evcil hayvanınızın profili hazır olduğunda iki güçlü araca erişebilirsiniz:  \n"
+"Yapay Zekâ Yemek Önerileri → Evcil hayvanınızın ihtiyaçlarına göre "
+"özelleştirilmiş yemek planları.  \n"
+"Yapay Zekâ Sağlık Raporları → Evcil hayvanınızı daha uzun süre sağlıklı "
+"tutmaya yönelik önleyici içgörüler."
+
+#: .\core\templates\core\how_it_works.html:92
+msgid ""
+"(Meal suggestions currently focus on nutrition. Specific brand "
+"recommendations will be added soon as we partner with trusted pet food "
+"suppliers.)"
+msgstr ""
+"(Yemek önerileri şu anda beslenmeye odaklanmaktadır. Güvenilir evcil "
+"hayvan maması tedarikçileriyle iş birliği yaptıkça, belirli marka önerileri "
+"yakında eklenecektir.)"
+
+#: .\core\templates\core\how_it_works.html:96
+#: .\core\templates\core\how_it_works.html:144
+msgid "A stylized placeholder image representing learning and growth"
+msgstr "Öğrenme ve gelişimi temsil eden stilize edilmiş örnek görsel"
+
+#: .\core\templates\core\how_it_works.html:115
+msgid "4. Track Progress Over Time"
+msgstr "4. Zaman İçinde İlerlemeyi Takip Edin"
+
+#: .\core\templates\core\how_it_works.html:118
+msgid ""
+"Every suggestion and report is stored in your AI History, so you can follow "
+"your pet’s journey and see how their needs evolve."
+msgstr ""
+"Her öneri ve rapor AI Geçmişinizde saklanır, böylece evcil hayvanınızın "
+"yolculuğunu takip edebilir ve ihtiyaçlarının nasıl geliştiğini görebilirsiniz."
+
+#: .\core\templates\core\how_it_works.html:133
+msgid "5. Your Dashboard at a Glance"
+msgstr "5. Kontrol Paneliniz Tek Bakışta"
+
+#: .\core\templates\core\how_it_works.html:136
+msgid ""
+"Your dashboard brings everything together:  \n"
+"              - Quick access to pet profiles  \n"
+"              - One-click AI tools  \n"
+"              - Edit everything  \n"
+"              - Upgrade your Plan"
+msgstr ""
+"Kontrol paneliniz her şeyi bir araya getirir:  \n"
+"- Evcil hayvan profillerine hızlı erişim  \n"
+"- Tek tıkla AI araçları  \n"
+"- Her şeyi düzenleme  \n"
+"- Planınızı yükseltme"
+
+#: .\core\templates\core\how_it_works.html:158
 msgid ""
 "Because no two pets are alike. We believe every dog and cat deserves "
 "personalized nutrition and preventive health care — powered by AI, made "
 "simple for you."
-msgstr "Çünkü iki evcil hayvan birbirinin aynısı değildir. Her köpek ve kedinin, yapay zekâ ile desteklenen ve sizin için kolaylaştırılan kişiselleştirilmiş beslenme ve koruyucu sağlık hizmetlerini hak ettiğine inanıyoruz."
+msgstr ""
+"Çünkü iki evcil hayvan birbirinin aynısı değildir. Her köpek ve kedinin, "
+"yapay zekâ ile desteklenen ve sizin için kolaylaştırılan kişiselleştirilmiş "
+"beslenme ve koruyucu sağlık hizmetlerini hak ettiğine inanıyoruz."
 
-#: .\core\templates\core\how_it_works.html:208
+#: .\core\templates\core\how_it_works.html:161
 msgid "Start today and discover smarter feeding for a healthier, happier pet."
-msgstr "Bugün başlayın; daha sağlıklı ve mutlu bir evcil hayvan için daha akıllı beslenmeyi keşfedin."
+msgstr ""
+"Bugün başlayın; daha sağlıklı ve mutlu bir evcil hayvan için daha akıllı "
+"beslenmeyi keşfedin."
 
 #: .\core\templates\core\manage_hero_section.html:6
 msgid "Manage Homepage Hero Section"
@@ -471,7 +639,8 @@ msgstr "İşleniyor, lütfen bekleyin..."
 
 #: .\pet\templates\pet\my_pets.html:106
 msgid "Your AI request is being generated. This usually takes a few seconds."
-msgstr "Yapay zekâ isteğiniz oluşturuluyor. Bu işlem genellikle birkaç saniye sürer."
+msgstr ""
+"Yapay zekâ isteğiniz oluşturuluyor. Bu işlem genellikle birkaç saniye sürer."
 
 #: .\pet\templates\pet\pet_detail.html:9
 msgid "Type"
@@ -633,12 +802,16 @@ msgstr "%(provider)s ile Giriş Yap"
 #: .\templates\socialaccount\login.html:23
 #, python-format
 msgid "You are about to connect a new third-party account from %(provider)s."
-msgstr "%(provider)s sağlayıcısından yeni bir üçüncü taraf hesabı bağlamak üzeresiniz."
+msgstr ""
+"%(provider)s sağlayıcısından yeni bir üçüncü taraf hesabı bağlamak "
+"üzeresiniz."
 
 #: .\templates\socialaccount\login.html:25
 #, python-format
 msgid "You are about to sign in using a third-party account from %(provider)s."
-msgstr "%(provider)s sağlayıcısından bir üçüncü taraf hesabıyla giriş yapmak üzeresiniz."
+msgstr ""
+"%(provider)s sağlayıcısından bir üçüncü taraf hesabıyla giriş yapmak "
+"üzeresiniz."
 
 #: .\templates\socialaccount\login.html:33
 msgid "Continue"
@@ -745,7 +918,9 @@ msgstr "Görünüşe göre tüylü dostunuz henüz burada değil!"
 msgid ""
 "Add your pet now to unlock personalized AI Meals and Health Reports tailored "
 "just for them!"
-msgstr "Evcil hayvanınızı şimdi ekleyin; ona özel kişiselleştirilmiş YZ Öğünleri ve Sağlık Raporlarının kilidini açın!"
+msgstr ""
+"Evcil hayvanınızı şimdi ekleyin; ona özel kişiselleştirilmiş YZ Öğünleri ve "
+"Sağlık Raporlarının kilidini açın!"
 
 #: .\userapp\templates\userapp\dashboard.html:15
 msgid "Add Pet"
@@ -840,7 +1015,9 @@ msgstr "Şifre Sıfırlama Gönderildi"
 msgid ""
 "We've emailed you instructions for setting your password. You should receive "
 "the email shortly."
-msgstr "Şifrenizi belirlemeniz için talimatları e-posta ile gönderdik. Kısa süre içinde elinize ulaşacaktır."
+msgstr ""
+"Şifrenizi belirlemeniz için talimatları e-posta ile gönderdik. Kısa süre "
+"içinde elinize ulaşacaktır."
 
 #: .\userapp\templates\userapp\password_reset_form.html:5
 msgid "Forgot Password"
@@ -905,7 +1082,9 @@ msgstr "Kullanıcı bulunamadı."
 #: .\userapp\views.py:40
 msgid ""
 "Registration successful. Please check your email to activate your account."
-msgstr "Kayıt başarılı. Hesabınızı etkinleştirmek için lütfen e-postanızı kontrol edin."
+msgstr ""
+"Kayıt başarılı. Hesabınızı etkinleştirmek için lütfen e-postanızı kontrol "
+"edin."
 
 #: .\userapp\views.py:43 .\userapp\views.py:83
 msgid "Please correct the errors below."

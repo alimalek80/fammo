@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 01:45+0300\n"
+"POT-Creation-Date: 2025-09-08 15:08+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
 #: .\aihub\models.py:6
 msgid "Meal"
 msgstr "Maaltijd"
@@ -170,7 +171,10 @@ msgstr "Over FAMMO"
 msgid ""
 "FAMMO is an AI-powered platform that delivers personalized meal plans and "
 "smarter nutrition recommendations to help pets live healthier, happier lives."
-msgstr "FAMMO is een AI-gestuurd platform dat gepersonaliseerde maaltijdplannen en slimme voedingsaanbevelingen levert om huisdieren gezonder en gelukkiger te laten leven."
+msgstr ""
+"FAMMO is een AI-gestuurd platform dat gepersonaliseerde maaltijdplannen en "
+"slimme voedingsaanbevelingen levert om huisdieren gezonder en gelukkiger te "
+"laten leven."
 
 #: .\core\templates\core\about.html:22
 msgid "Our Origin Story"
@@ -184,7 +188,13 @@ msgid ""
 "feeding them a daily challenge. That challenge turned into a mission—to "
 "create smarter, personalized pet nutrition using the power of artificial "
 "intelligence."
-msgstr "FAMMO is geïnspireerd door drie bijzondere huisdieren: Misho en Mila, de geliefde katten van onze oprichters, en Manti, een vrolijke en trouwe hond van een goede vriend. Elk had andere voedingsgevoeligheden en zorgbehoeften, waardoor het voeren dagelijks een uitdaging was. Die uitdaging werd onze missie: slimmere, gepersonaliseerde dierenvoeding creëren met de kracht van kunstmatige intelligentie."
+msgstr ""
+"FAMMO is geïnspireerd door drie bijzondere huisdieren: Misho en Mila, de "
+"geliefde katten van onze oprichters, en Manti, een vrolijke en trouwe hond "
+"van een goede vriend. Elk had andere voedingsgevoeligheden en zorgbehoeften, "
+"waardoor het voeren dagelijks een uitdaging was. Die uitdaging werd onze "
+"missie: slimmere, gepersonaliseerde dierenvoeding creëren met de kracht van "
+"kunstmatige intelligentie."
 
 #: .\core\templates\core\about.html:47
 msgid "What We Do"
@@ -196,10 +206,14 @@ msgid ""
 "to health conditions, allergies, and lifestyle. Based on this, we generate "
 "smart, customized meal plans that support your pet’s long-term health and "
 "happiness."
-msgstr "FAMMO gebruikt AI om het unieke profiel van je huisdier te analyseren — van ras en gewicht tot aandoeningen, allergieën en levensstijl. Op basis daarvan genereren we slimme, op maat gemaakte maaltijdplannen die de lange-termijngezondheid en het welzijn van je huisdier ondersteunen."
+msgstr ""
+"FAMMO gebruikt AI om het unieke profiel van je huisdier te analyseren — van "
+"ras en gewicht tot aandoeningen, allergieën en levensstijl. Op basis daarvan "
+"genereren we slimme, op maat gemaakte maaltijdplannen die de lange-"
+"termijngezondheid en het welzijn van je huisdier ondersteunen."
 
 #: .\core\templates\core\about.html:54
-#: .\core\templates\core\how_it_works.html:204
+#: .\core\templates\core\how_it_works.html:156
 msgid "Why FAMMO?"
 msgstr "Waarom FAMMO?"
 
@@ -213,11 +227,13 @@ msgstr "Slimme ingrediënt-matching voor gevoeligheden en doelen."
 
 #: .\core\templates\core\about.html:58
 msgid "Multilingual support and intuitive design for every pet owner."
-msgstr "Meertalige ondersteuning en een intuïtief ontwerp voor elke huisdiereigenaar."
+msgstr ""
+"Meertalige ondersteuning en een intuïtief ontwerp voor elke huisdiereigenaar."
 
 #: .\core\templates\core\about.html:59
 msgid "Constantly evolving insights as your pet grows and changes."
-msgstr "Voortdurend evoluerende inzichten terwijl je huisdier groeit en verandert."
+msgstr ""
+"Voortdurend evoluerende inzichten terwijl je huisdier groeit en verandert."
 
 #: .\core\templates\core\about.html:64
 msgid "Our Mission"
@@ -228,7 +244,10 @@ msgid ""
 "We believe every pet deserves a diet as unique as their personality. Our "
 "mission is to transform pet nutrition through AI, making it accessible, data-"
 "driven, and built with care."
-msgstr "Wij geloven dat elk huisdier een dieet verdient dat net zo uniek is als zijn karakter. Onze missie is om dierenvoeding met AI te transformeren: toegankelijk, datagedreven en met zorg opgebouwd."
+msgstr ""
+"Wij geloven dat elk huisdier een dieet verdient dat net zo uniek is als zijn "
+"karakter. Onze missie is om dierenvoeding met AI te transformeren: "
+"toegankelijk, datagedreven en met zorg opgebouwd."
 
 #: .\core\templates\core\about.html:71
 msgid "From Istanbul to the Netherlands"
@@ -240,7 +259,11 @@ msgid ""
 "relocating to the Netherlands to expand our vision, collaborate with "
 "European pet health innovators, and bring personalized nutrition to more "
 "pets across the world."
-msgstr "FAMMO begon in Istanboel, maar onze reis stopt daar niet. We verhuizen naar Nederland om onze visie uit te breiden, samen te werken met Europese innovators in dierengezondheid en gepersonaliseerde voeding naar meer huisdieren wereldwijd te brengen."
+msgstr ""
+"FAMMO begon in Istanboel, maar onze reis stopt daar niet. We verhuizen naar "
+"Nederland om onze visie uit te breiden, samen te werken met Europese "
+"innovators in dierengezondheid en gepersonaliseerde voeding naar meer "
+"huisdieren wereldwijd te brengen."
 
 #: .\core\templates\core\about.html:78
 msgid "Meet the Founders"
@@ -251,7 +274,11 @@ msgid ""
 "We're a small team of developers, nutrition enthusiasts, and animal lovers — "
 "united by a shared vision to build smarter solutions for our furry "
 "companions. FAMMO isn’t just a platform, it’s a passion."
-msgstr "We zijn een klein team van ontwikkelaars, voedingsliefhebbers en dierenvrienden — verenigd door een gedeelde visie om slimmere oplossingen te bouwen voor onze harige metgezellen. FAMMO is niet alleen een platform, het is een passie."
+msgstr ""
+"We zijn een klein team van ontwikkelaars, voedingsliefhebbers en "
+"dierenvrienden — verenigd door een gedeelde visie om slimmere oplossingen te "
+"bouwen voor onze harige metgezellen. FAMMO is niet alleen een platform, het "
+"is een passie."
 
 #: .\core\templates\core\about.html:85 .\core\templates\core\contact.html:5
 #: .\templates\partials\navbar.html:39 .\templates\partials\navbar.html:88
@@ -342,7 +369,8 @@ msgstr "Gepersonaliseerde maaltijdplannen"
 
 #: .\core\templates\core\home.html:68
 msgid "Tailored recommendations based on your pet's unique needs."
-msgstr "Aanbevelingen op maat, gebaseerd op de unieke behoeften van je huisdier."
+msgstr ""
+"Aanbevelingen op maat, gebaseerd op de unieke behoeften van je huisdier."
 
 #: .\core\templates\core\home.html:72
 msgid "Health Risk Alerts"
@@ -380,7 +408,9 @@ msgstr "Klaar om het leven van je huisdier te verbeteren?"
 msgid ""
 "Join thousands of satisfied pet owners who trust FAMO for their pets' "
 "nutrition and health."
-msgstr "Sluit je aan bij duizenden tevreden eigenaren die FAMO vertrouwen voor de voeding en gezondheid van hun huisdieren."
+msgstr ""
+"Sluit je aan bij duizenden tevreden eigenaren die FAMO vertrouwen voor de "
+"voeding en gezondheid van hun huisdieren."
 
 #: .\core\templates\core\home.html:140
 msgid "Get Started Today"
@@ -390,16 +420,147 @@ msgstr "Begin vandaag nog"
 msgid "How it works"
 msgstr "Hoe het werkt"
 
-#: .\core\templates\core\how_it_works.html:206
+#: .\core\templates\core\how_it_works.html:12
+#| msgid "How it Works"
+msgid "How FAMMO Works"
+msgstr "Hoe het werkt"
+
+#: .\core\templates\core\how_it_works.html:14
+msgid ""
+"At FAMMO, we make it easy to give your pet the nutrition and care they truly "
+"deserve. Here’s how our platform helps you step by step:"
+msgstr ""
+"Bij FAMMO maken we het eenvoudig om jouw huisdier de voeding en zorg te geven "
+"die het echt verdient. Zo helpt ons platform je stap voor stap:"
+
+#: .\core\templates\core\how_it_works.html:29
+msgid "1. Sign Up & Log In"
+msgstr "1. Aanmelden & Inloggen"
+
+#: .\core\templates\core\how_it_works.html:32
+msgid ""
+"Getting started is simple! Create an account with your email or Google "
+"login. In just a minute, you’ll have your own dashboard."
+msgstr ""
+"Beginnen is eenvoudig! Maak een account aan met je e-mail of Google-login. "
+"Binnen een minuut heb je je eigen dashboard."
+
+#: .\core\templates\core\how_it_works.html:36
+#| msgid "Register"
+msgid "Register Now"
+msgstr "Nu registreren"
+
+#: .\core\templates\core\how_it_works.html:40
+msgid "fammo login and register page"
+msgstr "fammo inlog- en registratiepagina"
+
+#: .\core\templates\core\how_it_works.html:54
+#: .\core\templates\core\how_it_works.html:110
+msgid "Illustration showcasing FAMMO features"
+msgstr "Illustratie met FAMMO-functies"
+
+#: .\core\templates\core\how_it_works.html:59
+msgid "2. Create Your Pet’s Profile"
+msgstr "2. Maak het profiel van je huisdier aan"
+
+#: .\core\templates\core\how_it_works.html:62
+msgid ""
+"Every pet is unique — that’s why we ask a few quick questions about your "
+"furry friend:  \n"
+"              Name, breed, and age,  \n"
+"              Weight & activity level,  \n"
+"              Any allergies or health conditions.  \n"
+"\n"
+"              Dashboard → My Pets → Add New Pet  \n"
+"\n"
+"              This helps our AI understand what makes your pet special."
+msgstr ""
+"Elk huisdier is uniek — daarom stellen we een paar korte vragen over jouw "
+"vriendje:  \n"
+"Naam, ras en leeftijd,  \n"
+"Gewicht & activiteitsniveau,  \n"
+"Eventuele allergieën of gezondheidsproblemen.  \n"
+"\n"
+"Dashboard → Mijn Huisdieren → Nieuw Huisdier toevoegen  \n"
+"\n"
+"Zo begrijpt onze AI wat jouw huisdier bijzonder maakt."
+
+#: .\core\templates\core\how_it_works.html:84
+#| msgid "Meal Recommendations"
+msgid "3. Get AI-Powered Recommendations"
+msgstr "3. Ontvang AI-gestuurde aanbevelingen"
+
+#: .\core\templates\core\how_it_works.html:87
+msgid ""
+"With your pet’s profile ready, you can access two powerful tools:  \n"
+"              AI Meal Suggestions → Tailored meal plans based on your pet’s "
+"needs.  \n"
+"              AI Health Reports → Preventive insights to keep your pet "
+"healthier for longer."
+msgstr ""
+"Met het profiel van je huisdier klaar heb je toegang tot twee krachtige tools:  \n"
+"AI-maaltijdsuggesties → Op maat gemaakte maaltijdplannen op basis van de behoeften van jouw huisdier.  \n"
+"AI-gezondheidsrapporten → Preventieve inzichten om je huisdier langer gezond te houden."
+
+#: .\core\templates\core\how_it_works.html:92
+msgid ""
+"(Meal suggestions currently focus on nutrition. Specific brand "
+"recommendations will be added soon as we partner with trusted pet food "
+"suppliers.)"
+msgstr ""
+"(Maaltijdsuggesties richten zich momenteel op voeding. Specifieke merkadviezen "
+"worden binnenkort toegevoegd wanneer we samenwerken met vertrouwde leveranciers van dierenvoeding.)"
+
+#: .\core\templates\core\how_it_works.html:96
+#: .\core\templates\core\how_it_works.html:144
+msgid "A stylized placeholder image representing learning and growth"
+msgstr "Een gestileerde voorbeeldafbeelding die leren en groei weergeeft"
+
+#: .\core\templates\core\how_it_works.html:115
+msgid "4. Track Progress Over Time"
+msgstr "4. Volg de voortgang in de tijd"
+
+#: .\core\templates\core\how_it_works.html:118
+msgid ""
+"Every suggestion and report is stored in your AI History, so you can follow "
+"your pet’s journey and see how their needs evolve."
+msgstr ""
+"Elke suggestie en elk rapport wordt opgeslagen in je AI-geschiedenis, zodat je "
+"de reis van je huisdier kunt volgen en zien hoe hun behoeften zich ontwikkelen."
+
+#: .\core\templates\core\how_it_works.html:133
+msgid "5. Your Dashboard at a Glance"
+msgstr "5. Jouw dashboard in één oogopslag"
+
+#: .\core\templates\core\how_it_works.html:136
+msgid ""
+"Your dashboard brings everything together:  \n"
+"              - Quick access to pet profiles  \n"
+"              - One-click AI tools  \n"
+"              - Edit everything  \n"
+"              - Upgrade your Plan"
+msgstr ""
+"Je dashboard brengt alles samen:  \n"
+"- Snel toegang tot huisdierprofielen  \n"
+"- AI-tools met één klik  \n"
+"- Alles bewerken  \n"
+"- Je abonnement upgraden"
+
+#: .\core\templates\core\how_it_works.html:158
 msgid ""
 "Because no two pets are alike. We believe every dog and cat deserves "
 "personalized nutrition and preventive health care — powered by AI, made "
 "simple for you."
-msgstr "Omdat geen twee huisdieren hetzelfde zijn. Wij vinden dat elke hond en kat gepersonaliseerde voeding en preventieve zorg verdient — mogelijk gemaakt door AI en voor jou eenvoudig gemaakt."
+msgstr ""
+"Omdat geen twee huisdieren hetzelfde zijn. Wij vinden dat elke hond en kat "
+"gepersonaliseerde voeding en preventieve zorg verdient — mogelijk gemaakt "
+"door AI en voor jou eenvoudig gemaakt."
 
-#: .\core\templates\core\how_it_works.html:208
+#: .\core\templates\core\how_it_works.html:161
 msgid "Start today and discover smarter feeding for a healthier, happier pet."
-msgstr "Begin vandaag en ontdek slimmer voeren voor een gezonder en gelukkiger huisdier."
+msgstr ""
+"Begin vandaag en ontdek slimmer voeren voor een gezonder en gelukkiger "
+"huisdier."
 
 #: .\core\templates\core\manage_hero_section.html:6
 msgid "Manage Homepage Hero Section"
@@ -633,12 +794,16 @@ msgstr "Inloggen via %(provider)s"
 #: .\templates\socialaccount\login.html:23
 #, python-format
 msgid "You are about to connect a new third-party account from %(provider)s."
-msgstr "Je staat op het punt een nieuw account van een externe partij (%(provider)s) te koppelen."
+msgstr ""
+"Je staat op het punt een nieuw account van een externe partij (%(provider)s) "
+"te koppelen."
 
 #: .\templates\socialaccount\login.html:25
 #, python-format
 msgid "You are about to sign in using a third-party account from %(provider)s."
-msgstr "Je staat op het punt in te loggen met een account van een externe partij (%(provider)s)."
+msgstr ""
+"Je staat op het punt in te loggen met een account van een externe partij "
+"(%(provider)s)."
 
 #: .\templates\socialaccount\login.html:33
 msgid "Continue"
@@ -745,7 +910,9 @@ msgstr "Het lijkt erop dat je harige vriend hier nog niet is!"
 msgid ""
 "Add your pet now to unlock personalized AI Meals and Health Reports tailored "
 "just for them!"
-msgstr "Voeg nu je huisdier toe om gepersonaliseerde AI-maaltijden en gezondheidsrapporten te ontgrendelen – speciaal voor hem of haar!"
+msgstr ""
+"Voeg nu je huisdier toe om gepersonaliseerde AI-maaltijden en "
+"gezondheidsrapporten te ontgrendelen – speciaal voor hem of haar!"
 
 #: .\userapp\templates\userapp\dashboard.html:15
 msgid "Add Pet"
@@ -840,7 +1007,9 @@ msgstr "E-mail voor wachtwoordherstel verzonden"
 msgid ""
 "We've emailed you instructions for setting your password. You should receive "
 "the email shortly."
-msgstr "We hebben je instructies gemaild om je wachtwoord in te stellen. Je ontvangt de e-mail spoedig."
+msgstr ""
+"We hebben je instructies gemaild om je wachtwoord in te stellen. Je ontvangt "
+"de e-mail spoedig."
 
 #: .\userapp\templates\userapp\password_reset_form.html:5
 msgid "Forgot Password"
