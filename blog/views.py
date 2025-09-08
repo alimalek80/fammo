@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost, BlogComment, BlogRating, BlogCategory
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Count
+from django.db.models import Avg, Count, F
 from urllib.parse import quote
 from django.utils.html import strip_tags
 from django.utils import timezone
@@ -28,6 +28,11 @@ def blog_detail(request, slug):
         published_at__isnull=False,
         published_at__lte=timezone.now()
     )
+
+    # Increment views
+    BlogPost.objects.filter(pk=post.pk).update(views=F('views') + 1)
+    post.refresh_from_db(fields=['views'])
+
     absolute_url = request.build_absolute_uri(request.path)
     image_url = request.build_absolute_uri(post.image.url) if getattr(post, "image", None) else ""
 

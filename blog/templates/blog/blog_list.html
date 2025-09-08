@@ -48,7 +48,9 @@
                         </span>
                         <span>&middot;</span>
                         <i class="fa-solid fa-calendar"></i>
-                        <span>{{ post.created_at|date:"M d, Y" }}</span>
+                        <span>{{ post.published_at|date:"M d, Y" }}</span>
+                        <i class="fa-solid fa-eye"></i>
+                        <span>{{ post.views }}</span>
                     </div>
                     <div class="flex items-center space-x-1 text-yellow-500">
                         {% with avg=post.average_rating %}

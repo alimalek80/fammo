@@ -11,7 +11,7 @@ class BlogCategoryAdmin(admin.ModelAdmin):
 @admin.register(BlogPost)
 class BlogPostAdmin(MarkdownxModelAdmin):  # use MarkdownxModelAdmin for assets
     prepopulated_fields = {"slug": ("title",)}
-    list_display = ("title", "category_list", "author", "created_at", "published_at")  # <-- use category_list
+    list_display = ("title", "category_list", "author", "created_at", "published_at", "views")  # Add "views"
     list_filter = ("category", "author")
     search_fields = ("title", "content")
     fields = (

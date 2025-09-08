@@ -22,6 +22,7 @@ class BlogPost(models.Model):
     published_at = models.DateTimeField(null=True, blank=True)  # Add this line
     meta_description = models.CharField(max_length=255, blank=True, null=True)
     meta_keywords = models.CharField(max_length=255, blank=True, null=True)
+    views = models.PositiveIntegerField(default=0)  # Add this line
 
     def average_rating(self):
         ratings = self.ratings.all()
