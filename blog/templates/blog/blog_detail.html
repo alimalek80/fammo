@@ -236,7 +236,33 @@
     {% endwith %}
   {% endif %}
 {% endwith %}
-<!-- ...existing code... -->
+
+<!-- Nex And Previous Buttons -->
+<div class="flex flex-col sm:flex-row justify-between items-stretch mt-12 mb-8 gap-4">
+  {% if prev_post %}
+    <div class="flex flex-col items-start w-full sm:w-1/3 max-w-xs">
+      <a href="{% url 'blog_detail' prev_post.slug %}" class="btn btn-outline btn-sm mb-1 w-full text-left">
+        &larr; {% trans "Previous" %}
+      </a>
+      <span class="text-xs text-gray-500 break-words truncate max-w-full">
+        {{ prev_post.title }}
+      </span>
+    </div>
+  {% else %}
+    <span class="w-full sm:w-1/3"></span>
+  {% endif %}
+  {% if next_post %}
+    <div class="flex flex-col items-end w-full sm:w-1/3 max-w-xs ml-auto">
+      <a href="{% url 'blog_detail' next_post.slug %}" class="btn btn-outline btn-sm mb-1 w-full text-right">
+        {% trans "Next" %} &rarr;
+      </a>
+      <span class="text-xs text-gray-500 break-words truncate max-w-full text-right">
+        {{ next_post.title }}
+      </span>
+    </div>
+  {% endif %}
+</div>
+
     <!-- Comments -->
     <section class="mt-8">
         <h2 class="text-2xl font-bold text-gray-900 mb-4">{% trans "Comments" %}</h2>

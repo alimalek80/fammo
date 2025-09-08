@@ -1,5 +1,6 @@
 from django import forms
 from .models import HeroSection, SocialLinks, FAQ, ContactMessage
+from django.utils.translation import gettext_lazy as _
 
 class HeroSectionForm(forms.ModelForm):
     class Meta:
@@ -52,7 +53,7 @@ class ContactForm(forms.ModelForm):
     # Keep consent required
     consent = forms.BooleanField(
         required=True,
-        label="You may contact me about my request."
+        label=_("You may contact me about my request.")
     )
 
     class Meta:
@@ -61,26 +62,26 @@ class ContactForm(forms.ModelForm):
         widgets = {
             "name": forms.TextInput(attrs={
                 "id": "name",
-                "placeholder": "John Doe",
+                "placeholder": _("John Doe"),
                 "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
                 "required": "required",
             }),
             "email": forms.EmailInput(attrs={
                 "id": "email",
-                "placeholder": "you@example.com",
+                "placeholder": _("you@example.com"),
                 "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
                 "required": "required",
             }),
             "subject": forms.TextInput(attrs={
                 "id": "subject",
-                "placeholder": "General Inquiry",
+                "placeholder": _("General Inquiry"),
                 "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
                 "required": "required",
             }),
             "message": forms.Textarea(attrs={
                 "id": "message",
                 "rows": 5,
-                "placeholder": "Your message...",
+                "placeholder": _("Your message..."),
                 "class": "w-full px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:border-indigo-500",
                 "required": "required",
             }),

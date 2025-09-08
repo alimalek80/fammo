@@ -19,6 +19,7 @@ class BlogPost(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    published_at = models.DateTimeField(null=True, blank=True)  # Add this line
     meta_description = models.CharField(max_length=255, blank=True, null=True)
     meta_keywords = models.CharField(max_length=255, blank=True, null=True)
 

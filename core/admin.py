@@ -1,8 +1,9 @@
 from django.contrib import admin
 from .models import HeroSection, SocialLinks, FAQ, ContactMessage
+from modeltranslation.admin import TranslationAdmin
 
 @admin.register(HeroSection)
-class HeroSectionAdmin(admin.ModelAdmin):
+class HeroSectionAdmin(TranslationAdmin):
     list_display = ("heading", "is_active")
     list_editable = ("is_active",)
     search_fields = ("heading", "subheading")
@@ -12,7 +13,7 @@ class SocialLinksAdmin(admin.ModelAdmin):
     list_display = ("instagram", "x", "facebook", "linkedin")
 
 @admin.register(FAQ)
-class FAQAdmin(admin.ModelAdmin):
+class FAQAdmin(TranslationAdmin):
     list_display = ("question", "is_published", "sort_order", "updated_at")
     list_editable = ("is_published", "sort_order")
     search_fields = ("question", "answer")

@@ -32,6 +32,7 @@ LOGGING = {
 
 # APPS
 INSTALLED_APPS = [
+    'modeltranslation',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -60,6 +61,8 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'markdownx',
 ]
+
+MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
 
 TAILWIND_APP_NAME = 'theme'
 NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
@@ -150,7 +153,9 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-LOCALE_PATHS = [BASE_DIR / 'locale']
+LOCALE_PATHS = [
+    BASE_DIR / "locale",
+]
 
 # STATIC FILES
 STATIC_URL = '/static/'
