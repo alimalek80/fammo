@@ -107,6 +107,7 @@ class Pet(models.Model):
     age_months = models.PositiveIntegerField(null=True, blank=True)
     age_weeks = models.PositiveIntegerField(null=True, blank=True)
     breed = models.ForeignKey(Breed, on_delete=models.SET_NULL, null=True, blank=True, related_name='pets')
+    unknown_breed = models.BooleanField(default=False, help_text="Check if breed is unknown")
     food_types = models.ManyToManyField(FoodType, blank=True, related_name='pets')
     food_feeling = models.ForeignKey(FoodFeeling, on_delete=models.SET_NULL, null=True, blank=True, related_name='pets')
     food_importance = models.ForeignKey(FoodImportance, on_delete=models.SET_NULL, null=True, blank=True, related_name='pets')

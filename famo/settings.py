@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     'markdownify',
     'widget_tweaks',
     'markdownx',
+    'formtools',
 ]
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
