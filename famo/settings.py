@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'markdownx',
     'formtools',
+    'chat',
 ]
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
@@ -212,17 +213,23 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'fammo.ai.official@gmail.com'
-EMAIL_HOST_PASSWORD = 'fkdx irwo krwq prvf'
+EMAIL_HOST_PASSWORD = 'mjvq eetb qqux rhof'
 DEFAULT_FROM_EMAIL = 'FAMO <fammo.ai.official@gmail.com>'
 
-SITE_ID = 2
+# For local development, you can use this to see emails in console instead of sending:
+if DEBUG:
+    # Uncomment the next line to see emails in console instead of sending
+    # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    pass
+
+SITE_ID = 1  # Make sure this matches a valid Site object in the database
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-LOGIN_REDIRECT_URL = 'dashboard'
-LOGOUT_REDIRECT_URL = 'login'
+LOGIN_REDIRECT_URL = 'pet:pet_wizard'  # Keep the pet wizard as redirect
+LOGOUT_REDIRECT_URL = 'core:home'
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_AUTO_SIGNUP = True

@@ -44,13 +44,39 @@
             </p>
         {% endif %}
         <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-            <a href="{% url 'register' %}" class="bg-indigo-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors duration-300 shadow-md">
+            <a href="{% url 'account_signup' %}" class="bg-indigo-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-blue-700 transition-colors duration-300 shadow-md">
                 {% trans "Try for Free" %} <i class="fas fa-arrow-right ml-2"></i>
             </a>
-            <a href="{% url 'login' %}" class="bg-white border-2 border-indigo-600 text-indigo-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-indigo-600 hover:text-white transition-colors duration-300 shadow-md">
+            <a href="{% url 'account_login' %}" class="bg-white border-2 border-indigo-600 text-indigo-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-indigo-600 hover:text-white transition-colors duration-300 shadow-md">
                 {% trans "Login / Sign Up" %}
             </a>
         </div>
+
+        <!-- Lead Collection Form -->
+        <form id="leadForm" method="POST" action="{% url 'core:collect_lead' %}" class="bg-white/90 backdrop-blur p-6 rounded-xl shadow w-full max-w-md mx-auto mt-6">
+            {% csrf_token %}
+            <div class="mb-4">
+                <label class="block text-sm font-medium">{% trans "Pet type" %}</label>
+                <select name="pet_type" required class="select select-bordered w-full">
+                    <option value="">{% trans "Choose..." %}</option>
+                    <option value="cat">{% trans "Cat" %}</option>
+                    <option value="dog">{% trans "Dog" %}</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium">{% trans "Pet weight (kg)" %}</label>
+                <input type="number" name="weight" min="0.5" step="0.1" required class="input input-bordered w-full">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium">{% trans "Email" %}</label>
+                <input type="email" name="email" required class="input input-bordered w-full">
+            </div>
+            <button type="submit" class="btn btn-primary w-full">{% trans "Get Started" %}</button>
+        </form>
+
+        <p id="leadSuccess" class="hidden mt-6 text-center text-green-600 font-semibold">
+            {% trans "We're analyzing your pet's needs…" %}
+        </p>
     </div>
     {% if hero and hero.background_image %}
     <div class="w-full flex justify-center mb-8">
@@ -136,7 +162,7 @@
         <p class="text-lg mb-6">
             {% trans "Join thousands of satisfied pet owners who trust FAMO for their pets' nutrition and health." %}
         </p>
-        <a href="{% url 'register' %}" class="bg-orange-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-orange-600 transition-colors duration-300 shadow-md">
+        <a href="{% url 'account_signup' %}" class="bg-orange-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-orange-600 transition-colors duration-300 shadow-md">
             {% trans "Get Started Today" %} <i class="fas fa-arrow-right ml-2"></i>
         </a>
     </div>
@@ -147,21 +173,50 @@
 {% block extra_js %}
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // FAQ Handling
             const faqContainer = document.getElementById('faq-container');
-
             if (faqContainer) {
                 faqContainer.addEventListener('click', (event) => {
                     const questionButton = event.target.closest('.faq-question-btn');
-                    
                     if (questionButton) {
                         const parentItem = questionButton.closest('div');
                         const answer = parentItem.querySelector('.faq-answer');
                         const icon = parentItem.querySelector('.faq-icon');
-
-                        // Toggle the classes to expand/collapse the answer and rotate the icon
                         answer.classList.toggle('expanded');
                         icon.classList.toggle('expanded');
                     }
+                });
+            }
+
+            // Lead Form Handling
+            const leadForm = document.getElementById('leadForm');
+            if (leadForm) {
+                leadForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    fetch(leadForm.action, {
+                        method: 'POST',
+                        body: new FormData(leadForm),
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRFToken': csrftoken
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                throw new Error(data.error || 'Something went wrong');
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(() => {
+                        leadForm.classList.add('hidden');
+                        document.getElementById('leadSuccess').classList.remove('hidden');
+                    })
+                    .catch((error) => {
+                        alert('{% trans "Error" %}: ' + error.message);
+                    });
                 });
             }
         });

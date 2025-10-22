@@ -1,11 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from .models import HeroSection, SocialLinks
-from .models import HeroSection, SocialLinks, FAQ, ContactMessage
-from .forms import HeroSectionForm, SocialLinksForm, FAQForm, ContactForm
+from django.contrib.auth import get_user_model, login
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
+from django.urls import reverse
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
+from .models import HeroSection, SocialLinks, FAQ, ContactMessage, Lead
+from .forms import HeroSectionForm, SocialLinksForm, FAQForm, ContactForm
+from pet.models import PetType
+from django.contrib.auth.hashers import make_password
+import string
+import random
 
 def home(request):
     # Get the currently active hero section
@@ -117,3 +123,153 @@ def contact(request):
         form = ContactForm()
 
     return render(request, "core/contact.html", {"form": form, "links": links})
+
+import string
+import random
+from django.contrib.auth import get_user_model, login
+from django.contrib.auth.hashers import make_password
+
+def generate_secure_password():
+    """Generate a secure random password."""
+    chars = string.ascii_letters + string.digits + "!@#$%^&*()"
+    length = 12
+    return ''.join(random.choice(chars) for _ in range(length))
+
+def collect_lead(request):
+    """API endpoint to collect lead information from the home page form."""
+    if request.method != "POST":
+        return HttpResponseBadRequest("POST only")
+    
+    pet_type = (request.POST.get("pet_type") or "").lower()
+    weight = request.POST.get("weight")
+    email = (request.POST.get("email") or "").strip().lower()
+    
+    print(f"Received form data - pet_type: {pet_type}, weight: {weight}, email: {email}")  # Debug log
+    
+    if pet_type not in ("cat","dog") or not weight or not email:
+        return JsonResponse({"error": "Missing required fields"}, status=400)
+    
+    try:
+        weight = float(weight)  # Convert weight to float
+        if weight <= 0:
+            return JsonResponse({"error": "Weight must be greater than 0"}, status=400)
+    except (ValueError, TypeError):
+        return JsonResponse({"error": "Invalid weight value"}, status=400)
+
+    # Check if user already exists
+    User = get_user_model()
+    user_exists = User.objects.filter(email=email).exists()
+    generated_password = None
+
+    # Generate password only for new users
+    if not user_exists:
+        generated_password = generate_secure_password()
+        
+    try:
+        lead = Lead.objects.create(pet_type=pet_type, weight=weight, email=email)
+        print(f"Created lead with UUID: {lead.uuid}")  # Debug log
+
+        # Create user account if email doesn't exist
+        if not user_exists and generated_password:
+            # Get the user model and create a new user
+            user = User.objects.create_user(
+                email=email,
+                password=generated_password,
+            )
+            # Activate the user immediately since they're coming through the lead funnel
+            user.is_active = True
+            user.backend = 'django.contrib.auth.backends.ModelBackend'  # Set the backend
+            user.save()
+            print(f"Created new user account for: {email}")
+    except Exception as e:
+        print(f"Error creating lead or user: {str(e)}")  # Debug log
+        return JsonResponse({"error": str(e)}, status=500)
+
+    # Email CTA → starts the flow with this lead UUID
+    cta_url = request.build_absolute_uri(reverse("core:start_from_lead", args=[lead.uuid]))
+    subject = "Your FAMO Pet Profile is Ready!"
+    
+    if generated_password:
+        body = (
+            "Welcome to FAMO!\n\n"
+            "We've created your account to get started with your pet's personalized plan.\n\n"
+            f"Your login credentials:\n"
+            f"Email: {email}\n"
+            f"Password: {generated_password}\n\n"
+            f"Click here to access your pet's profile (you'll be automatically logged in):\n"
+            f"{cta_url}\n\n"
+            "For security, please change your password after logging in.\n\n"
+            "— FAMMO.ai"
+        )
+    else:
+        body = (
+            "Welcome back to FAMO!\n\n"
+            "We've updated your pet's personalized plan.\n\n"
+            f"Click here to view your pet's profile:\n{cta_url}\n\n"
+            "— FAMMO.ai"
+        )
+    
+    print(f"Attempting to send email to {email} with CTA URL: {cta_url}")  # Debug log
+    
+    try:
+        result = send_mail(
+            subject=subject,
+            message=body,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[email],
+            fail_silently=False  # Changed to False to see errors
+        )
+        print(f"Email sent successfully: {result}")  # Debug log
+    except Exception as e:
+        print(f"Error sending email: {str(e)}")  # Debug log
+        # We don't return an error here because the lead was created successfully
+        
+    return JsonResponse({"ok": True, "uuid": lead.uuid})
+
+from django.contrib.auth import get_user_model, login, authenticate
+from django.contrib.auth.backends import ModelBackend
+
+def start_from_lead(request, uuid):
+    """Process lead link and handle auto-login for new users."""
+    lead = Lead.objects.filter(uuid=uuid).first()
+    if not lead:
+        messages.error(request, "Invalid or expired link.")
+        return HttpResponseRedirect(reverse("core:home"))
+        
+    # Store lead info in session
+    request.session['lead_email'] = lead.email
+    request.session['lead_pet_type'] = lead.pet_type
+    request.session['lead_weight'] = float(lead.weight)
+    request.session['lead_uuid'] = lead.uuid
+    request.session.modified = True
+    
+    # Check if user exists and handle authentication
+    User = get_user_model()
+    try:
+        user = User.objects.get(email=lead.email)
+        
+        # If user is not logged in, authenticate and log them in
+        if not request.user.is_authenticated:
+            # First try to authenticate using the ModelBackend
+            authenticated_user = authenticate(request, username=lead.email, email=lead.email)
+            if authenticated_user:
+                login(request, authenticated_user, backend='django.contrib.auth.backends.ModelBackend')
+            else:
+                # If ModelBackend fails, use the Allauth backend
+                login(request, user, backend='allauth.account.auth_backends.AuthenticationBackend')
+                
+            messages.success(request, "Welcome back! You've been automatically logged in.")
+            
+        # Redirect to pet wizard
+        return HttpResponseRedirect(reverse('pet:pet_wizard'))
+        
+    except User.DoesNotExist:
+        # If user doesn't exist, redirect to signup
+        # (shouldn't happen normally as we create users in collect_lead)
+        messages.info(request, "Please sign up to continue.")
+        return HttpResponseRedirect(reverse('account_signup'))
+    else:
+        # New user - redirect to signup
+        signup_url = reverse("account_signup")
+        messages.info(request, "Please create an account to continue setting up your pet's profile.")
+        return HttpResponseRedirect(f"{signup_url}?next={next_url}")

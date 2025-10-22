@@ -8,6 +8,7 @@ from django.contrib import messages
 import csv
 from django.http import HttpResponse
 from formtools.wizard.views import SessionWizardView
+from core.models import Lead
 
 
 @login_required
@@ -167,6 +168,45 @@ class PetWizard(SessionWizardView):
         if step in ['step2', 'step3', 'step4', 'step5', 'step6', 'step7', 'step8', 'step9', 'step10', 'step11', 'step12', 'step13', 'step14', 'step15']:  # Forms that need wizard instance
             kwargs['wizard'] = self
         return kwargs
+    
+    def _lead(self):
+        """Get the lead from session if it exists"""
+        uuid = self.request.session.get("lead_uuid")
+        if not uuid:
+            return None
+        return Lead.objects.filter(uuid=uuid).first()
+
+    def get_form_initial(self, step):
+        """Pre-fill form data from the lead if available"""
+        initial = super().get_form_initial(step)
+        lead = self._lead()
+        if not lead:
+            return initial
+
+        # Map 'cat'/'dog' to PetType if available
+        if step == "step1":
+            pt = PetType.objects.filter(name__iexact=lead.pet_type).first()
+            if pt:
+                initial.update({"pet_type": pt.id})
+
+        if step == "step9":
+            initial.update({"weight": lead.weight})
+
+        return initial
+
+    def done(self, form_list, **kwargs):
+        """Process the wizard completion"""
+        # Mark lead as processed if it exists
+        lead = self._lead()
+        if lead:
+            lead.processed = True
+            lead.save(update_fields=["processed"])
+            # Clear the lead from session
+            if "lead_uuid" in self.request.session:
+                del self.request.session["lead_uuid"]
+                self.request.session.modified = True
+        
+        return super().done(form_list, **kwargs)
     
     def get_form(self, step=None, data=None, files=None):
         """Handle invalid choice issues when user changes pet type and navigates back"""
@@ -394,6 +434,10 @@ class PetWizard(SessionWizardView):
                             'food_allergies_ids': [fa.pk for fa in form_data.get('food_allergies', [])],
                             'health_issues_ids': [hi.pk for hi in form_data.get('health_issues', [])],
                         }
+                        
+                        # Create the pet immediately (don't wait for activation)
+                        pet = self._create_pet_from_form_data(user, form_data)
+                        print(f"✅ Pet '{pet.name}' created immediately for inactive user {user.email}")  # Debug log
                         
                         # Send activation email with pet information
                         current_site = get_current_site(self.request)

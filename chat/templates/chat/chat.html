@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pet Chat (Dogs & Cats)</title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 760px; margin: 32px auto; padding: 0 16px; }
+    h1 { font-size: 1.4rem; }
+    .card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 16px; }
+    .row { display: flex; gap: 8px; margin-top: 12px; }
+    input[type="text"] { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; }
+    button { padding: 12px 16px; border: 0; border-radius: 10px; cursor: pointer; }
+    .bubble { padding: 10px 12px; border-radius: 12px; margin: 8px 0; }
+    .you { background:#eef2ff; align-self: flex-end; }
+    .bot { background:#f6f6f6; }
+    .error { color:#b00020; margin-top: 8px; }
+  </style>
+</head>
+<body>
+    <h1 style="display:flex;justify-content:space-between;align-items:center;">
+        <span>🐾 Pet Chat — Dogs & Cats Only</span>
+        <a href="?new=1" style="font-size:.9rem; text-decoration:none; border:1px solid #ddd; padding:8px 10px; border-radius:8px;">
+          New chat
+        </a>
+      </h1>
+
+  <div class="card" id="chat">
+    {% if history and history|length > 0 %}
+      {% for msg in history %}
+        <div class="bubble {{ msg.role }}">
+          <strong>{{ msg.role|title }}:</strong> {{ msg.text }}
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="bubble bot">Hi! Ask me anything about dog & cat care. (Demo echo mode for now.)</p>
+    {% endif %}
+
+    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+
+    <form method="post" class="row">
+      {% csrf_token %}
+      <input type="text" name="message" placeholder="Type your pet question…" autocomplete="off" />
+      <button type="submit">Send</button>
+    </form>
+  </div>
+</body>
+</html>

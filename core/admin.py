@@ -1,6 +1,13 @@
 from django.contrib import admin
-from .models import HeroSection, SocialLinks, FAQ, ContactMessage
+from .models import HeroSection, SocialLinks, FAQ, ContactMessage, Lead
 from modeltranslation.admin import TranslationAdmin
+
+@admin.register(Lead)
+class LeadAdmin(admin.ModelAdmin):
+    list_display = ('email', 'pet_type', 'weight', 'source', 'created_at', 'processed')
+    list_filter = ('pet_type', 'source', 'processed', 'created_at')
+    search_fields = ('email', 'uuid')
+    readonly_fields = ('uuid', 'created_at')
 
 @admin.register(HeroSection)
 class HeroSectionAdmin(TranslationAdmin):

@@ -14,13 +14,14 @@ urlpatterns = [
 
 # Your actual app routes
 urlpatterns += i18n_patterns(
-    path('', include('core.urls')),
+    path('', include(('core.urls', 'core'), namespace='core')),
     path('users/', include('userapp.urls')),
     path('pets/', include(('pet.urls', 'pet'), namespace='pet')),
     path('admin/', admin.site.urls),
     path('ai/', include('aihub.urls')),
     path('subscription/', include('subscription.urls')),
     path('blog/', include('blog.urls')),
+    path('chat/', include('chat.urls')),
 )
 
 urlpatterns += [
@@ -29,6 +30,7 @@ urlpatterns += [
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='userapp/password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='userapp/password_reset_complete.html'), name='password_reset_complete'),
     path('accounts/', include('allauth.urls')),
+    
 ]
 
 if settings.DEBUG:

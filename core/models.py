@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.crypto import get_random_string
 
 # Create your models here.
 
@@ -9,24 +10,44 @@ class HeroSection(models.Model):
     subheading_secondary = models.CharField(max_length=200, blank=True, help_text="An extra line under the main subheading, e.g., in red.")
     button_text = models.CharField(max_length=50, help_text="The text for the call-to-action button.")
     button_url = models.CharField(max_length=200, help_text="The URL the button links to. Can be a full URL or a Django URL name like '/pets/create/'.")
-    
-    # For the background image, a good size is 1920x1080 pixels, optimized for the web (e.g., as a .webp or compressed .jpg).
     background_image = models.ImageField(upload_to='hero_backgrounds/', help_text="Background image. Recommended size: 1920x1080px.")
-    
     is_active = models.BooleanField(default=True, help_text="Only one hero section can be active at a time.")
-
-    def __str__(self):
-        return f"Homepage Hero Section - {self.heading}"
 
     def save(self, *args, **kwargs):
         # Ensure only one instance is active
         if self.is_active:
-            HeroSection.objects.filter(is_active=True).update(is_active=False)
+            HeroSection.objects.filter(is_active=True).exclude(pk=self.pk).update(is_active=False)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Homepage Hero Section - {self.heading}"
 
     class Meta:
         verbose_name = "Homepage Hero Section"
         verbose_name_plural = "Homepage Hero Sections"
+
+class Lead(models.Model):
+    PET_TYPES = (("cat","Cat"),("dog","Dog"))
+    uuid = models.CharField(max_length=22, unique=True)
+    pet_type = models.CharField(max_length=10, choices=PET_TYPES)
+    weight = models.DecimalField(max_digits=5, decimal_places=1)
+    email = models.EmailField()
+    source = models.CharField(max_length=50, blank=True, default="instagram")
+    created_at = models.DateTimeField(auto_now_add=True)
+    processed = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if not self.uuid:
+            self.uuid = get_random_string(22)
+        super().save(*args, **kwargs)
+
+    def __str__(self): 
+        return f"{self.email} • {self.pet_type} • {self.weight}kg"
+
+    class Meta:
+        verbose_name = "Lead"
+        verbose_name_plural = "Leads"
+        ordering = ["-created_at"]
 
 class SocialLinks(models.Model):
     instagram = models.URLField(blank=True, null=True)

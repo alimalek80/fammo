@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .forms import UserRegistrationForm, ProfileForm, CustomLoginForm
+from .forms import UserRegistrationForm, ProfileForm, CustomLoginForm, SetPasswordForm
 from .models import Profile
 from django.contrib import messages
 from django.utils.translation import gettext as _
@@ -122,83 +122,149 @@ def activate(request, uidb64, token):
         
         # Check if there's pending pet data from wizard registration
         pending_pet_key = f'pending_pet_data_{user.pk}'
+        pet_created = False
+        pet_name = None
+        
         if pending_pet_key in request.session:
             try:
                 from pet.models import Pet, PetType, Gender, AgeCategory, Breed, FoodFeeling, FoodImportance, BodyType, ActivityLevel, TreatFrequency, FoodType, FoodAllergy, HealthIssue
                 
                 pet_data = request.session[pending_pet_key]
+                pet_name = pet_data.get('name')
                 
-                # Create the pet with the stored data
-                pet = Pet(user=user)
-                pet.name = pet_data.get('name')
-                
-                # Handle foreign key relationships
-                if pet_data.get('pet_type_id'):
-                    pet.pet_type = PetType.objects.get(pk=pet_data['pet_type_id'])
-                if pet_data.get('gender_id'):
-                    pet.gender = Gender.objects.get(pk=pet_data['gender_id'])
-                if pet_data.get('age_category_id'):
-                    pet.age_category = AgeCategory.objects.get(pk=pet_data['age_category_id'])
-                if pet_data.get('breed_id'):
-                    pet.breed = Breed.objects.get(pk=pet_data['breed_id'])
-                if pet_data.get('food_feeling_id'):
-                    pet.food_feeling = FoodFeeling.objects.get(pk=pet_data['food_feeling_id'])
-                if pet_data.get('food_importance_id'):
-                    pet.food_importance = FoodImportance.objects.get(pk=pet_data['food_importance_id'])
-                if pet_data.get('body_type_id'):
-                    pet.body_type = BodyType.objects.get(pk=pet_data['body_type_id'])
-                if pet_data.get('activity_level_id'):
-                    pet.activity_level = ActivityLevel.objects.get(pk=pet_data['activity_level_id'])
-                if pet_data.get('treat_frequency_id'):
-                    pet.treat_frequency = TreatFrequency.objects.get(pk=pet_data['treat_frequency_id'])
-                
-                # Handle simple fields
-                pet.neutered = pet_data.get('neutered')
-                pet.age_years = pet_data.get('age_years')
-                pet.age_months = pet_data.get('age_months')
-                pet.age_weeks = pet_data.get('age_weeks')
-                pet.unknown_breed = pet_data.get('unknown_breed')
-                pet.food_allergy_other = pet_data.get('food_allergy_other')
-                
-                # Handle weight conversion
-                if pet_data.get('weight'):
-                    from decimal import Decimal
-                    pet.weight = Decimal(pet_data['weight'])
-                
-                pet.save()
-                
-                # Handle many-to-many relationships
-                if pet_data.get('food_types_ids'):
-                    food_types = FoodType.objects.filter(pk__in=pet_data['food_types_ids'])
-                    pet.food_types.set(food_types)
-                
-                if pet_data.get('food_allergies_ids'):
-                    food_allergies = FoodAllergy.objects.filter(pk__in=pet_data['food_allergies_ids'])
-                    pet.food_allergies.set(food_allergies)
-                
-                if pet_data.get('health_issues_ids'):
-                    health_issues = HealthIssue.objects.filter(pk__in=pet_data['health_issues_ids'])
-                    pet.health_issues.set(health_issues)
+                # Check if pet was already created during registration (it should be)
+                existing_pet = Pet.objects.filter(user=user, name=pet_name).first()
+                if existing_pet:
+                    pet_created = True
+                    print(f"✅ Pet '{pet_name}' already exists for user {user.email}")  # Debug log
+                else:
+                    # Fallback: create pet if it doesn't exist for some reason
+                    pet = Pet(user=user)
+                    pet.name = pet_data.get('name')
+                    
+                    # Handle foreign key relationships
+                    if pet_data.get('pet_type_id'):
+                        pet.pet_type = PetType.objects.get(pk=pet_data['pet_type_id'])
+                    if pet_data.get('gender_id'):
+                        pet.gender = Gender.objects.get(pk=pet_data['gender_id'])
+                    if pet_data.get('age_category_id'):
+                        pet.age_category = AgeCategory.objects.get(pk=pet_data['age_category_id'])
+                    if pet_data.get('breed_id'):
+                        pet.breed = Breed.objects.get(pk=pet_data['breed_id'])
+                    if pet_data.get('food_feeling_id'):
+                        pet.food_feeling = FoodFeeling.objects.get(pk=pet_data['food_feeling_id'])
+                    if pet_data.get('food_importance_id'):
+                        pet.food_importance = FoodImportance.objects.get(pk=pet_data['food_importance_id'])
+                    if pet_data.get('body_type_id'):
+                        pet.body_type = BodyType.objects.get(pk=pet_data['body_type_id'])
+                    if pet_data.get('activity_level_id'):
+                        pet.activity_level = ActivityLevel.objects.get(pk=pet_data['activity_level_id'])
+                    if pet_data.get('treat_frequency_id'):
+                        pet.treat_frequency = TreatFrequency.objects.get(pk=pet_data['treat_frequency_id'])
+                    
+                    # Handle simple fields
+                    pet.neutered = pet_data.get('neutered')
+                    pet.age_years = pet_data.get('age_years')
+                    pet.age_months = pet_data.get('age_months')
+                    pet.age_weeks = pet_data.get('age_weeks')
+                    pet.unknown_breed = pet_data.get('unknown_breed')
+                    pet.food_allergy_other = pet_data.get('food_allergy_other')
+                    
+                    # Handle weight conversion
+                    if pet_data.get('weight'):
+                        from decimal import Decimal
+                        pet.weight = Decimal(pet_data['weight'])
+                    
+                    pet.save()
+                    
+                    # Handle many-to-many relationships
+                    if pet_data.get('food_types_ids'):
+                        food_types = FoodType.objects.filter(pk__in=pet_data['food_types_ids'])
+                        pet.food_types.set(food_types)
+                    
+                    if pet_data.get('food_allergies_ids'):
+                        food_allergies = FoodAllergy.objects.filter(pk__in=pet_data['food_allergies_ids'])
+                        pet.food_allergies.set(food_allergies)
+                    
+                    if pet_data.get('health_issues_ids'):
+                        health_issues = HealthIssue.objects.filter(pk__in=pet_data['health_issues_ids'])
+                        pet.health_issues.set(health_issues)
+                    
+                    pet_created = True
+                    print(f"✅ Pet '{pet_name}' created during activation for user {user.email}")  # Debug log
                 
                 # Clear the session data
                 del request.session[pending_pet_key]
                 
-                messages.success(request, _(f"🎉 Your account has been activated and {pet.name}'s profile has been created! You can now log in."))
-                
             except Exception as e:
-                # If pet creation fails, still activate the account but notify about the issue
-                messages.success(request, _("Your account has been activated. You can now log in."))
-                messages.warning(request, _("There was an issue creating your pet profile. Please add your pet manually after logging in."))
-                # Clear the session data even if there was an error
+                print(f"❌ Error during pet creation at activation: {e}")  # Debug log
+                # If pet creation fails, still proceed with activation
                 if pending_pet_key in request.session:
                     del request.session[pending_pet_key]
-        else:
-            messages.success(request, _("Your account has been activated. You can now log in."))
         
-        return redirect('login')
+        # Store activation info in session for password setup
+        request.session['newly_activated_user_id'] = user.pk
+        if pet_created and pet_name:
+            request.session['activated_with_pet'] = pet_name
+        
+        # Redirect to password setup instead of login
+        return redirect('set_password_after_activation')
     else:
         messages.error(request, _("Activation link is invalid!"))
         return redirect('login')
+
+
+def set_password_after_activation(request):
+    """Set password after email activation"""
+    # Check if user just activated their account
+    if 'newly_activated_user_id' not in request.session:
+        messages.error(request, _("Invalid access. Please use the activation link from your email."))
+        return redirect('login')
+    
+    user_id = request.session['newly_activated_user_id']
+    pet_name = request.session.get('activated_with_pet')
+    
+    try:
+        User = get_user_model()
+        user = User.objects.get(pk=user_id, is_active=True)
+    except User.DoesNotExist:
+        messages.error(request, _("User not found or not activated."))
+        return redirect('login')
+    
+    if request.method == 'POST':
+        form = SetPasswordForm(request.POST)
+        if form.is_valid():
+            # Set the new password
+            user.set_password(form.cleaned_data['password1'])
+            user.save()
+            
+            # Clear session data
+            del request.session['newly_activated_user_id']
+            if 'activated_with_pet' in request.session:
+                del request.session['activated_with_pet']
+            
+            # Log the user in automatically
+            from django.contrib.auth import login
+            login(request, user)
+            
+            # Show success message
+            if pet_name:
+                messages.success(request, _(f"🎉 Welcome to FAMO-PET! Your password has been set and {pet_name}'s profile is ready!"))
+                return redirect('pet:my_pets')
+            else:
+                messages.success(request, _("🎉 Welcome to FAMO-PET! Your password has been set successfully!"))
+                return redirect('dashboard')
+        else:
+            messages.error(request, _("Please correct the errors below."))
+    else:
+        form = SetPasswordForm()
+    
+    context = {
+        'form': form,
+        'user_email': user.email,
+        'pet_name': pet_name,
+    }
+    return render(request, 'userapp/set_password.html', context)
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def admin_dashboard_view(request):
