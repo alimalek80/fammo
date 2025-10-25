@@ -1,48 +1,469 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pet Chat (Dogs & Cats)</title>
-  <style>
-    body { font-family: system-ui, Arial; max-width: 760px; margin: 32px auto; padding: 0 16px; }
-    h1 { font-size: 1.4rem; }
-    .card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 16px; }
-    .row { display: flex; gap: 8px; margin-top: 12px; }
-    input[type="text"] { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 10px; }
-    button { padding: 12px 16px; border: 0; border-radius: 10px; cursor: pointer; }
-    .bubble { padding: 10px 12px; border-radius: 12px; margin: 8px 0; }
-    .you { background:#eef2ff; align-self: flex-end; }
-    .bot { background:#f6f6f6; }
-    .error { color:#b00020; margin-top: 8px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pet Chat (Dogs & Cats)</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Inter font -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent body scroll */
+            background-color: #121212; /* Dark background for the editor context */
+            color: white;
+        }
+        #chat-container {
+            height: 100vh; /* Full viewport height */
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background-color: #1a1a1a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        #chat-window {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 24px;
+            padding-bottom: 120px; /* Increased space for the input container */
+            scroll-behavior: smooth;
+        }
+        #input-container {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            /* Adjust width and center based on max-width */
+            width: 100%;
+            max-width: 900px; 
+            transform: translateX(-50%); 
+            background-color: #1a1a1a;
+            padding: 16px 24px;
+            border-top: 1px solid #333;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+        /* Scrollbar styles for a sleek look */
+        #chat-window::-webkit-scrollbar {
+            width: 8px;
+        }
+        #chat-window::-webkit-scrollbar-thumb {
+            background-color: #4a4a4a;
+            border-radius: 4px;
+        }
+        #chat-window::-webkit-scrollbar-track {
+            background-color: #1a1a1a;
+        }
+        /* Hide Django message input element when submitting */
+        #hidden-message-input, #hidden-image-data {
+            display: none !important;
+        }
+
+        /* Custom spinner animation */
+        @keyframes loading-dots {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1.0); }
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #5a94ff;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: loading-dots 1.4s infinite ease-in-out both;
+        }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+    </style>
 </head>
 <body>
-    <h1 style="display:flex;justify-content:space-between;align-items:center;">
-        <span>🐾 Pet Chat — Dogs & Cats Only</span>
-        <a href="?new=1" style="font-size:.9rem; text-decoration:none; border:1px solid #ddd; padding:8px 10px; border-radius:8px;">
-          New chat
-        </a>
-      </h1>
 
-  <div class="card" id="chat">
-    {% if history and history|length > 0 %}
-      {% for msg in history %}
-        <div class="bubble {{ msg.role }}">
-          <strong>{{ msg.role|title }}:</strong> {{ msg.text }}
-        </div>
-      {% endfor %}
-    {% else %}
-      <p class="bubble bot">Hi! Ask me anything about dog & cat care. (Demo echo mode for now.)</p>
-    {% endif %}
+<div id="chat-container" class="rounded-xl overflow-hidden">
+    <!-- Header -->
+    <header class="p-4 border-b border-gray-700 flex items-center justify-between text-white bg-gray-900 sticky top-0 z-10">
+        <h1 class="text-xl font-bold flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mr-2 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+            </svg>
+            🐾 Pet Chat — Dogs & Cats Only
+        </h1>
+        <a href="?new=1" id="new-chat-btn" class="text-sm px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg transition">New Chat</a>
+    </header>
 
-    {% if error %}<div class="error">{{ error }}</div>{% endif %}
+    <!-- Chat History Window (Django Rendering) -->
+    <main id="chat-window" role="log" class="flex flex-col space-y-4">
+        {% if history and history|length > 0 %}
+            {% for msg in history %}
+                <div class="flex {% if msg.role == 'user' %}justify-end{% else %}justify-start{% endif %}">
+                    <div class="flex items-start max-w-xl {% if msg.role == 'user' %}{% else %}mr-4{% endif %}">
+                        <div class="flex-shrink-0 w-8 h-8 rounded-full {% if msg.role == 'user' %}bg-indigo-500 order-2 ml-3{% else %}bg-blue-500 mr-3{% endif %} flex items-center justify-center text-white font-bold text-sm">
+                            {% if msg.role == 'user' %}You{% else %}AI{% endif %}
+                        </div>
+                        <div class="{% if msg.role == 'user' %}bg-indigo-600{% else %}bg-gray-800{% endif %} p-4 rounded-xl shadow-lg text-white">
+                            {% if msg.image_url %}
+                                <!-- Assuming the image_url comes back as a displayable base64 string -->
+                                <img src="{{ msg.image_url }}" alt="User image" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">
+                            {% endif %}
+                            <p class="text-sm md:text-base whitespace-pre-wrap">{{ msg.text }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Initial Welcome Message (AI) -->
+            <div class="flex justify-start">
+                <div class="flex items-start max-w-xl">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm mr-3">AI</div>
+                    <div class="bg-gray-800 p-4 rounded-xl shadow-lg text-white">
+                        <p class="text-sm md:text-base">Hi! Ask me anything about dog & cat care. (Demo echo mode for now.)</p>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
 
-    <form method="post" class="row">
-      {% csrf_token %}
-      <input type="text" name="message" placeholder="Type your pet question…" autocomplete="off" />
-      <button type="submit">Send</button>
-    </form>
-  </div>
+        {% if error %}
+            <div class="flex justify-center mt-4">
+                <div class="p-3 bg-red-800 text-red-100 rounded-xl shadow-lg max-w-md">
+                    <p class="font-bold">Error:</p>
+                    <p>{{ error }}</p>
+                </div>
+            </div>
+        {% endif %}
+    </main>
+
+    <!-- Fixed Input Container (Django Form Integration) -->
+    <div id="input-container" class="flex flex-col">
+        <form method="post" id="chat-form">
+            {% csrf_token %}
+            <!-- Hidden inputs to submit data to Django view -->
+            <input type="hidden" name="message" id="hidden-message-input">
+            <input type="hidden" name="image_data" id="hidden-image-data"> 
+            
+            <!-- Image Preview Container -->
+            <div id="image-preview-container" class="mb-2 hidden">
+                <!-- Image preview and close button will be injected here -->
+            </div>
+
+            <div class="relative flex items-center w-full">
+                
+                <!-- Hidden File Input -->
+                <input type="file" id="image-input" accept="image/*" class="hidden">
+                
+                <!-- Upload Image Button -->
+                <button id="upload-image-btn" type="button" class="flex-shrink-0 p-2 ml-1 mr-2 rounded-full text-gray-400 hover:text-blue-500 transition" aria-label="Upload Image">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+                        <circle cx="9" cy="9" r="2"/>
+                        <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
+                    </svg>
+                </button>
+
+                <textarea
+                    id="user-input"
+                    class="flex-1 resize-none bg-gray-700 text-white rounded-2xl p-4 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 placeholder-gray-400 text-sm md:text-base"
+                    placeholder="Type your pet question…"
+                    rows="1"
+                ></textarea>
+
+                <button
+                    id="send-button"
+                    type="submit" 
+                    class="absolute right-3 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition duration-150 disabled:bg-gray-600 disabled:opacity-50"
+                    disabled
+                    aria-label="Send Message"
+                >
+                    <!-- Send Icon (Lucide Arrow Up) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                        <path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
+                    </svg>
+                </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-2 text-center">
+                The AI response is handled by the Django server.
+            </p>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Declare variables globally using 'let' so they can be assigned inside window.onload
+    let chatWindow;
+    let userInput;
+    let sendButton;
+    let chatForm;
+    let csrfToken = ''; 
+    let imageInput;
+    let uploadImageBtn;
+    let imagePreviewContainer;
+    
+    let selectedImageBase64 = null;
+    let selectedImageMimeType = null;
+    let isLoading = false; // New state to manage loading
+
+    // --- Utility Functions ---
+
+    // Enable/Disable send button based on text or image presence
+    const checkSendButtonState = () => {
+        const hasText = userInput.value.trim().length > 0;
+        const hasImage = selectedImageBase64 !== null;
+        sendButton.disabled = !(hasText || hasImage) || isLoading;
+        uploadImageBtn.disabled = isLoading;
+        userInput.disabled = isLoading;
+    };
+
+    function adjustTextareaHeight(textarea) {
+        textarea.style.height = 'auto'; // Reset height
+        const maxHeight = 200; // Cap height
+        const scrollHeight = textarea.scrollHeight;
+        textarea.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
+    }
+
+    function clearImageInput() {
+        selectedImageBase64 = null;
+        selectedImageMimeType = null;
+        imageInput.value = ''; // Clear file input
+        imagePreviewContainer.innerHTML = '';
+        imagePreviewContainer.classList.add('hidden');
+        checkSendButtonState();
+    }
+    
+    const scrollToBottom = () => {
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+
+    /**
+     * Renders a message bubble to the chat window.
+     * @param {string} role - 'user' or 'ai'.
+     * @param {string} text - The message text.
+     * @param {string|null} image_url - Base64 image URL or null.
+     * @returns {HTMLElement} The newly created message element.
+     */
+    function renderMessage(role, text, image_url = null) {
+        const isUser = role === 'user';
+        const messageEl = document.createElement('div');
+        messageEl.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+        
+        messageEl.innerHTML = `
+            <div class="flex items-start max-w-xl ${!isUser ? 'mr-4' : ''}">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full ${isUser ? 'bg-indigo-500 order-2 ml-3' : 'bg-blue-500 mr-3'} flex items-center justify-center text-white font-bold text-sm">
+                    ${isUser ? 'You' : 'AI'}
+                </div>
+                <div class="${isUser ? 'bg-indigo-600' : 'bg-gray-800'} p-4 rounded-xl shadow-lg text-white">
+                    ${image_url ? 
+                        `<img src="${image_url}" alt="${isUser ? 'User image' : 'AI image'}" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">` 
+                        : ''}
+                    <p class="text-sm md:text-base whitespace-pre-wrap">${text}</p>
+                </div>
+            </div>
+        `;
+        
+        chatWindow.appendChild(messageEl);
+        scrollToBottom();
+        return messageEl;
+    }
+
+    /**
+     * Renders a loading indicator bubble.
+     * @returns {HTMLElement} The loading indicator element.
+     */
+    function renderLoadingIndicator() {
+        const loadingEl = document.createElement('div');
+        loadingEl.id = 'loading-indicator';
+        loadingEl.className = 'flex justify-start';
+
+        loadingEl.innerHTML = `
+            <div class="flex items-start max-w-xl">
+                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white font-bold text-sm">AI</div>
+                <div class="bg-gray-800 p-4 rounded-xl shadow-lg text-white">
+                    <div class="flex items-center space-x-1">
+                        <span class="text-sm">AI is thinking...</span>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        chatWindow.appendChild(loadingEl);
+        scrollToBottom();
+        return loadingEl;
+    }
+
+    /**
+     * Updates the loading indicator with the final AI response.
+     * @param {HTMLElement} loadingEl - The element to update/replace.
+     * @param {string} text - The final response text.
+     */
+    function updateLoadingIndicator(loadingEl, text) {
+        if (loadingEl) {
+            // Check if the loading element is still the last child (in case of multi-turn logic)
+            if (chatWindow.lastChild === loadingEl) {
+                chatWindow.removeChild(loadingEl);
+            }
+        }
+        renderMessage('ai', text);
+    }
+    
+    // --- Main Chat Logic (AJAX Submission) ---
+    async function sendChatMessage(query, imageData) {
+        if (isLoading || (!query && !imageData)) return;
+
+        isLoading = true;
+        
+        // 1. Client-side UI update (Immediate)
+        renderMessage('user', query, imageData ? `data:${imageData}` : null);
+        clearImageInput(); // Clear image preview and input after rendering user message
+        
+        const loadingIndicator = renderLoadingIndicator();
+        checkSendButtonState(); // Disable inputs
+
+        try {
+            // Prepare data for Django
+            const formData = new FormData();
+            formData.append('csrfmiddlewaretoken', csrfToken);
+            formData.append('message', query);
+            formData.append('image_data', imageData || ''); 
+
+            const response = await fetch(chatForm.action || window.location.href, {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!response.ok) {
+                throw new Error(`Server returned status ${response.status}`);
+            }
+
+            // --- FIX: Robustly parse the full HTML response from Django ---
+            const htmlText = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+
+            // Find all AI message paragraphs in the returned (full history) HTML document
+            // We use the specific classes from the AI bubble (justify-start, bg-gray-800)
+            const aiMessageElements = doc.querySelectorAll('.justify-start .bg-gray-800 p');
+
+            let aiText = "Error: Could not parse AI response from server HTML. The server may have returned a full page with malformed history.";
+            
+            if (aiMessageElements.length > 0) {
+                // The last one is the newest response from the server's perspective
+                aiText = aiMessageElements[aiMessageElements.length - 1].textContent.trim();
+            }
+
+            // 3. Client-side UI update (Response received)
+            updateLoadingIndicator(loadingIndicator, aiText);
+
+        } catch (error) {
+            console.error('Chat submission failed:', error);
+            // Fallback for errors
+            updateLoadingIndicator(loadingIndicator, `[Error: Could not connect to AI server or parse response: ${error.message}]`);
+        } finally {
+            isLoading = false;
+            checkSendButtonState(); // Re-enable inputs
+            userInput.value = '';
+            adjustTextareaHeight(userInput);
+            userInput.focus();
+        }
+    }
+
+    // --- Initialization ---
+
+    // Scroll to the bottom on load (to see the latest messages)
+    window.onload = () => {
+        // --- 1. Initialize Global DOM Variables ---
+        chatWindow = document.getElementById('chat-window');
+        userInput = document.getElementById('user-input');
+        sendButton = document.getElementById('send-button');
+        chatForm = document.getElementById('chat-form');
+        imageInput = document.getElementById('image-input');
+        uploadImageBtn = document.getElementById('upload-image-btn');
+        imagePreviewContainer = document.getElementById('image-preview-container');
+        
+        // SAFELY GET CSRF TOKEN AFTER DOM IS READY
+        const csrfElement = document.querySelector('[name=csrfmiddlewaretoken]');
+        csrfToken = csrfElement ? csrfElement.value : '';
+
+        // --- 2. Attach Event Listeners (Now that elements are guaranteed to exist) ---
+
+        // Input listener for textarea height and button state
+        userInput.addEventListener('input', () => {
+            checkSendButtonState();
+            adjustTextareaHeight(userInput);
+        });
+
+        // Handle Enter key for submission
+        userInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent new line
+                if (!sendButton.disabled) {
+                    // Trigger the form submission logic
+                    chatForm.dispatchEvent(new Event('submit')); 
+                }
+            }
+        });
+        
+        // Form submission handler: starts the AJAX call
+        chatForm.addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            
+            const query = userInput.value.trim();
+            
+            if (!query && !selectedImageBase64) return;
+
+            sendChatMessage(query, selectedImageBase64);
+        });
+
+        // Image upload button listener
+        uploadImageBtn.addEventListener('click', () => imageInput.click());
+
+        // Image file selection listener
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                selectedImageMimeType = file.type;
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Get only the base64 data part (after the comma)
+                    // We concatenate the mimeType and base64 data, e.g., "image/jpeg;base64,..."
+                    selectedImageBase64 = `${selectedImageMimeType};base64,${e.target.result.split(',')[1]}`;
+                    displayImagePreview(e.target.result);
+                    checkSendButtonState();
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                clearImageInput();
+            }
+        });
+        
+        // --- 3. Run Initial Logic ---
+        adjustTextareaHeight(userInput);
+        userInput.focus();
+        checkSendButtonState(); // Initial check
+        scrollToBottom();
+    };
+    
+    function displayImagePreview(imageSrc) {
+        imagePreviewContainer.classList.remove('hidden');
+        imagePreviewContainer.innerHTML = `
+            <div class="relative inline-block border border-gray-600 rounded-lg overflow-hidden">
+                <img src="${imageSrc}" alt="Uploaded image preview" class="h-16 w-16 object-cover">
+                <button id="clear-image-btn" type="button" class="absolute top-1 right-1 bg-black bg-opacity-70 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs hover:bg-opacity-100 transition" aria-label="Remove image">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+        document.getElementById('clear-image-btn').addEventListener('click', clearImageInput);
+    }
+</script>
+
 </body>
 </html>
