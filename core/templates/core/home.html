@@ -315,6 +315,33 @@
 .famo-home .chat-input input{ flex:1; background:#fff; color:#111827; border:1px solid #d1d5db; border-radius:12px; padding:.6rem .8rem; }
 .famo-home .chat-input button{ background:#10B981; color:#fff; border:none; border-radius:9999px; padding:.6rem 1rem; font-weight:700; box-shadow:0 8px 20px rgba(16,185,129,.25); }
 
+/* Animated scrolling placeholder for long text */
+@keyframes scrollPlaceholder {
+  0%, 20% { transform: translateX(0); }
+  80%, 100% { transform: translateX(calc(-100% + 100%)); }
+}
+
+.famo-home .chat-input input::placeholder {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scrollPlaceholder 8s linear infinite;
+  will-change: transform;
+}
+
+/* Pause animation on focus or when user starts typing */
+.famo-home .chat-input input:focus::placeholder {
+  animation-play-state: paused;
+  transform: translateX(0);
+}
+
+@media (min-width:640px) {
+  /* Stop animation on larger screens where text fits */
+  .famo-home .chat-input input::placeholder {
+    animation: none;
+    transform: none;
+  }
+}
+
 @media (min-width:1024px){
   .famo-home .chat-body.open{ max-height:420px; }
   .famo-home .chat-messages{ max-height:310px; }
@@ -343,7 +370,7 @@
       <form id="homeChatForm" class="chat-input" method="GET" action="{% url 'chat' %}" autocomplete="off">
         <span class="chat-badge" aria-hidden="true">💬</span>
         <label for="homeChatInput" class="sr-only">Ask a question</label>
-        <input id="homeChatInput" type="text" name="q" placeholder="Ask a pet question…" aria-label="Ask a question" required>
+        <input id="homeChatInput" type="text" name="q" placeholder="{{ chat_placeholder }}" aria-label="Ask a question" required>
         <button type="submit">Chat</button>
       </form>
     </div>
@@ -641,6 +668,49 @@
     });
 
     // No JS interception: allow normal POST submit to /chat/
+  })();
+
+  // Animated placeholder marquee for long text (mobile-friendly)
+  (function(){
+    const input = document.getElementById('homeChatInput');
+    if (!input) return;
+
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return; // respect user preference
+
+    const original = input.getAttribute('placeholder') || '';
+    if (!original || original.length < 24) return; // only animate long messages
+
+    const gap = '          '; // visual gap when looping
+    const loopText = original + gap;
+    let i = 0;
+    let timer = null;
+
+    const tick = () => {
+      // Don't animate while typing or focused
+      if (document.activeElement === input || (input.value && input.value.length > 0)) {
+        return;
+      }
+      // rotate characters
+      i = (i + 1) % loopText.length;
+      const rotated = loopText.slice(i) + loopText.slice(0, i);
+      input.setAttribute('placeholder', rotated);
+    };
+
+    const start = () => { if (!timer) timer = setInterval(tick, 120); };
+    const stop  = () => { if (timer) { clearInterval(timer); timer = null; } input.setAttribute('placeholder', original); };
+
+    input.addEventListener('focus', stop);
+    input.addEventListener('input', stop);
+    input.addEventListener('blur', () => { if (!input.value) start(); });
+
+    // Start on load for mobile sizes only
+    const startIfMobile = () => {
+      const isMobile = window.matchMedia && window.matchMedia('(max-width: 639px)').matches;
+      if (isMobile) start(); else stop();
+    };
+    startIfMobile();
+    window.addEventListener('resize', startIfMobile);
   })();
 </script>
 {% endblock %}

@@ -17,7 +17,21 @@ def home(request):
     # Get the currently active hero section
     hero_section = HeroSection.objects.filter(is_active=True).first()
     faqs = FAQ.objects.filter(is_published=True).order_by("sort_order", "-updated_at")
-    return render(request, 'core/home.html', {'hero': hero_section, "faqs": faqs})
+    
+    # Dynamic placeholder for chat input
+    chat_placeholder = "Hey, Need help with your cat or dog? Type here…"
+    if request.user.is_authenticated:
+        profile = getattr(request.user, "profile", None)
+        if profile and getattr(profile, "first_name", None):
+            first_name = profile.first_name.strip()
+            if first_name:
+                chat_placeholder = f"Hey {first_name}! What's your pet question today?"
+    
+    return render(request, 'core/home.html', {
+        'hero': hero_section, 
+        "faqs": faqs,
+        "chat_placeholder": chat_placeholder
+    })
 
 @login_required
 @user_passes_test(lambda u: u.is_staff)

@@ -138,6 +138,9 @@
                                     <img src="{{ msg.image_url }}" alt="User image" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">
                                 {% endif %}
                                 <p class="message-text text-sm md:text-base whitespace-pre-wrap">{{ msg.text }}</p>
+                                {% if msg.suggestion_html %}
+                                <div class="message-suggestion text-sm md:text-base whitespace-pre-wrap mt-2">{{ msg.suggestion_html|safe }}</div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -312,10 +315,14 @@
     };
 
     // Renderers
-    function renderMessage(role, text, image_url = null) {
+    function renderMessage(role, text, image_url = null, isHtml = false) {
         const isUser = role === 'user';
         const messageEl = document.createElement('div');
         messageEl.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
+        const bubbleContent = isHtml
+            ? `${image_url ? `<img src="${image_url}" alt="${isUser ? 'User image' : 'AI image'}" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">` : ''}${text}`
+            : `${image_url ? `<img src="${image_url}" alt="${isUser ? 'User image' : 'AI image'}" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">` : ''}<p class=\"message-text text-sm md:text-base whitespace-pre-wrap\">${text}</p>`;
+
         messageEl.innerHTML = `
             <div class="flex items-start max-w-xl group">
                 <div class="flex-shrink-0 w-8 h-8 rounded-full ${isUser ? 'bg-indigo-500 order-2 ml-3' : 'bg-blue-500 mr-3'} flex items-center justify-center text-white font-bold text-sm">
@@ -331,10 +338,7 @@
                             </svg>
                         </button>
                     </div>
-                    <div class="message-bubble-content ${isUser ? 'bg-indigo-600 order-2' : 'bg-gray-800 order-1'} p-4 rounded-xl shadow-lg text-white">
-                        ${image_url ? `<img src="${image_url}" alt="${isUser ? 'User image' : 'AI image'}" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">` : ''}
-                        <p class="message-text text-sm md:text-base whitespace-pre-wrap">${text}</p>
-                    </div>
+                    <div class="message-bubble-content ${isUser ? 'bg-indigo-600 order-2' : 'bg-gray-800 order-1'} p-4 rounded-xl shadow-lg text-white">${bubbleContent}</div>
                 </div>
             </div>`;
         chatWindow.appendChild(messageEl);
@@ -361,11 +365,11 @@
         return loadingEl;
     }
 
-    function updateLoadingIndicator(loadingEl, text) {
+    function updateLoadingIndicator(loadingEl, content, isHtml = false) {
         if (loadingEl && chatWindow.lastChild === loadingEl) {
             chatWindow.removeChild(loadingEl);
         }
-        renderMessage('ai', text);
+        renderMessage('ai', content, null, isHtml);
     }
 
     // AJAX submission
@@ -392,13 +396,13 @@
             const htmlText = await response.text();
             const parser = new DOMParser();
             const doc = parser.parseFromString(htmlText, 'text/html');
-            const aiMessageElements = doc.querySelectorAll('.justify-start .message-text');
+            const aiBubbles = doc.querySelectorAll('.justify-start .message-bubble-content');
 
-            let aiText = "Error: Could not parse AI response from server HTML.";
-            if (aiMessageElements.length > 0) {
-                aiText = aiMessageElements[aiMessageElements.length - 1].textContent.trim();
+            let aiHtml = "Error: Could not parse AI response from server HTML.";
+            if (aiBubbles.length > 0) {
+                aiHtml = aiBubbles[aiBubbles.length - 1].innerHTML.trim();
             }
-            updateLoadingIndicator(loadingIndicator, aiText);
+            updateLoadingIndicator(loadingIndicator, aiHtml, true);
         } catch (error) {
             console.error('Chat submission failed:', error);
             updateLoadingIndicator(loadingIndicator, `[Error: Could not connect to AI server or parse response: ${error.message}]`);
