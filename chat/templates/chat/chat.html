@@ -100,11 +100,17 @@
             </svg>
             🐾 Pet Chat — Dogs & Cats Only
         </h1>
-        <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3">
             <button id="theme-toggle-btn" class="text-sm px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg transition" aria-label="Toggle Light/Dark Mode">
                 <span id="theme-icon">🌙</span>
             </button>
             <a href="?new=1" id="new-chat-btn" class="text-sm px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg transition">New Chat</a>
+                        {% if user_first %}
+                            <span class="hidden sm:inline text-sm px-2 py-1 rounded-lg bg-gray-800 border border-gray-700">👋 {{ user_first }}</span>
+                        {% endif %}
+                        {% if primary_pet %}
+                            <span class="hidden sm:inline text-sm px-2 py-1 rounded-lg bg-gray-800 border border-gray-700">🐾 {{ primary_pet.name }}</span>
+                        {% endif %}
         </div>
     </header>
 
@@ -139,7 +145,7 @@
             {% endfor %}
         {% else %}
             <div class="flex justify-start">
-                 <div class="flex items-start max-w-xl group">
+                <div class="flex items-start max-w-xl group">
                     <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm mr-3">AI</div>
                     <div class="message-content-wrapper flex items-end">
                         <div class="copy-action-wrapper flex items-center order-2 ml-1.5 opacity-0 group-hover:opacity-100 transition duration-150 text-gray-400">
@@ -152,11 +158,32 @@
                             </button>
                         </div>
                         <div class="message-bubble-content bg-gray-800 order-1 p-4 rounded-xl shadow-lg text-white">
-                            <p class="message-text text-sm md:text-base">Hi! Ask me anything about dog & cat care. (Demo echo mode for now.)</p>
+                            <p class="message-text text-sm md:text-base">
+                                {% if greeting %}
+                                    {{ greeting }}
+                                {% else %}
+                                    Hi! Ask me anything about dog & cat care.
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {% if primary_pet %}
+            <div class="flex justify-start">
+                <div class="flex items-start max-w-xl group">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white font-bold text-sm">AI</div>
+                    <div class="message-content-wrapper flex items-end">
+                        <div class="message-bubble-content bg-gray-800 order-1 p-4 rounded-xl shadow-lg text-white">
+                            <p class="message-text text-sm md:text-base">
+                                Profile on file for {{ primary_pet.name }}{% if primary_pet.pet_type %} ({{ primary_pet.pet_type.name }}){% endif %}{% if primary_pet.breed %}, {{ primary_pet.breed.name }}{% endif %}{% if primary_pet.weight %}, {{ primary_pet.weight }} kg{% endif %}. You can ask me about diet, health risks, and daily care.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
         {% endif %}
 
         {% if error %}
