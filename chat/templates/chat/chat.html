@@ -69,6 +69,13 @@
         .group:hover .copy-action-wrapper,
         .copy-action-wrapper.show-on-mobile { opacity: 1; }
 
+        /* RTL support for Arabic/Persian languages */
+        .rtl-text {
+            direction: rtl;
+            text-align: right;
+            unicode-bidi: isolate;
+        }
+
         /* LIGHT MODE OVERRIDES */
         body.light-mode { background-color: #f3f4f6; color: #1f2937; }
         body.light-mode #chat-container { background-color: #ffffff; box-shadow: 0 0 15px rgba(0,0,0,0.1); }
@@ -370,6 +377,8 @@
             chatWindow.removeChild(loadingEl);
         }
         renderMessage('ai', content, null, isHtml);
+        // Apply RTL detection after rendering new message
+        detectAndApplyRTL();
     }
 
     // AJAX submission
@@ -478,6 +487,9 @@
         checkSendButtonState();
         scrollToBottom();
 
+        // Apply RTL detection to existing messages
+        detectAndApplyRTL();
+
         // Auto-submit if q/message in URL
         try {
             const params = new URLSearchParams(window.location.search);
@@ -493,6 +505,23 @@
             }
         } catch(e) { console.warn('Init query parse failed:', e); }
     };
+
+    // Detect RTL languages (Arabic, Persian, Hebrew, etc.) and apply RTL styling
+    function isRTLText(text) {
+        // Arabic: \u0600-\u06FF, Persian additions: \u0750-\u077F, Hebrew: \u0590-\u05FF
+        const rtlPattern = /[\u0600-\u06FF\u0750-\u077F\u0590-\u05FF\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+        return rtlPattern.test(text);
+    }
+
+    function detectAndApplyRTL() {
+        // Apply to all message text elements
+        document.querySelectorAll('.message-text, .message-suggestion').forEach(el => {
+            const text = el.textContent || el.innerText;
+            if (isRTLText(text)) {
+                el.classList.add('rtl-text');
+            }
+        });
+    }
 
     function displayImagePreview(imageSrc) {
         imagePreviewContainer.classList.remove('hidden');
