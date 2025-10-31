@@ -45,16 +45,21 @@ def chat(request):
 
     if request.method == "POST":
         user_msg = (request.POST.get("message") or "").strip()
-        if not user_msg:
+        image_data = (request.POST.get("image_data") or "").strip()
+        
+        if not user_msg and not image_data:
             return render(request, "chat/chat.html", {
                 "history": history,
-                "error": "Please type a question.",
+                "error": "Please type a question or upload an image.",
                 "user_first": user_first,
                 "primary_pet": primary_pet,
             })
 
-        # Append user message
-        history.append({"role": "user", "text": user_msg})
+        # Append user message (with optional image)
+        user_message = {"role": "user", "text": user_msg}
+        if image_data:
+            user_message["image_url"] = f"data:{image_data}" if not image_data.startswith("data:") else image_data
+        history.append(user_message)
 
         # Check if this is the first user message (history was empty before appending)
         is_first_message = len(history) == 1
@@ -64,8 +69,8 @@ def chat(request):
             login_url = reverse('login')
             register_url = reverse('register')
             if is_first_message:
-                # Normal AI answer + suggestion
-                bot_reply = pet_answer(user_msg, user_name=user_first, pet_profiles=pet_profiles, is_first_message=is_first_message)
+                # Normal AI answer + suggestion (with optional image analysis)
+                bot_reply = pet_answer(user_msg, user_name=user_first, pet_profiles=pet_profiles, is_first_message=is_first_message, image_base64=image_data or None)
                 suggestion_html = (
                     "Tip: You can sign in to personalize answers for your pet. "
                     f"<a class=\"underline text-blue-400 hover:text-blue-300\" href=\"{login_url}\">Login</a> | "
@@ -86,7 +91,7 @@ def chat(request):
             return redirect("chat")
 
         # If logged in, normal flow with suggestions (profile/pet)
-        bot_reply = pet_answer(user_msg, user_name=user_first, pet_profiles=pet_profiles, is_first_message=is_first_message)
+        bot_reply = pet_answer(user_msg, user_name=user_first, pet_profiles=pet_profiles, is_first_message=is_first_message, image_base64=image_data or None)
 
         suggestion_html = None
         try:

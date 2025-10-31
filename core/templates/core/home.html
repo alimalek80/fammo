@@ -160,6 +160,44 @@
 .famo-home .hero-blur.fill  { gap: 1rem; }
 .famo-home .form-card.fill  { gap: 1rem; }
 
+/* --- NEW CSS FOR AUTHENTICATED USER LAYOUT --- */
+/* Override grid layout when user is authenticated */
+.famo-home .hero-grid.authenticated-user {
+    flex-direction: column !important; /* Stack items vertically */
+    align-items: center !important;    /* Center the text column */
+    justify-content: center !important; /* Vertically center content if space allows */
+    text-align: center !important;     /* Center text inside the column */
+}
+.famo-home .hero-grid.authenticated-user > * {
+    width: 100% !important;            /* Full width for the text column */
+    max-width: 800px !important;       /* Set a max width for wider text area */
+    margin: 0 auto !important;         /* Center the column */
+    flex: 0 1 auto !important;         /* Allow column to shrink/grow based on content but respect max-width */
+}
+
+.famo-home .hero-grid.authenticated-user .hero-col,
+.famo-home .hero-grid.authenticated-user .form-card {
+    width: 100% !important;            /* Ensure inner elements also use full width */
+}
+
+.famo-home .hero-grid.authenticated-user .hero-blur.fill {
+    align-items: center !important;    /* Center content inside the blur card */
+    padding: 3rem 2rem !important;     /* Adjust padding if needed for aesthetics */
+}
+
+.famo-home .hero-grid.authenticated-user .hero-blur.fill p {
+    max-width: 100% !important;        /* Allow paragraph to be wider within its container */
+    margin-left: auto !important;      /* Center the paragraph */
+    margin-right: auto !important;
+}
+
+.famo-home .hero-grid.authenticated-user .hero-blur.fill .flex.gap-4 {
+    justify-content: center !important; /* Center the buttons */
+    flex-wrap: wrap !important;         /* Allow buttons to wrap on smaller screens if needed */
+}
+
+/* --- END NEW CSS --- */
+
 
 /* =====================================================================
    2) HERO FORM (right column)
@@ -272,6 +310,11 @@
 @media (max-width:768px){
   /* reduce gaps slightly on mobile if needed */
   .famo-home .hero-grid{ gap:2rem !important; }
+  
+  /* Responsive adjustments for authenticated layout */
+  .famo-home .hero-grid.authenticated-user .hero-blur.fill {
+      padding: 2rem 1.5rem !important; /* Adjust padding on mobile */
+  }
 }
 
 /* =====================================================================
@@ -374,70 +417,103 @@
         <button type="submit">Chat</button>
       </form>
     </div>
-  <div class="hero-grid">
+    <!-- TEXT & FORM CONTAINER -->
+    <div class="hero-grid {% if user.is_authenticated %}authenticated-user{% endif %}"> <!-- Apply class conditionally -->
+        {% if user.is_authenticated %}
+            <!-- Centered Text Column for Authenticated Users -->
+            <div class="hero-col">
+                <div class="hero-blur fill">
+                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                        {% if hero %}{{ hero.heading }}{% else %}{% trans "Personalized Pet Nutrition" %}{% endif %}
+                    </h1>
 
-      <!-- TEXT (second on mobile, left on desktop) -->
-      <div class=" hero-col mt-8 md:mt-0">
-        <div class="hero-blur fill">
-          <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-            {% if hero %}{{ hero.heading }}{% else %}{% trans "Personalized Pet Nutrition" %}{% endif %}
-          </h1>
+                    <p class="text-lg md:text-xl mb-6 max-w-3xl mx-auto"> <!-- Increased max-width and centered -->
+                        {% blocktrans trimmed %}
+                        Get <span class="highlight-orange">personalized meal plans</span> and 
+                        <span class="highlight-orange">preventive health reports</span> for your furry friends. 
+                        Our AI analyzes your pet's unique needs to keep them healthy and happy.
+                        {% endblocktrans %}
+                    </p>
 
-        <p class="text-lg md:text-xl mb-6 max-w-xl">
-            {% blocktrans trimmed %}
-            Get <span class="highlight-orange">personalized meal plans</span> and 
-            <span class="highlight-orange">preventive health reports</span> for your furry friends. 
-            Our AI analyzes your pet's unique needs to keep them healthy and happy.
-            {% endblocktrans %}
-        </p>
+                    <span class="hero-badge inline-block px-6 py-3 rounded-xl font-extrabold text-white text-lg md:text-2xl mb-8"> <!-- Added margin bottom -->
+                        {% if hero and hero.subheading_secondary %}{{ hero.subheading_secondary }}{% else %}{% trans "Powered by the FAMMO Diet Engine" %}{% endif %}
+                    </span>
 
-          <span class="hero-badge inline-block px-6 py-3 rounded-xl font-extrabold text-white text-lg md:text-2xl">
-            {% if hero and hero.subheading_secondary %}{{ hero.subheading_secondary }}{% else %}{% trans "Powered by the FAMMO Diet Engine" %}{% endif %}
-          </span>
+                    <div class="flex flex-wrap gap-4 justify-center mt-auto"> <!-- Centered buttons -->
+                        <a href="{% url 'account_signup' %}" class="primary-btn px-6 py-3 rounded-full font-semibold">
+                            {% trans "Try for Free" %}
+                        </a>
+                        <a href="{% url 'account_login' %}" class="secondary-btn px-6 py-3 rounded-full font-semibold">
+                            {% trans "Login / Sign Up" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- Empty placeholder to maintain grid structure if needed -->
+            <div class="hidden md:block"></div>
+        {% else %}
+            <!-- Original Layout for Non-Authenticated Users -->
+            <!-- TEXT (second on mobile, left on desktop) -->
+            <div class=" hero-col mt-8 md:mt-0">
+                <div class="hero-blur fill">
+                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                        {% if hero %}{{ hero.heading }}{% else %}{% trans "Personalized Pet Nutrition" %}{% endif %}
+                    </h1>
 
-          <div class="flex gap-4 mt-auto">
-            <a href="{% url 'account_signup' %}" class="primary-btn px-6 py-3 rounded-full font-semibold">
-              {% trans "Try for Free" %}
-            </a>
-            <a href="{% url 'account_login' %}" class="secondary-btn px-6 py-3 rounded-full font-semibold">
-              {% trans "Login / Sign Up" %}
-            </a>
-          </div>
-        </div>
-      </div>
+                    <p class="text-lg md:text-xl mb-6 max-w-xl">
+                        {% blocktrans trimmed %}
+                        Get <span class="highlight-orange">personalized meal plans</span> and 
+                        <span class="highlight-orange">preventive health reports</span> for your furry friends. 
+                        Our AI analyzes your pet's unique needs to keep them healthy and happy.
+                        {% endblocktrans %}
+                    </p>
 
-      <!-- FORM (first on mobile, right on desktop) -->
-        <div class="hero-col">
-          <div class="form-card fill">
-            <h2 class="text-2xl font-bold text-center text-[#4F46E5] mb-6">
-              {% trans "Get Your Pet's Nutrition & AI Health Report" %}
-              <span class="inline-block ml-2 px-2 py-0.5 text-xs rounded-full text-white bg-[#10B981]">
-                {% trans "Free & Easy" %}
-              </span>
-            </h2>
-            <form id="leadForm" method="POST" action="{% url 'core:collect_lead' %}">
-              {% csrf_token %}
-              <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Pet type" %}</label>
-              <select name="pet_type" required class="mt-1 mb-4 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30">
-                <option value="">{% trans "Choose..." %}</option>
-                <option value="cat">{% trans "Cat" %}</option>
-                <option value="dog">{% trans "Dog" %}</option>
-              </select>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Pet weight (kg)" %}</label>
-              <input type="number" name="weight" min="0.5" step="0.1" required class="mt-1 mb-4 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30"/>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Email" %}</label>
-              <input type="email" name="email" required class="mt-1 mb-6 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30"/>
-              <button type="submit" class="w-full btn-reset btn-green">
-                {% trans "Send Info & Get Report" %}
-              </button>
-              <p id="leadSuccess" class="hidden text-sm text-center text-[#10B981] mt-4">
-                {% trans "Thank you! Your free personalized report is on its way." %}
-              </p>
-            </form>
-          </div>
-        </div>
-      
+                    <span class="hero-badge inline-block px-6 py-3 rounded-xl font-extrabold text-white text-lg md:text-2xl">
+                        {% if hero and hero.subheading_secondary %}{{ hero.subheading_secondary }}{% else %}{% trans "Powered by the FAMMO Diet Engine" %}{% endif %}
+                    </span>
 
+                    <div class="flex gap-4 mt-auto">
+                        <a href="{% url 'account_signup' %}" class="primary-btn px-6 py-3 rounded-full font-semibold">
+                            {% trans "Try for Free" %}
+                        </a>
+                        <a href="{% url 'account_login' %}" class="secondary-btn px-6 py-3 rounded-full font-semibold">
+                            {% trans "Login / Sign Up" %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORM (first on mobile, right on desktop) -->
+            <div class="hero-col">
+                <div class="form-card fill">
+                    <h2 class="text-2xl font-bold text-center text-[#4F46E5] mb-6">
+                        {% trans "Get Your Pet's Nutrition & AI Health Report" %}
+                        <span class="inline-block ml-2 px-2 py-0.5 text-xs rounded-full text-white bg-[#10B981]">
+                            {% trans "Free & Easy" %}
+                        </span>
+                    </h2>
+                    <form id="leadForm" method="POST" action="{% url 'core:collect_lead' %}">
+                        {% csrf_token %}
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Pet type" %}</label>
+                        <select name="pet_type" required class="mt-1 mb-4 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30">
+                            <option value="">{% trans "Choose..." %}</option>
+                            <option value="cat">{% trans "Cat" %}</option>
+                            <option value="dog">{% trans "Dog" %}</option>
+                        </select>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Pet weight (kg)" %}</label>
+                        <input type="number" name="weight" min="0.5" step="0.1" required class="mt-1 mb-4 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30"/>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Email" %}</label>
+                        <input type="email" name="email" required class="mt-1 mb-6 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30"/>
+                        <button type="submit" class="w-full btn-reset btn-green">
+                            {% trans "Send Info & Get Report" %}
+                        </button>
+                        <p id="leadSuccess" class="hidden text-sm text-center text-[#10B981] mt-4">
+                            {% trans "Thank you! Your free personalized report is on its way." %}
+                        </p>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
     </div>
   </div>
 </section>
