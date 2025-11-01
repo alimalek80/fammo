@@ -12,5 +12,7 @@ urlpatterns = [
     path('activate/<uidb64>/<token>/', views.activate, name='activate'),
     path('set-password/', views.set_password_after_activation, name='set_password_after_activation'),
     path('admin-dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
+    path('admin-dashboard/chart-data/', views.admin_dashboard_chart_data, name='admin_dashboard_chart_data'),
+    path('admin-dashboard/kpis/', views.admin_dashboard_kpis, name='admin_dashboard_kpis'),
     path('export/users/', export_users_csv, name='export_users_csv'),
 ]

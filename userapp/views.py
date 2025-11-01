@@ -17,7 +17,12 @@ from pet.models import Pet
 from aihub.models import AIRecommendation, AIHealthReport
 from aihub.utils import get_country_from_ip
 import csv
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
+from django.db.models import Count
+from django.db.models.functions import TruncDate, TruncMonth
+from datetime import timedelta
+from django.utils import timezone
+import json
 
 
 def register_view(request):
@@ -276,16 +281,6 @@ def admin_dashboard_view(request):
     total_ai_meals = AIRecommendation.objects.count()
     total_ai_health = AIHealthReport.objects.count()
 
-    # Gather all IPs from AIRecommendation and AIHealthReport
-    ai_meal_ips = AIRecommendation.objects.values_list('ip_address', flat=True)
-    ai_health_ips = AIHealthReport.objects.values_list('ip_address', flat=True)
-    all_ips = list(ai_meal_ips) + list(ai_health_ips)
-
-    # Get country for each IP (skip empty/null)
-    countries = [get_country_from_ip(ip) for ip in all_ips if ip]
-    country_counts = Counter(countries)
-    top_countries = country_counts.most_common(10)
-
     context = {
         'total_users': total_users,
         'total_pets': total_pets,
@@ -293,9 +288,268 @@ def admin_dashboard_view(request):
         'total_cats': total_cats,
         'total_ai_meals': total_ai_meals,
         'total_ai_health': total_ai_health,
-        'top_countries': top_countries,
     }
     return render(request, 'userapp/admin_dashboard.html', context)
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def admin_dashboard_chart_data(request):
+    """API endpoint for fetching filtered chart data"""
+    User = get_user_model()
+    chart_type = request.GET.get('chart', 'ai_requests')
+    period = request.GET.get('period', '30')  # Default to 30 days
+    
+    # Calculate date range based on period
+    now = timezone.now()
+    if period == '7':
+        start_date = now - timedelta(days=7)
+        days_count = 7
+        group_by = 'day'
+    elif period == '30':
+        start_date = now - timedelta(days=30)
+        days_count = 30
+        group_by = 'day'
+    elif period == '90':
+        start_date = now - timedelta(days=90)
+        days_count = 90
+        group_by = 'day'
+    elif period == '180':
+        start_date = now - timedelta(days=180)
+        days_count = 180
+        group_by = 'day'
+    elif period == '360':
+        start_date = now - timedelta(days=360)
+        days_count = 360
+        group_by = 'day'
+    elif period == 'month':
+        # Current month
+        start_date = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        days_count = (now - start_date).days + 1
+        group_by = 'day'
+    elif period == '3months':
+        start_date = now - timedelta(days=90)
+        days_count = 90
+        group_by = 'week'
+    elif period == '6months':
+        start_date = now - timedelta(days=180)
+        days_count = 180
+        group_by = 'week'
+    else:
+        start_date = now - timedelta(days=30)
+        days_count = 30
+        group_by = 'day'
+    
+    if chart_type == 'ai_requests':
+        # Users with AI requests by date (distinct users per day/week)
+        if group_by == 'day':
+            meal_pairs = AIRecommendation.objects.filter(
+                created_at__gte=start_date
+            ).annotate(date=TruncDate('created_at')).values_list('date', 'pet__user_id')
+            health_pairs = AIHealthReport.objects.filter(
+                created_at__gte=start_date
+            ).annotate(date=TruncDate('created_at')).values_list('date', 'pet__user_id')
+
+            # Build map of date -> set(user_ids)
+            date_users = {}
+            for d, uid in list(meal_pairs) + list(health_pairs):
+                if d is None or uid is None:
+                    continue
+                key = str(d)
+                if key not in date_users:
+                    date_users[key] = set()
+                date_users[key].add(uid)
+
+            labels = []
+            data = []
+            for i in range(days_count):
+                day = (start_date + timedelta(days=i)).date()
+                key = day.strftime('%Y-%m-%d')
+                labels.append(key)
+                data.append(len(date_users.get(key, set())))
+
+        elif group_by == 'week':
+            # Aggregate by week (start on Monday)
+            meal_events = AIRecommendation.objects.filter(
+                created_at__gte=start_date
+            ).values_list('created_at', 'pet__user_id')
+            health_events = AIHealthReport.objects.filter(
+                created_at__gte=start_date
+            ).values_list('created_at', 'pet__user_id')
+
+            week_users = {}
+            for dt, uid in list(meal_events) + list(health_events):
+                if dt is None or uid is None:
+                    continue
+                d = dt.date()
+                week_start = d - timedelta(days=d.weekday())
+                key = week_start.strftime('%Y-%m-%d')
+                if key not in week_users:
+                    week_users[key] = set()
+                week_users[key].add(uid)
+
+            # Build continuous weekly labels from start to now
+            start_week = (start_date.date() - timedelta(days=start_date.weekday()))
+            end_week = (now.date() - timedelta(days=now.weekday()))
+            labels = []
+            data = []
+            cur = start_week
+            while cur <= end_week:
+                key = cur.strftime('%Y-%m-%d')
+                labels.append(key)
+                data.append(len(week_users.get(key, set())))
+                cur = cur + timedelta(days=7)
+
+        return JsonResponse({
+            'labels': labels,
+            'data': data
+        })
+    
+    elif chart_type == 'user_registrations':
+        # User Registrations by Date
+        if group_by == 'day':
+            registrations = (
+                User.objects.filter(date_joined__gte=start_date)
+                .annotate(date=TruncDate('date_joined'))
+                .values('date')
+                .annotate(count=Count('id'))
+                .order_by('date')
+            )
+            
+            reg_dict = {str(item['date']): item['count'] for item in registrations}
+            labels = []
+            data = []
+            
+            for i in range(days_count):
+                date = (start_date + timedelta(days=i)).date()
+                labels.append(date.strftime('%Y-%m-%d'))
+                data.append(reg_dict.get(str(date), 0))
+        
+        elif group_by == 'week':
+            # Group by weeks
+            registrations = list(User.objects.filter(date_joined__gte=start_date))
+            weeks_dict = {}
+            
+            for user in registrations:
+                # Calculate week number
+                week_start = user.date_joined.date() - timedelta(days=user.date_joined.weekday())
+                week_label = week_start.strftime('%Y-%m-%d')
+                weeks_dict[week_label] = weeks_dict.get(week_label, 0) + 1
+            
+            # Sort by date
+            sorted_weeks = sorted(weeks_dict.items())
+            labels = [week for week, _ in sorted_weeks]
+            data = [count for _, count in sorted_weeks]
+        
+        return JsonResponse({
+            'labels': labels,
+            'data': data
+        })
+    
+    elif chart_type == 'user_countries':
+        # User Registrations by Country
+        users_by_country = (
+            Profile.objects.filter(user__date_joined__gte=start_date)
+            .exclude(country='')
+            .values('country')
+            .annotate(count=Count('id'))
+            .order_by('-count')[:10]
+        )
+        
+        return JsonResponse({
+            'labels': [item['country'] for item in users_by_country],
+            'data': [item['count'] for item in users_by_country]
+        })
+    
+    return JsonResponse({'error': 'Invalid chart type'}, status=400)
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def admin_dashboard_kpis(request):
+    """Return summary KPIs and growth rates for the dashboard report.
+
+    Query params:
+      users_period: period for user growth window (7|30|90|180|360|month)
+      ai_period:    period for AI requests growth window (same options)
+    """
+    User = get_user_model()
+
+    def parse_period(p):
+        now = timezone.now()
+        if p == '7':
+            return now - timedelta(days=7), now, 7
+        if p == '30':
+            return now - timedelta(days=30), now, 30
+        if p == '90':
+            return now - timedelta(days=90), now, 90
+        if p == '180':
+            return now - timedelta(days=180), now, 180
+        if p == '360':
+            return now - timedelta(days=360), now, 360
+        if p == 'month':
+            start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+            return start, now, (now - start).days + 1
+        # default
+        return now - timedelta(days=30), now, 30
+
+    def growth(current, previous):
+        if previous and previous != 0:
+            return round(((current - previous) / previous) * 100.0, 2)
+        return 100.0 if current > 0 else 0.0
+
+    users_period = request.GET.get('users_period', '30')
+    ai_period = request.GET.get('ai_period', '30')
+
+    u_start, u_end, u_days = parse_period(users_period)
+    u_prev_start = u_start - timedelta(days=u_days)
+    u_prev_end = u_start
+
+    a_start, a_end, a_days = parse_period(ai_period)
+    a_prev_start = a_start - timedelta(days=a_days)
+    a_prev_end = a_start
+
+    total_users = User.objects.count()
+    total_pets = Pet.objects.count()
+    total_dogs = Pet.objects.filter(pet_type__name__iexact="Dog").count()
+    total_cats = Pet.objects.filter(pet_type__name__iexact="Cat").count()
+    total_ai_meals = AIRecommendation.objects.count()
+    total_ai_health = AIHealthReport.objects.count()
+    total_ai_requests = total_ai_meals + total_ai_health
+
+    current_user_regs = User.objects.filter(date_joined__gte=u_start, date_joined__lt=u_end).count()
+    prev_user_regs = User.objects.filter(date_joined__gte=u_prev_start, date_joined__lt=u_prev_end).count()
+
+    current_ai_reqs = (
+        AIRecommendation.objects.filter(created_at__gte=a_start, created_at__lt=a_end).count()
+        + AIHealthReport.objects.filter(created_at__gte=a_start, created_at__lt=a_end).count()
+    )
+    prev_ai_reqs = (
+        AIRecommendation.objects.filter(created_at__gte=a_prev_start, created_at__lt=a_prev_end).count()
+        + AIHealthReport.objects.filter(created_at__gte=a_prev_start, created_at__lt=a_prev_end).count()
+    )
+
+    return JsonResponse({
+        'totals': {
+            'users': total_users,
+            'pets': total_pets,
+            'dogs': total_dogs,
+            'cats': total_cats,
+            'ai_requests': total_ai_requests,
+            'ai_meals': total_ai_meals,
+            'ai_health': total_ai_health,
+        },
+        'growth': {
+            'users': {
+                'current': current_user_regs,
+                'previous': prev_user_regs,
+                'percent': growth(current_user_regs, prev_user_regs),
+                'period': users_period,
+            },
+            'ai_requests': {
+                'current': current_ai_reqs,
+                'previous': prev_ai_reqs,
+                'percent': growth(current_ai_reqs, prev_ai_reqs),
+                'period': ai_period,
+            }
+        }
+    })
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def export_users_csv(request):
