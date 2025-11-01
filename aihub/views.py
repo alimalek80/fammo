@@ -61,13 +61,13 @@ def generate_meal_recommendation(request, pet_id):
 
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
 
-    chat_response = client.chat.completions.create(
+    response = client.responses.create(
         model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
+        input=prompt,
         temperature=0.7,
     )
 
-    result = chat_response.choices[0].message.content
+    result = response.output_text
 
     ip_address = get_client_ip(request)
     recommendation = AIRecommendation.objects.create(
@@ -135,13 +135,13 @@ def generate_health_report(request, pet_id):
     )
 
 
-    chat_response = client.chat.completions.create(
+    response = client.responses.create(
         model="gpt-4",
-        messages=[{"role": "user", "content": prompt}],
+        input=prompt,
         temperature=0.7,
     )
 
-    result = chat_response.choices[0].message.content
+    result = response.output_text
 
     ip_address = get_client_ip(request)
     report = AIHealthReport.objects.create(
