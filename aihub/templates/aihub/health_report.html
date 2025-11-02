@@ -6,9 +6,65 @@
 <div class="max-w-3xl mx-auto p-6 bg-white shadow-lg mt-10 rounded-lg">
     <h2 class="text-2xl font-bold mb-4 text-red-600">AI Health Report for {{ pet.name }}</h2>
 
-    <div class="bg-gray-100 p-4 rounded-lg text-gray-800 whitespace-pre-line">
-        {{ report.summary|markdownify }}
-    </div>
+    {% if report.summary_json %}
+        {% with data=report.summary_json %}
+        <section class="mb-4 p-4 bg-rose-50 border rounded">
+            <h3 class="font-semibold">Health Summary</h3>
+            <p class="text-sm mt-1">{{ data.health_summary }}</p>
+        </section>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <section class="p-4 bg-white border rounded">
+                <h3 class="font-semibold">Breed-Specific Health Risks</h3>
+                <ul class="list-disc ml-5 text-sm mt-1">
+                    {% for r in data.breed_risks %}
+                        <li>{{ r }}</li>
+                    {% empty %}
+                        <li class="text-gray-500">No specific risks listed.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            <section class="p-4 bg-white border rounded">
+                <h3 class="font-semibold">Weight and Diet Overview</h3>
+                <p class="text-sm mt-1">{{ data.weight_and_diet }}</p>
+            </section>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <section class="p-4 bg-white border rounded">
+                <h3 class="font-semibold">Feeding Recommendations</h3>
+                <ul class="list-disc ml-5 text-sm mt-1">
+                    {% for tip in data.feeding_tips %}
+                        <li>{{ tip }}</li>
+                    {% empty %}
+                        <li class="text-gray-500">No feeding tips.</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            <section class="p-4 bg-white border rounded">
+                <h3 class="font-semibold">Activity Recommendations</h3>
+                <p class="text-sm mt-1">{{ data.activity }}</p>
+            </section>
+        </div>
+
+        <section class="p-4 bg-white border rounded mt-4">
+            <h3 class="font-semibold">Critical Alerts</h3>
+            <ul class="list-disc ml-5 text-sm mt-1">
+                {% if data.alerts and data.alerts|length > 0 %}
+                    {% for a in data.alerts %}
+                        <li>{{ a }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li>No critical issues detected ✅</li>
+                {% endif %}
+            </ul>
+        </section>
+        {% endwith %}
+    {% else %}
+        <div class="bg-gray-100 p-4 rounded-lg text-gray-800 whitespace-pre-line">
+            {{ report.summary|markdownify }}
+        </div>
+    {% endif %}
 
     <a href="{% url 'pet:my_pets' %}" class="mt-6 inline-block bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
         Back to Pets

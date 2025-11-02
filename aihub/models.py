@@ -10,6 +10,8 @@ class AIRecommendation(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='ai_recommendations')
     type = models.CharField(max_length=20, choices=RecommendationType.choices)
     content = models.TextField()
+    # Optional structured payload for Responses API
+    content_json = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)  # Add this field
 
@@ -20,6 +22,8 @@ class AIHealthReport(models.Model):
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='ai_health_reports')
     summary = models.TextField()
     suggestions = models.TextField(blank=True, null=True)
+    # Optional structured payload for Responses API
+    summary_json = models.JSONField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True, blank=True)  # Add this field
 
