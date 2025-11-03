@@ -10,7 +10,7 @@
             <p><strong>{% trans "Breed" %}:</strong> {{ pet.breed.name }}</p>
             <p><strong>{% trans "Gender" %}:</strong> {{ pet.gender.name }}</p>
             <p><strong>{% trans "Neutered" %}:</strong> {{ pet.neutered|yesno:_("Yes,No") }}</p>
-            <p><strong>{% trans "Age" %}:</strong> {{ pet.age_years }} {% trans "years" %}, {{ pet.age_months }} {% trans "months" %}, {{ pet.age_weeks }} {% trans "weeks" %}</p>
+            <p><strong>{% trans "Age" %}:</strong> {{ pet.get_age_display }}</p>
             <p><strong>{% trans "Weight" %}:</strong> {{ pet.weight }} kg</p>
         </div>
         <div>

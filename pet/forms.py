@@ -55,8 +55,16 @@ class PetForm(forms.ModelForm):
         self.fields['pet_type'].label = "What type of pet do you have?"
         self.fields['gender'].label = "Is your pet a girl or a boy?"
         self.fields['age_category'].label = "What is your pet's age category?"
+        
         # Set breed queryset to empty initially for create form
         self.fields['breed'].queryset = Breed.objects.none()
+
+        # If editing existing pet, populate age fields with current calculated age
+        if self.instance.pk and self.instance.birth_date:
+            current_age = self.instance.get_current_age()
+            self.initial['age_years'] = current_age['years']
+            self.initial['age_months'] = current_age['months']
+            self.initial['age_weeks'] = current_age['weeks']
 
         # If form is bound to data (POST request)
         if 'pet_type' in self.data:
@@ -74,6 +82,18 @@ class PetForm(forms.ModelForm):
         for field_name in radio_fields:
             if field_name in self.fields:
                 self.fields[field_name].empty_label = None
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        
+        # Calculate and save birth_date from age inputs
+        if any([instance.age_years, instance.age_months, instance.age_weeks]):
+            instance.birth_date = instance.calculate_birth_date_from_age()
+        
+        if commit:
+            instance.save()
+            self.save_m2m()
+        return instance
 
 
 # ============================================================================
@@ -264,6 +284,17 @@ class Step3AgeForm(forms.ModelForm):
             # No wizard, show all age categories
             from .models import AgeCategory
             self.fields['age_category'].queryset = AgeCategory.objects.all()
+    
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        
+        # Calculate and save birth_date from age inputs
+        if any([instance.age_years, instance.age_months, instance.age_weeks]):
+            instance.birth_date = instance.calculate_birth_date_from_age()
+        
+        if commit:
+            instance.save()
+        return instance
 
 
 # Step 4 — Pet breed selection with unknown breed option (following multistep app pattern)
