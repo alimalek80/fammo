@@ -32,6 +32,41 @@ def register_view(request):
             user = form.save(commit=False)
             user.is_active = False  # User inactive until email confirmation
             user.save()
+            
+            # Handle referral tracking
+            referral_code = request.session.get('referral_code')
+            if referral_code:
+                try:
+                    from vets.models import ReferralCode, ReferredUser, ReferralStatus
+                    ref_code_obj = ReferralCode.objects.get(code=referral_code, is_active=True)
+                    
+                    # Create or update referral tracking
+                    referred_user, created = ReferredUser.objects.get_or_create(
+                        clinic=ref_code_obj.clinic,
+                        user=user,
+                        defaults={
+                            'referral_code': ref_code_obj,
+                            'email_capture': user.email,
+                            'status': ReferralStatus.NEW
+                        }
+                    )
+                    
+                    if not created:
+                        # Update existing record
+                        referred_user.user = user
+                        referred_user.status = ReferralStatus.NEW
+                        referred_user.save()
+                    
+                    # Store referral info for activation
+                    request.session['pending_referral'] = {
+                        'clinic_id': ref_code_obj.clinic.id,
+                        'referral_code': referral_code
+                    }
+                    
+                except Exception as e:
+                    # Log error but don't break registration
+                    print(f"Error tracking referral during registration: {e}")
+            
             # Send activation email
             current_site = get_current_site(request)
             subject = "Activate your FAMO account"
@@ -48,7 +83,48 @@ def register_view(request):
             messages.error(request, _("Please correct the errors below."))
     else:
         form = UserRegistrationForm()
-    return render(request, 'userapp/register.html', {'form': form})
+        
+        # Capture referral code from URL parameter and store in session
+        ref_code = request.GET.get('ref')
+        if ref_code:
+            request.session['referral_code'] = ref_code
+            # Also track the referral visit
+            try:
+                from vets.models import ReferralCode, ReferredUser, ReferralStatus
+                ref_code_obj = ReferralCode.objects.get(code=ref_code, is_active=True)
+                
+                # Create a tracking record for the visit (before registration)
+                ReferredUser.objects.get_or_create(
+                    clinic=ref_code_obj.clinic,
+                    email_capture='',  # Will be filled when user registers
+                    referral_code=ref_code_obj,
+                    defaults={'status': ReferralStatus.NEW}
+                )
+                
+                # Add clinic info to context for the registration form
+                request.referring_clinic = ref_code_obj.clinic
+                
+            except Exception as e:
+                print(f"Error tracking referral visit: {e}")
+    
+    # Get referring clinic info if available
+    referring_clinic = getattr(request, 'referring_clinic', None)
+    if not referring_clinic and request.session.get('referral_code'):
+        try:
+            from vets.models import ReferralCode
+            ref_code_obj = ReferralCode.objects.get(
+                code=request.session['referral_code'], 
+                is_active=True
+            )
+            referring_clinic = ref_code_obj.clinic
+        except:
+            pass
+    
+    return render(request, 'userapp/register.html', {
+        'form': form,
+        'referring_clinic': referring_clinic,
+        'referral_code': request.session.get('referral_code')
+    })
 
 def login_view(request):
     if request.user.is_authenticated:
@@ -124,6 +200,29 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
+        
+        # Handle referral activation
+        pending_referral = request.session.get('pending_referral')
+        if pending_referral:
+            try:
+                from vets.models import ReferredUser, ReferralStatus
+                
+                # Update referral status to ACTIVE when user activates account
+                referred_user = ReferredUser.objects.filter(
+                    clinic_id=pending_referral['clinic_id'],
+                    user=user
+                ).first()
+                
+                if referred_user:
+                    referred_user.status = ReferralStatus.ACTIVE
+                    referred_user.save()
+                    print(f"✅ Referral activated for user {user.email} from clinic {referred_user.clinic.name}")
+                
+                # Clear the session
+                del request.session['pending_referral']
+                
+            except Exception as e:
+                print(f"Error activating referral: {e}")
         
         # Check if there's pending pet data from wizard registration
         pending_pet_key = f'pending_pet_data_{user.pk}'

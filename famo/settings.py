@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'markdownx',
     'formtools',
     'chat',
+    'vets.apps.VetsConfig',
 ]
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)

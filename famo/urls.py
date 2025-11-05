@@ -17,6 +17,7 @@ urlpatterns += i18n_patterns(
     path('', include(('core.urls', 'core'), namespace='core')),
     path('users/', include('userapp.urls')),
     path('pets/', include(('pet.urls', 'pet'), namespace='pet')),
+    path('vets/', include(('vets.urls', 'vets'), namespace='vets')),
     path('admin/', admin.site.urls),
     path('ai/', include('aihub.urls')),
     path('subscription/', include('subscription.urls')),
