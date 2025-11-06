@@ -6,15 +6,15 @@ from .models import Clinic, ReferralCode
 @receiver(post_save, sender=Clinic)
 def create_referral_code_on_clinic_create(sender, instance: Clinic, created, **kwargs):
     """
-    Create referral code only when clinic becomes fully approved
+    Create referral code when clinic confirms email (even if not admin approved yet)
     """
     if created:
         # Don't create referral code immediately on creation
-        # It will be created when clinic becomes fully approved
+        # It will be created when clinic confirms email
         pass
     else:
-        # Check if clinic just became fully approved
-        if instance.is_active_clinic:
+        # Check if clinic has confirmed email (regardless of admin approval)
+        if instance.email_confirmed:
             # If no active code exists, create one
             has_active = instance.referral_codes.filter(is_active=True).exists()
             if not has_active:

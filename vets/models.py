@@ -91,8 +91,8 @@ class Clinic(TimeStampedModel):
 
     @property
     def active_referral_code(self) -> str | None:
-        """Only return referral code if clinic is fully approved"""
-        if not self.is_active_clinic:
+        """Return referral code if clinic has confirmed email (even if not admin approved)"""
+        if not self.email_confirmed:
             return None
         code = self.referral_codes.filter(is_active=True).order_by("created_at").first()
         return code.code if code else None

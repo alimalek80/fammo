@@ -14,7 +14,7 @@
                     <div class="flex-1">
                         <div class="flex items-center mb-2">
                             <h1 class="text-3xl font-bold text-gray-900 mr-3">{{ clinic.name }}</h1>
-                            {% if clinic.is_verified %}
+                            {% if clinic.admin_approved %}
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -28,7 +28,7 @@
                         {% endif %}
                     </div>
                     {% if clinic.logo %}
-                    <img src="{{ clinic.logo.url }}" alt="{{ clinic.name }}" class="w-24 h-24 rounded-lg object-cover border-2 border-gray-100">
+                    <img src="{{ clinic.logo.url }}" alt="{{ clinic.name }}" class="w-24 h-24 rounded-lg object-cover border-2 border-gray-100" style="width: 96px; height: 96px; object-fit: cover; border-radius: 8px; border: 2px solid #f3f4f6;">
                     {% endif %}
                 </div>
 
@@ -78,27 +78,27 @@
                 </div>
 
                 <!-- Contact Actions -->
-                <div class="flex flex-wrap gap-3">
+                <div class="flex flex-wrap gap-3" style="display: flex; flex-wrap: wrap; gap: 12px;">
                     {% if clinic.phone %}
-                    <a href="tel:{{ clinic.phone }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                    <a href="tel:{{ clinic.phone }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors" style="padding: 8px 16px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px; display: inline-block;">
                         📞 {% trans "Call Now" %}
                     </a>
                     {% endif %}
                     
                     {% if clinic.email %}
-                    <a href="mailto:{{ clinic.email }}" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors">
+                    <a href="mailto:{{ clinic.email }}" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors" style="padding: 8px 16px; background-color: #4b5563; color: white; text-decoration: none; border-radius: 6px; display: inline-block;">
                         ✉️ {% trans "Send Email" %}
                     </a>
                     {% endif %}
                     
                     {% if clinic.website %}
-                    <a href="{{ clinic.website }}" target="_blank" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
+                    <a href="{{ clinic.website }}" target="_blank" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors" style="padding: 8px 16px; background-color: #16a34a; color: white; text-decoration: none; border-radius: 6px; display: inline-block;">
                         🌐 {% trans "Visit Website" %}
                     </a>
                     {% endif %}
                     
                     {% if referral_url %}
-                    <button onclick="copyReferralLink()" class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors">
+                    <button onclick="copyReferralLink()" class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors" style="padding: 8px 16px; background-color: #eab308; color: white; border: none; border-radius: 6px; cursor: pointer; display: inline-block;">
                         🔗 {% trans "Share Referral" %}
                     </button>
                     {% endif %}
@@ -106,9 +106,35 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 clinic-layout" style="display: grid; grid-template-columns: 1fr; gap: 32px;">
+            <style>
+                @media (min-width: 1024px) {
+                    .clinic-layout {
+                        display: grid !important;
+                        grid-template-columns: 2fr 1fr !important;
+                        gap: 32px !important;
+                    }
+                    .main-content {
+                        grid-column: 1 / 2 !important;
+                    }
+                    .sidebar-content {
+                        grid-column: 2 / 3 !important;
+                    }
+                }
+            </style>
             <!-- Main Content -->
-            <div class="lg:col-span-2 space-y-8">
+            <div class="lg:col-span-2 space-y-8 main-content" style="grid-column: span 2;">
+                <script>
+                    // Ensure proper layout on cPanel
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const container = document.querySelector('.clinic-layout');
+                        if (container && window.innerWidth >= 1024) {
+                            container.style.display = 'grid';
+                            container.style.gridTemplateColumns = '2fr 1fr';
+                            container.style.gap = '32px';
+                        }
+                    });
+                </script>
                 <!-- About Section -->
                 {% if clinic.bio %}
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -158,7 +184,7 @@
             </div>
 
             <!-- Sidebar -->
-            <div class="space-y-6">
+            <div class="space-y-6 sidebar-content">
                 <!-- Specializations -->
                 {% if clinic.specializations %}
                 <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -200,12 +226,12 @@
                     </p>
                     {% if referral_url %}
                     <a href="{% url 'register' %}?ref={{ referral_code }}" 
-                       class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                       class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors" style="display: block; width: 100%; text-align: center; padding: 8px 16px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
                         {% trans "Sign Up with This Clinic" %}
                     </a>
                     {% else %}
                     <a href="{% url 'register' %}" 
-                       class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+                       class="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors" style="display: block; width: 100%; text-align: center; padding: 8px 16px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 6px;">
                         {% trans "Sign Up for FAMMO" %}
                     </a>
                     {% endif %}

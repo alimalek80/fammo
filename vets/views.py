@@ -129,15 +129,13 @@ class PartnerClinicsListView(ListView):
     paginate_by = 12
     
     def get_queryset(self):
-        # ALWAYS only show clinics that have completed BOTH steps:
-        # 1. Email confirmed AND 2. Admin approved
+        # Show clinics that have confirmed email (public listing)
+        # Badge will only show for admin_approved clinics
         queryset = Clinic.objects.filter(
-            email_confirmed=True,
-            admin_approved=True,
-            is_verified=True
+            email_confirmed=True
         ).order_by('name')
         
-        # Handle search within approved clinics only
+        # Handle search within email-confirmed clinics
         form = ClinicSearchForm(self.request.GET)
         if form.is_valid():
             search = form.cleaned_data.get('search')
@@ -163,7 +161,7 @@ class PartnerClinicsListView(ListView):
 
 
 class ClinicDetailView(DetailView):
-    """Public clinic profile page - only show approved clinics"""
+    """Public clinic profile page - show email-confirmed clinics"""
     model = Clinic
     template_name = 'vets/clinic_detail.html'
     context_object_name = 'clinic'
@@ -171,19 +169,17 @@ class ClinicDetailView(DetailView):
     slug_url_kwarg = 'slug'
     
     def get_queryset(self):
-        """Only show clinics that are fully approved"""
+        """Show clinics that have confirmed email"""
         return Clinic.objects.filter(
-            email_confirmed=True,
-            admin_approved=True,
-            is_verified=True
+            email_confirmed=True
         )
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         clinic = self.object
         
-        # Only show referral functionality for approved clinics
-        if clinic.is_active_clinic:
+        # Show referral functionality for email-confirmed clinics (even if not admin approved)
+        if clinic.email_confirmed:
             # Get referral code for sharing
             context['referral_code'] = clinic.active_referral_code
             

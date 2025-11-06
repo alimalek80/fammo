@@ -164,9 +164,13 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
                         <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                            {% if clinic.is_verified %}
+                            {% if clinic.admin_approved %}
                             <svg class="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            {% elif clinic.email_confirmed %}
+                            <svg class="w-4 h-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
                             </svg>
                             {% else %}
                             <svg class="w-4 h-4 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -177,11 +181,13 @@
                     </div>
                     <div class="ml-4">
                         <p class="text-sm font-medium text-gray-500">{% trans "Status" %}</p>
-                        <p class="text-sm font-semibold {% if clinic.is_verified %}text-green-600{% else %}text-yellow-600{% endif %}">
-                            {% if clinic.is_verified %}
-                                {% trans "Verified" %}
+                        <p class="text-sm font-semibold {% if clinic.admin_approved %}text-green-600{% elif clinic.email_confirmed %}text-blue-600{% else %}text-yellow-600{% endif %}">
+                            {% if clinic.admin_approved %}
+                                {% trans "Verified Partner" %}
+                            {% elif clinic.email_confirmed %}
+                                {% trans "Listed (Pending Verification)" %}
                             {% else %}
-                                {% trans "Under Review" %}
+                                {% trans "Email Confirmation Pending" %}
                             {% endif %}
                         </p>
                     </div>

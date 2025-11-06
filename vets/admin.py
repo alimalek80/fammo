@@ -68,8 +68,10 @@ class ClinicAdmin(admin.ModelAdmin):
     admin_status.short_description = "Admin Approval"
 
     def public_status(self, obj):
-        if obj.email_confirmed and obj.admin_approved and obj.is_verified:
-            return "🌐 Public"
+        if obj.email_confirmed and obj.admin_approved:
+            return "🌐 Public + Verified"
+        elif obj.email_confirmed:
+            return "📋 Public (No Badge)"
         else:
             return "🔒 Hidden"
     public_status.short_description = "Public Listing"
@@ -79,9 +81,6 @@ class ClinicAdmin(admin.ModelAdmin):
         updated = 0
         for clinic in queryset:
             clinic.admin_approved = True
-            # Auto-verify if email is also confirmed
-            if clinic.email_confirmed:
-                clinic.is_verified = True
             clinic.save()
             updated += 1
         self.message_user(request, f"{updated} clinic(s) approved by admin.")

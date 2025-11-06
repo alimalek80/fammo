@@ -31,7 +31,7 @@
                         {{ search_form.verified_only }}
                         <span class="ml-2 text-sm text-gray-700">{{ search_form.verified_only.label }}</span>
                     </label>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" style="padding: 8px 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer;">
                         {% trans "Search" %}
                     </button>
                 </div>
@@ -50,7 +50,7 @@
         </p>
         
         <a href="{% url 'vets:clinic_register' %}" 
-           class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700">
+           class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700" style="padding: 8px 16px; background-color: #16a34a; color: white; text-decoration: none; border-radius: 6px; display: inline-block;">
             {% trans "Register Your Clinic" %}
         </a>
     </div>
@@ -68,7 +68,7 @@
                                 {{ clinic.name }}
                             </a>
                         </h3>
-                        {% if clinic.is_verified %}
+                        {% if clinic.admin_approved %}
                         <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
@@ -78,7 +78,7 @@
                         {% endif %}
                     </div>
                     {% if clinic.logo %}
-                    <img src="{{ clinic.logo.url }}" alt="{{ clinic.name }}" class="w-12 h-12 rounded-lg object-cover">
+                    <img src="{{ clinic.logo.url }}" alt="{{ clinic.name }}" class="w-12 h-12 rounded-lg object-cover" style="width: 48px; height: 48px; object-fit: cover; border-radius: 8px;">
                     {% endif %}
                 </div>
 
@@ -136,8 +136,8 @@
                 <!-- Action Button -->
                 <div class="mt-4 pt-4 border-t border-gray-100">
                     <a href="{{ clinic.get_absolute_url }}" 
-                       class="block w-full text-center px-4 py-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors">
-                        {% trans "View Profile" %}
+                       class="block w-full text-center px-4 py-2 bg-blue-50 text-blue-700 rounded-md hover:bg-blue-100 transition-colors" style="display: block; width: 100%; text-align: center; padding: 8px 16px; background-color: #eff6ff; color: #1d4ed8; text-decoration: none; border-radius: 6px;">
+                        {% trans "View Profile" %} →
                     </a>
                 </div>
             </div>

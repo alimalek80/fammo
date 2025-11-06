@@ -3,7 +3,7 @@
 
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
     {% if clinic.logo %}
-        <div class="h-48 bg-cover bg-center" style="background-image: url('{{ clinic.logo.url }}')"></div>
+        <div class="h-48 bg-cover bg-center" style="background-image: url('{{ clinic.logo.url }}'); height: 192px; background-size: cover; background-position: center;"></div>
     {% else %}
         <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
             <span class="text-white text-2xl font-bold">{{ clinic.name|first }}</span>
@@ -17,7 +17,7 @@
                     {{ clinic.name }}
                 </a>
             </h3>
-            {% if clinic.is_verified %}
+            {% if clinic.admin_approved %}
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
@@ -63,7 +63,7 @@
             
             {% if show_referral and clinic.active_referral_code %}
                 <a href="{% url 'vets:referral_landing' code=clinic.active_referral_code %}" 
-                   class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                   class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700" style="background-color: #2563eb; color: white; padding: 4px 12px; border-radius: 4px; text-decoration: none; font-size: 14px; display: inline-block;">
                     {% trans "Get Referred" %}
                 </a>
             {% endif %}
