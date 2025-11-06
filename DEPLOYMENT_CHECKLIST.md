@@ -40,6 +40,40 @@ mkdir -p tmp && touch tmp/restart.txt
 - [ ] Check health report page - should see colors
 - [ ] Test generating new AI recommendations
 
+## Social Login (Google) Setup
+
+Enable the "Continue with Google" button without runtime errors:
+
+1. Create OAuth 2.0 credentials in Google Cloud Console
+	- App type: Web application
+	- Authorized redirect URIs:
+	  - http://127.0.0.1:8000/accounts/google/login/callback/
+	  - http://localhost:8000/accounts/google/login/callback/
+	  - https://YOUR_DOMAIN/accounts/google/login/callback/
+
+2. Add credentials to environment (.env or cPanel env vars):
+	- GOOGLE_CLIENT_ID=xxxxxxxx.apps.googleusercontent.com
+	- GOOGLE_CLIENT_SECRET=xxxxxxxxxxxxx
+
+3. Ensure `SITE_ID` in `famo/settings.py` matches an existing `Site` row (usually id=1).
+	- In admin: Sites → confirm domain/name for id=1 (e.g., localhost or fammo.ai)
+
+4. Run the management command to create/update and attach the SocialApp:
+	```bash
+	python manage.py setup_google_socialapp
+	```
+
+5. Reload login/signup pages. The Google button renders only when a `SocialApp` for provider `google` is linked to the current Site.
+
+Troubleshooting:
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| Button missing | No SocialApp linked | Run command above; confirm SITE_ID |
+| DoesNotExist at provider_login_url | Template rendered without guard | Ensure updated templates with `google_enabled` condition deployed |
+| Redirect mismatch error | Wrong URI in Google console | Add correct callback to OAuth client |
+
+The management command is idempotent; re-run safely after updating credentials.
+
 ## If Colors Still Don't Show:
 
 1. Check browser DevTools (F12) → Network tab

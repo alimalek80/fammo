@@ -54,9 +54,11 @@
             <a href="{% url 'register' %}" class="text-blue-600 hover:text-blue-800 font-semibold">{% trans "Register here" %}</a>
         </p>
         <div class="mt-6">
-            <a href="{% provider_login_url 'google' %}" class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md mt-4">
-                <i class="fa-brands fa-google"></i> Continue with Google
-            </a>
+            {% if google_enabled %}
+                <a href="{% provider_login_url 'google' %}" class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md mt-4">
+                    <i class="fa-brands fa-google"></i> Continue with Google
+                </a>
+            {% endif %}
         </div>
     </div>
 </div>

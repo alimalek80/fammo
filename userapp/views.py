@@ -23,6 +23,23 @@ from django.db.models.functions import TruncDate, TruncMonth
 from datetime import timedelta
 from django.utils import timezone
 import json
+from django.conf import settings
+try:
+    from allauth.socialaccount.models import SocialApp
+except ImportError:
+    SocialApp = None  # Fallback if allauth not available for some reason
+
+
+def _google_enabled():
+    """Return True if a Google SocialApp is configured for the active SITE_ID.
+    Safe to call when SocialApp model isn't present.
+    """
+    if not SocialApp:
+        return False
+    try:
+        return SocialApp.objects.filter(provider='google', sites__id=settings.SITE_ID).exists()
+    except Exception:
+        return False
 
 
 def register_view(request):
@@ -123,7 +140,8 @@ def register_view(request):
     return render(request, 'userapp/register.html', {
         'form': form,
         'referring_clinic': referring_clinic,
-        'referral_code': request.session.get('referral_code')
+        'referral_code': request.session.get('referral_code'),
+        'google_enabled': _google_enabled(),
     })
 
 def login_view(request):
@@ -144,7 +162,10 @@ def login_view(request):
         form = CustomLoginForm(request, data=request.POST)
     else:
         form = CustomLoginForm()
-    return render(request, 'userapp/login.html', {'form': form})
+    return render(request, 'userapp/login.html', {
+        'form': form,
+        'google_enabled': _google_enabled(),
+    })
 
 def logout_view(request):
     logout(request)

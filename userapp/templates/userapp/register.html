@@ -81,18 +81,20 @@
 
         <!-- Google Signup -->
         <div class="mt-6">
-            {% if referring_clinic %}
-                <a href="{% provider_login_url 'google' %}?ref={{ referral_code }}" 
-                   class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md">
-                    <i class="fa-brands fa-google"></i> 
-                    {% trans "Continue with Google" %}
-                </a>
-            {% else %}
-                <a href="{% provider_login_url 'google' %}" 
-                   class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md">
-                    <i class="fa-brands fa-google"></i> 
-                    {% trans "Continue with Google" %}
-                </a>
+            {% if google_enabled %}
+                {% if referring_clinic %}
+                    <a href="{% provider_login_url 'google' %}?ref={{ referral_code }}" 
+                       class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md">
+                        <i class="fa-brands fa-google"></i> 
+                        {% trans "Continue with Google" %}
+                    </a>
+                {% else %}
+                    <a href="{% provider_login_url 'google' %}" 
+                       class="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-md">
+                        <i class="fa-brands fa-google"></i> 
+                        {% trans "Continue with Google" %}
+                    </a>
+                {% endif %}
             {% endif %}
         </div>
 
