@@ -422,7 +422,7 @@ class ClinicAnalyticsView(ClinicOwnerRequiredMixin, TemplateView):
 
 
 class ReferralLandingView(TemplateView):
-    """Landing page for referral links - only for approved clinics"""
+    """Landing page for referral links - available after email confirmation"""
     template_name = 'vets/referral_landing.html'
     
     def get_context_data(self, **kwargs):
@@ -435,9 +435,10 @@ class ReferralLandingView(TemplateView):
                 is_active=True
             )
             
-            # Check if the clinic is fully approved
+            # Check if the clinic has confirmed their email
+            # No need to wait for admin approval to start accepting referrals
             clinic = referral_code.clinic
-            if not (clinic.email_confirmed and clinic.admin_approved and clinic.is_verified):
+            if not clinic.email_confirmed:
                 raise Http404("This clinic is not currently accepting referrals")
             
             context['referral_code'] = referral_code

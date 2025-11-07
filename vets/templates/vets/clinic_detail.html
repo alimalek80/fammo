@@ -98,7 +98,7 @@
                     {% endif %}
                     
                     {% if referral_url %}
-                    <button onclick="copyReferralLink()" class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors" style="padding: 8px 16px; background-color: #eab308; color: white; border: none; border-radius: 6px; cursor: pointer; display: inline-block;">
+                    <button onclick="copyReferralLink()" class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition-colors" style="padding: 8px 16px; background-color: #eab308; color: white; border: none; border-radius: 6px; cursor: pointer; display: inline-block; transition: all 0.2s ease;">
                         🔗 {% trans "Share Referral" %}
                     </button>
                     {% endif %}
@@ -246,15 +246,29 @@
 function copyReferralLink() {
     const url = "{{ referral_url }}";
     navigator.clipboard.writeText(url).then(function() {
-        // Show success message
+        // Get the button that was clicked
         const button = event.target;
         const originalText = button.innerHTML;
-        button.innerHTML = '✅ {% trans "Copied!" %}';
-        button.style.backgroundColor = '#10b981';
+        const originalBgColor = button.style.backgroundColor;
         
+        // Add push effect
+        button.style.transform = 'scale(0.95)';
+        
+        // Change to "Copied!" with green background and checkmark
+        button.innerHTML = '<i class="fas fa-check mr-1"></i>{% trans "Copied!" %}';
+        button.style.backgroundColor = '#10b981';
+        button.style.fontWeight = '600';
+        
+        // Reset transform after push effect
+        setTimeout(function() {
+            button.style.transform = 'scale(1)';
+        }, 100);
+        
+        // Revert back to original after 2 seconds
         setTimeout(function() {
             button.innerHTML = originalText;
-            button.style.backgroundColor = '#eab308';
+            button.style.backgroundColor = originalBgColor || '#eab308';
+            button.style.fontWeight = '500';
         }, 2000);
     }, function(err) {
         console.error('Could not copy text: ', err);

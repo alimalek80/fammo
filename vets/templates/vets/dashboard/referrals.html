@@ -269,7 +269,8 @@
                             </div>
                             <div class="flex space-x-2">
                                 <button onclick="copyReferralUrl('{{ code.code }}')" 
-                                        class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 border border-blue-200 rounded">
+                                        class="text-blue-600 hover:text-blue-800 text-xs px-2 py-1 border border-blue-200 rounded"
+                                        style="background: transparent; cursor: pointer; transition: all 0.2s ease;">
                                     {% trans "Copy Link" %}
                                 </button>
                             </div>
@@ -300,17 +301,35 @@
 function copyReferralUrl(code) {
     const url = `${window.location.origin}/vets/ref/${code}/`;
     navigator.clipboard.writeText(url).then(function() {
-        // Show success message
+        // Get the button that was clicked
         const button = event.target;
         const originalText = button.innerHTML;
-        button.innerHTML = '{% trans "Copied!" %}';
+        const originalBgColor = button.style.backgroundColor;
+        const originalColor = button.style.color;
+        const originalBorder = button.style.borderColor;
+        
+        // Add push effect
+        button.style.transform = 'scale(0.95)';
+        
+        // Change to "Copied!" with green background and checkmark
+        button.innerHTML = '<i class="fas fa-check mr-1"></i>{% trans "Copied!" %}';
         button.style.backgroundColor = '#10b981';
         button.style.color = 'white';
+        button.style.borderColor = '#10b981';
+        button.style.fontWeight = '600';
         
+        // Reset transform after push effect
+        setTimeout(function() {
+            button.style.transform = 'scale(1)';
+        }, 100);
+        
+        // Revert back to original after 2 seconds
         setTimeout(function() {
             button.innerHTML = originalText;
-            button.style.backgroundColor = 'transparent';
-            button.style.color = '#2563eb';
+            button.style.backgroundColor = originalBgColor || 'transparent';
+            button.style.color = originalColor || '#2563eb';
+            button.style.borderColor = originalBorder || '#BFDBFE';
+            button.style.fontWeight = '500';
         }, 2000);
     }, function(err) {
         console.error('Could not copy text: ', err);

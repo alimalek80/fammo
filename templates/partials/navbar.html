@@ -90,6 +90,11 @@
                     <a href="{% url 'dashboard' %}" class="text-gray-800 hover:text-indigo-600 font-medium px-2 py-1 text-sm">
                         <i class="fa-solid fa-gauge-high mr-1"></i>{% trans "Dashboard" %}
                     </a>
+                        {% if user.owned_clinics.exists %}
+                            <a href="{% url 'vets:clinic_dashboard' %}" class="text-green-700 hover:text-green-900 font-medium px-2 py-1 text-sm">
+                                <i class="fa-solid fa-hospital mr-1"></i>{% trans "Clinic Dashboard" %}
+                            </a>
+                        {% endif %}
                     <a href="{% url 'logout' %}" class="text-gray-800 hover:text-indigo-600 font-medium px-2 py-1 text-sm">
                         <i class="fa-solid fa-right-from-bracket mr-1"></i>{% trans "Logout" %}
                     </a>
@@ -147,6 +152,11 @@
                 <a href="{% url 'dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
                     <i class="fa-solid fa-gauge-high mr-1"></i>{% trans "Dashboard" %}
                 </a>
+                    {% if user.owned_clinics.exists %}
+                        <a href="{% url 'vets:clinic_dashboard' %}" class="block text-green-700 hover:text-green-900 font-medium py-2 text-sm text-center">
+                            <i class="fa-solid fa-hospital mr-1"></i>{% trans "Clinic Dashboard" %}
+                        </a>
+                    {% endif %}
                 <a href="{% url 'logout' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
                     <i class="fa-solid fa-right-from-bracket mr-1"></i>{% trans "Logout" %}
                 </a>
