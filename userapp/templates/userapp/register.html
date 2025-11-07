@@ -51,6 +51,17 @@
                 </div>
             {% endfor %}
 
+                <!-- Terms and Conditions Agreement -->
+                <div>
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" name="agree_terms" id="agree_terms" required class="form-checkbox h-4 w-4 text-indigo-600">
+                        <span class="ml-2 text-sm text-gray-700">
+                            {% trans "I agree to the" %}
+                            <a href="{% url 'terms_and_conditions' %}" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">{% trans "Terms and Conditions" %}</a>
+                        </span>
+                    </label>
+                </div>
+
             {% if form.non_field_errors %}
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded text-sm">
                     {% for error in form.non_field_errors %}

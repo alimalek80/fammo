@@ -15,4 +15,5 @@ urlpatterns = [
     path('admin-dashboard/chart-data/', views.admin_dashboard_chart_data, name='admin_dashboard_chart_data'),
     path('admin-dashboard/kpis/', views.admin_dashboard_kpis, name='admin_dashboard_kpis'),
     path('export/users/', export_users_csv, name='export_users_csv'),
+    path('terms/', views.terms_and_conditions_view, name='terms_and_conditions'),
 ]

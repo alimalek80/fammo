@@ -22,4 +22,8 @@ urlpatterns = [
     # Referral handling
     path('ref/<str:code>/', views.ReferralLandingView.as_view(), name='referral_landing'),
     path('api/track-referral/', views.TrackReferralAPIView.as_view(), name='track_referral_api'),
+    
+    # Legal documents
+    path('clinic-terms/', views.clinic_terms_and_conditions_view, name='clinic_terms_and_conditions'),
+    path('clinic-partnership/', views.clinic_partnership_agreement_view, name='clinic_partnership_agreement'),
 ]

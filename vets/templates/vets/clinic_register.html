@@ -230,15 +230,27 @@
 
                 <!-- Terms and Submit -->
                 <div class="pt-6">
-                    <div class="flex items-start mb-6">
-                        {{ form.terms_accepted }}
-                        <label for="{{ form.terms_accepted.id_for_label }}" class="ml-2 text-sm text-gray-700">
-                            {{ form.terms_accepted.label }}
+                    <!-- Terms and Conditions Checkbox -->
+                    <div class="flex items-start mb-4">
+                        <input type="checkbox" name="agree_clinic_terms" id="agree_clinic_terms" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <label for="agree_clinic_terms" class="ml-2 text-sm text-gray-700">
+                            {% trans "I have read and agree to" %}
+                            <a href="{% url 'vets:clinic_terms_and_conditions' %}" target="_blank" class="text-blue-600 hover:text-blue-800 underline">
+                                {% trans "FAMMO.ai's Terms and Conditions for Clinics" %}
+                            </a>
                         </label>
                     </div>
-                    {% if form.terms_accepted.errors %}
-                        <p class="text-red-600 text-sm mb-4">{{ form.terms_accepted.errors.0 }}</p>
-                    {% endif %}
+                    
+                    <!-- Partnership Agreement Checkbox -->
+                    <div class="flex items-start mb-6">
+                        <input type="checkbox" name="agree_partnership" id="agree_partnership" required class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded">
+                        <label for="agree_partnership" class="ml-2 text-sm text-gray-700">
+                            {% trans "I have read and agree to the" %}
+                            <a href="{% url 'vets:clinic_partnership_agreement' %}" target="_blank" class="text-blue-600 hover:text-blue-800 underline">
+                                {% trans "FAMMO Clinic Partnership Agreement" %}
+                            </a>
+                        </label>
+                    </div>
                     
                     <div class="flex justify-end space-x-4">
                         <a href="{% url 'vets:partner_clinics' %}" class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">

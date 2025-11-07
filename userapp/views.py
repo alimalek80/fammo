@@ -42,6 +42,10 @@ def _google_enabled():
         return False
 
 
+def terms_and_conditions_view(request):
+    return render(request, 'userapp/terms_and_conditions.html')
+
+
 def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)

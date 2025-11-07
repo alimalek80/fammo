@@ -509,3 +509,13 @@ class TrackReferralAPIView(View):
             return JsonResponse({'error': 'Invalid JSON'}, status=400)
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=500)
+
+
+def clinic_terms_and_conditions_view(request):
+    """Display clinic terms and conditions"""
+    return render(request, 'vets/clinic_terms_and_conditions.html')
+
+
+def clinic_partnership_agreement_view(request):
+    """Display clinic partnership agreement"""
+    return render(request, 'vets/clinic_partnership_agreement.html')
