@@ -1,4 +1,41 @@
 /* d:\FAMO-PET\static\css\styles.css */
+
+/* Navbar utilities */
+.navbar-hidden {
+    transform: translateY(-100%);
+}
+
+/* Ensure hidden class works even if Tailwind fails */
+.hidden {
+    display: none !important;
+}
+
+/* Mobile menu should be visible when not hidden */
+#mobile-menu {
+    display: block;
+}
+
+#mobile-menu.hidden {
+    display: none !important;
+}
+
+/* Desktop menu - ensure it shows on desktop even if Tailwind fails */
+@media (min-width: 1024px) {
+    #navbar-menu {
+        display: flex !important;
+        flex-grow: 1;
+        align-items: center;
+        justify-content: space-between;
+    }
+}
+
+/* Mobile menu button - hide on desktop */
+@media (min-width: 1024px) {
+    #mobile-menu-button {
+        display: none !important;
+    }
+}
+
 .selectable-option {
     transition: border-color 0.2s, background 0.2s;
 }
