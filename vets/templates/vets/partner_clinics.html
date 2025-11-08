@@ -17,26 +17,52 @@
     </div>
 
     <!-- Search Section -->
-    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-        <form method="get" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                    {{ search_form.search }}
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8" id="partnerClinicsSearch" style="background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; padding:24px;">
+        <form method="get" class="space-y-4" style="margin:0;">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" style="display:grid; grid-template-columns: 1fr; gap: 12px;">
+                <div style="min-width:0;">
+                    <!-- Search text -->
+                    <input type="text" name="search" value="{{ request.GET.search }}" placeholder="{% trans 'Search clinics by name, city, or specialization...' %}" class="form-control search-input" style="width:100%; padding:12px 14px; border:1px solid #d1d5db; border-radius:10px; font-size:14px; line-height:20px; outline:none; box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);" />
                 </div>
-                <div>
-                    {{ search_form.city }}
+                <div style="min-width:0;">
+                    <!-- City text -->
+                    <input type="text" name="city" value="{{ request.GET.city }}" placeholder="{% trans 'City' %}" class="form-control city-input" style="width:100%; padding:12px 14px; border:1px solid #d1d5db; border-radius:10px; font-size:14px; line-height:20px; outline:none; box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);" />
                 </div>
-                <div class="flex items-center space-x-4">
-                    <label class="flex items-center">
+                <div class="flex items-center space-x-4" style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <label class="flex items-center" style="display:flex; align-items:center; gap:8px; font-size:14px; color:#374151;">
                         {{ search_form.verified_only }}
                         <span class="ml-2 text-sm text-gray-700">{{ search_form.verified_only.label }}</span>
                     </label>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" style="padding: 8px 16px; background-color: #2563eb; color: white; border: none; border-radius: 6px; cursor: pointer;">
-                        {% trans "Search" %}
-                    </button>
+                    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700" style="padding: 10px 16px; background-color: #2563eb; color: #ffffff; border: none; border-radius: 8px; cursor: pointer; font-weight:600;">
+                            {% trans "Search" %}
+                        </button>
+                        <!-- Find Near Me Button -->
+                        <button type="button" id="findNearMeBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700" style="padding:10px 16px; background-color:#4f46e5; color:#ffffff; border:none; border-radius:8px; cursor:pointer; font-weight:600;">
+                            {% trans "Find near me" %}
+                        </button>
+                        <select id="nearbyRadius" aria-label="{% trans 'Search radius' %}" style="padding:10px 12px; border:1px solid #d1d5db; border-radius:8px; background:#fff; color:#111827;">
+                            <option value="0.1">{% trans "100 m" %}</option>
+                            <option value="0.25">{% trans "250 m" %}</option>
+                            <option value="0.5" selected>{% trans "500 m" %}</option>
+                            <option value="1">{% trans "1 km" %}</option>
+                            <option value="2">{% trans "2 km" %}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </form>
+        <!-- Helper text / status -->
+        <p id="nearbyStatus" style="margin-top:10px; font-size:13px; color:#6b7280; display:none;"></p>
+    </div>
+
+    <!-- Nearby results (in-page, client-side) -->
+    <div id="nearbyResults" class="mb-8" style="display:none;">
+        <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;">
+            <h2 style="font-size:18px; font-weight:700; color:#111827;">{% trans "Clinics near you" %}</h2>
+            <button type="button" id="clearNearbyBtn" style="background:none; border:none; color:#2563eb; cursor:pointer;">{% trans "Clear" %}</button>
+        </div>
+        <div id="nearbyCards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap:16px;"></div>
     </div>
 
     <!-- Results Info -->
@@ -193,6 +219,138 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    line-clamp: 2;
 }
+/* Minimal fallback styles if Tailwind fails to load */
+#partnerClinicsSearch .form-control:focus,
+#partnerClinicsSearch input[type="text"]:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+#partnerClinicsSearch label input[type="checkbox"] {
+        width: 16px; height: 16px;
+}
+#partnerClinicsSearch .text-gray-700 { color: #374151; }
+#partnerClinicsSearch .text-gray-600 { color: #4b5563; }
+
+/* Card fallback */
+.card-fallback { background:#ffffff; border:1px solid #e5e7eb; border-radius:12px; overflow:hidden; }
+.card-fallback .card-body { padding:16px; }
+.badge { display:inline-flex; align-items:center; padding:4px 8px; border-radius:9999px; font-size:12px; font-weight:600; background:#dcfce7; color:#166534; }
+.distance-chip { display:inline-block; padding:4px 8px; border-radius:9999px; background:#fff7ed; color:#9a3412; font-size:12px; font-weight:600; }
 </style>
+
+<script>
+(function(){
+    const btn = document.getElementById('findNearMeBtn');
+    const statusEl = document.getElementById('nearbyStatus');
+    const resultsWrap = document.getElementById('nearbyResults');
+    const cards = document.getElementById('nearbyCards');
+    const clearBtn = document.getElementById('clearNearbyBtn');
+    const radiusSel = document.getElementById('nearbyRadius');
+    if (!btn || !cards) return;
+
+    const nearbyUrl = "{% url 'vets:nearby_clinics_api' %}";
+
+    function setStatus(msg, show=true){
+        if(!statusEl) return;
+        statusEl.textContent = msg || '';
+        statusEl.style.display = show && msg ? 'block' : 'none';
+    }
+
+    function renderClinics(list){
+        cards.innerHTML = '';
+        if(!list || !list.length){
+            cards.innerHTML = '<p style="color:#6b7280;">{% trans "No nearby clinics found in the selected radius." %}</p>';
+            resultsWrap.style.display = 'block';
+            return;
+        }
+        const frag = document.createDocumentFragment();
+        list.forEach(function(c){
+            const card = document.createElement('div');
+            card.className = 'bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow card-fallback';
+            card.innerHTML = `
+                <div class="card-body">
+                    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px;">
+                        <div style="min-width:0;">
+                            <h3 style="font-size:16px; font-weight:700; color:#111827; margin:0 0 2px 0;">
+                                <a href="/vets/clinic/${c.slug}/" style="color:#111827; text-decoration:none;">${c.name || ''}</a>
+                            </h3>
+                            ${c.is_verified ? '<span class="badge">✓ {% trans "Verified" %}</span>' : ''}
+                        </div>
+                        ${c.logo ? `<img src="${c.logo}" alt="${c.name||''}" style="width:48px; height:48px; object-fit:cover; border-radius:8px;">` : ''}
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
+                        ${c.city ? `<span style="color:#4b5563; font-size:14px;">${c.city}</span>` : ''}
+                        ${typeof c.distance === 'number' ? `<span class="distance-chip">${c.distance} km</span>` : ''}
+                    </div>
+                    ${c.specializations ? `<div style="margin-top:6px; display:flex; flex-wrap:wrap; gap:6px;">${String(c.specializations).split(',').slice(0,5).map(s=>`<span style=\"background:#eff6ff; color:#1d4ed8; border-radius:6px; padding:4px 8px; font-size:12px;\">${s.trim()}</span>`).join('')}</div>` : ''}
+                    <div style="margin-top:12px; padding-top:12px; border-top:1px solid #f3f4f6;">
+                        <a href="/vets/clinic/${c.slug}/" style="display:block; width:100%; text-align:center; padding:8px 16px; background-color:#eff6ff; color:#1d4ed8; text-decoration:none; border-radius:8px; font-weight:600;">{% trans "View Profile" %} →</a>
+                    </div>
+                </div>`;
+            frag.appendChild(card);
+        });
+        cards.appendChild(frag);
+        resultsWrap.style.display = 'block';
+    }
+
+    function setLoading(loading){
+        if(loading){
+            btn.dataset._label = btn.textContent;
+            btn.textContent = '{% trans "Locating…" %}';
+            btn.disabled = true;
+            btn.style.opacity = '0.8';
+        } else {
+            if(btn.dataset._label) btn.textContent = btn.dataset._label;
+            btn.disabled = false;
+            btn.style.opacity = '1';
+        }
+    }
+
+    async function fetchNearby(lat, lng, radius){
+        try{
+            setStatus('{% trans "Searching for clinics near your location…" %}');
+            const url = `${nearbyUrl}?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}&radius=${encodeURIComponent(radius)}`;
+            const res = await fetch(url, { credentials: 'same-origin' });
+            const data = await res.json();
+            if(!res.ok || !data.success){
+                throw new Error((data && data.error) || 'Request failed');
+            }
+            renderClinics(data.clinics || []);
+            setStatus('');
+        }catch(err){
+            console.error(err);
+            setStatus('{% trans "Unable to fetch nearby clinics. Please try again." %}');
+        }
+    }
+
+    function requestGeolocation(){
+        if(!navigator.geolocation){
+            setStatus('{% trans "Geolocation is not supported by your browser." %}');
+            return;
+        }
+        setLoading(true);
+        navigator.geolocation.getCurrentPosition(function(pos){
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+            const radius = (radiusSel && radiusSel.value) ? radiusSel.value : 10;
+            fetchNearby(lat, lng, radius).finally(()=> setLoading(false));
+        }, function(err){
+            console.warn('Geolocation error', err);
+            setLoading(false);
+            setStatus('{% trans "Location permission denied or unavailable. You can type your city or try again." %}');
+        }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 });
+    }
+
+    btn.addEventListener('click', requestGeolocation);
+    if (clearBtn){
+        clearBtn.addEventListener('click', function(){
+            resultsWrap.style.display = 'none';
+            cards.innerHTML = '';
+            setStatus('');
+        });
+    }
+})();
+</script>
 {% endblock %}
