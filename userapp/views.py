@@ -24,6 +24,9 @@ from datetime import timedelta
 from django.utils import timezone
 import json
 from django.conf import settings
+from django.views import View
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 try:
     from allauth.socialaccount.models import SocialApp
 except ImportError:
@@ -414,6 +417,60 @@ def admin_dashboard_view(request):
         'total_ai_health': total_ai_health,
     }
     return render(request, 'userapp/admin_dashboard.html', context)
+
+
+@method_decorator(csrf_protect, name='dispatch')
+class SaveUserLocationAPIView(View):
+    """Authenticated endpoint to store user approximate location.
+    Expects JSON: {"latitude": <float>, "longitude": <float>, "consent": true}
+    """
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({'error': 'Authentication required'}, status=401)
+        try:
+            data = json.loads(request.body or '{}')
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+
+        lat = data.get('latitude')
+        lng = data.get('longitude')
+        consent = bool(data.get('consent'))
+
+        if consent and (lat is None or lng is None):
+            return JsonResponse({'error': 'Latitude and longitude are required when consent is true'}, status=400)
+
+        profile = getattr(request.user, 'profile', None)
+        if profile is None:
+            return JsonResponse({'error': 'Profile not found'}, status=404)
+
+        if consent:
+            # Validate numeric ranges
+            try:
+                lat_f = float(lat)
+                lng_f = float(lng)
+            except (TypeError, ValueError):
+                return JsonResponse({'error': 'Invalid coordinate values'}, status=400)
+            if not (-90 <= lat_f <= 90 and -180 <= lng_f <= 180):
+                return JsonResponse({'error': 'Coordinates out of bounds'}, status=400)
+            profile.latitude = lat_f
+            profile.longitude = lng_f
+            profile.location_consent = True
+            profile.location_updated_at = timezone.now()
+        else:
+            # User revoked consent
+            profile.location_consent = False
+            profile.latitude = None
+            profile.longitude = None
+            profile.location_updated_at = timezone.now()
+        profile.save(update_fields=["latitude", "longitude", "location_consent", "location_updated_at"])
+
+        return JsonResponse({
+            'success': True,
+            'consent': profile.location_consent,
+            'latitude': float(profile.latitude) if profile.latitude is not None else None,
+            'longitude': float(profile.longitude) if profile.longitude is not None else None,
+            'updated_at': profile.location_updated_at.isoformat() if profile.location_updated_at else None
+        })
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def admin_dashboard_chart_data(request):

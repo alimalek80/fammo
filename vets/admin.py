@@ -6,7 +6,7 @@ from .models import Clinic, VetProfile, ReferralCode, ReferredUser, ReferralStat
 class ClinicAdmin(admin.ModelAdmin):
     list_display = (
         "name", "city", "owner", "email_status", "admin_status", 
-        "public_status", "created_at"
+        "public_status", "latitude", "longitude", "created_at"
     )
     list_filter = (
         "email_confirmed", "admin_approved", "is_verified", 
@@ -25,7 +25,7 @@ class ClinicAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ('Basic Information', {
-            'fields': ('name', 'slug', 'city', 'address', 'phone', 'email', 'website')
+            'fields': ('name', 'slug', 'city', 'address', 'latitude', 'longitude', 'phone', 'email', 'website')
         }),
         ('Social & Professional', {
             'fields': ('instagram', 'specializations', 'working_hours', 'bio', 'logo')
@@ -50,7 +50,7 @@ class ClinicAdmin(admin.ModelAdmin):
 
     actions = [
         "mark_verified", "mark_unverified", "approve_clinics", 
-        "disapprove_clinics", "create_or_refresh_referral_code"
+        "disapprove_clinics", "create_or_refresh_referral_code", "report_nearby_users"
     ]
 
     def email_status(self, obj):
@@ -108,6 +108,16 @@ class ClinicAdmin(admin.ModelAdmin):
             ReferralCode.create_default_for_clinic(clinic)
             created += 1
         self.message_user(request, f"Created new referral codes for {created} clinic(s).")
+
+    @admin.action(description="Generate proximity user report for selected clinic (single)")
+    def report_nearby_users(self, request, queryset):
+        if queryset.count() != 1:
+            self.message_user(request, "Select exactly one clinic to generate report", level='error')
+            return
+        clinic = queryset.first()
+        from django.urls import reverse
+        report_url = reverse('vets:clinic_nearby_users_report', kwargs={'clinic_id': clinic.id})
+        self.message_user(request, f"Proximity report: {report_url}")
 
 
 @admin.register(VetProfile)

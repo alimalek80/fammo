@@ -92,7 +92,7 @@ class ClinicProfileForm(forms.ModelForm):
     class Meta:
         model = Clinic
         fields = [
-            'name', 'city', 'address', 'phone', 'email', 'website',
+            'name', 'city', 'address', 'latitude', 'longitude', 'phone', 'email', 'website',
             'instagram', 'specializations', 'working_hours', 'bio', 'logo'
         ]
         widgets = {
@@ -107,6 +107,18 @@ class ClinicProfileForm(forms.ModelForm):
                 'placeholder': '@yourclinicinsta or full URL'
             }),
             'address': forms.Textarea(attrs={'rows': 2}),
+            'latitude': forms.NumberInput(attrs={
+                'placeholder': 'e.g., 52.3676',
+                'step': '0.000001'
+            }),
+            'longitude': forms.NumberInput(attrs={
+                'placeholder': 'e.g., 4.9041',
+                'step': '0.000001'
+            }),
+        }
+        help_texts = {
+            'latitude': 'Latitude coordinate (will be auto-detected from address if left empty)',
+            'longitude': 'Longitude coordinate (will be auto-detected from address if left empty)',
         }
 
 

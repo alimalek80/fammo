@@ -24,6 +24,9 @@ from .utils import (
     send_clinic_confirmation_email, send_admin_notification_email,
     confirm_clinic_email, is_confirmation_token_valid
 )
+from django.contrib.auth.decorators import user_passes_test
+from django.utils.decorators import method_decorator
+from userapp.models import Profile
 
 User = get_user_model()
 
@@ -519,3 +522,221 @@ def clinic_terms_and_conditions_view(request):
 def clinic_partnership_agreement_view(request):
     """Display clinic partnership agreement"""
     return render(request, 'vets/clinic_partnership_agreement.html')
+
+
+# ========== Location & Nearby Clinics API ==========
+
+class ClinicFinderView(TemplateView):
+    """Main clinic finder page with location detection"""
+    template_name = 'vets/clinic_finder.html'
+
+
+class NearbyClinicAPIView(View):
+    """API endpoint to find clinics near given coordinates"""
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            # Get parameters
+            lat = request.GET.get('lat')
+            lng = request.GET.get('lng')
+            radius = request.GET.get('radius', 50)  # Default 50km
+            
+            if not lat or not lng:
+                return JsonResponse({
+                    'error': 'Latitude and longitude are required'
+                }, status=400)
+            
+            # Convert to float
+            try:
+                latitude = float(lat)
+                longitude = float(lng)
+                radius_km = float(radius)
+            except ValueError:
+                return JsonResponse({
+                    'error': 'Invalid coordinate format'
+                }, status=400)
+            
+            # Validate coordinates
+            if not (-90 <= latitude <= 90) or not (-180 <= longitude <= 180):
+                return JsonResponse({
+                    'error': 'Invalid coordinates'
+                }, status=400)
+            
+            # Get nearby clinics
+            from .utils import get_clinics_within_radius
+            clinics = get_clinics_within_radius(latitude, longitude, radius_km)
+            
+            # Serialize clinic data
+            clinic_data = []
+            for clinic in clinics:
+                clinic_data.append({
+                    'id': clinic.id,
+                    'name': clinic.name,
+                    'slug': clinic.slug,
+                    'city': clinic.city,
+                    'address': clinic.address,
+                    'phone': clinic.phone,
+                    'email': clinic.email,
+                    'website': clinic.website,
+                    'working_hours': clinic.working_hours,
+                    'specializations': clinic.specializations,
+                    'latitude': float(clinic.latitude) if clinic.latitude else None,
+                    'longitude': float(clinic.longitude) if clinic.longitude else None,
+                    'distance': clinic.distance,
+                    'is_verified': clinic.is_verified,
+                    'logo': clinic.logo.url if clinic.logo else None,
+                })
+            
+            return JsonResponse({
+                'success': True,
+                'count': len(clinic_data),
+                'clinics': clinic_data,
+                'search_params': {
+                    'latitude': latitude,
+                    'longitude': longitude,
+                    'radius_km': radius_km
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': f'Server error: {str(e)}'
+            }, status=500)
+
+
+class ClinicsByCityAPIView(View):
+    """API endpoint to find clinics by city name"""
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            city = request.GET.get('city', '').strip()
+            radius = request.GET.get('radius', 10)
+            
+            if not city:
+                return JsonResponse({
+                    'error': 'City name is required'
+                }, status=400)
+            
+            # Search for clinics in the city
+            clinics = Clinic.objects.filter(
+                city__icontains=city,
+                email_confirmed=True,
+                admin_approved=True
+            ).order_by('name')
+            
+            # Serialize clinic data
+            clinic_data = []
+            for clinic in clinics:
+                clinic_data.append({
+                    'id': clinic.id,
+                    'name': clinic.name,
+                    'slug': clinic.slug,
+                    'city': clinic.city,
+                    'address': clinic.address,
+                    'phone': clinic.phone,
+                    'email': clinic.email,
+                    'website': clinic.website,
+                    'working_hours': clinic.working_hours,
+                    'specializations': clinic.specializations,
+                    'latitude': float(clinic.latitude) if clinic.latitude else None,
+                    'longitude': float(clinic.longitude) if clinic.longitude else None,
+                    'is_verified': clinic.is_verified,
+                    'logo': clinic.logo.url if clinic.logo else None,
+                })
+            
+            return JsonResponse({
+                'success': True,
+                'count': len(clinic_data),
+                'clinics': clinic_data,
+                'search_params': {
+                    'city': city,
+                }
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'error': f'Server error: {str(e)}'
+            }, status=500)
+
+
+class IPLocationAPIView(View):
+    """API endpoint to get location from user's IP address"""
+    
+    def get(self, request, *args, **kwargs):
+        try:
+            from .utils import get_client_ip, get_location_from_ip
+            
+            ip_address = get_client_ip(request)
+            location = get_location_from_ip(ip_address)
+            
+            if location:
+                return JsonResponse({
+                    'success': True,
+                    'location': location,
+                    'ip': ip_address
+                })
+            else:
+                return JsonResponse({
+                    'success': False,
+                    'message': 'Unable to determine location from IP',
+                    'ip': ip_address
+                }, status=404)
+                
+        except Exception as e:
+            return JsonResponse({
+                'error': f'Server error: {str(e)}'
+            }, status=500)
+
+
+@method_decorator(user_passes_test(lambda u: u.is_staff or u.is_superuser), name='dispatch')
+class ClinicNearbyUsersReportView(TemplateView):
+    """Admin-only report: users near a given clinic within a radius (km)."""
+    template_name = 'vets/admin/nearby_users_report.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        clinic_id = kwargs.get('clinic_id')
+        clinic = get_object_or_404(Clinic, id=clinic_id)
+        radius_km = self.request.GET.get('radius', '10')
+        try:
+            radius_km = float(radius_km)
+        except ValueError:
+            radius_km = 10.0
+
+        users = []
+        if clinic.latitude is not None and clinic.longitude is not None:
+            from .utils import haversine_distance
+            # Only profiles with consent and coordinates
+            qs = Profile.objects.filter(
+                location_consent=True,
+                latitude__isnull=False,
+                longitude__isnull=False,
+            ).select_related('user')
+            for prof in qs:
+                try:
+                    dist = haversine_distance(
+                        float(clinic.latitude), float(clinic.longitude),
+                        float(prof.latitude), float(prof.longitude)
+                    )
+                except Exception:
+                    continue
+                if dist <= radius_km:
+                    users.append({
+                        'profile': prof,
+                        'email': getattr(prof.user, 'email', ''),
+                        'first_name': prof.first_name,
+                        'last_name': prof.last_name,
+                        'city': prof.city,
+                        'distance_km': round(dist, 1),
+                        'location_updated_at': prof.location_updated_at,
+                    })
+            users.sort(key=lambda x: x['distance_km'])
+
+        context.update({
+            'clinic': clinic,
+            'radius_km': radius_km,
+            'users': users,
+            'clinic_has_coords': clinic.latitude is not None and clinic.longitude is not None,
+        })
+        return context
+

@@ -26,4 +26,11 @@ urlpatterns = [
     # Legal documents
     path('clinic-terms/', views.clinic_terms_and_conditions_view, name='clinic_terms_and_conditions'),
     path('clinic-partnership/', views.clinic_partnership_agreement_view, name='clinic_partnership_agreement'),
+    
+    # Location & Clinic Finder
+    path('find/', views.ClinicFinderView.as_view(), name='clinic_finder'),
+    path('api/nearby-clinics/', views.NearbyClinicAPIView.as_view(), name='nearby_clinics_api'),
+    path('api/clinics-by-city/', views.ClinicsByCityAPIView.as_view(), name='clinics_by_city_api'),
+    path('api/location/ip/', views.IPLocationAPIView.as_view(), name='ip_location_api'),
+    path('admin/clinic/<int:clinic_id>/nearby-users/', views.ClinicNearbyUsersReportView.as_view(), name='clinic_nearby_users_report'),
 ]

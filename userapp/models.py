@@ -32,6 +32,12 @@ class Profile(models.Model):
     zip_code = models.CharField(_("ZIP Code"), max_length=20)
     country = models.CharField(_("Country"), max_length=100)
 
+    # Optional location fields for proximity features
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    location_consent = models.BooleanField(default=False, help_text="User consented to store approximate location")
+    location_updated_at = models.DateTimeField(null=True, blank=True)
+
     subscription_plan = models.ForeignKey(
         SubscriptionPlan,
         on_delete=models.SET_NULL,

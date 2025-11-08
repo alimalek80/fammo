@@ -41,6 +41,20 @@ class Clinic(TimeStampedModel):
     slug = models.SlugField(max_length=190, unique=True, blank=True)
     city = models.CharField(max_length=80, blank=True)
     address = models.CharField(max_length=220, blank=True)
+    latitude = models.DecimalField(
+        max_digits=9, 
+        decimal_places=6, 
+        null=True, 
+        blank=True,
+        help_text="Latitude coordinate for location"
+    )
+    longitude = models.DecimalField(
+        max_digits=9, 
+        decimal_places=6, 
+        null=True, 
+        blank=True,
+        help_text="Longitude coordinate for location"
+    )
     phone = models.CharField(max_length=40, blank=True)
     email = models.EmailField(blank=True)
     website = models.URLField(blank=True)
@@ -84,6 +98,19 @@ class Clinic(TimeStampedModel):
                 i += 1
                 slug_candidate = f"{base}-{i}"
             self.slug = slug_candidate
+        
+        # Auto-geocode if coordinates are missing but address exists
+        if (not self.latitude or not self.longitude) and (self.address or self.city):
+            from .utils import geocode_address
+            import logging
+            logger = logging.getLogger(__name__)
+            
+            coords = geocode_address(self.address, self.city)
+            if coords:
+                self.latitude, self.longitude = coords
+                # Use logger instead of print to avoid encoding issues
+                logger.info(f"Auto-geocoded {self.name}: {self.latitude}, {self.longitude}")
+        
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
