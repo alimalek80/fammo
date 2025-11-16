@@ -4,7 +4,7 @@
     <div class="text-center">
         <label class="block text-lg font-bold text-gray-700 dark:text-gray-300 mb-4">
             {% if form.pet_name %}
-                Is {{ form.pet_name }} a Girl or Boy?
+                {% blocktrans with name=form.pet_name %}Is {{ name }} a Girl or Boy?{% endblocktrans %}
             {% else %}
                 {{ form.gender.label }}
             {% endif %}
@@ -33,7 +33,7 @@
     <div class="text-center">
         <label class="block text-lg font-bold text-gray-700 dark:text-gray-300 mb-4" id="neutered-label">
             {% if form.pet_name %}
-                Is {{ form.pet_name }} neutered/spayed?
+                {% blocktrans with name=form.pet_name %}Is {{ name }} neutered/spayed?{% endblocktrans %}
             {% else %}
                 {{ form.neutered.label }}
             {% endif %}
@@ -45,10 +45,10 @@
                     <div class="neutered-label">
                         {% if choice.choice_label == "True" or choice.choice_label == "Yes" %}
                             <i class="fa-solid fa-check text-2xl text-green-600 mb-2 block"></i>
-                            <div class="text-base font-medium text-gray-700">Yes</div>
+                            <div class="text-base font-medium text-gray-700">{% trans "Yes" %}</div>
                         {% elif choice.choice_label == "False" or choice.choice_label == "No" %}
                             <i class="fa-solid fa-xmark text-2xl text-red-600 mb-2 block"></i>
-                            <div class="text-base font-medium text-gray-700">No</div>
+                            <div class="text-base font-medium text-gray-700">{% trans "No" %}</div>
                         {% else %}
                             <div class="text-base font-medium text-gray-700">{{ choice.choice_label }}</div>
                         {% endif %}

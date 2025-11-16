@@ -1,18 +1,16 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# FAMMO Turkish Translation
+# Copyright (C) 2025 FAMMO
+# This file is distributed under the same license as the FAMMO package.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: FAMMO 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-08 15:08+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2025-11-15 20:06+0300\n"
+"PO-Revision-Date: 2025-11-16 12:00+0300\n"
+"Last-Translator: FAMMO Team\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -57,72 +55,81 @@ msgstr "Sınıra Ulaşıldı"
 
 #: .\aihub\templates\aihub\limit_reached.html:9
 #: .\pet\templates\pet\pet_detail.html:26
+#: .\pet\templates\pet\wizard_step.html:147
 msgid "Back to My Pets"
 msgstr "Evcil Hayvanlarıma Dön"
 
-#: .\aihub\views.py:35
+#: .\aihub\views.py:71
 #, python-format
 msgid "You’ve reached your monthly limit of %(limit)s AI meal suggestions."
 msgstr "Aylık %(limit)s Yapay Zekâ öğün önerisi limitinize ulaştınız."
 
-#: .\aihub\views.py:110
+#: .\aihub\views.py:136
 #, python-format
 msgid "You’ve reached your monthly limit of %(limit)s AI health reports."
 msgstr "Aylık %(limit)s Yapay Zekâ sağlık raporu limitinize ulaştınız."
 
 #: .\blog\templates\blog\blog_detail.html:47
-#: .\blog\templates\blog\blog_list.html:61
+#: .\blog\templates\blog\blog_list.html:63
 msgid "No ratings"
 msgstr "Puanlama yok"
 
 #: .\blog\templates\blog\blog_detail.html:52
-#: .\blog\templates\blog\blog_detail.html:268
+#: .\blog\templates\blog\blog_detail.html:271
 msgid "Comments"
 msgstr "Yorumlar"
 
-#: .\blog\templates\blog\blog_detail.html:142
+#: .\blog\templates\blog\blog_detail.html:145
+#: .\pet\templates\pet\wizard_step.html:135
 msgid "Submit"
 msgstr "Gönder"
 
-#: .\blog\templates\blog\blog_detail.html:147
+#: .\blog\templates\blog\blog_detail.html:150
 msgid "You rated:"
 msgstr "Puanınız:"
 
-#: .\blog\templates\blog\blog_detail.html:161
-#: .\blog\templates\blog\blog_detail.html:203
+#: .\blog\templates\blog\blog_detail.html:164
+#: .\blog\templates\blog\blog_detail.html:206
 msgid "Share this post:"
 msgstr "Bu gönderiyi paylaş:"
 
-#: .\blog\templates\blog\blog_detail.html:245
+#: .\blog\templates\blog\blog_detail.html:248
+#: .\pet\templates\pet\wizard_step.html:114
+#: .\vets\templates\vets\dashboard\referrals.html:186
+#: .\vets\templates\vets\partner_clinics.html:193
 msgid "Previous"
 msgstr "Önceki"
 
-#: .\blog\templates\blog\blog_detail.html:257
+#: .\blog\templates\blog\blog_detail.html:260
+#: .\pet\templates\pet\wizard_step.html:124
+#: .\vets\templates\vets\dashboard\referrals.html:196
+#: .\vets\templates\vets\partner_clinics.html:204
 msgid "Next"
 msgstr "Sonraki"
 
-#: .\blog\templates\blog\blog_detail.html:277
+#: .\blog\templates\blog\blog_detail.html:280
 msgid "Add a comment..."
 msgstr "Yorum ekle..."
 
-#: .\blog\templates\blog\blog_detail.html:279
+#: .\blog\templates\blog\blog_detail.html:282
 msgid "Post Comment"
 msgstr "Yorumu Gönder"
 
-#: .\blog\templates\blog\blog_detail.html:283
+#: .\blog\templates\blog\blog_detail.html:286
 msgid "Login to comment."
 msgstr "Yorum yapmak için giriş yapın."
 
-#: .\blog\templates\blog\blog_detail.html:302
+#: .\blog\templates\blog\blog_detail.html:305
 msgid "Deleted user"
 msgstr "Silinmiş kullanıcı"
 
-#: .\blog\templates\blog\blog_detail.html:309
+#: .\blog\templates\blog\blog_detail.html:312
 msgid "No comments yet."
 msgstr "Henüz yorum yok."
 
-#: .\blog\templates\blog\blog_list.html:4 .\templates\partials\navbar.html:33
-#: .\templates\partials\navbar.html:86
+#: .\blog\templates\blog\blog_list.html:4 .\templates\partials\navbar.html:61
+#: .\templates\partials\navbar.html:70 .\templates\partials\navbar.html:145
+#: .\templates\partials\navbar.html:166
 msgid "Blog"
 msgstr "Blog"
 
@@ -134,9 +141,59 @@ msgstr "FAMMO Blog"
 msgid "All"
 msgstr "Tümü"
 
-#: .\blog\templates\blog\blog_list.html:74
+#: .\blog\templates\blog\blog_list.html:76
 msgid "No blog posts yet."
 msgstr "Henüz blog yazısı yok."
+
+#: .\chat\templates\chat\chat.html:109
+msgid "Chat with Fammo AI"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:115
+msgid "New Chat"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:132
+msgid "You"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:132 .\chat\templates\chat\chat.html:160
+#: .\chat\templates\chat\chat.html:187 .\chat\templates\chat\chat.html:194
+msgid "AI"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:136 .\chat\templates\chat\chat.html:163
+#: .\vets\templates\vets\clinic_detail.html:258
+#: .\vets\templates\vets\dashboard\dashboard.html:548
+#: .\vets\templates\vets\dashboard\referrals.html:315
+msgid "Copied!"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:176
+msgid "Hi! Ask me anything about dog & cat care."
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:198
+#, python-format
+msgid "Profile on file for %(name)s"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:198
+msgid "You can ask me about diet, health risks, and daily care."
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:210
+#: .\vets\templates\vets\clinic_finder.html:181
+msgid "Error:"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:239
+msgid "Type your pet question…"
+msgstr ""
+
+#: .\chat\templates\chat\chat.html:255
+msgid "The AI response is handled by the Django server."
+msgstr ""
 
 #: .\core\forms.py:56 .\core\templates\core\contact.html:111
 msgid "You may contact me about my request."
@@ -158,8 +215,8 @@ msgstr "Genel Soru"
 msgid "Your message..."
 msgstr "Mesajınız..."
 
-#: .\core\templates\core\about.html:5 .\templates\partials\navbar.html:36
-#: .\templates\partials\navbar.html:87
+#: .\core\templates\core\about.html:5 .\templates\partials\navbar.html:76
+#: .\templates\partials\navbar.html:168
 msgid "About Us"
 msgstr "Hakkımızda"
 
@@ -280,7 +337,7 @@ msgstr ""
 "vizyonunda birleşiyoruz. FAMMO sadece bir platform değil, bir tutku."
 
 #: .\core\templates\core\about.html:85 .\core\templates\core\contact.html:5
-#: .\templates\partials\navbar.html:39 .\templates\partials\navbar.html:88
+#: .\templates\partials\navbar.html:79 .\templates\partials\navbar.html:169
 msgid "Contact Us"
 msgstr "Bize Ulaşın"
 
@@ -310,10 +367,14 @@ msgid ""
 msgstr "Formu doldurun; ekibimiz bir iş günü içinde size dönüş yapacaktır."
 
 #: .\core\templates\core\contact.html:45 .\core\templates\core\contact.html:89
+#: .\core\templates\core\home.html:505 .\templates\account\login.html:73
+#: .\templates\account\signup.html:73
+#: .\vets\templates\vets\admin\nearby_users_report.html:29
+#: .\vets\templates\vets\clinic_detail.html:73
 msgid "Email"
 msgstr "E-posta"
 
-#: .\core\templates\core\contact.html:56 .\userapp\forms.py:49
+#: .\core\templates\core\contact.html:56 .\userapp\forms.py:51
 #: .\userapp\models.py:30 .\userapp\templates\userapp\update_profile.html:51
 msgid "Address"
 msgstr "Adres"
@@ -327,6 +388,7 @@ msgid "Follow us"
 msgstr "Bizi takip edin"
 
 #: .\core\templates\core\contact.html:83
+#: .\vets\templates\vets\admin\nearby_users_report.html:30
 msgid "Name"
 msgstr "Ad Soyad"
 
@@ -354,60 +416,134 @@ msgstr "Ekibimiz bir iş günü içinde size dönüş yapacaktır."
 msgid "OK"
 msgstr "Tamam"
 
-#: .\core\templates\core\home.html:5
+#: .\core\templates\core\home.html:4
 msgid "Welcome to FAMO"
 msgstr "FAMO’ya Hoş Geldiniz"
 
-#: .\core\templates\core\home.html:48
+#: .\core\templates\core\home.html:427 .\core\templates\core\home.html:460
+#, fuzzy
+#| msgid "Personalized Meal Plans"
+msgid "Personalized Pet Nutrition"
+msgstr "Kişiselleştirilmiş Öğün Planları"
+
+#: .\core\templates\core\home.html:431 .\core\templates\core\home.html:464
+msgid ""
+"Get <span class=\"highlight-orange\">personalized meal plans</span> and "
+"<span class=\"highlight-orange\">preventive health reports</span> for your "
+"furry friends. Our AI analyzes your pet's unique needs to keep them healthy "
+"and happy."
+msgstr ""
+
+#: .\core\templates\core\home.html:439 .\core\templates\core\home.html:472
+msgid "Powered by the FAMMO Diet Engine"
+msgstr ""
+
+#: .\core\templates\core\home.html:444 .\core\templates\core\home.html:477
 msgid "Try for Free"
 msgstr "Ücretsiz Dene"
 
-#: .\core\templates\core\home.html:51
+#: .\core\templates\core\home.html:447 .\core\templates\core\home.html:480
 msgid "Login / Sign Up"
 msgstr "Giriş Yap / Kayıt Ol"
 
-#: .\core\templates\core\home.html:67
+#: .\core\templates\core\home.html:490
+msgid "Get Your Pet's Nutrition & AI Health Report"
+msgstr ""
+
+#: .\core\templates\core\home.html:492
+msgid "Free & Easy"
+msgstr ""
+
+#: .\core\templates\core\home.html:497
+msgid "Pet type"
+msgstr ""
+
+#: .\core\templates\core\home.html:499
+msgid "Choose..."
+msgstr ""
+
+#: .\core\templates\core\home.html:500
+#, fuzzy
+#| msgid "Cats"
+msgid "Cat"
+msgstr "Kediler"
+
+#: .\core\templates\core\home.html:501
+#, fuzzy
+#| msgid "Dogs"
+msgid "Dog"
+msgstr "Köpekler"
+
+#: .\core\templates\core\home.html:503
+msgid "Pet weight (kg)"
+msgstr ""
+
+#: .\core\templates\core\home.html:508
+msgid "Send Info & Get Report"
+msgstr ""
+
+#: .\core\templates\core\home.html:511
+msgid "Thank you! Your free personalized report is on its way."
+msgstr ""
+
+#: .\core\templates\core\home.html:528
+#, fuzzy
+#| msgid "Why FAMMO?"
+msgid "Why FAMO?"
+msgstr "Neden FAMMO?"
+
+#: .\core\templates\core\home.html:538
 msgid "Personalized Meal Plans"
 msgstr "Kişiselleştirilmiş Öğün Planları"
 
-#: .\core\templates\core\home.html:68
+#: .\core\templates\core\home.html:540
 msgid "Tailored recommendations based on your pet's unique needs."
 msgstr ""
 "Evcil hayvanınızın benzersiz ihtiyaçlarına göre özelleştirilmiş öneriler."
 
-#: .\core\templates\core\home.html:72
+#: .\core\templates\core\home.html:550
 msgid "Health Risk Alerts"
 msgstr "Sağlık Risk Uyarıları"
 
-#: .\core\templates\core\home.html:73
+#: .\core\templates\core\home.html:552
 msgid "Proactive insights to keep your pet healthy and happy."
 msgstr "Evcil hayvanınızı sağlıklı ve mutlu tutmak için proaktif içgörüler."
 
-#: .\core\templates\core\home.html:77
+#: .\core\templates\core\home.html:562
 msgid "Smart Pet Profiles"
 msgstr "Akıllı Evcil Hayvan Profilleri"
 
-#: .\core\templates\core\home.html:78
+#: .\core\templates\core\home.html:564
 msgid "Comprehensive profiles for precise AI analysis."
 msgstr "Doğru Yapay Zekâ analizi için kapsamlı profiller."
 
-#: .\core\templates\core\home.html:85
+#: .\core\templates\core\home.html:577
 msgid "What Our Users Say"
 msgstr "Kullanıcılarımız Ne Diyor"
 
-#: .\core\templates\core\home.html:109
+#: .\core\templates\core\home.html:610
+msgid ""
+"FAMO transformed my dog's diet! The personalized plan was easy to follow and "
+"incredibly effective."
+msgstr ""
+
+#: .\core\templates\core\home.html:621
+msgid "The health risk alerts helped me act early — true preventive care!"
+msgstr ""
+
+#: .\core\templates\core\home.html:638
 msgid "Frequently Asked Questions"
 msgstr "Sıkça Sorulan Sorular"
 
-#: .\core\templates\core\home.html:128
+#: .\core\templates\core\home.html:655
 msgid "No FAQs have been published yet."
 msgstr "Henüz SSS yayımlanmadı."
 
-#: .\core\templates\core\home.html:135
+#: .\core\templates\core\home.html:665
 msgid "Ready to Transform Your Pet's Life?"
 msgstr "Evcil Hayvanınızın Hayatını Değiştirmeye Hazır mısınız?"
 
-#: .\core\templates\core\home.html:137
+#: .\core\templates\core\home.html:667
 msgid ""
 "Join thousands of satisfied pet owners who trust FAMO for their pets' "
 "nutrition and health."
@@ -415,16 +551,19 @@ msgstr ""
 "Evcil hayvanlarının beslenmesi ve sağlığı için FAMO’ya güvenen binlerce "
 "mutlu evcil hayvan sahibine katılın."
 
-#: .\core\templates\core\home.html:140
+#: .\core\templates\core\home.html:670
 msgid "Get Started Today"
 msgstr "Bugün Başlayın"
+
+#: .\core\templates\core\home.html:721
+msgid "Error"
+msgstr ""
 
 #: .\core\templates\core\how_it_works.html:5
 msgid "How it works"
 msgstr "Nasıl çalışır"
 
 #: .\core\templates\core\how_it_works.html:12
-#| msgid "How it Works"
 msgid "How FAMMO Works"
 msgstr "FAMMO Nasıl Çalışır"
 
@@ -450,7 +589,6 @@ msgstr ""
 "olacaksınız."
 
 #: .\core\templates\core\how_it_works.html:36
-#| msgid "Register"
 msgid "Register Now"
 msgstr "Hemen Kayıt Ol"
 
@@ -487,10 +625,10 @@ msgstr ""
 "\n"
 "Kontrol Paneli → Evcil Hayvanlarım → Yeni Evcil Hayvan Ekle  \n"
 "\n"
-"Bu, yapay zekâmızın evcil hayvanınızı özel kılan şeyleri anlamasına yardımcı olur."
+"Bu, yapay zekâmızın evcil hayvanınızı özel kılan şeyleri anlamasına yardımcı "
+"olur."
 
 #: .\core\templates\core\how_it_works.html:84
-#| msgid "Meal Recommendations"
 msgid "3. Get AI-Powered Recommendations"
 msgstr "3. Yapay Zekâ Destekli Öneriler Alın"
 
@@ -502,7 +640,8 @@ msgid ""
 "              AI Health Reports → Preventive insights to keep your pet "
 "healthier for longer."
 msgstr ""
-"Evcil hayvanınızın profili hazır olduğunda iki güçlü araca erişebilirsiniz:  \n"
+"Evcil hayvanınızın profili hazır olduğunda iki güçlü araca "
+"erişebilirsiniz:  \n"
 "Yapay Zekâ Yemek Önerileri → Evcil hayvanınızın ihtiyaçlarına göre "
 "özelleştirilmiş yemek planları.  \n"
 "Yapay Zekâ Sağlık Raporları → Evcil hayvanınızı daha uzun süre sağlıklı "
@@ -514,9 +653,9 @@ msgid ""
 "recommendations will be added soon as we partner with trusted pet food "
 "suppliers.)"
 msgstr ""
-"(Yemek önerileri şu anda beslenmeye odaklanmaktadır. Güvenilir evcil "
-"hayvan maması tedarikçileriyle iş birliği yaptıkça, belirli marka önerileri "
-"yakında eklenecektir.)"
+"(Yemek önerileri şu anda beslenmeye odaklanmaktadır. Güvenilir evcil hayvan "
+"maması tedarikçileriyle iş birliği yaptıkça, belirli marka önerileri yakında "
+"eklenecektir.)"
 
 #: .\core\templates\core\how_it_works.html:96
 #: .\core\templates\core\how_it_works.html:144
@@ -533,7 +672,8 @@ msgid ""
 "your pet’s journey and see how their needs evolve."
 msgstr ""
 "Her öneri ve rapor AI Geçmişinizde saklanır, böylece evcil hayvanınızın "
-"yolculuğunu takip edebilir ve ihtiyaçlarının nasıl geliştiğini görebilirsiniz."
+"yolculuğunu takip edebilir ve ihtiyaçlarının nasıl geliştiğini "
+"görebilirsiniz."
 
 #: .\core\templates\core\how_it_works.html:133
 msgid "5. Your Dashboard at a Glance"
@@ -583,8 +723,8 @@ msgstr "Değişiklikleri Kaydet"
 msgid "Manage Social Media Links"
 msgstr "Sosyal Medya Bağlantılarını Yönet"
 
-#: .\pet\templates\pet\my_pets.html:12 .\templates\partials\navbar.html:26
-#: .\templates\partials\navbar.html:83
+#: .\pet\templates\pet\my_pets.html:12 .\templates\partials\navbar.html:44
+#: .\templates\partials\navbar.html:132
 #: .\userapp\templates\userapp\dashboard_base.html:33
 msgid "My Pets"
 msgstr "Evcil Hayvanlarım"
@@ -668,18 +808,6 @@ msgstr "Evet,Hayır"
 msgid "Age"
 msgstr "Yaş"
 
-#: .\pet\templates\pet\pet_detail.html:13
-msgid "years"
-msgstr "yıl"
-
-#: .\pet\templates\pet\pet_detail.html:13
-msgid "months"
-msgstr "ay"
-
-#: .\pet\templates\pet\pet_detail.html:13
-msgid "weeks"
-msgstr "hafta"
-
 #: .\pet\templates\pet\pet_detail.html:14
 msgid "Weight"
 msgstr "Kilo"
@@ -720,17 +848,66 @@ msgstr "Evcil Hayvan Profili"
 msgid "Basic Info"
 msgstr "Temel Bilgiler"
 
+#: .\pet\templates\pet\pet_form.html:111
+#: .\pet\templates\pet\wizard_steps\step2_gender.html:48
+#, fuzzy
+#| msgid "Yes,No"
+msgid "Yes"
+msgstr "Evet,Hayır"
+
+#: .\pet\templates\pet\pet_form.html:113
+#: .\pet\templates\pet\wizard_steps\step2_gender.html:51
+msgid "No"
+msgstr ""
+
 #: .\pet\templates\pet\pet_form.html:346
 msgid "Food & Treats"
 msgstr "Mama ve Ödüller"
 
 #: .\pet\templates\pet\pet_form.html:438
+#: .\vets\templates\vets\admin\nearby_users_report.html:21
 msgid "Update"
 msgstr "Güncelle"
 
 #: .\pet\templates\pet\pet_form.html:438
 msgid "Save"
 msgstr "Kaydet"
+
+#: .\pet\templates\pet\wizard_step.html:133
+#, fuzzy
+#| msgid "Smart Pet Profiles"
+msgid "Create Pet Profile"
+msgstr "Akıllı Evcil Hayvan Profilleri"
+
+#: .\pet\templates\pet\wizard_steps\step10_activity_level.html:5
+#, python-format
+msgid "How active is %(name)s?"
+msgstr ""
+
+#: .\pet\templates\pet\wizard_steps\step2_gender.html:7
+#, python-format
+msgid "Is %(name)s a Girl or Boy?"
+msgstr ""
+
+#: .\pet\templates\pet\wizard_steps\step2_gender.html:36
+#, python-format
+msgid "Is %(name)s neutered/spayed?"
+msgstr ""
+
+#: .\pet\templates\pet\wizard_steps\step3_age.html:5
+#, python-format
+msgid "How old is %(name)s?"
+msgstr ""
+
+#: .\pet\templates\pet\wizard_steps\step4_breed.html:5
+#, python-format
+msgid "What breed is %(name)s?"
+msgstr ""
+
+#: .\pet\templates\pet\wizard_steps\step5_food.html:5
+#, python-format
+msgid "What is %(name)s currently eating?"
+msgstr ""
 
 #: .\subscription\models.py:14
 msgid "Essentials"
@@ -752,38 +929,175 @@ msgstr "Paketinizi Seçin"
 msgid "Update Plan"
 msgstr "Paketi Güncelle"
 
-#: .\templates\partials\navbar.html:23 .\templates\partials\navbar.html:82
+#: .\templates\account\login.html:6
+#: .\vets\templates\vets\referral_landing.html:137
+#, fuzzy
+#| msgid "Sign Up"
+msgid "Sign In"
+msgstr "Kayıt Ol"
+
+#: .\templates\account\login.html:14
+#, fuzzy
+#| msgid "Sign In with Social Account"
+msgid "Sign In to Your Account"
+msgstr "Sosyal Hesapla Giriş Yap"
+
+#: .\templates\account\login.html:18
+msgid "Sign in to your existing account to see your pet's personalized plan."
+msgstr ""
+
+#: .\templates\account\login.html:22 .\templates\account\signup.html:22
+msgid "Or"
+msgstr ""
+
+#: .\templates\account\login.html:24
+#, fuzzy
+#| msgid "Already have an account?"
+msgid "create a new account"
+msgstr "Zaten hesabınız var mı?"
+
+#: .\templates\account\login.html:50 .\templates\account\signup.html:50
+msgid "Please fix the following errors:"
+msgstr ""
+
+#: .\templates\account\login.html:76 .\templates\account\signup.html:76
+#, fuzzy
+#| msgid "Email Address"
+msgid "Email address"
+msgstr "E-posta Adresi"
+
+#: .\templates\account\login.html:79 .\templates\account\login.html:82
+#: .\templates\account\signup.html:80 .\templates\account\signup.html:83
+#: .\userapp\forms.py:9 .\userapp\forms.py:74
+#: .\userapp\templates\userapp\login.html:30
+msgid "Password"
+msgstr "Şifre"
+
+#: .\templates\account\login.html:91
+msgid "Remember me"
+msgstr ""
+
+#: .\templates\account\login.html:97
+#, fuzzy
+#| msgid "Forgot password?"
+msgid "Forgot your password?"
+msgstr "Şifrenizi mi unuttunuz?"
+
+#: .\templates\account\login.html:109
+#, fuzzy
+#| msgid "Sign Up"
+msgid "Sign in"
+msgstr "Kayıt Ol"
+
+#: .\templates\account\login.html:123 .\templates\account\signup.html:114
+msgid "Or continue with"
+msgstr ""
+
+#: .\templates\account\login.html:137 .\templates\account\signup.html:128
+#: .\userapp\templates\userapp\register.html:100
+#: .\userapp\templates\userapp\register.html:106
+msgid "Continue with Google"
+msgstr ""
+
+#: .\templates\account\signup.html:6
+#: .\userapp\templates\userapp\register.html:78
+msgid "Sign Up"
+msgstr "Kayıt Ol"
+
+#: .\templates\account\signup.html:14
+#, fuzzy
+#| msgid "Create your account to get started."
+msgid "Create Your Account"
+msgstr "Başlamak için hesabınızı oluşturun."
+
+#: .\templates\account\signup.html:18
+msgid ""
+"You're almost there! Create your account to see your pet's personalized plan."
+msgstr ""
+
+#: .\templates\account\signup.html:24
+msgid "sign in to your existing account"
+msgstr ""
+
+#: .\templates\account\signup.html:86 .\templates\account\signup.html:89
+#, fuzzy
+#| msgid "Password"
+msgid "Password (again)"
+msgstr "Şifre"
+
+#: .\templates\account\signup.html:100
+#, fuzzy
+#| msgid "Signup"
+msgid "Sign up"
+msgstr "Kayıt Ol"
+
+#: .\templates\partials\navbar.html:41 .\templates\partials\navbar.html:131
 msgid "Make Your Plan"
 msgstr "Planını Oluştur"
 
-#: .\templates\partials\navbar.html:29 .\templates\partials\navbar.html:84
+#: .\templates\partials\navbar.html:51 .\templates\partials\navbar.html:138
 #: .\userapp\templates\userapp\dashboard_base.html:67
 msgid "AI History"
 msgstr "Yapay Zekâ Geçmişi"
 
-#: .\templates\partials\navbar.html:42 .\templates\partials\navbar.html:89
+#: .\templates\partials\navbar.html:54 .\templates\partials\navbar.html:139
+msgid "Chat"
+msgstr ""
+
+#: .\templates\partials\navbar.html:64 .\templates\partials\navbar.html:73
+#: .\templates\partials\navbar.html:146 .\templates\partials\navbar.html:167
+msgid "Trusted Partners"
+msgstr ""
+
+#: .\templates\partials\navbar.html:82 .\templates\partials\navbar.html:170
 msgid "How it Works"
 msgstr "Nasıl Çalışır"
 
-#: .\templates\partials\navbar.html:50 .\templates\partials\navbar.html:93
+#: .\templates\partials\navbar.html:91 .\templates\partials\navbar.html:153
 #: .\userapp\templates\userapp\dashboard.html:20
 msgid "Dashboard"
 msgstr "Panel"
 
-#: .\templates\partials\navbar.html:53 .\templates\partials\navbar.html:96
+#: .\templates\partials\navbar.html:95 .\templates\partials\navbar.html:157
+#: .\vets\templates\vets\dashboard\dashboard.html:4
+#: .\vets\templates\vets\dashboard\dashboard.html:208
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Clinic Dashboard"
+msgstr "Panel"
+
+#: .\templates\partials\navbar.html:99 .\templates\partials\navbar.html:161
 #: .\userapp\templates\userapp\dashboard_base.html:81
 msgid "Logout"
 msgstr "Çıkış Yap"
 
-#: .\templates\partials\navbar.html:57 .\templates\partials\navbar.html:100
+#: .\templates\partials\navbar.html:103 .\templates\partials\navbar.html:174
 #: .\userapp\templates\userapp\login.html:48
 #: .\userapp\templates\userapp\password_reset_complete.html:7
 msgid "Login"
 msgstr "Giriş Yap"
 
-#: .\templates\partials\navbar.html:60 .\templates\partials\navbar.html:103
+#: .\templates\partials\navbar.html:106 .\templates\partials\navbar.html:177
 msgid "Signup"
 msgstr "Kayıt Ol"
+
+#: .\templates\partials\navbar.html:130
+#, fuzzy
+#| msgid "User & Pet Management"
+msgid "Pet Management"
+msgstr "Kullanıcı ve Evcil Hayvan Yönetimi"
+
+#: .\templates\partials\navbar.html:137
+msgid "AI Services"
+msgstr ""
+
+#: .\templates\partials\navbar.html:144
+msgid "Information"
+msgstr ""
+
+#: .\templates\partials\navbar.html:151
+msgid "Account"
+msgstr ""
 
 #: .\templates\socialaccount\login.html:5
 msgid "Sign In with Social Account"
@@ -821,50 +1135,60 @@ msgstr "Devam Et"
 msgid "Back to Login"
 msgstr "Girişe Dön"
 
-#: .\userapp\forms.py:7 .\userapp\templates\userapp\login.html:30
-msgid "Password"
-msgstr "Şifre"
-
-#: .\userapp\forms.py:8
+#: .\userapp\forms.py:10 .\userapp\forms.py:82
 msgid "Confirm Password"
 msgstr "Şifreyi Doğrula"
 
-#: .\userapp\forms.py:18
+#: .\userapp\forms.py:20
 msgid "Passwords do not match"
 msgstr "Şifreler uyuşmuyor"
 
-#: .\userapp\forms.py:37 .\userapp\templates\userapp\login.html:21
+#: .\userapp\forms.py:39 .\userapp\templates\userapp\login.html:21
 msgid "Email Address"
 msgstr "E-posta Adresi"
 
-#: .\userapp\forms.py:46 .\userapp\models.py:27
+#: .\userapp\forms.py:48 .\userapp\models.py:27
 #: .\userapp\templates\userapp\update_profile.html:14
 msgid "First Name"
 msgstr "Ad"
 
-#: .\userapp\forms.py:47 .\userapp\models.py:28
+#: .\userapp\forms.py:49 .\userapp\models.py:28
 #: .\userapp\templates\userapp\update_profile.html:20
 msgid "Last Name"
 msgstr "Soyad"
 
-#: .\userapp\forms.py:48 .\userapp\templates\userapp\update_profile.html:26
+#: .\userapp\forms.py:50 .\userapp\templates\userapp\update_profile.html:26
+#: .\vets\templates\vets\clinic_detail.html:45
 msgid "Phone"
 msgstr "Telefon"
 
-#: .\userapp\forms.py:50 .\userapp\models.py:31
+#: .\userapp\forms.py:52 .\userapp\models.py:31
 #: .\userapp\templates\userapp\update_profile.html:32
+#: .\vets\templates\vets\admin\nearby_users_report.html:31
+#: .\vets\templates\vets\clinic_finder.html:79
+#: .\vets\templates\vets\partner_clinics.html:29
 msgid "City"
 msgstr "Şehir"
 
-#: .\userapp\forms.py:51 .\userapp\models.py:32
+#: .\userapp\forms.py:53 .\userapp\models.py:32
 #: .\userapp\templates\userapp\update_profile.html:38
 msgid "ZIP Code"
 msgstr "Posta Kodu"
 
-#: .\userapp\forms.py:52 .\userapp\models.py:33
+#: .\userapp\forms.py:54 .\userapp\models.py:33
 #: .\userapp\templates\userapp\update_profile.html:44
 msgid "Country"
 msgstr "Ülke"
+
+#: .\userapp\forms.py:79
+msgid "Your password must contain at least 8 characters."
+msgstr ""
+
+#: .\userapp\forms.py:104
+#, fuzzy
+#| msgid "Passwords do not match"
+msgid "The two password fields didn't match."
+msgstr "Şifreler uyuşmuyor"
 
 #: .\userapp\models.py:29
 msgid "Phone Number"
@@ -874,39 +1198,103 @@ msgstr "Telefon Numarası"
 msgid "Admin Statistics"
 msgstr "Yönetici İstatistikleri"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:10
+#: .\userapp\templates\userapp\admin_dashboard.html:11
+msgid "Report Actions"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:15
+msgid "Download All Charts (PDF)"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:23
 msgid "Total Users"
 msgstr "Toplam Kullanıcı"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:15
+#: .\userapp\templates\userapp\admin_dashboard.html:28
 msgid "Total Pets"
 msgstr "Toplam Evcil Hayvan"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:20
+#: .\userapp\templates\userapp\admin_dashboard.html:33
 msgid "Dogs"
 msgstr "Köpekler"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:25
+#: .\userapp\templates\userapp\admin_dashboard.html:38
 msgid "Cats"
 msgstr "Kediler"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:30
+#: .\userapp\templates\userapp\admin_dashboard.html:43
 msgid "AI Meals"
 msgstr "YZ Öğünleri"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:35
+#: .\userapp\templates\userapp\admin_dashboard.html:48
 msgid "AI Health Reports"
 msgstr "YZ Sağlık Raporları"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:41
-msgid "Top Countries by AI Requests"
-msgstr "YZ İsteklerine Göre Önde Gelen Ülkeler"
+#: .\userapp\templates\userapp\admin_dashboard.html:55
+msgid "Users with AI Requests by Date"
+msgstr ""
 
-#: .\userapp\templates\userapp\admin_dashboard.html:49
+#: .\userapp\templates\userapp\admin_dashboard.html:57
+#: .\userapp\templates\userapp\admin_dashboard.html:82
+#: .\userapp\templates\userapp\admin_dashboard.html:105
+#: .\vets\templates\vets\dashboard\analytics.html:89
+#, fuzzy
+#| msgid "Last Name"
+msgid "Last 7 Days"
+msgstr "Soyad"
+
+#: .\userapp\templates\userapp\admin_dashboard.html:58
+#: .\userapp\templates\userapp\admin_dashboard.html:83
+#: .\userapp\templates\userapp\admin_dashboard.html:106
+#: .\vets\templates\vets\dashboard\analytics.html:73
+msgid "Last 30 Days"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:59
+#: .\userapp\templates\userapp\admin_dashboard.html:84
+#: .\userapp\templates\userapp\admin_dashboard.html:107
+msgid "This Month"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:60
+#: .\userapp\templates\userapp\admin_dashboard.html:85
+#: .\userapp\templates\userapp\admin_dashboard.html:108
+msgid "Last 3 Months"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:61
+#: .\userapp\templates\userapp\admin_dashboard.html:86
+#: .\userapp\templates\userapp\admin_dashboard.html:109
+msgid "Last 6 Months"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:62
+#: .\userapp\templates\userapp\admin_dashboard.html:87
+#: .\userapp\templates\userapp\admin_dashboard.html:110
+msgid "Last 360 Days"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:70
+#: .\userapp\templates\userapp\admin_dashboard.html:91
+#: .\userapp\templates\userapp\admin_dashboard.html:118
+#, fuzzy
+#| msgid "Download Pets CSV"
+msgid "Download PDF"
+msgstr "Evcil Hayvanlar CSV’sini İndir"
+
+#: .\userapp\templates\userapp\admin_dashboard.html:79
+msgid "User Registrations by Date"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:103
+msgid "User Registrations by Country"
+msgstr ""
+
+#: .\userapp\templates\userapp\admin_dashboard.html:127
 msgid "Download Pets CSV"
 msgstr "Evcil Hayvanlar CSV’sini İndir"
 
-#: .\userapp\templates\userapp\admin_dashboard.html:52
+#: .\userapp\templates\userapp\admin_dashboard.html:131
 msgid "Download Users CSV"
 msgstr "Kullanıcılar CSV’sini İndir"
 
@@ -926,11 +1314,15 @@ msgstr ""
 msgid "Add Pet"
 msgstr "Evcil Hayvan Ekle"
 
-#: .\userapp\templates\userapp\dashboard.html:21 .\userapp\views.py:97
+#: .\userapp\templates\userapp\dashboard.html:21 .\userapp\views.py:206
 msgid "Welcome to your dashboard!"
 msgstr "Panelinize hoş geldiniz!"
 
 #: .\userapp\templates\userapp\dashboard.html:26
+#: .\vets\templates\vets\dashboard\analytics.html:39
+#: .\vets\templates\vets\dashboard\dashboard.html:412
+#: .\vets\templates\vets\dashboard\profile_update.html:39
+#: .\vets\templates\vets\dashboard\referrals.html:39
 msgid "Profile"
 msgstr "Profil"
 
@@ -948,6 +1340,7 @@ msgid "View your activity"
 msgstr "Aktivitenizi görüntüleyin"
 
 #: .\userapp\templates\userapp\dashboard_base.html:27
+#: .\vets\templates\vets\dashboard\dashboard.html:218
 msgid "Edit Profile"
 msgstr "Profili Düzenle"
 
@@ -1027,25 +1420,118 @@ msgstr "Şifre Unuttum"
 msgid "Send Reset Link"
 msgstr "Sıfırlama Bağlantısını Gönder"
 
-#: .\userapp\templates\userapp\register.html:8
+#: .\userapp\templates\userapp\register.html:17
+#: .\vets\templates\vets\referral_landing.html:4
+msgid "Referred by"
+msgstr ""
+
+#: .\userapp\templates\userapp\register.html:20
+msgid "Join FAMMO through this trusted veterinary partner"
+msgstr ""
+
+#: .\userapp\templates\userapp\register.html:27
 msgid "Register"
 msgstr "Kayıt Ol"
 
-#: .\userapp\templates\userapp\register.html:9
+#: .\userapp\templates\userapp\register.html:30
+#, fuzzy
+#| msgid "Create your account to get started."
+msgid "Create your account to connect with"
+msgstr "Başlamak için hesabınızı oluşturun."
+
+#: .\userapp\templates\userapp\register.html:32
 msgid "Create your account to get started."
 msgstr "Başlamak için hesabınızı oluşturun."
 
-#: .\userapp\templates\userapp\register.html:39
-msgid "Sign Up"
+#: .\userapp\templates\userapp\register.html:59
+msgid "I agree to the"
+msgstr ""
+
+#: .\userapp\templates\userapp\register.html:60
+msgid "Terms and Conditions"
+msgstr ""
+
+#: .\userapp\templates\userapp\register.html:76
+#, fuzzy
+#| msgid "Sign Up"
+msgid "Sign Up with"
 msgstr "Kayıt Ol"
 
-#: .\userapp\templates\userapp\register.html:44
+#: .\userapp\templates\userapp\register.html:89
+msgid "or"
+msgstr ""
+
+#: .\userapp\templates\userapp\register.html:113
+#: .\vets\templates\vets\referral_landing.html:135
 msgid "Already have an account?"
 msgstr "Zaten hesabınız var mı?"
 
-#: .\userapp\templates\userapp\register.html:46
+#: .\userapp\templates\userapp\register.html:115
 msgid "Login here"
 msgstr "Buradan giriş yapın"
+
+#: .\userapp\templates\userapp\set_password.html:17
+#: .\vets\templates\vets\email_confirmed.html:16
+msgid "Email Confirmed!"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:21
+#, python-format
+msgid "Great! Now set your password to complete %(pet_name)s's profile."
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:23
+msgid "Great! Now set your password to complete your account setup."
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:35
+#, fuzzy
+#| msgid "Pet Profile"
+msgid "Pet Profile Ready!"
+msgstr "Evcil Hayvan Profili"
+
+#: .\userapp\templates\userapp\set_password.html:37
+#, python-format
+msgid "%(pet_name)s's profile has been created and is waiting for you!"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:57
+msgid "Your account email"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:111
+#, fuzzy
+#| msgid "Password Reset Sent"
+msgid "Password Requirements:"
+msgstr "Şifre Sıfırlama Gönderildi"
+
+#: .\userapp\templates\userapp\set_password.html:113
+msgid "At least 8 characters long"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:114
+msgid "Cannot be too similar to your email"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:115
+msgid "Cannot be a commonly used password"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:116
+msgid "Cannot be entirely numeric"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:128
+msgid "Complete Setup & View My Pets"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:133
+msgid "Complete Setup & Continue"
+msgstr ""
+
+#: .\userapp\templates\userapp\set_password.html:144
+msgid "Your information is secure and encrypted"
+msgstr ""
 
 #: .\userapp\templates\userapp\update_profile.html:7
 msgid "Edit Your Profile"
@@ -1079,41 +1565,1222 @@ msgstr "Evcil hayvan yok"
 msgid "No users found."
 msgstr "Kullanıcı bulunamadı."
 
-#: .\userapp\views.py:40
+#: .\userapp\views.py:104
 msgid ""
 "Registration successful. Please check your email to activate your account."
 msgstr ""
 "Kayıt başarılı. Hesabınızı etkinleştirmek için lütfen e-postanızı kontrol "
 "edin."
 
-#: .\userapp\views.py:43 .\userapp\views.py:83
+#: .\userapp\views.py:107 .\userapp\views.py:192 .\userapp\views.py:390
 msgid "Please correct the errors below."
 msgstr "Lütfen aşağıdaki hataları düzeltin."
 
-#: .\userapp\views.py:50
+#: .\userapp\views.py:156
 msgid "You are already logged in."
 msgstr "Zaten giriş yapmışsınız."
 
-#: .\userapp\views.py:59
+#: .\userapp\views.py:165
 msgid "Login successful."
 msgstr "Giriş başarılı."
 
-#: .\userapp\views.py:62
+#: .\userapp\views.py:168
 msgid "Invalid login credentials."
 msgstr "Geçersiz giriş bilgileri."
 
-#: .\userapp\views.py:70
+#: .\userapp\views.py:179
 msgid "You have been logged out."
 msgstr "Oturumunuz kapatıldı."
 
-#: .\userapp\views.py:80
+#: .\userapp\views.py:189
 msgid "Profile updated successfully."
 msgstr "Profil başarıyla güncellendi."
 
-#: .\userapp\views.py:122
-msgid "Your account has been activated. You can now log in."
-msgstr "Hesabınız etkinleştirildi. Artık giriş yapabilirsiniz."
-
-#: .\userapp\views.py:125
+#: .\userapp\views.py:345
 msgid "Activation link is invalid!"
 msgstr "Etkinleştirme bağlantısı geçersiz!"
+
+#: .\userapp\views.py:353
+msgid "Invalid access. Please use the activation link from your email."
+msgstr ""
+
+#: .\userapp\views.py:363
+msgid "User not found or not activated."
+msgstr ""
+
+#: .\userapp\views.py:387
+msgid "🎉 Welcome to FAMO-PET! Your password has been set successfully!"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:4
+#: .\vets\templates\vets\admin\nearby_users_report.html:8
+msgid "Nearby Users Report"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:4
+msgid "Django site admin"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:10
+msgid "Clinic"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:12
+msgid "Coordinates"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:14
+msgid ""
+"This clinic has no coordinates set. Add latitude/longitude to enable "
+"proximity reports."
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:19
+msgid "Radius (km)"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:25
+msgid "Users within"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:32
+msgid "Distance (km)"
+msgstr ""
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:33
+#, fuzzy
+#| msgid "Update"
+msgid "Updated"
+msgstr "Güncelle"
+
+#: .\vets\templates\vets\admin\nearby_users_report.html:49
+msgid "No users with stored location within the selected radius."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:5
+msgid "Veterinary Clinic"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:22
+#: .\vets\templates\vets\dashboard\dashboard.html:382
+msgid "Verified Partner"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:59
+msgid "Hours"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:84
+#: .\vets\templates\vets\clinic_finder.html:317
+msgid "Call Now"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:90
+#, fuzzy
+#| msgid "Email"
+msgid "Send Email"
+msgstr "E-posta"
+
+#: .\vets\templates\vets\clinic_detail.html:96
+msgid "Visit Website"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:102
+msgid "Share Referral"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:141
+#, fuzzy
+#| msgid "About Us"
+msgid "About"
+msgstr "Hakkımızda"
+
+#: .\vets\templates\vets\clinic_detail.html:151
+msgid "Lead Veterinarian"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:157
+msgid "Qualifications:"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:164
+msgid "Certifications:"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:175
+msgid "Location"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:191
+msgid "Specializations"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:205
+#, fuzzy
+#| msgid "Follow us"
+msgid "Follow Us"
+msgstr "Bizi takip edin"
+
+#: .\vets\templates\vets\clinic_detail.html:223
+#: .\vets\templates\vets\referral_landing.html:4
+#, fuzzy
+#| msgid "About FAMMO"
+msgid "Join FAMMO"
+msgstr "FAMMO Hakkında"
+
+#: .\vets\templates\vets\clinic_detail.html:225
+msgid ""
+"Get personalized pet care recommendations and connect with trusted vets."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:230
+msgid "Sign Up with This Clinic"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:235
+#: .\vets\templates\vets\referral_landing.html:131
+msgid "Sign Up for FAMMO"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_detail.html:275
+#: .\vets\templates\vets\dashboard\dashboard.html:565
+#: .\vets\templates\vets\dashboard\referrals.html:336
+msgid "Could not copy link. Please try again."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:5
+msgid "Find Nearby Clinics"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:42
+msgid "Find Veterinary Clinics Near You"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:45
+msgid "Allow location access to find the closest veterinary clinics"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:62
+msgid "Your Location"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:65
+msgid "Latitude:"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:66
+msgid "Longitude:"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:67
+msgid "Accuracy:"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:74
+msgid "Or Enter Your Location Manually"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:83
+#, fuzzy
+#| msgid "View your activity"
+msgid "Enter your city"
+msgstr "Aktivitenizi görüntüleyin"
+
+#: .\vets\templates\vets\clinic_finder.html:87
+msgid "Search Radius"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:100
+msgid "Search by City"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:110
+msgid "Nearby Clinics"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:120
+msgid "Searching for nearby clinics..."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:129
+msgid "No clinics found in your area"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:130
+msgid "Try increasing the search radius"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:161
+msgid ""
+"Location permission is granted. Click the button below to find nearby "
+"clinics."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:170
+msgid "Use My Current Location"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:184
+msgid ""
+"Please enable location access in your browser settings or use the manual "
+"search below."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:198
+msgid "Please enter a city name"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:234
+msgid "Error loading clinics. Please try again."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:312
+msgid "View Details"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_finder.html:325
+msgid "Directions"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:4
+msgid "Register Your Veterinary Clinic"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:11
+msgid "Join FAMMO as a Partner Clinic"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:14
+msgid ""
+"Connect with pet owners and grow your practice through our trusted platform"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:31
+msgid "Account Information"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:72
+#: .\vets\templates\vets\dashboard\profile_update.html:57
+msgid "Clinic Information"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:190
+#: .\vets\templates\vets\dashboard\profile_update.html:179
+#, fuzzy
+#| msgid "Pet Profile"
+msgid "Veterinarian Profile"
+msgstr "Evcil Hayvan Profili"
+
+#: .\vets\templates\vets\clinic_register.html:190
+#: .\vets\templates\vets\dashboard\profile_update.html:179
+#, fuzzy
+#| msgid "Optimal"
+msgid "Optional"
+msgstr "Optimal"
+
+#: .\vets\templates\vets\clinic_register.html:237
+msgid "I have read and agree to"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:239
+msgid "FAMMO.ai's Terms and Conditions for Clinics"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:248
+msgid "I have read and agree to the"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:250
+msgid "FAMMO Clinic Partnership Agreement"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:257
+#: .\vets\templates\vets\dashboard\profile_update.html:218
+msgid "Cancel"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register.html:260
+#, fuzzy
+#| msgid "Register"
+msgid "Register Clinic"
+msgstr "Kayıt Ol"
+
+#: .\vets\templates\vets\clinic_register_success.html:16
+#, fuzzy
+#| msgid "Choose Your Plan"
+msgid "Check Your Email!"
+msgstr "Paketinizi Seçin"
+
+#: .\vets\templates\vets\clinic_register_success.html:19
+msgid "Registration almost complete"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:27
+msgid "Thank you for registering!"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:30
+msgid "We've sent a confirmation email to verify your clinic's email address."
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:38
+msgid "Next Steps"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:44
+msgid "Check your email inbox"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:45
+msgid ""
+"Look for an email from FAMMO with the subject 'Confirm Your Clinic Email'"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:51
+msgid "Click the confirmation link"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:52
+msgid "This will verify your email address"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:58
+msgid "Wait for admin approval"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:59
+msgid "Our team will review and approve your clinic"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:65
+#, fuzzy
+#| msgid "Welcome to your dashboard!"
+msgid "Access your dashboard"
+msgstr "Panelinize hoş geldiniz!"
+
+#: .\vets\templates\vets\clinic_register_success.html:66
+msgid "Get full access to referral tracking and analytics"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:77
+msgid "Important"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:79
+msgid "The confirmation link expires in 24 hours"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:80
+msgid "Check your spam/junk folder if you don't see the email"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:81
+msgid ""
+"Your clinic won't be publicly listed until both email confirmation and admin "
+"approval are complete"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:91
+msgid "What you'll get after approval"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:96
+msgid "Public listing in FAMMO's trusted clinic directory"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:100
+msgid "Referral code generation and tracking"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:104
+msgid "Detailed analytics dashboard"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:108
+msgid "Access to referred customer information"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:117
+#: .\vets\templates\vets\email_confirmed.html:101
+msgid "Return to Home"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:122
+msgid "Browse Partner Clinics"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:129
+msgid "Didn't receive the email?"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:132
+msgid "Please"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:134
+msgid "contact our support team"
+msgstr ""
+
+#: .\vets\templates\vets\clinic_register_success.html:136
+msgid "and we'll help you complete the registration."
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:4
+#: .\vets\templates\vets\dashboard\analytics.html:12
+#: .\vets\templates\vets\dashboard\analytics.html:35
+#: .\vets\templates\vets\dashboard\dashboard.html:408
+#: .\vets\templates\vets\dashboard\profile_update.html:35
+#: .\vets\templates\vets\dashboard\referrals.html:35
+msgid "Analytics"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:17
+#: .\vets\templates\vets\dashboard\profile_update.html:17
+#: .\vets\templates\vets\dashboard\referrals.html:17
+#, fuzzy
+#| msgid "Dashboard"
+msgid "Back to Dashboard"
+msgstr "Panel"
+
+#: .\vets\templates\vets\dashboard\analytics.html:27
+#: .\vets\templates\vets\dashboard\dashboard.html:400
+#: .\vets\templates\vets\dashboard\profile_update.html:27
+#: .\vets\templates\vets\dashboard\referrals.html:27
+msgid "Overview"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:31
+#: .\vets\templates\vets\dashboard\dashboard.html:404
+#: .\vets\templates\vets\dashboard\profile_update.html:31
+#: .\vets\templates\vets\dashboard\referrals.html:31
+msgid "Referrals"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:57
+#: .\vets\templates\vets\dashboard\dashboard.html:321
+#, fuzzy
+#| msgid "Total Users"
+msgid "Total Referrals"
+msgstr "Toplam Kullanıcı"
+
+#: .\vets\templates\vets\dashboard\analytics.html:105
+#: .\vets\templates\vets\dashboard\analytics.html:174
+msgid "Conversion Rate"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:116
+msgid "Referral Code Performance"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:128
+#: .\vets\templates\vets\dashboard\referrals.html:76
+#: .\vets\templates\vets\dashboard\referrals.html:255
+#, fuzzy
+#| msgid "Activity Level"
+msgid "Active"
+msgstr "Aktivite Düzeyi"
+
+#: .\vets\templates\vets\dashboard\analytics.html:132
+#: .\vets\templates\vets\dashboard\referrals.html:259
+msgid "Inactive"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:141
+#: .\vets\templates\vets\dashboard\referrals.html:267
+msgid "referrals"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:147
+#, fuzzy
+#| msgid "Users"
+msgid "users"
+msgstr "Kullanıcılar"
+
+#: .\vets\templates\vets\dashboard\analytics.html:157
+msgid "No referral data"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:158
+msgid "Start sharing your referral codes to see analytics."
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:167
+msgid "Growth Insights"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:181
+msgid "Percentage of referrals that became active users"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:188
+#, fuzzy
+#| msgid "View your activity"
+msgid "Weekly Activity"
+msgstr "Aktivitenizi görüntüleyin"
+
+#: .\vets\templates\vets\dashboard\analytics.html:189
+msgid "this week"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:209
+msgid "Referrals received in the last 7 days"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:216
+msgid "Monthly Activity"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:217
+#, fuzzy
+#| msgid "months"
+msgid "this month"
+msgstr "ay"
+
+#: .\vets\templates\vets\dashboard\analytics.html:237
+msgid "Referrals received in the last 30 days"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:244
+msgid "Tips to Improve"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:246
+msgid "Share referral links on social media"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:247
+msgid "Include links in email signatures"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:248
+msgid "Mention FAMMO to satisfied clients"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:249
+msgid "Create custom QR codes for easy sharing"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:261
+#: .\vets\templates\vets\dashboard\dashboard.html:525
+msgid "Manage Referrals"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\analytics.html:265
+#: .\vets\templates\vets\dashboard\profile_update.html:222
+#, fuzzy
+#| msgid "Edit Profile"
+msgid "Update Profile"
+msgstr "Profili Düzenle"
+
+#: .\vets\templates\vets\dashboard\dashboard.html:214
+#, fuzzy
+#| msgid "Edit Your Profile"
+msgid "View Public Profile"
+msgstr "Profilinizi Düzenleyin"
+
+#: .\vets\templates\vets\dashboard\dashboard.html:233
+msgid "Clinic Verification Status"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:242
+msgid "Email Confirmed"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:243
+msgid "Your email is verified"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:248
+msgid "Email Pending"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:249
+msgid "Check your email for confirmation link"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:259
+msgid "Admin Approved"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:260
+msgid "Your clinic is approved"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:265
+msgid "Admin Review"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:266
+msgid "Waiting for admin approval"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:276
+msgid "Public Listing"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:277
+msgid "Visible to users"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:282
+msgid "Hidden"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:283
+msgid "Not publicly visible yet"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:290
+msgid "Next Steps:"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:293
+msgid "Check your email and click the confirmation link"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:296
+msgid "Wait for admin review (typically 1-3 business days)"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:299
+msgid "Your clinic should be publicly visible soon!"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:337
+#, fuzzy
+#| msgid "Total Users"
+msgid "Active Users"
+msgstr "Toplam Kullanıcı"
+
+#: .\vets\templates\vets\dashboard\dashboard.html:353
+msgid "New Referrals"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:379
+#: .\vets\templates\vets\dashboard\dashboard.html:435
+#: .\vets\templates\vets\dashboard\referrals.html:113
+#, fuzzy
+#| msgid "Statistics"
+msgid "Status"
+msgstr "İstatistikler"
+
+#: .\vets\templates\vets\dashboard\dashboard.html:384
+msgid "Listed (Pending Verification)"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:386
+msgid "Email Confirmation Pending"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:423
+msgid "Recent Referrals"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:432
+#: .\vets\templates\vets\dashboard\referrals.html:110
+#, fuzzy
+#| msgid "Users"
+msgid "User"
+msgstr "Kullanıcılar"
+
+#: .\vets\templates\vets\dashboard\dashboard.html:438
+#: .\vets\templates\vets\dashboard\referrals.html:119
+msgid "Date"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:441
+#, fuzzy
+#| msgid "ZIP Code"
+msgid "Code"
+msgstr "Posta Kodu"
+
+#: .\vets\templates\vets\dashboard\dashboard.html:485
+#: .\vets\templates\vets\dashboard\referrals.html:210
+msgid "No referrals yet"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:486
+#: .\vets\templates\vets\dashboard\referrals.html:211
+msgid "Share your referral links to start getting new patients."
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:497
+msgid "Referral Codes"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:507
+#: .\vets\templates\vets\dashboard\referrals.html:264
+msgid "Created"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:513
+msgid "Copy"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\dashboard.html:519
+msgid "No referral codes available."
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\profile_update.html:4
+#: .\vets\templates\vets\dashboard\profile_update.html:12
+#, fuzzy
+#| msgid "Edit Profile"
+msgid "Update Clinic Profile"
+msgstr "Profili Düzenle"
+
+#: .\vets\templates\vets\dashboard\profile_update.html:166
+msgid "Current logo"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:4
+#: .\vets\templates\vets\dashboard\referrals.html:12
+#, fuzzy
+#| msgid "User & Pet Management"
+msgid "Referrals Management"
+msgstr "Kullanıcı ve Evcil Hayvan Yönetimi"
+
+#: .\vets\templates\vets\dashboard\referrals.html:60
+#, fuzzy
+#| msgid "Total Pets"
+msgid "Total"
+msgstr "Toplam Evcil Hayvan"
+
+#: .\vets\templates\vets\dashboard\referrals.html:92
+msgid "New"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:102
+msgid "All Referrals"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:116
+msgid "Referral Code"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:136
+#, fuzzy
+#| msgid "Register here"
+msgid "Registered User"
+msgstr "Buradan kayıt olun"
+
+#: .\vets\templates\vets\dashboard\referrals.html:138
+msgid "Visitor"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:173
+msgid "Showing"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:175
+msgid "to"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:177
+#: .\vets\templates\vets\dashboard\referrals.html:191
+#: .\vets\templates\vets\partner_clinics.html:198
+msgid "of"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:179
+msgid "results"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:191
+#: .\vets\templates\vets\partner_clinics.html:198
+msgid "Page"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:222
+msgid "Create New Referral Code"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:238
+msgid "Generate Code"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:245
+msgid "Your Referral Codes"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:274
+msgid "Copy Link"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:281
+msgid "No referral codes created yet."
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:287
+msgid "How to Use Referral Codes"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:289
+msgid "Share referral links with your clients"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:290
+msgid "Track new user registrations"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:291
+msgid "Monitor conversion rates"
+msgstr ""
+
+#: .\vets\templates\vets\dashboard\referrals.html:292
+msgid "Build your client base through FAMMO"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:19
+msgid "Thank you for confirming your email address"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:27
+#, fuzzy
+#| msgid "Welcome to FAMO"
+msgid "Welcome to FAMMO Partner Network!"
+msgstr "FAMO’ya Hoş Geldiniz"
+
+#: .\vets\templates\vets\email_confirmed.html:30
+msgid "Your clinic"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:31
+msgid "has successfully confirmed its email address."
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:41
+msgid "Email Verified"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:44
+msgid "Your email address has been successfully confirmed."
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:52
+msgid "Pending Review"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:55
+msgid "Our team is reviewing your clinic information."
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:64
+msgid "What happens next?"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:69
+msgid "Our admin team reviews your clinic information"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:73
+msgid "We verify your clinic's legitimacy and details"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:77
+msgid "Your clinic gets approved and listed publicly"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:81
+#, fuzzy
+#| msgid "Welcome to your dashboard!"
+msgid "You get full access to your clinic dashboard"
+msgstr "Panelinize hoş geldiniz!"
+
+#: .\vets\templates\vets\email_confirmed.html:90
+msgid "Expected Timeline"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:93
+msgid ""
+"Review typically takes 1-3 business days. You'll receive an email "
+"notification once your clinic is approved."
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:106
+msgid "View Partner Clinics"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:113
+msgid "Questions about your registration?"
+msgstr ""
+
+#: .\vets\templates\vets\email_confirmed.html:115
+msgid "Contact our support team"
+msgstr ""
+
+#: .\vets\templates\vets\partials\clinic_card.html:25
+#: .\vets\templates\vets\partner_clinics.html:102
+#: .\vets\templates\vets\partner_clinics.html:279
+msgid "Verified"
+msgstr ""
+
+#: .\vets\templates\vets\partials\clinic_card.html:61
+#: .\vets\templates\vets\partner_clinics.html:166
+#: .\vets\templates\vets\partner_clinics.html:289
+#, fuzzy
+#| msgid "Pet Profile"
+msgid "View Profile"
+msgstr "Evcil Hayvan Profili"
+
+#: .\vets\templates\vets\partials\clinic_card.html:67
+msgid "Get Referred"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:5
+msgid "Partner Clinics"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:12
+msgid "Trusted Partner Clinics"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:15
+msgid ""
+"Find verified veterinary clinics that are part of the FAMMO network. These "
+"trusted partners are committed to providing exceptional pet care."
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:25
+msgid "Search clinics by name, city, or specialization..."
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:38
+msgid "Search"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:42
+msgid "Find near me"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:44
+msgid "Search radius"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:45
+msgid "100 m"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:46
+msgid "250 m"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:47
+msgid "500 m"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:48
+msgid "1 km"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:49
+msgid "2 km"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:62
+msgid "Clinics near you"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:63
+msgid "Clear"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:71
+#, python-format
+msgid ""
+"\n"
+"                %(counter)s clinic found\n"
+"            "
+msgid_plural ""
+"\n"
+"                %(counter)s clinics found\n"
+"            "
+msgstr[0] ""
+msgstr[1] ""
+
+#: .\vets\templates\vets\partner_clinics.html:80
+#, fuzzy
+#| msgid "Register Now"
+msgid "Register Your Clinic"
+msgstr "Hemen Kayıt Ol"
+
+#: .\vets\templates\vets\partner_clinics.html:176
+#, fuzzy
+#| msgid "No pets found."
+msgid "No clinics found"
+msgstr "Evcil hayvan bulunamadı."
+
+#: .\vets\templates\vets\partner_clinics.html:177
+msgid "Try adjusting your search criteria."
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:189
+#, fuzzy
+#| msgid "First Name"
+msgid "First"
+msgstr "Ad"
+
+#: .\vets\templates\vets\partner_clinics.html:208
+#, fuzzy
+#| msgid "Last Name"
+msgid "Last"
+msgstr "Soyad"
+
+#: .\vets\templates\vets\partner_clinics.html:264
+msgid "No nearby clinics found in the selected radius."
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:301
+msgid "Locating…"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:313
+msgid "Searching for clinics near your location…"
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:324
+msgid "Unable to fetch nearby clinics. Please try again."
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:330
+msgid "Geolocation is not supported by your browser."
+msgstr ""
+
+#: .\vets\templates\vets\partner_clinics.html:342
+msgid ""
+"Location permission denied or unavailable. You can type your city or try "
+"again."
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:18
+#, fuzzy
+#| msgid "Welcome to FAMO"
+msgid "Welcome from"
+msgstr "FAMO’ya Hoş Geldiniz"
+
+#: .\vets\templates\vets\referral_landing.html:25
+msgid "Verified FAMMO Partner"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:31
+msgid ""
+"You've been invited to join FAMMO by a trusted veterinary clinic. Get "
+"personalized pet care recommendations and expert advice."
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:40
+#, fuzzy
+#| msgid "Why FAMMO?"
+msgid "Why Join FAMMO?"
+msgstr "Neden FAMMO?"
+
+#: .\vets\templates\vets\referral_landing.html:51
+#, fuzzy
+#| msgid "Personalized Meal Plans"
+msgid "Personalized Pet Care"
+msgstr "Kişiselleştirilmiş Öğün Planları"
+
+#: .\vets\templates\vets\referral_landing.html:52
+msgid ""
+"Get AI-powered recommendations tailored to your pet's specific needs, age, "
+"and health conditions."
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:63
+msgid "Trusted Network"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:64
+msgid ""
+"Connect with verified veterinarians and get expert advice from professionals "
+"you can trust."
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:75
+msgid "Educational Resources"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:76
+msgid ""
+"Access a wealth of pet care information, guides, and tips from veterinary "
+"experts."
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:87
+msgid "24/7 Support"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:88
+msgid ""
+"Get help whenever you need it with our AI-powered support and community."
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:96
+msgid "About Your Referring Clinic"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:99
+msgid "Location:"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:102
+msgid "Specializations:"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:105
+msgid "Hours:"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:111
+#, fuzzy
+#| msgid "Pet Profile"
+msgid "View Clinic Profile"
+msgstr "Evcil Hayvan Profili"
+
+#: .\vets\templates\vets\referral_landing.html:121
+msgid "Ready to Get Started?"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:124
+#, fuzzy
+#| msgid ""
+#| "Join thousands of satisfied pet owners who trust FAMO for their pets' "
+#| "nutrition and health."
+msgid "Join thousands of pet owners who trust FAMMO for their pet care needs."
+msgstr ""
+"Evcil hayvanlarının beslenmesi ve sağlığı için FAMO’ya güvenen binlerce "
+"mutlu evcil hayvan sahibine katılın."
+
+#: .\vets\templates\vets\referral_landing.html:149
+msgid "Special Referral Bonus"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:150
+msgid "Free premium features for the first month!"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:162
+#, python-format
+msgid "100%% Secure"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:168
+msgid "Vet Approved"
+msgstr ""
+
+#: .\vets\templates\vets\referral_landing.html:174
+#, fuzzy
+#| msgid "Pet Profile"
+msgid "Pet Loved"
+msgstr "Evcil Hayvan Profili"
+
+#~ msgid "years"
+#~ msgstr "yıl"
+
+#~ msgid "weeks"
+#~ msgstr "hafta"
+
+#~ msgid "Top Countries by AI Requests"
+#~ msgstr "YZ İsteklerine Göre Önde Gelen Ülkeler"
+
+#~ msgid "Your account has been activated. You can now log in."
+#~ msgstr "Hesabınız etkinleştirildi. Artık giriş yapabilirsiniz."

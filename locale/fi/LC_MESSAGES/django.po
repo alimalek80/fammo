@@ -1,4 +1,4 @@
-# FAMMO Dutch Translation
+# FAMMO Finnish Translation
 # Copyright (C) 2025 FAMMO
 # This file is distributed under the same license as the FAMMO package.
 #
@@ -9,8 +9,8 @@ msgstr ""
 "POT-Creation-Date: 2025-11-16 16:23+0300\n"
 "PO-Revision-Date: 2025-11-16 12:00+0300\n"
 "Last-Translator: FAMMO Team\n"
-"Language-Team: Dutch\n"
-"Language: nl\n"
+"Language-Team: Finnish\n"
+"Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -18,144 +18,148 @@ msgstr ""
 
 #: .\aihub\models.py:6
 msgid "Meal"
-msgstr "Maaltijd"
+msgstr "Ateria"
 
 #: .\aihub\models.py:7 .\pet\templates\pet\pet_form.html:224
 msgid "Health"
-msgstr "Gezondheid"
+msgstr "Terveys"
 
 #: .\aihub\templates\aihub\history.html:6
 msgid "AI Suggestions History"
-msgstr "AI-aanbevelingen – geschiedenis"
+msgstr "AI-ehdotusten historia"
 
 #: .\aihub\templates\aihub\history.html:36
 msgid "Meal Recommendations"
-msgstr "Maaltijdaanbevelingen"
+msgstr "Ateriasuositukset"
 
 #: .\aihub\templates\aihub\history.html:68
 msgid "No meal recommendations yet."
-msgstr "Nog geen maaltijdaanbevelingen."
+msgstr "Ateriasuosituksia ei ole vielä."
 
 #: .\aihub\templates\aihub\history.html:78
 #: .\userapp\templates\userapp\dashboard_base.html:103
 msgid "Health Reports"
-msgstr "Gezondheidsrapporten"
+msgstr "Terveysraportit"
 
 #: .\aihub\templates\aihub\history.html:110
 msgid "No health reports yet."
-msgstr "Nog geen gezondheidsrapporten."
+msgstr "Terveysraportteja ei ole vielä."
 
 #: .\aihub\templates\aihub\history.html:118
 msgid "No pets found."
-msgstr "Geen huisdieren gevonden."
+msgstr "Lemmikkejä ei löytynyt."
 
 #: .\aihub\templates\aihub\limit_reached.html:6
 msgid "Limit Reached"
-msgstr "Limiet bereikt"
+msgstr "Raja saavutettu"
 
 #: .\aihub\templates\aihub\limit_reached.html:9
 #: .\pet\templates\pet\pet_detail.html:26
 #: .\pet\templates\pet\wizard_step.html:147
 msgid "Back to My Pets"
-msgstr "Terug naar Mijn Huisdieren"
+msgstr "Takaisin lemmikkeihini"
 
 #: .\aihub\views.py:71
 #, python-format
 msgid "You’ve reached your monthly limit of %(limit)s AI meal suggestions."
-msgstr "Je hebt je maandlimiet van %(limit)s AI-maaltijdaanbevelingen bereikt."
+msgstr ""
+"Olet saavuttanut kuukausittaisen enimmäisrajan: %(limit)s AI-"
+"ateriasuositusta."
 
 #: .\aihub\views.py:136
 #, python-format
 msgid "You’ve reached your monthly limit of %(limit)s AI health reports."
-msgstr "Je hebt je maandlimiet van %(limit)s AI-gezondheidsrapporten bereikt."
+msgstr ""
+"Olet saavuttanut kuukausittaisen enimmäisrajan: %(limit)s AI-"
+"terveysraporttia."
 
 #: .\blog\templates\blog\blog_detail.html:47
 #: .\blog\templates\blog\blog_list.html:63
 msgid "No ratings"
-msgstr "Geen beoordelingen"
+msgstr "Ei arvosteluja"
 
 #: .\blog\templates\blog\blog_detail.html:52
 #: .\blog\templates\blog\blog_detail.html:271
 msgid "Comments"
-msgstr "Reacties"
+msgstr "Kommentit"
 
 #: .\blog\templates\blog\blog_detail.html:145
 #: .\pet\templates\pet\wizard_step.html:135
 msgid "Submit"
-msgstr "Verzenden"
+msgstr "Lähetä"
 
 #: .\blog\templates\blog\blog_detail.html:150
 msgid "You rated:"
-msgstr "Je gaf als beoordeling:"
+msgstr "Annoit arvosanaksi:"
 
 #: .\blog\templates\blog\blog_detail.html:164
 #: .\blog\templates\blog\blog_detail.html:206
 msgid "Share this post:"
-msgstr "Deel dit bericht:"
+msgstr "Jaa tämä artikkeli:"
 
 #: .\blog\templates\blog\blog_detail.html:248
 #: .\pet\templates\pet\wizard_step.html:114
 #: .\vets\templates\vets\dashboard\referrals.html:186
 #: .\vets\templates\vets\partner_clinics.html:193
 msgid "Previous"
-msgstr "Vorige"
+msgstr "Edellinen"
 
 #: .\blog\templates\blog\blog_detail.html:260
 #: .\pet\templates\pet\wizard_step.html:124
 #: .\vets\templates\vets\dashboard\referrals.html:196
 #: .\vets\templates\vets\partner_clinics.html:204
 msgid "Next"
-msgstr "Volgende"
+msgstr "Seuraava"
 
 #: .\blog\templates\blog\blog_detail.html:280
 msgid "Add a comment..."
-msgstr "Plaats een reactie..."
+msgstr "Lisää kommentti..."
 
 #: .\blog\templates\blog\blog_detail.html:282
 msgid "Post Comment"
-msgstr "Reactie plaatsen"
+msgstr "Lähetä kommentti"
 
 #: .\blog\templates\blog\blog_detail.html:286
 msgid "Login to comment."
-msgstr "Log in om te reageren."
+msgstr "Kirjaudu sisään kommentoidaksesi."
 
 #: .\blog\templates\blog\blog_detail.html:305
 msgid "Deleted user"
-msgstr "Verwijderde gebruiker"
+msgstr "Poistettu käyttäjä"
 
 #: .\blog\templates\blog\blog_detail.html:312
 msgid "No comments yet."
-msgstr "Nog geen reacties."
+msgstr "Ei vielä kommentteja."
 
 #: .\blog\templates\blog\blog_list.html:4 .\templates\partials\navbar.html:61
 #: .\templates\partials\navbar.html:70 .\templates\partials\navbar.html:145
 #: .\templates\partials\navbar.html:166
 msgid "Blog"
-msgstr "Blog"
+msgstr "Blogi"
 
 #: .\blog\templates\blog\blog_list.html:8
 msgid "FAMMO Blog"
-msgstr "FAMMO Blog"
+msgstr "FAMMO-blogi"
 
 #: .\blog\templates\blog\blog_list.html:14
 msgid "All"
-msgstr "Alles"
+msgstr "Kaikki"
 
 #: .\blog\templates\blog\blog_list.html:76
 msgid "No blog posts yet."
-msgstr "Nog geen blogberichten."
+msgstr "Blogikirjoituksia ei ole vielä."
 
 #: .\chat\templates\chat\chat.html:109
 msgid "Chat with Fammo AI"
-msgstr "Chat met FAMMO AI"
+msgstr "Keskustele Fammo AI:n kanssa"
 
 #: .\chat\templates\chat\chat.html:115
 msgid "New Chat"
-msgstr "Nieuw gesprek"
+msgstr "Uusi chat"
 
 #: .\chat\templates\chat\chat.html:132
 msgid "You"
-msgstr "Jij"
+msgstr "Sinä"
 
 #: .\chat\templates\chat\chat.html:132 .\chat\templates\chat\chat.html:160
 #: .\chat\templates\chat\chat.html:187 .\chat\templates\chat\chat.html:194
@@ -166,78 +170,78 @@ msgstr "AI"
 #: .\vets\templates\vets\clinic_detail.html:258
 #: .\vets\templates\vets\dashboard\dashboard.html:548
 #: .\vets\templates\vets\dashboard\referrals.html:315
+#, fuzzy
+#| msgid "Copied! "
 msgid "Copied!"
-msgstr "Gekopieerd!"
+msgstr "Kopioitu!"
 
 #: .\chat\templates\chat\chat.html:176
 msgid "Hi! Ask me anything about dog & cat care."
-msgstr "Hoi! Stel me al je vragen over honden- en kattenverzorging."
+msgstr "Hei! Kysy mitä vain koirien ja kissojen hoidosta."
 
 #: .\chat\templates\chat\chat.html:198
 #, python-format
 msgid "Profile on file for %(name)s"
-msgstr "Profiel in het systeem voor %(name)s"
+msgstr "Profiili tallennettuna lemmikille %(name)s"
 
 #: .\chat\templates\chat\chat.html:198
 msgid "You can ask me about diet, health risks, and daily care."
-msgstr ""
-"Je kunt me vragen stellen over voeding, gezondheidsrisico's en dagelijkse "
-"verzorging."
+msgstr "Voit kysyä ruokavaliosta, terveysriskeistä ja päivittäisestä hoidosta."
 
 #: .\chat\templates\chat\chat.html:210
 #: .\vets\templates\vets\clinic_finder.html:181
 msgid "Error:"
-msgstr "Fout:"
+msgstr "Virhe:"
 
 #: .\chat\templates\chat\chat.html:239
 msgid "Type your pet question…"
-msgstr "Typ hier je vraag over je huisdier…"
+msgstr "Kirjoita kysymyksesi lemmikistä…"
 
 #: .\chat\templates\chat\chat.html:255
 msgid "The AI response is handled by the Django server."
-msgstr "Het AI-antwoord wordt verwerkt door de Django-server."
+msgstr "AI-vastaus käsitellään Django-palvelimella."
 
 #: .\core\forms.py:56 .\core\templates\core\contact.html:111
 msgid "You may contact me about my request."
-msgstr "U mag contact met mij opnemen over mijn verzoek."
+msgstr "Voitte ottaa minuun yhteyttä pyyntöni johdosta."
 
 #: .\core\forms.py:65 .\core\templates\core\contact.html:86
 msgid "John Doe"
-msgstr "Jan Jansen"
+msgstr "Matti Meikäläinen"
 
 #: .\core\forms.py:71 .\core\templates\core\contact.html:92
 msgid "you@example.com"
-msgstr "jij@voorbeeld.com"
+msgstr "sinä@esimerkki.com"
 
 #: .\core\forms.py:77 .\core\templates\core\contact.html:99
 msgid "General Inquiry"
-msgstr "Algemene vraag"
+msgstr "Yleinen tiedustelu"
 
 #: .\core\forms.py:84 .\core\templates\core\contact.html:106
 msgid "Your message..."
-msgstr "Uw bericht..."
+msgstr "Viestisi..."
 
 #: .\core\templates\core\about.html:5 .\templates\partials\navbar.html:76
 #: .\templates\partials\navbar.html:168
 msgid "About Us"
-msgstr "Over ons"
+msgstr "Tietoa meistä"
 
 #: .\core\templates\core\about.html:9
 msgid "About FAMMO"
-msgstr "Over FAMMO"
+msgstr "Tietoa FAMMOsta"
 
 #: .\core\templates\core\about.html:11
 msgid ""
 "FAMMO is an AI-powered platform that delivers personalized meal plans and "
 "smarter nutrition recommendations to help pets live healthier, happier lives."
 msgstr ""
-"FAMMO is een AI-gestuurd platform dat gepersonaliseerde maaltijdplannen en "
-"slimme voedingsaanbevelingen levert om huisdieren gezonder en gelukkiger te "
-"laten leven."
+"FAMMO on tekoälyä hyödyntävä alusta, joka tarjoaa yksilöllisiä "
+"ateriasuunnitelmia ja älykkäämpiä ravintosuosituksia, jotta lemmikit voivat "
+"elää terveempää ja onnellisempaa elämää."
 
 #: .\core\templates\core\about.html:22
 msgid "Our Origin Story"
-msgstr "Ons ontstaan"
+msgstr "Meidän tarinamme"
 
 #: .\core\templates\core\about.html:24
 msgid ""
@@ -248,16 +252,16 @@ msgid ""
 "create smarter, personalized pet nutrition using the power of artificial "
 "intelligence."
 msgstr ""
-"FAMMO is geïnspireerd door drie bijzondere huisdieren: Misho en Mila, de "
-"geliefde katten van onze oprichters, en Manti, een vrolijke en trouwe hond "
-"van een goede vriend. Elk had andere voedingsgevoeligheden en zorgbehoeften, "
-"waardoor het voeren dagelijks een uitdaging was. Die uitdaging werd onze "
-"missie: slimmere, gepersonaliseerde dierenvoeding creëren met de kracht van "
-"kunstmatige intelligentie."
+"FAMMO sai inspiraationsa kolmesta erityisestä lemmikistä: Mishosta ja "
+"Milasta, kahdesta perustajiemme rakkaasta kissasta, sekä Mantista, iloisen "
+"ja uskollisen ystävän koirasta. Jokaisella oli omat ruokaherkkyytensä ja "
+"terveystarpeensa, mikä teki ruokinnasta päivittäisen haasteen. Tästä "
+"haasteesta syntyi missio – luoda älykkäämpi, yksilöllinen lemmikkien "
+"ravitsemus tekoälyn avulla."
 
 #: .\core\templates\core\about.html:47
 msgid "What We Do"
-msgstr "Wat we doen"
+msgstr "Mitä teemme"
 
 #: .\core\templates\core\about.html:49
 msgid ""
@@ -266,37 +270,38 @@ msgid ""
 "smart, customized meal plans that support your pet’s long-term health and "
 "happiness."
 msgstr ""
-"FAMMO gebruikt AI om het unieke profiel van je huisdier te analyseren — van "
-"ras en gewicht tot aandoeningen, allergieën en levensstijl. Op basis daarvan "
-"genereren we slimme, op maat gemaakte maaltijdplannen die de lange-"
-"termijngezondheid en het welzijn van je huisdier ondersteunen."
+"FAMMO käyttää tekoälyä analysoimaan lemmikkisi yksilöllisen profiilin – "
+"rodusta ja painosta terveydentilaan, allergioihin ja elämäntapaan. Tämän "
+"perusteella luomme älykkäitä, räätälöityjä ateriasuunnitelmia, jotka tukevat "
+"lemmikkisi pitkän aikavälin terveyttä ja hyvinvointia."
 
 #: .\core\templates\core\about.html:54
 #: .\core\templates\core\how_it_works.html:156
 msgid "Why FAMMO?"
-msgstr "Waarom FAMMO?"
+msgstr "Miksi FAMMO?"
 
 #: .\core\templates\core\about.html:56
 msgid "AI-powered personalized nutrition plans for cats and dogs."
-msgstr "AI-gestuurde, gepersonaliseerde voedingsplannen voor honden en katten."
+msgstr ""
+"Tekoälyyn perustuvat yksilölliset ravintosuunnitelmat koirille ja kissoille."
 
 #: .\core\templates\core\about.html:57
 msgid "Smart ingredient matching for sensitivities and goals."
-msgstr "Slimme ingrediënt-matching voor gevoeligheden en doelen."
+msgstr "Älykäs ainesosien valinta herkkyyksien ja tavoitteiden mukaan."
 
 #: .\core\templates\core\about.html:58
 msgid "Multilingual support and intuitive design for every pet owner."
 msgstr ""
-"Meertalige ondersteuning en een intuïtief ontwerp voor elke huisdiereigenaar."
+"Monikielinen tuki ja intuitiivinen käyttöliittymä jokaiselle "
+"lemmikinomistajalle."
 
 #: .\core\templates\core\about.html:59
 msgid "Constantly evolving insights as your pet grows and changes."
-msgstr ""
-"Voortdurend evoluerende inzichten terwijl je huisdier groeit en verandert."
+msgstr "Jatkuvasti kehittyvä tieto lemmikkisi kasvaessa ja muuttuessa."
 
 #: .\core\templates\core\about.html:64
 msgid "Our Mission"
-msgstr "Onze missie"
+msgstr "Missiomme"
 
 #: .\core\templates\core\about.html:66
 msgid ""
@@ -304,13 +309,14 @@ msgid ""
 "mission is to transform pet nutrition through AI, making it accessible, data-"
 "driven, and built with care."
 msgstr ""
-"Wij geloven dat elk huisdier een dieet verdient dat net zo uniek is als zijn "
-"karakter. Onze missie is om dierenvoeding met AI te transformeren: "
-"toegankelijk, datagedreven en met zorg opgebouwd."
+"Uskomme, että jokainen lemmikki ansaitsee ruokavalion, joka on yhtä "
+"yksilöllinen kuin sen luonne. Missiomme on mullistaa lemmikkien ravitsemus "
+"tekoälyn avulla – tehdä siitä saavutettavaa, dataohjattua ja huolella "
+"suunniteltua."
 
 #: .\core\templates\core\about.html:71
 msgid "From Istanbul to the Netherlands"
-msgstr "Van Istanboel naar Nederland"
+msgstr "Istanbulista Alankomaihin"
 
 #: .\core\templates\core\about.html:73
 msgid ""
@@ -319,14 +325,15 @@ msgid ""
 "European pet health innovators, and bring personalized nutrition to more "
 "pets across the world."
 msgstr ""
-"FAMMO begon in Istanboel, maar onze reis stopt daar niet. We verhuizen naar "
-"Nederland om onze visie uit te breiden, samen te werken met Europese "
-"innovators in dierengezondheid en gepersonaliseerde voeding naar meer "
-"huisdieren wereldwijd te brengen."
+"FAMMO sai alkunsa Istanbulissa, mutta matkamme ei pysähdy siihen. Olemme "
+"siirtämässä toimintaa Alankomaihin laajentaaksemme visiotamme, tehdäksemme "
+"yhteistyötä eurooppalaisten lemmikkiterveyden edelläkävijöiden kanssa ja "
+"viedäksemme yksilöllisen ravitsemuksen yhä useammalle lemmikille ympäri "
+"maailmaa."
 
 #: .\core\templates\core\about.html:78
 msgid "Meet the Founders"
-msgstr "Ontmoet de oprichters"
+msgstr "Tapaa perustajat"
 
 #: .\core\templates\core\about.html:80
 msgid ""
@@ -334,36 +341,40 @@ msgid ""
 "united by a shared vision to build smarter solutions for our furry "
 "companions. FAMMO isn’t just a platform, it’s a passion."
 msgstr ""
-"We zijn een klein team van ontwikkelaars, voedingsliefhebbers en "
-"dierenvrienden — verenigd door een gedeelde visie om slimmere oplossingen te "
-"bouwen voor onze harige metgezellen. FAMMO is niet alleen een platform, het "
-"is een passie."
+"Olemme pieni tiimi kehittäjiä, ravitsemusintoilijoita ja eläinrakkaita – "
+"meitä yhdistää sama visio: rakentaa älykkäämpiä ratkaisuja karvaisille "
+"ystävillemme. FAMMO ei ole pelkkä alusta, vaan intohimon projekti."
 
 #: .\core\templates\core\about.html:85 .\core\templates\core\contact.html:5
 #: .\templates\partials\navbar.html:79 .\templates\partials\navbar.html:169
 msgid "Contact Us"
-msgstr "Contact"
+msgstr "Ota yhteyttä"
 
 #: .\core\templates\core\about.html:87
 msgid "Have questions, suggestions, or just want to say hi? Reach out to us at"
-msgstr "Vragen, suggesties of gewoon hallo zeggen? Neem contact met ons op via"
+msgstr ""
+"Onko sinulla kysymyksiä, ideoita tai haluatko vain sanoa hei? Ota meihin "
+"yhteyttä:"
 
 #: .\core\templates\core\contact.html:11
 msgid "Contact FAMO"
-msgstr "Contact FAMO"
+msgstr "Ota yhteyttä FAMOon"
 
 #: .\core\templates\core\contact.html:12
 msgid "Questions, feedback, or partnership ideas? We’d love to hear from you."
-msgstr "Vragen, feedback of ideeën voor samenwerking? We horen graag van je."
+msgstr ""
+"Kysymyksiä, palautetta tai ideoita yhteistyöstä? Kuulemme mielellämme "
+"sinusta."
 
 #: .\core\templates\core\contact.html:33
 msgid "Get in touch"
-msgstr "Neem contact op"
+msgstr "Ota yhteyttä"
 
 #: .\core\templates\core\contact.html:35
 msgid ""
 "Fill out the form and our team will get back to you within one business day."
-msgstr "Vul het formulier in en ons team reageert binnen één werkdag."
+msgstr ""
+"Täytä lomake, niin tiimimme ottaa sinuun yhteyttä yhden arkipäivän kuluessa."
 
 #: .\core\templates\core\contact.html:45 .\core\templates\core\contact.html:89
 #: .\core\templates\core\home.html:505 .\templates\account\login.html:73
@@ -371,45 +382,45 @@ msgstr "Vul het formulier in en ons team reageert binnen één werkdag."
 #: .\vets\templates\vets\admin\nearby_users_report.html:29
 #: .\vets\templates\vets\clinic_detail.html:73
 msgid "Email"
-msgstr "E-mail"
+msgstr "Sähköposti"
 
 #: .\core\templates\core\contact.html:56 .\userapp\forms.py:51
 #: .\userapp\models.py:30 .\userapp\templates\userapp\update_profile.html:51
 msgid "Address"
-msgstr "Adres"
+msgstr "Osoite"
 
 #: .\core\templates\core\contact.html:57
 msgid "Istanbul, Türkiye (remote-first)"
-msgstr "Istanboel, Türkiye (remote-first)"
+msgstr "Istanbul, Türkiye (ensisijaisesti etätyö)"
 
 #: .\core\templates\core\contact.html:63
 msgid "Follow us"
-msgstr "Volg ons"
+msgstr "Seuraa meitä"
 
 #: .\core\templates\core\contact.html:83
 #: .\vets\templates\vets\admin\nearby_users_report.html:30
 msgid "Name"
-msgstr "Naam"
+msgstr "Nimi"
 
 #: .\core\templates\core\contact.html:96
 msgid "Subject"
-msgstr "Onderwerp"
+msgstr "Aihe"
 
 #: .\core\templates\core\contact.html:103
 msgid "Message"
-msgstr "Bericht"
+msgstr "Viesti"
 
 #: .\core\templates\core\contact.html:115
 msgid "Send message"
-msgstr "Bericht verzenden"
+msgstr "Lähetä viesti"
 
 #: .\core\templates\core\contact.html:125
 msgid "Message Sent!"
-msgstr "Bericht verzonden!"
+msgstr "Viesti lähetetty!"
 
 #: .\core\templates\core\contact.html:126
 msgid "Our team will get back to you within one business day."
-msgstr "Ons team neemt binnen één werkdag contact met je op."
+msgstr "Tiimimme ottaa sinuun yhteyttä yhden arkipäivän kuluessa."
 
 #: .\core\templates\core\contact.html:127
 msgid "OK"
@@ -417,11 +428,11 @@ msgstr "OK"
 
 #: .\core\templates\core\home.html:4
 msgid "Welcome to FAMO"
-msgstr "Welkom bij FAMO"
+msgstr "Tervetuloa FAMOon"
 
 #: .\core\templates\core\home.html:427 .\core\templates\core\home.html:460
 msgid "Personalized Pet Nutrition"
-msgstr "Gepersonaliseerde dierenvoeding"
+msgstr "Yksilöllinen lemmikkien ravitsemus"
 
 #: .\core\templates\core\home.html:431 .\core\templates\core\home.html:464
 msgid ""
@@ -430,178 +441,179 @@ msgid ""
 "furry friends. Our AI analyzes your pet's unique needs to keep them healthy "
 "and happy."
 msgstr ""
-"Krijg <span class=\"highlight-orange\">gepersonaliseerde maaltijdplannen</"
-"span> en <span class=\"highlight-orange\">preventieve gezondheidsrapporten</"
-"span> voor je harige vrienden. Onze AI analyseert de unieke behoeften van "
-"jouw huisdier om hen gezond en gelukkig te houden."
+"Saat <span class=\"highlight-orange\">yksilölliset ateriasuunnitelmat</span> "
+"ja <span class=\"highlight-orange\">ennaltaehkäisevät terveysraportit</span> "
+"karvaisille ystävillesi. Tekoälymme analysoi lemmikkisi yksilöllisiä "
+"tarpeita pitääkseen sen terveenä ja onnellisena."
 
 #: .\core\templates\core\home.html:439 .\core\templates\core\home.html:472
 msgid "Powered by the FAMMO Diet Engine"
-msgstr "Aangedreven door de FAMMO Diet Engine"
+msgstr "Taustavoimana FAMMO Diet Engine"
 
 #: .\core\templates\core\home.html:444 .\core\templates\core\home.html:477
 msgid "Try for Free"
-msgstr "Probeer gratis"
+msgstr "Kokeile ilmaiseksi"
 
 #: .\core\templates\core\home.html:447 .\core\templates\core\home.html:480
 msgid "Login / Sign Up"
-msgstr "Inloggen / Registreren"
+msgstr "Kirjaudu / Rekisteröidy"
 
 #: .\core\templates\core\home.html:490
 msgid "Get Your Pet's Nutrition & AI Health Report"
-msgstr "Ontvang het Voedings- en AI-Gezondheidsrapport van je huisdier"
+msgstr "Hanki lemmikkisi ravinto- ja AI-terveysraportti"
 
 #: .\core\templates\core\home.html:492
 msgid "Free & Easy"
-msgstr "Gratis & Eenvoudig"
+msgstr "Helppoa ja ilmaista"
 
 #: .\core\templates\core\home.html:497
 msgid "Pet type"
-msgstr "Type huisdier"
+msgstr "Lemmikin tyyppi"
 
 #: .\core\templates\core\home.html:499
 msgid "Choose..."
-msgstr "Kiezen..."
+msgstr "Valitse..."
 
 #: .\core\templates\core\home.html:500
 msgid "Cat"
-msgstr "Kat"
+msgstr "Kissa"
 
 #: .\core\templates\core\home.html:501
 msgid "Dog"
-msgstr "Hond"
+msgstr "Koira"
 
 #: .\core\templates\core\home.html:503
 msgid "Pet weight (kg)"
-msgstr "Gewicht van het huisdier (kg)"
+msgstr "Lemmikin paino (kg)"
 
 #: .\core\templates\core\home.html:508
 msgid "Send Info & Get Report"
-msgstr "Verzend info & ontvang rapport"
+msgstr "Lähetä tiedot ja saa raportti"
 
 #: .\core\templates\core\home.html:511
 msgid "Thank you! Your free personalized report is on its way."
-msgstr "Bedankt! Je gratis gepersonaliseerde rapport is onderweg."
+msgstr "Kiitos! Ilmainen, yksilöllinen raporttisi on matkalla."
 
 #: .\core\templates\core\home.html:528
 msgid "Why FAMO?"
-msgstr "Waarom FAMO?"
+msgstr "Miksi FAMO?"
 
 #: .\core\templates\core\home.html:538
 msgid "Personalized Meal Plans"
-msgstr "Gepersonaliseerde maaltijdplannen"
+msgstr "Yksilölliset ateriasuunnitelmat"
 
 #: .\core\templates\core\home.html:540
 msgid "Tailored recommendations based on your pet's unique needs."
 msgstr ""
-"Aanbevelingen op maat, gebaseerd op de unieke behoeften van je huisdier."
+"Räätälöidyt suositukset lemmikkisi yksilöllisten tarpeiden perusteella."
 
 #: .\core\templates\core\home.html:550
 msgid "Health Risk Alerts"
-msgstr "Gezondheidsrisicowaarschuwingen"
+msgstr "Terveysriskihälytykset"
 
 #: .\core\templates\core\home.html:552
 msgid "Proactive insights to keep your pet healthy and happy."
-msgstr "Proactieve inzichten om je huisdier gezond en gelukkig te houden."
+msgstr ""
+"Ennakoivia näkemyksiä, joiden avulla lemmikkisi pysyy terveenä ja iloisena."
 
 #: .\core\templates\core\home.html:562
 msgid "Smart Pet Profiles"
-msgstr "Slimme huisdierprofielen"
+msgstr "Älykkäät lemmikkiprofiilit"
 
 #: .\core\templates\core\home.html:564
 msgid "Comprehensive profiles for precise AI analysis."
-msgstr "Uitgebreide profielen voor nauwkeurige AI-analyse."
+msgstr "Laajat profiilit tarkkaa tekoälyanalyysiä varten."
 
 #: .\core\templates\core\home.html:577
 msgid "What Our Users Say"
-msgstr "Wat onze gebruikers zeggen"
+msgstr "Mitä käyttäjämme sanovat"
 
 #: .\core\templates\core\home.html:610
 msgid ""
 "FAMO transformed my dog's diet! The personalized plan was easy to follow and "
 "incredibly effective."
 msgstr ""
-"FAMO heeft het dieet van mijn hond volledig verbeterd! Het gepersonaliseerde "
-"plan was makkelijk te volgen en enorm effectief."
+"FAMO mullisti koirani ruokavalion! Yksilöllistä suunnitelmaa oli helppo "
+"noudattaa ja se oli uskomattoman tehokas."
 
 #: .\core\templates\core\home.html:621
 msgid "The health risk alerts helped me act early — true preventive care!"
 msgstr ""
-"De gezondheidsrisico-meldingen hielpen me vroeg in te grijpen — échte "
-"preventieve zorg!"
+"Terveysriskihälytykset auttoivat minua toimimaan ajoissa – todellista "
+"ennaltaehkäisevää hoitoa!"
 
 #: .\core\templates\core\home.html:638
 msgid "Frequently Asked Questions"
-msgstr "Veelgestelde vragen"
+msgstr "Usein kysytyt kysymykset"
 
 #: .\core\templates\core\home.html:655
 msgid "No FAQs have been published yet."
-msgstr "Er zijn nog geen veelgestelde vragen gepubliceerd."
+msgstr "Usein kysyttyjä kysymyksiä ei ole vielä julkaistu."
 
 #: .\core\templates\core\home.html:665
 msgid "Ready to Transform Your Pet's Life?"
-msgstr "Klaar om het leven van je huisdier te verbeteren?"
+msgstr "Valmis muuttamaan lemmikkisi elämän?"
 
 #: .\core\templates\core\home.html:667
 msgid ""
 "Join thousands of satisfied pet owners who trust FAMO for their pets' "
 "nutrition and health."
 msgstr ""
-"Sluit je aan bij duizenden tevreden eigenaren die FAMO vertrouwen voor de "
-"voeding en gezondheid van hun huisdieren."
+"Liity tuhansien tyytyväisten lemmikinomistajien joukkoon, jotka luottavat "
+"FAMOon lemmikkiensä ravitsemuksessa ja terveydessä."
 
 #: .\core\templates\core\home.html:670
 msgid "Get Started Today"
-msgstr "Begin vandaag nog"
+msgstr "Aloita tänään"
 
 #: .\core\templates\core\home.html:721
 msgid "Error"
-msgstr "Fout"
+msgstr "Virhe"
 
 #: .\core\templates\core\how_it_works.html:5
 msgid "How it works"
-msgstr "Hoe het werkt"
+msgstr "Miten se toimii"
 
 #: .\core\templates\core\how_it_works.html:12
 msgid "How FAMMO Works"
-msgstr "Hoe FAMMO werkt"
+msgstr "Miten FAMMO toimii"
 
 #: .\core\templates\core\how_it_works.html:14
 msgid ""
 "At FAMMO, we make it easy to give your pet the nutrition and care they truly "
 "deserve. Here’s how our platform helps you step by step:"
 msgstr ""
-"Bij FAMMO maken we het eenvoudig om jouw huisdier de voeding en zorg te "
-"geven die het echt verdient. Zo helpt ons platform je stap voor stap:"
+"FAMMOssa teemme lemmikkisi ravitsemuksesta ja hoidosta helppoa – juuri niin "
+"kuin se ansaitsee. Näin alustamme auttaa sinua askel askeleelta:"
 
 #: .\core\templates\core\how_it_works.html:29
 msgid "1. Sign Up & Log In"
-msgstr "1. Aanmelden & Inloggen"
+msgstr "1. Rekisteröidy ja kirjaudu sisään"
 
 #: .\core\templates\core\how_it_works.html:32
 msgid ""
 "Getting started is simple! Create an account with your email or Google "
 "login. In just a minute, you’ll have your own dashboard."
 msgstr ""
-"Beginnen is eenvoudig! Maak een account aan met je e-mail of Google-login. "
-"Binnen een minuut heb je je eigen dashboard."
+"Aloittaminen on helppoa! Luo tili sähköpostilla tai Google-kirjautumisella. "
+"Vain minuutissa sinulla on oma hallintapaneeli."
 
 #: .\core\templates\core\how_it_works.html:36
 msgid "Register Now"
-msgstr "Nu registreren"
+msgstr "Rekisteröidy nyt"
 
 #: .\core\templates\core\how_it_works.html:40
 msgid "fammo login and register page"
-msgstr "fammo inlog- en registratiepagina"
+msgstr "fammo kirjautumis- ja rekisteröitymissivu"
 
 #: .\core\templates\core\how_it_works.html:54
 #: .\core\templates\core\how_it_works.html:110
 msgid "Illustration showcasing FAMMO features"
-msgstr "Illustratie met FAMMO-functies"
+msgstr "Kuva, joka esittelee FAMMOn ominaisuuksia"
 
 #: .\core\templates\core\how_it_works.html:59
 msgid "2. Create Your Pet’s Profile"
-msgstr "2. Maak het profiel van je huisdier aan"
+msgstr "2. Luo lemmikkisi profiili"
 
 #: .\core\templates\core\how_it_works.html:62
 msgid ""
@@ -615,19 +627,20 @@ msgid ""
 "\n"
 "              This helps our AI understand what makes your pet special."
 msgstr ""
-"Elk huisdier is uniek — daarom stellen we een paar korte vragen over jouw "
-"vriendje:  \n"
-"Naam, ras en leeftijd,  \n"
-"Gewicht & activiteitsniveau,  \n"
-"Eventuele allergieën of gezondheidsproblemen.  \n"
+"Jokainen lemmikki on ainutlaatuinen – siksi kysymme muutaman nopean "
+"kysymyksen karvaisesta ystävästäsi:  \n"
+"              Nimi, rotu ja ikä  \n"
+"              Paino ja aktiivisuustaso  \n"
+"              Mahdolliset allergiat tai sairaudet  \n"
 "\n"
-"Dashboard → Mijn Huisdieren → Nieuw Huisdier toevoegen  \n"
+"              Hallintapaneeli → Lemmikkini → Lisää uusi lemmikki  \n"
 "\n"
-"Zo begrijpt onze AI wat jouw huisdier bijzonder maakt."
+"              Tämä auttaa tekoälyämme ymmärtämään, mikä tekee lemmikistäsi "
+"erityisen."
 
 #: .\core\templates\core\how_it_works.html:84
 msgid "3. Get AI-Powered Recommendations"
-msgstr "3. Ontvang AI-gestuurde aanbevelingen"
+msgstr "3. Saat tekoälyn tuottamat suositukset"
 
 #: .\core\templates\core\how_it_works.html:87
 msgid ""
@@ -637,12 +650,12 @@ msgid ""
 "              AI Health Reports → Preventive insights to keep your pet "
 "healthier for longer."
 msgstr ""
-"Met het profiel van je huisdier klaar heb je toegang tot twee krachtige "
-"tools:  \n"
-"AI-maaltijdsuggesties → Op maat gemaakte maaltijdplannen op basis van de "
-"behoeften van jouw huisdier.  \n"
-"AI-gezondheidsrapporten → Preventieve inzichten om je huisdier langer gezond "
-"te houden."
+"Kun lemmikkisi profiili on valmis, saat käyttöösi kaksi tehokasta "
+"työkalua:  \n"
+"              AI-ateriasuositukset → Räätälöidyt ateriasuunnitelmat "
+"lemmikkisi tarpeiden mukaan  \n"
+"              AI-terveysraportit → Ennaltaehkäiseviä näkemyksiä, joiden "
+"avulla lemmikkisi pysyy terveempänä pidempään."
 
 #: .\core\templates\core\how_it_works.html:92
 msgid ""
@@ -650,31 +663,30 @@ msgid ""
 "recommendations will be added soon as we partner with trusted pet food "
 "suppliers.)"
 msgstr ""
-"(Maaltijdsuggesties richten zich momenteel op voeding. Specifieke "
-"merkadviezen worden binnenkort toegevoegd wanneer we samenwerken met "
-"vertrouwde leveranciers van dierenvoeding.)"
+"(Ateriasuosituksemme keskittyvät tällä hetkellä ravitsemukseen. Tarkemmat "
+"merkkisuositukset lisätään pian, kun teemme yhteistyötä luotettavien "
+"lemmikinruokatoimittajien kanssa.)"
 
 #: .\core\templates\core\how_it_works.html:96
 #: .\core\templates\core\how_it_works.html:144
 msgid "A stylized placeholder image representing learning and growth"
-msgstr "Een gestileerde voorbeeldafbeelding die leren en groei weergeeft"
+msgstr "Tyylitelty symbolikuva, joka edustaa oppimista ja kasvua"
 
 #: .\core\templates\core\how_it_works.html:115
 msgid "4. Track Progress Over Time"
-msgstr "4. Volg de voortgang in de tijd"
+msgstr "4. Seuraa edistymistä ajan myötä"
 
 #: .\core\templates\core\how_it_works.html:118
 msgid ""
 "Every suggestion and report is stored in your AI History, so you can follow "
 "your pet’s journey and see how their needs evolve."
 msgstr ""
-"Elke suggestie en elk rapport wordt opgeslagen in je AI-geschiedenis, zodat "
-"je de reis van je huisdier kunt volgen en zien hoe hun behoeften zich "
-"ontwikkelen."
+"Jokainen suositus ja raportti tallentuu AI-historiaasi, jotta voit seurata "
+"lemmikkisi matkaa ja nähdä, miten sen tarpeet kehittyvät."
 
 #: .\core\templates\core\how_it_works.html:133
 msgid "5. Your Dashboard at a Glance"
-msgstr "5. Jouw dashboard in één oogopslag"
+msgstr "5. Hallintapaneelisi yhdellä silmäyksellä"
 
 #: .\core\templates\core\how_it_works.html:136
 msgid ""
@@ -684,11 +696,11 @@ msgid ""
 "              - Edit everything  \n"
 "              - Upgrade your Plan"
 msgstr ""
-"Je dashboard brengt alles samen:  \n"
-"- Snel toegang tot huisdierprofielen  \n"
-"- AI-tools met één klik  \n"
-"- Alles bewerken  \n"
-"- Je abonnement upgraden"
+"Hallintapaneelisi kokoaa kaiken yhteen:  \n"
+"              - Nopea pääsy lemmikkiprofiileihin  \n"
+"              - Tekoälytyökalut yhdellä klikkauksella  \n"
+"              - Muokkaa kaikkia tietoja  \n"
+"              - Päivitä tilauspakettisi"
 
 #: .\core\templates\core\how_it_works.html:158
 msgid ""
@@ -696,327 +708,326 @@ msgid ""
 "personalized nutrition and preventive health care — powered by AI, made "
 "simple for you."
 msgstr ""
-"Omdat geen twee huisdieren hetzelfde zijn. Wij vinden dat elke hond en kat "
-"gepersonaliseerde voeding en preventieve zorg verdient — mogelijk gemaakt "
-"door AI en voor jou eenvoudig gemaakt."
+"Koska mikään lemmikki ei ole täysin samanlainen. Uskomme, että jokainen "
+"koira ja kissa ansaitsee yksilöllisen ravitsemuksen ja ennaltaehkäisevän "
+"terveydenhoidon – tekoälyn tukemana ja sinulle mahdollisimman helpoksi "
+"tehtynä."
 
 #: .\core\templates\core\how_it_works.html:161
 msgid "Start today and discover smarter feeding for a healthier, happier pet."
 msgstr ""
-"Begin vandaag en ontdek slimmer voeren voor een gezonder en gelukkiger "
-"huisdier."
+"Aloita jo tänään ja löydä fiksumpi ruokinta terveemmälle ja onnellisemmalle "
+"lemmikille."
 
 #: .\core\templates\core\manage_hero_section.html:6
 msgid "Manage Homepage Hero Section"
-msgstr "Startpagina-hero beheren"
+msgstr "Hallinnoi etusivun hero-osiota"
 
 #: .\core\templates\core\manage_hero_section.html:26
 #: .\core\templates\core\manage_social_links.html:19
 #: .\userapp\templates\userapp\update_profile.html:57
 msgid "Save Changes"
-msgstr "Wijzigingen opslaan"
+msgstr "Tallenna muutokset"
 
 #: .\core\templates\core\manage_social_links.html:5
 msgid "Manage Social Media Links"
-msgstr "Sociale-media-links beheren"
+msgstr "Hallinnoi sosiaalisen median linkkejä"
 
 #: .\pet\templates\pet\my_pets.html:12 .\templates\partials\navbar.html:44
 #: .\templates\partials\navbar.html:132
 #: .\userapp\templates\userapp\dashboard_base.html:33
 msgid "My Pets"
-msgstr "Mijn huisdieren"
+msgstr "Lemmikkini"
 
 #: .\pet\templates\pet\my_pets.html:17
 msgid "Add New Pet"
-msgstr "Nieuw huisdier toevoegen"
+msgstr "Lisää uusi lemmikki"
 
 #: .\pet\templates\pet\my_pets.html:23
 msgid "You can add unlimited pets."
-msgstr "Je kunt onbeperkt huisdieren toevoegen."
+msgstr "Voit lisätä rajattomasti lemmikkejä."
 
 #: .\pet\templates\pet\my_pets.html:26
 msgid "Your plan allows up to"
-msgstr "Je abonnement staat tot"
+msgstr "Pakettisi sallii enintään"
 
 #: .\pet\templates\pet\my_pets.html:26
 msgid "pets."
-msgstr "huisdieren toe."
+msgstr "lemmikkiä."
 
 #: .\pet\templates\pet\my_pets.html:56
 msgid "No type selected"
-msgstr "Geen type geselecteerd"
+msgstr "Tyyppiä ei valittu"
 
 #: .\pet\templates\pet\my_pets.html:65 .\pet\templates\pet\pet_form.html:7
 msgid "Edit"
-msgstr "Bewerken"
+msgstr "Muokkaa"
 
 #: .\pet\templates\pet\my_pets.html:68
 msgid "Are you sure you want to delete this pet?"
-msgstr "Weet je zeker dat je dit huisdier wilt verwijderen?"
+msgstr "Haluatko varmasti poistaa tämän lemmikin?"
 
 #: .\pet\templates\pet\my_pets.html:71
 msgid "Delete"
-msgstr "Verwijderen"
+msgstr "Poista"
 
 #: .\pet\templates\pet\my_pets.html:78
 msgid "AI Meal"
-msgstr "AI-maaltijd"
+msgstr "AI-ateria"
 
 #: .\pet\templates\pet\my_pets.html:84
 msgid "AI Health"
-msgstr "AI-gezondheid"
+msgstr "AI-terveys"
 
 #: .\pet\templates\pet\my_pets.html:93
 msgid "You have not added any pets yet."
-msgstr "Je hebt nog geen huisdieren toegevoegd."
+msgstr "Et ole vielä lisännyt yhtään lemmikkiä."
 
 #: .\pet\templates\pet\my_pets.html:105
 msgid "Processing, please wait..."
-msgstr "Bezig met verwerken, even geduld…"
+msgstr "Käsitellään, odota hetki..."
 
 #: .\pet\templates\pet\my_pets.html:106
 msgid "Your AI request is being generated. This usually takes a few seconds."
-msgstr "Je AI-verzoek wordt gegenereerd. Dit duurt meestal enkele seconden."
+msgstr "AI-pyyntöäsi luodaan. Tämä kestää yleensä vain muutaman sekunnin."
 
 #: .\pet\templates\pet\pet_detail.html:9
 msgid "Type"
-msgstr "Type"
+msgstr "Tyyppi"
 
 #: .\pet\templates\pet\pet_detail.html:10
 #: .\userapp\templates\userapp\users_admin.html:56
 msgid "Breed"
-msgstr "Ras"
+msgstr "Rotu"
 
 #: .\pet\templates\pet\pet_detail.html:11
 msgid "Gender"
-msgstr "Geslacht"
+msgstr "Sukupuoli"
 
 #: .\pet\templates\pet\pet_detail.html:12
 msgid "Neutered"
-msgstr "Gesteriliseerd/gecastreerd"
+msgstr "Steriloitu/kastroitua"
 
 #: .\pet\templates\pet\pet_detail.html:12
 msgid "Yes,No"
-msgstr "Ja,Nee"
+msgstr "Kyllä,Ei"
 
 #: .\pet\templates\pet\pet_detail.html:13
 #: .\userapp\templates\userapp\users_admin.html:57
 msgid "Age"
-msgstr "Leeftijd"
+msgstr "Ikä"
 
 #: .\pet\templates\pet\pet_detail.html:14
 msgid "Weight"
-msgstr "Gewicht"
+msgstr "Paino"
 
 #: .\pet\templates\pet\pet_detail.html:17
 msgid "Body Type"
-msgstr "Lichaamstype"
+msgstr "Vartalotyyppi"
 
 #: .\pet\templates\pet\pet_detail.html:18
 msgid "Activity Level"
-msgstr "Activiteitsniveau"
+msgstr "Aktiivisuustaso"
 
 #: .\pet\templates\pet\pet_detail.html:19
 msgid "Food Types"
-msgstr "Voedingstypen"
+msgstr "Ruokatyypit"
 
 #: .\pet\templates\pet\pet_detail.html:20
 msgid "Food Allergies"
-msgstr "Voedselallergieën"
+msgstr "Ruoka-allergiat"
 
 #: .\pet\templates\pet\pet_detail.html:21
 msgid "Health Issues"
-msgstr "Gezondheidsproblemen"
+msgstr "Terveysongelmat"
 
 #: .\pet\templates\pet\pet_detail.html:25
 msgid "Edit Pet"
-msgstr "Huisdier bewerken"
+msgstr "Muokkaa lemmikkiä"
 
 #: .\pet\templates\pet\pet_form.html:7
 msgid "Add"
-msgstr "Toevoegen"
+msgstr "Lisää"
 
 #: .\pet\templates\pet\pet_form.html:7
 msgid "Pet Profile"
-msgstr "Huisdierprofiel"
+msgstr "Lemmikkiprofiili"
 
 #: .\pet\templates\pet\pet_form.html:17
 msgid "Basic Info"
-msgstr "Basisgegevens"
+msgstr "Perustiedot"
 
 #: .\pet\templates\pet\pet_form.html:111
 #: .\pet\templates\pet\wizard_steps\step2_gender.html:48
 msgid "Yes"
-msgstr "Ja"
+msgstr "Kyllä"
 
 #: .\pet\templates\pet\pet_form.html:113
 #: .\pet\templates\pet\wizard_steps\step2_gender.html:51
 msgid "No"
-msgstr "Nee"
+msgstr "Ei"
 
 #: .\pet\templates\pet\pet_form.html:346
 msgid "Food & Treats"
-msgstr "Voer & traktaties"
+msgstr "Ruoka ja herkut"
 
 #: .\pet\templates\pet\pet_form.html:438
 #: .\vets\templates\vets\admin\nearby_users_report.html:21
 msgid "Update"
-msgstr "Bijwerken"
+msgstr "Päivitä"
 
 #: .\pet\templates\pet\pet_form.html:438
 msgid "Save"
-msgstr "Opslaan"
+msgstr "Tallenna"
 
 #: .\pet\templates\pet\wizard_step.html:133
 msgid "Create Pet Profile"
-msgstr "Huisdierprofiel aanmaken"
+msgstr "Luo lemmikkiprofiili"
 
 #: .\pet\templates\pet\wizard_steps\step10_activity_level.html:5
 #, python-format
 msgid "How active is %(name)s?"
-msgstr "Hoe actief is %(name)s?"
+msgstr "Kuinka aktiivinen %(name)s on?"
 
 #: .\pet\templates\pet\wizard_steps\step2_gender.html:7
 #, python-format
 msgid "Is %(name)s a Girl or Boy?"
-msgstr "Is %(name)s een meisje of een jongen?"
+msgstr "Onko %(name)s tyttö vai poika?"
 
 #: .\pet\templates\pet\wizard_steps\step2_gender.html:36
 #, python-format
 msgid "Is %(name)s neutered/spayed?"
-msgstr "Is %(name)s gecastreerd/gesteriliseerd?"
+msgstr "Onko %(name)s steriloitu/kastroitu?"
 
 #: .\pet\templates\pet\wizard_steps\step3_age.html:5
 #, python-format
 msgid "How old is %(name)s?"
-msgstr "Hoe oud is %(name)s?"
+msgstr "Kuinka vanha %(name)s on?"
 
 #: .\pet\templates\pet\wizard_steps\step4_breed.html:5
 #, python-format
 msgid "What breed is %(name)s?"
-msgstr "Welk ras is %(name)s?"
+msgstr "Mitä rotua %(name)s on?"
 
 #: .\pet\templates\pet\wizard_steps\step5_food.html:5
 #, python-format
 msgid "What is %(name)s currently eating?"
-msgstr "Wat eet %(name)s op dit moment?"
+msgstr "Mitä %(name)s syö tällä hetkellä?"
 
 #: .\subscription\models.py:14
 msgid "Essentials"
-msgstr "Essentials"
+msgstr "Perus"
 
 #: .\subscription\models.py:15
 msgid "Wellness"
-msgstr "Wellness"
+msgstr "Hyvinvointi"
 
 #: .\subscription\models.py:16
 msgid "Optimal"
-msgstr "Optimal"
+msgstr "Optimi"
 
 #: .\subscription\templates\subscription\plan_list.html:11
 msgid "Choose Your Plan"
-msgstr "Kies je abonnement"
+msgstr "Valitse pakettisi"
 
 #: .\subscription\templates\subscription\plan_list.html:102
 msgid "Update Plan"
-msgstr "Abonnement bijwerken"
+msgstr "Päivitä paketti"
 
 #: .\templates\account\login.html:6
 #: .\vets\templates\vets\referral_landing.html:137
 msgid "Sign In"
-msgstr "Inloggen"
+msgstr "Kirjaudu sisään"
 
 #: .\templates\account\login.html:14
 msgid "Sign In to Your Account"
-msgstr "Log in op je account"
+msgstr "Kirjaudu sisään tilillesi"
 
 #: .\templates\account\login.html:18
 msgid "Sign in to your existing account to see your pet's personalized plan."
-msgstr ""
-"Log in op je bestaande account om het gepersonaliseerde plan van je huisdier "
-"te bekijken."
+msgstr "Kirjaudu sisään nähdäksesi lemmikkisi yksilöllisen suunnitelman."
 
 #: .\templates\account\login.html:22 .\templates\account\signup.html:22
 msgid "Or"
-msgstr "Of"
+msgstr "Tai"
 
 #: .\templates\account\login.html:24
 msgid "create a new account"
-msgstr "maak een nieuw account aan"
+msgstr "luo uusi tili"
 
 #: .\templates\account\login.html:50 .\templates\account\signup.html:50
 msgid "Please fix the following errors:"
-msgstr "Los de volgende fouten op:"
+msgstr "Korjaa seuraavat virheet:"
 
 #: .\templates\account\login.html:76 .\templates\account\signup.html:76
 msgid "Email address"
-msgstr "E-mailadres"
+msgstr "Sähköpostiosoite"
 
 #: .\templates\account\login.html:79 .\templates\account\login.html:82
 #: .\templates\account\signup.html:80 .\templates\account\signup.html:83
 #: .\userapp\forms.py:9 .\userapp\forms.py:74
 #: .\userapp\templates\userapp\login.html:30
 msgid "Password"
-msgstr "Wachtwoord"
+msgstr "Salasana"
 
 #: .\templates\account\login.html:91
 msgid "Remember me"
-msgstr "Onthoud mij"
+msgstr "Muista minut"
 
 #: .\templates\account\login.html:97
 msgid "Forgot your password?"
-msgstr "Wachtwoord vergeten?"
+msgstr "Unohditko salasanasi?"
 
 #: .\templates\account\login.html:109
 msgid "Sign in"
-msgstr "Inloggen"
+msgstr "Kirjaudu sisään"
 
 #: .\templates\account\login.html:123 .\templates\account\signup.html:114
 msgid "Or continue with"
-msgstr "Of ga verder met"
+msgstr "Tai jatka tunnuksella"
 
 #: .\templates\account\login.html:137 .\templates\account\signup.html:128
 #: .\userapp\templates\userapp\register.html:100
 #: .\userapp\templates\userapp\register.html:106
 msgid "Continue with Google"
-msgstr "Ga verder met Google"
+msgstr "Jatka Google-tunnuksella"
 
 #: .\templates\account\signup.html:6
 #: .\userapp\templates\userapp\register.html:78
 msgid "Sign Up"
-msgstr "Aanmelden"
+msgstr "Rekisteröidy"
 
 #: .\templates\account\signup.html:14
 msgid "Create Your Account"
-msgstr "Maak je account aan"
+msgstr "Luo käyttäjätili"
 
 #: .\templates\account\signup.html:18
 msgid ""
 "You're almost there! Create your account to see your pet's personalized plan."
 msgstr ""
-"Je bent er bijna! Maak je account aan om het gepersonaliseerde plan van je "
-"huisdier te bekijken."
+"Olet melkein valmis! Luo tili nähdäksesi lemmikkisi yksilöllisen "
+"suunnitelman."
 
 #: .\templates\account\signup.html:24
 msgid "sign in to your existing account"
-msgstr "log in op je bestaande account"
+msgstr "kirjaudu olemassa olevalle tilillesi"
 
 #: .\templates\account\signup.html:86 .\templates\account\signup.html:89
 msgid "Password (again)"
-msgstr "Wachtwoord (nogmaals)"
+msgstr "Salasana (uudelleen)"
 
 #: .\templates\account\signup.html:100
 msgid "Sign up"
-msgstr "Registreren"
+msgstr "Rekisteröidy"
 
 #: .\templates\partials\navbar.html:41 .\templates\partials\navbar.html:131
 msgid "Make Your Plan"
-msgstr "Maak je plan"
+msgstr "Luo suunnitelma"
 
 #: .\templates\partials\navbar.html:51 .\templates\partials\navbar.html:138
 #: .\userapp\templates\userapp\dashboard_base.html:67
 msgid "AI History"
-msgstr "AI-geschiedenis"
+msgstr "AI-historia"
 
 #: .\templates\partials\navbar.html:54 .\templates\partials\navbar.html:139
 msgid "Chat"
@@ -1025,116 +1036,115 @@ msgstr "Chat"
 #: .\templates\partials\navbar.html:64 .\templates\partials\navbar.html:73
 #: .\templates\partials\navbar.html:146 .\templates\partials\navbar.html:167
 msgid "Trusted Partners"
-msgstr "Betrouwbare partners"
+msgstr "Luotetut kumppanit"
 
 #: .\templates\partials\navbar.html:82 .\templates\partials\navbar.html:170
 msgid "How it Works"
-msgstr "Hoe het werkt"
+msgstr "Miten se toimii"
 
 #: .\templates\partials\navbar.html:91 .\templates\partials\navbar.html:153
 #: .\userapp\templates\userapp\dashboard.html:20
 msgid "Dashboard"
-msgstr "Dashboard"
+msgstr "Hallintapaneeli"
 
 #: .\templates\partials\navbar.html:95 .\templates\partials\navbar.html:157
 #: .\vets\templates\vets\dashboard\dashboard.html:4
 #: .\vets\templates\vets\dashboard\dashboard.html:208
 msgid "Clinic Dashboard"
-msgstr "Kliniekdashboard"
+msgstr "Klinikan hallintapaneeli"
 
 #: .\templates\partials\navbar.html:99 .\templates\partials\navbar.html:161
 #: .\userapp\templates\userapp\dashboard_base.html:81
 msgid "Logout"
-msgstr "Uitloggen"
+msgstr "Kirjaudu ulos"
 
 #: .\templates\partials\navbar.html:103 .\templates\partials\navbar.html:174
 #: .\userapp\templates\userapp\login.html:48
 #: .\userapp\templates\userapp\password_reset_complete.html:7
 msgid "Login"
-msgstr "Inloggen"
+msgstr "Kirjaudu sisään"
 
 #: .\templates\partials\navbar.html:106 .\templates\partials\navbar.html:177
 msgid "Signup"
-msgstr "Registreren"
+msgstr "Rekisteröidy"
 
 #: .\templates\partials\navbar.html:130
 msgid "Pet Management"
-msgstr "Huisdierenbeheer"
+msgstr "Lemmikkien hallinta"
 
 #: .\templates\partials\navbar.html:137
 msgid "AI Services"
-msgstr "AI-diensten"
+msgstr "AI-palvelut"
 
 #: .\templates\partials\navbar.html:144
 msgid "Information"
-msgstr "Informatie"
+msgstr "Tietoa"
 
 #: .\templates\partials\navbar.html:151
 msgid "Account"
-msgstr "Account"
+msgstr "Tili"
 
 #: .\templates\socialaccount\login.html:5
 msgid "Sign In with Social Account"
-msgstr "Inloggen met sociaal account"
+msgstr "Kirjaudu sosiaalisen tilin avulla"
 
 #: .\templates\socialaccount\login.html:16
 #, python-format
 msgid "Connect %(provider)s"
-msgstr "%(provider)s koppelen"
+msgstr "Yhdistä palveluun %(provider)s"
 
 #: .\templates\socialaccount\login.html:18
 #, python-format
 msgid "Sign In Via %(provider)s"
-msgstr "Inloggen via %(provider)s"
+msgstr "Kirjaudu sisään palvelun %(provider)s kautta"
 
 #: .\templates\socialaccount\login.html:23
 #, python-format
 msgid "You are about to connect a new third-party account from %(provider)s."
 msgstr ""
-"Je staat op het punt een nieuw account van een externe partij (%(provider)s) "
-"te koppelen."
+"Olet yhdistämässä uutta kolmannen osapuolen tiliä palvelusta %(provider)s."
 
 #: .\templates\socialaccount\login.html:25
 #, python-format
 msgid "You are about to sign in using a third-party account from %(provider)s."
 msgstr ""
-"Je staat op het punt in te loggen met een account van een externe partij "
-"(%(provider)s)."
+"Olet kirjautumassa sisään kolmannen osapuolen tilillä palvelusta "
+"%(provider)s."
 
 #: .\templates\socialaccount\login.html:33
 msgid "Continue"
-msgstr "Doorgaan"
+msgstr "Jatka"
 
 #: .\templates\socialaccount\login.html:38
 msgid "Back to Login"
-msgstr "Terug naar inloggen"
+msgstr "Takaisin kirjautumiseen"
 
 #: .\userapp\forms.py:10 .\userapp\forms.py:82
 msgid "Confirm Password"
-msgstr "Bevestig wachtwoord"
+msgstr "Vahvista salasana"
 
 #: .\userapp\forms.py:20
 msgid "Passwords do not match"
-msgstr "Wachtwoorden komen niet overeen"
+msgstr "Salasanat eivät täsmää"
 
 #: .\userapp\forms.py:39 .\userapp\templates\userapp\login.html:21
 msgid "Email Address"
-msgstr "E-mailadres"
+msgstr "Sähköpostiosoite"
 
 #: .\userapp\forms.py:48 .\userapp\models.py:27
 #: .\userapp\templates\userapp\update_profile.html:14
 msgid "First Name"
-msgstr "Voornaam"
+msgstr "Etunimi"
 
 #: .\userapp\forms.py:49 .\userapp\models.py:28
 #: .\userapp\templates\userapp\update_profile.html:20
 msgid "Last Name"
-msgstr "Achternaam"
+msgstr "Sukunimi"
 
 #: .\userapp\forms.py:50 .\userapp\templates\userapp\update_profile.html:26
 #: .\vets\templates\vets\clinic_detail.html:45
 msgid "Phone"
-msgstr "Telefoon"
+msgstr "Puhelin"
 
 #: .\userapp\forms.py:52 .\userapp\models.py:31
 #: .\userapp\templates\userapp\update_profile.html:32
@@ -1142,149 +1152,149 @@ msgstr "Telefoon"
 #: .\vets\templates\vets\clinic_finder.html:79
 #: .\vets\templates\vets\partner_clinics.html:29
 msgid "City"
-msgstr "Stad"
+msgstr "Kaupunki"
 
 #: .\userapp\forms.py:53 .\userapp\models.py:32
 #: .\userapp\templates\userapp\update_profile.html:38
 msgid "ZIP Code"
-msgstr "Postcode"
+msgstr "Postinumero"
 
 #: .\userapp\forms.py:54 .\userapp\models.py:33
 #: .\userapp\templates\userapp\update_profile.html:44
 msgid "Country"
-msgstr "Land"
+msgstr "Maa"
 
 #: .\userapp\forms.py:79
 msgid "Your password must contain at least 8 characters."
-msgstr "Je wachtwoord moet minstens 8 tekens bevatten."
+msgstr "Salasanassasi on oltava vähintään 8 merkkiä."
 
 #: .\userapp\forms.py:104
 msgid "The two password fields didn't match."
-msgstr "De twee wachtwoordvelden komen niet overeen."
+msgstr "Kaksi salasana-kenttää eivät täsmänneet."
 
 #: .\userapp\models.py:29
 msgid "Phone Number"
-msgstr "Telefoonnummer"
+msgstr "Puhelinnumero"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:6
 msgid "Admin Statistics"
-msgstr "Beheerstatistieken"
+msgstr "Ylläpitäjän tilastot"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:11
 msgid "Report Actions"
-msgstr "Rapportacties"
+msgstr "Raporttitoiminnot"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:15
 msgid "Download All Charts (PDF)"
-msgstr "Alle grafieken downloaden (PDF)"
+msgstr "Lataa kaikki kaaviot (PDF)"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:23
 msgid "Total Users"
-msgstr "Totaal aantal gebruikers"
+msgstr "Käyttäjiä yhteensä"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:28
 msgid "Total Pets"
-msgstr "Totaal aantal huisdieren"
+msgstr "Lemmikkejä yhteensä"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:33
 msgid "Dogs"
-msgstr "Honden"
+msgstr "Koiria"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:38
 msgid "Cats"
-msgstr "Katten"
+msgstr "Kissoja"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:43
 msgid "AI Meals"
-msgstr "AI-maaltijden"
+msgstr "AI-ateriat"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:48
 msgid "AI Health Reports"
-msgstr "AI-gezondheidsrapporten"
+msgstr "AI-terveysraportit"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:55
 msgid "Users with AI Requests by Date"
-msgstr "Gebruikers met AI-verzoeken per datum"
+msgstr "AI-pyyntöjä tehneet käyttäjät päivittäin"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:57
 #: .\userapp\templates\userapp\admin_dashboard.html:82
 #: .\userapp\templates\userapp\admin_dashboard.html:105
 #: .\vets\templates\vets\dashboard\analytics.html:89
 msgid "Last 7 Days"
-msgstr "Afgelopen 7 dagen"
+msgstr "Viimeiset 7 päivää"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:58
 #: .\userapp\templates\userapp\admin_dashboard.html:83
 #: .\userapp\templates\userapp\admin_dashboard.html:106
 #: .\vets\templates\vets\dashboard\analytics.html:73
 msgid "Last 30 Days"
-msgstr "Afgelopen 30 dagen"
+msgstr "Viimeiset 30 päivää"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:59
 #: .\userapp\templates\userapp\admin_dashboard.html:84
 #: .\userapp\templates\userapp\admin_dashboard.html:107
 msgid "This Month"
-msgstr "Deze maand"
+msgstr "Tämä kuukausi"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:60
 #: .\userapp\templates\userapp\admin_dashboard.html:85
 #: .\userapp\templates\userapp\admin_dashboard.html:108
 msgid "Last 3 Months"
-msgstr "Afgelopen 3 maanden"
+msgstr "Viimeiset 3 kuukautta"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:61
 #: .\userapp\templates\userapp\admin_dashboard.html:86
 #: .\userapp\templates\userapp\admin_dashboard.html:109
 msgid "Last 6 Months"
-msgstr "Afgelopen 6 maanden"
+msgstr "Viimeiset 6 kuukautta"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:62
 #: .\userapp\templates\userapp\admin_dashboard.html:87
 #: .\userapp\templates\userapp\admin_dashboard.html:110
 msgid "Last 360 Days"
-msgstr "Afgelopen 360 dagen"
+msgstr "Viimeiset 360 päivää"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:70
 #: .\userapp\templates\userapp\admin_dashboard.html:91
 #: .\userapp\templates\userapp\admin_dashboard.html:118
 msgid "Download PDF"
-msgstr "PDF downloaden"
+msgstr "Lataa PDF"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:79
 msgid "User Registrations by Date"
-msgstr "Gebruikersregistraties per datum"
+msgstr "Käyttäjärekisteröinnit päivämäärän mukaan"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:103
 msgid "User Registrations by Country"
-msgstr "Gebruikersregistraties per land"
+msgstr "Käyttäjärekisteröinnit maittain"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:127
 msgid "Download Pets CSV"
-msgstr "Huisdieren-CSV downloaden"
+msgstr "Lataa lemmikit CSV-tiedostona"
 
 #: .\userapp\templates\userapp\admin_dashboard.html:131
 msgid "Download Users CSV"
-msgstr "Gebruikers-CSV downloaden"
+msgstr "Lataa käyttäjät CSV-tiedostona"
 
 #: .\userapp\templates\userapp\dashboard.html:9
 msgid "Looks like your furry friend isn’t here yet!"
-msgstr "Het lijkt erop dat je harige vriend hier nog niet is!"
+msgstr "Näyttää siltä, että karvaista ystävääsi ei ole vielä lisätty!"
 
 #: .\userapp\templates\userapp\dashboard.html:12
 msgid ""
 "Add your pet now to unlock personalized AI Meals and Health Reports tailored "
 "just for them!"
 msgstr ""
-"Voeg nu je huisdier toe om gepersonaliseerde AI-maaltijden en "
-"gezondheidsrapporten te ontgrendelen – speciaal voor hem of haar!"
+"Lisää lemmikkisi nyt ja avaa käyttöön yksilölliset AI-ateriat ja "
+"terveysraportit juuri häntä varten!"
 
 #: .\userapp\templates\userapp\dashboard.html:15
 msgid "Add Pet"
-msgstr "Huisdier toevoegen"
+msgstr "Lisää lemmikki"
 
 #: .\userapp\templates\userapp\dashboard.html:21 .\userapp\views.py:206
 msgid "Welcome to your dashboard!"
-msgstr "Welkom op je dashboard!"
+msgstr "Tervetuloa hallintapaneeliisi!"
 
 #: .\userapp\templates\userapp\dashboard.html:26
 #: .\vets\templates\vets\dashboard\analytics.html:39
@@ -1292,693 +1302,690 @@ msgstr "Welkom op je dashboard!"
 #: .\vets\templates\vets\dashboard\profile_update.html:39
 #: .\vets\templates\vets\dashboard\referrals.html:39
 msgid "Profile"
-msgstr "Profiel"
+msgstr "Profiili"
 
 #: .\userapp\templates\userapp\dashboard.html:27
 msgid "Edit your personal info"
-msgstr "Bewerk je persoonlijke gegevens"
+msgstr "Muokkaa omia tietojasi"
 
 #: .\userapp\templates\userapp\dashboard.html:33
 #: .\userapp\templates\userapp\dashboard_base.html:53
 msgid "Statistics"
-msgstr "Statistieken"
+msgstr "Tilastot"
 
 #: .\userapp\templates\userapp\dashboard.html:34
 msgid "View your activity"
-msgstr "Bekijk je activiteit"
+msgstr "Näytä toimintasi"
 
 #: .\userapp\templates\userapp\dashboard_base.html:27
 #: .\vets\templates\vets\dashboard\dashboard.html:218
 msgid "Edit Profile"
-msgstr "Profiel bewerken"
+msgstr "Muokkaa profiilia"
 
 #: .\userapp\templates\userapp\dashboard_base.html:40
 msgid "Users"
-msgstr "Gebruikers"
+msgstr "Käyttäjät"
 
 #: .\userapp\templates\userapp\dashboard_base.html:47
 msgid "Homepage Hero"
-msgstr "Startpagina-hero"
+msgstr "Etusivun hero-osio"
 
 #: .\userapp\templates\userapp\dashboard_base.html:59
 msgid "Social Links"
-msgstr "Sociale links"
+msgstr "Sosiaalisen median linkit"
 
 #: .\userapp\templates\userapp\dashboard_base.html:73
 msgid "My Plan"
-msgstr "Mijn abonnement"
+msgstr "Pakettini"
 
 #: .\userapp\templates\userapp\dashboard_base.html:99
 msgid "Meal Suggestions"
-msgstr "Maaltijdaanbevelingen"
+msgstr "Ateriasuositukset"
 
 #: .\userapp\templates\userapp\login.html:13
 msgid "Welcome Back"
-msgstr "Welkom terug"
+msgstr "Tervetuloa takaisin"
 
 #: .\userapp\templates\userapp\login.html:14
 msgid "Please enter your credentials to log in."
-msgstr "Vul je gegevens in om in te loggen."
+msgstr "Kirjoita kirjautumistietosi."
 
 #: .\userapp\templates\userapp\login.html:36
 msgid "Forgot password?"
-msgstr "Wachtwoord vergeten?"
+msgstr "Unohditko salasanan?"
 
 #: .\userapp\templates\userapp\login.html:53
 msgid "Don't have an account?"
-msgstr "Nog geen account?"
+msgstr "Eikö sinulla ole tiliä?"
 
 #: .\userapp\templates\userapp\login.html:54
 msgid "Register here"
-msgstr "Hier registreren"
+msgstr "Rekisteröidy täällä"
 
 #: .\userapp\templates\userapp\password_reset_complete.html:5
 msgid "Password Reset Complete"
-msgstr "Wachtwoord opnieuw instellen voltooid"
+msgstr "Salasanan vaihto valmis"
 
 #: .\userapp\templates\userapp\password_reset_complete.html:6
 msgid "Your password has been set. You may go ahead and log in now."
-msgstr "Je wachtwoord is ingesteld. Je kunt nu inloggen."
+msgstr "Salasanasi on asetettu. Voit nyt kirjautua sisään."
 
 #: .\userapp\templates\userapp\password_reset_confirm.html:5
 msgid "Set New Password"
-msgstr "Nieuw wachtwoord instellen"
+msgstr "Aseta uusi salasana"
 
 #: .\userapp\templates\userapp\password_reset_confirm.html:16
 msgid "Change Password"
-msgstr "Wachtwoord wijzigen"
+msgstr "Vaihda salasana"
 
 #: .\userapp\templates\userapp\password_reset_done.html:5
 msgid "Password Reset Sent"
-msgstr "E-mail voor wachtwoordherstel verzonden"
+msgstr "Salasanan vaihto lähetetty"
 
 #: .\userapp\templates\userapp\password_reset_done.html:6
 msgid ""
 "We've emailed you instructions for setting your password. You should receive "
 "the email shortly."
 msgstr ""
-"We hebben je instructies gemaild om je wachtwoord in te stellen. Je ontvangt "
-"de e-mail spoedig."
+"Olemme lähettäneet sinulle sähköpostitse ohjeet salasanan vaihtamiseksi. "
+"Hälytyksen pitäisi saapua pian."
 
 #: .\userapp\templates\userapp\password_reset_form.html:5
 msgid "Forgot Password"
-msgstr "Wachtwoord vergeten"
+msgstr "Unohtunut salasana"
 
 #: .\userapp\templates\userapp\password_reset_form.html:12
 msgid "Send Reset Link"
-msgstr "Resetlink verzenden"
+msgstr "Lähetä palautuslinkki"
 
 #: .\userapp\templates\userapp\register.html:17
 #: .\vets\templates\vets\referral_landing.html:4
 msgid "Referred by"
-msgstr "Doorverwezen door"
+msgstr "Suosittelija"
 
 #: .\userapp\templates\userapp\register.html:20
 msgid "Join FAMMO through this trusted veterinary partner"
-msgstr "Word lid van FAMMO via deze vertrouwde dierenkliniek"
+msgstr "Liity FAMMOon tämän luotettavan eläinklinikkakumppanin kautta"
 
 #: .\userapp\templates\userapp\register.html:27
 msgid "Register"
-msgstr "Registreren"
+msgstr "Rekisteröidy"
 
 #: .\userapp\templates\userapp\register.html:30
 msgid "Create your account to connect with"
-msgstr "Maak een account aan om verbinding te maken met"
+msgstr "Luo tili, jotta voit yhdistää"
 
 #: .\userapp\templates\userapp\register.html:32
 msgid "Create your account to get started."
-msgstr "Maak een account aan om te beginnen."
+msgstr "Luo tili aloittaaksesi."
 
 #: .\userapp\templates\userapp\register.html:59
 msgid "I agree to the"
-msgstr "Ik ga akkoord met de"
+msgstr "Hyväksyn"
 
 #: .\userapp\templates\userapp\register.html:60
 msgid "Terms and Conditions"
-msgstr "Algemene voorwaarden"
+msgstr "käyttöehdot"
 
 #: .\userapp\templates\userapp\register.html:76
 msgid "Sign Up with"
-msgstr "Aanmelden met"
+msgstr "Rekisteröidy tunnuksella"
 
 #: .\userapp\templates\userapp\register.html:89
 msgid "or"
-msgstr "of"
+msgstr "tai"
 
 #: .\userapp\templates\userapp\register.html:113
 #: .\vets\templates\vets\referral_landing.html:135
 msgid "Already have an account?"
-msgstr "Heb je al een account?"
+msgstr "Onko sinulla jo tili?"
 
 #: .\userapp\templates\userapp\register.html:115
 msgid "Login here"
-msgstr "Hier inloggen"
+msgstr "Kirjaudu tästä"
 
 #: .\userapp\templates\userapp\set_password.html:17
 #: .\vets\templates\vets\email_confirmed.html:16
 msgid "Email Confirmed!"
-msgstr "E-mail bevestigd!"
+msgstr "Sähköposti vahvistettu!"
 
 #: .\userapp\templates\userapp\set_password.html:21
 #, python-format
 msgid "Great! Now set your password to complete %(pet_name)s's profile."
 msgstr ""
-"Top! Stel nu je wachtwoord in om het profiel van %(pet_name)s te voltooien."
+"Hienoa! Aseta salasana viimeistelläksesi lemmikin %(pet_name)s profiilin."
 
 #: .\userapp\templates\userapp\set_password.html:23
 msgid "Great! Now set your password to complete your account setup."
-msgstr "Top! Stel nu je wachtwoord in om je account in te richten."
+msgstr "Hienoa! Aseta salasana viimeistelläksesi tilisi käyttöönoton."
 
 #: .\userapp\templates\userapp\set_password.html:35
 msgid "Pet Profile Ready!"
-msgstr "Huisdierprofiel is klaar!"
+msgstr "Lemmikkiprofiili valmis!"
 
 #: .\userapp\templates\userapp\set_password.html:37
 #, python-format
 msgid "%(pet_name)s's profile has been created and is waiting for you!"
-msgstr "Het profiel van %(pet_name)s is aangemaakt en wacht op jou!"
+msgstr "Lemmikin %(pet_name)s profiili on luotu ja odottaa sinua!"
 
 #: .\userapp\templates\userapp\set_password.html:57
 msgid "Your account email"
-msgstr "Het e-mailadres van je account"
+msgstr "Tilisi sähköposti"
 
 #: .\userapp\templates\userapp\set_password.html:111
 msgid "Password Requirements:"
-msgstr "Wachtwoordeisen:"
+msgstr "Salasanan vaatimukset:"
 
 #: .\userapp\templates\userapp\set_password.html:113
 msgid "At least 8 characters long"
-msgstr "Minstens 8 tekens lang"
+msgstr "Vähintään 8 merkkiä pitkä"
 
 #: .\userapp\templates\userapp\set_password.html:114
 msgid "Cannot be too similar to your email"
-msgstr "Mag niet te veel lijken op je e-mailadres"
+msgstr "Ei saa olla liian samanlainen kuin sähköpostiosoitteesi"
 
 #: .\userapp\templates\userapp\set_password.html:115
 msgid "Cannot be a commonly used password"
-msgstr "Mag geen veelgebruikt wachtwoord zijn"
+msgstr "Ei saa olla yleisesti käytetty salasana"
 
 #: .\userapp\templates\userapp\set_password.html:116
 msgid "Cannot be entirely numeric"
-msgstr "Mag niet volledig numeriek zijn"
+msgstr "Ei saa koostua pelkistä numeroista"
 
 #: .\userapp\templates\userapp\set_password.html:128
 msgid "Complete Setup & View My Pets"
-msgstr "Setup voltooien & Mijn huisdieren bekijken"
+msgstr "Viimeistele asennus ja näytä lemmikkini"
 
 #: .\userapp\templates\userapp\set_password.html:133
 msgid "Complete Setup & Continue"
-msgstr "Setup voltooien & Doorgaan"
+msgstr "Viimeistele asennus ja jatka"
 
 #: .\userapp\templates\userapp\set_password.html:144
 msgid "Your information is secure and encrypted"
-msgstr "Je gegevens zijn veilig en versleuteld"
+msgstr "Tietosi ovat turvassa ja salattuja"
 
 #: .\userapp\templates\userapp\update_profile.html:7
 msgid "Edit Your Profile"
-msgstr "Je profiel bewerken"
+msgstr "Muokkaa profiiliasi"
 
 #: .\userapp\templates\userapp\users_admin.html:8
 msgid "User & Pet Management"
-msgstr "Beheer gebruikers & huisdieren"
+msgstr "Käyttäjien ja lemmikkien hallinta"
 
 #: .\userapp\templates\userapp\users_admin.html:21
 msgid "Admin"
-msgstr "Beheerder"
+msgstr "Ylläpitäjä"
 
 #: .\userapp\templates\userapp\users_admin.html:23
 msgid "Staff"
-msgstr "Medewerker"
+msgstr "Henkilökunta"
 
 #: .\userapp\templates\userapp\users_admin.html:40
 msgid "No subscription"
-msgstr "Geen abonnement"
+msgstr "Ei tilausta"
 
 #: .\userapp\templates\userapp\users_admin.html:48
 msgid "Pets:"
-msgstr "Huisdieren:"
+msgstr "Lemmikit:"
 
 #: .\userapp\templates\userapp\users_admin.html:62
 msgid "No pets"
-msgstr "Geen huisdieren"
+msgstr "Ei lemmikkejä"
 
 #: .\userapp\templates\userapp\users_admin.html:68
 msgid "No users found."
-msgstr "Geen gebruikers gevonden."
+msgstr "Käyttäjiä ei löytynyt."
 
 #: .\userapp\views.py:104
 msgid ""
 "Registration successful. Please check your email to activate your account."
-msgstr "Registratie gelukt. Controleer je e-mail om je account te activeren."
+msgstr "Rekisteröinti onnistui. Tarkista sähköpostisi aktivoidaksesi tilisi."
 
 #: .\userapp\views.py:107 .\userapp\views.py:192 .\userapp\views.py:390
 msgid "Please correct the errors below."
-msgstr "Corrigeer de onderstaande fouten."
+msgstr "Korjaa alla olevat virheet."
 
 #: .\userapp\views.py:156
 msgid "You are already logged in."
-msgstr "Je bent al ingelogd."
+msgstr "Olet jo kirjautunut sisään."
 
 #: .\userapp\views.py:165
 msgid "Login successful."
-msgstr "Inloggen geslaagd."
+msgstr "Kirjautuminen onnistui."
 
 #: .\userapp\views.py:168
 msgid "Invalid login credentials."
-msgstr "Ongeldige inloggegevens."
+msgstr "Virheelliset kirjautumistiedot."
 
 #: .\userapp\views.py:179
 msgid "You have been logged out."
-msgstr "Je bent uitgelogd."
+msgstr "Sinut on kirjattu ulos."
 
 #: .\userapp\views.py:189
 msgid "Profile updated successfully."
-msgstr "Profiel succesvol bijgewerkt."
+msgstr "Profiili päivitetty onnistuneesti."
 
 #: .\userapp\views.py:345
-#, fuzzy
-#| msgid "Activation link is invalid."
 msgid "Activation link is invalid!"
-msgstr "Activatielink is ongeldig."
+msgstr "Aktivointilinkki on virheellinen!"
 
 #: .\userapp\views.py:353
 msgid "Invalid access. Please use the activation link from your email."
-msgstr "Ongeldige toegang. Gebruik de activatielink uit je e-mail."
+msgstr "Virheellinen käyttö. Käytä sähköpostiisi lähetettyä aktivointilinkkiä."
 
 #: .\userapp\views.py:363
 msgid "User not found or not activated."
-msgstr "Gebruiker niet gevonden of niet geactiveerd."
+msgstr "Käyttäjää ei löytynyt tai tiliä ei ole aktivoitu."
 
 #: .\userapp\views.py:387
 msgid "🎉 Welcome to FAMO-PET! Your password has been set successfully!"
-msgstr "🎉 Welkom bij FAMO-PET! Je wachtwoord is succesvol ingesteld!"
+msgstr "🎉 Tervetuloa FAMO-PETiin! Salasanasi on asetettu onnistuneesti!"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:4
 #: .\vets\templates\vets\admin\nearby_users_report.html:8
 msgid "Nearby Users Report"
-msgstr "Rapport nabije gebruikers"
+msgstr "Läheisten käyttäjien raportti"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:4
 msgid "Django site admin"
-msgstr "Django sitebeheer"
+msgstr "Django-sivuston ylläpito"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:10
 msgid "Clinic"
-msgstr "Kliniek"
+msgstr "Klinikka"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:12
 msgid "Coordinates"
-msgstr "Coördinaten"
+msgstr "Koordinaatit"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:14
 msgid ""
 "This clinic has no coordinates set. Add latitude/longitude to enable "
 "proximity reports."
 msgstr ""
-"Voor deze kliniek zijn geen coördinaten ingesteld. Voeg breedte- en "
-"lengtegraad toe om nabijheidsrapporten mogelijk te maken."
+"Tälle klinikalle ei ole asetettu koordinaatteja. Lisää leveys- ja pituusaste "
+"ottaaksesi käyttöön lähialueraportit."
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:19
 msgid "Radius (km)"
-msgstr "Radius (km)"
+msgstr "Säde (km)"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:25
 msgid "Users within"
-msgstr "Gebruikers binnen"
+msgstr "Käyttäjiä säteellä"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:32
 msgid "Distance (km)"
-msgstr "Afstand (km)"
+msgstr "Etäisyys (km)"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:33
 msgid "Updated"
-msgstr "Bijgewerkt"
+msgstr "Päivitetty"
 
 #: .\vets\templates\vets\admin\nearby_users_report.html:49
 msgid "No users with stored location within the selected radius."
-msgstr "Geen gebruikers met opgeslagen locatie binnen de geselecteerde radius."
+msgstr "Valitun säteen sisällä ei ole sijainnin tallentaneita käyttäjiä."
 
 #: .\vets\templates\vets\clinic_detail.html:5
 msgid "Veterinary Clinic"
-msgstr "Dierenkliniek"
+msgstr "Eläinklinikka"
 
 #: .\vets\templates\vets\clinic_detail.html:22
 #: .\vets\templates\vets\dashboard\dashboard.html:382
 msgid "Verified Partner"
-msgstr "Geverifieerde partner"
+msgstr "Vahvistettu kumppani"
 
 #: .\vets\templates\vets\clinic_detail.html:59
 msgid "Hours"
-msgstr "Openingstijden"
+msgstr "Aukioloajat"
 
 #: .\vets\templates\vets\clinic_detail.html:84
 #: .\vets\templates\vets\clinic_finder.html:317
 msgid "Call Now"
-msgstr "Bel nu"
+msgstr "Soita nyt"
 
 #: .\vets\templates\vets\clinic_detail.html:90
 msgid "Send Email"
-msgstr "E-mail sturen"
+msgstr "Lähetä sähköposti"
 
 #: .\vets\templates\vets\clinic_detail.html:96
 msgid "Visit Website"
-msgstr "Bezoek website"
+msgstr "Vieraile verkkosivulla"
 
 #: .\vets\templates\vets\clinic_detail.html:102
 msgid "Share Referral"
-msgstr "Verwijslink delen"
+msgstr "Jaa suositus"
 
 #: .\vets\templates\vets\clinic_detail.html:141
 msgid "About"
-msgstr "Over"
+msgstr "Tietoja"
 
 #: .\vets\templates\vets\clinic_detail.html:151
 msgid "Lead Veterinarian"
-msgstr "Hoofd-dierenarts"
+msgstr "Vastaava eläinlääkäri"
 
 #: .\vets\templates\vets\clinic_detail.html:157
 msgid "Qualifications:"
-msgstr "Kwalificaties:"
+msgstr "Pätevyydet:"
 
 #: .\vets\templates\vets\clinic_detail.html:164
 msgid "Certifications:"
-msgstr "Certificeringen:"
+msgstr "Sertifikaatit:"
 
 #: .\vets\templates\vets\clinic_detail.html:175
 msgid "Location"
-msgstr "Locatie"
+msgstr "Sijainti"
 
 #: .\vets\templates\vets\clinic_detail.html:191
 msgid "Specializations"
-msgstr "Specialisaties"
+msgstr "Erikoisalat"
 
 #: .\vets\templates\vets\clinic_detail.html:205
 msgid "Follow Us"
-msgstr "Volg ons"
+msgstr "Seuraa meitä"
 
 #: .\vets\templates\vets\clinic_detail.html:223
 #: .\vets\templates\vets\referral_landing.html:4
 msgid "Join FAMMO"
-msgstr "Word lid van FAMMO"
+msgstr "Liity FAMMOon"
 
 #: .\vets\templates\vets\clinic_detail.html:225
 msgid ""
 "Get personalized pet care recommendations and connect with trusted vets."
 msgstr ""
-"Krijg gepersonaliseerde aanbevelingen voor de zorg van je huisdier en kom in "
-"contact met vertrouwde dierenartsen."
+"Saat yksilöllisiä suosituksia lemmikkisi hoitoon ja yhdistyt luotettaviin "
+"eläinlääkäreihin."
 
 #: .\vets\templates\vets\clinic_detail.html:230
 msgid "Sign Up with This Clinic"
-msgstr "Aanmelden via deze kliniek"
+msgstr "Rekisteröidy tämän klinikan kautta"
 
 #: .\vets\templates\vets\clinic_detail.html:235
 #: .\vets\templates\vets\referral_landing.html:131
 msgid "Sign Up for FAMMO"
-msgstr "Aanmelden voor FAMMO"
+msgstr "Rekisteröidy FAMMOon"
 
 #: .\vets\templates\vets\clinic_detail.html:275
 #: .\vets\templates\vets\dashboard\dashboard.html:565
 #: .\vets\templates\vets\dashboard\referrals.html:336
 msgid "Could not copy link. Please try again."
-msgstr "Kon link niet kopiëren. Probeer het opnieuw."
+msgstr "Linkin kopiointi epäonnistui. Yritä uudelleen."
 
 #: .\vets\templates\vets\clinic_finder.html:5
 msgid "Find Nearby Clinics"
-msgstr "Zoek klinieken in de buurt"
+msgstr "Etsi lähiklinikoita"
 
 #: .\vets\templates\vets\clinic_finder.html:42
 msgid "Find Veterinary Clinics Near You"
-msgstr "Vind dierenklinieken bij jou in de buurt"
+msgstr "Etsi lähimmät eläinklinikat"
 
 #: .\vets\templates\vets\clinic_finder.html:45
 msgid "Allow location access to find the closest veterinary clinics"
-msgstr ""
-"Sta locatie-toegang toe om de dichtstbijzijnde dierenklinieken te vinden"
+msgstr "Salli sijainnin käyttö löytääksesi lähimmät eläinklinikat"
 
 #: .\vets\templates\vets\clinic_finder.html:62
 msgid "Your Location"
-msgstr "Jouw locatie"
+msgstr "Sijaintisi"
 
 #: .\vets\templates\vets\clinic_finder.html:65
 msgid "Latitude:"
-msgstr "Breedtegraad:"
+msgstr "Leveysaste:"
 
 #: .\vets\templates\vets\clinic_finder.html:66
 msgid "Longitude:"
-msgstr "Lengtegraad:"
+msgstr "Pituusaste:"
 
 #: .\vets\templates\vets\clinic_finder.html:67
 msgid "Accuracy:"
-msgstr "Nauwkeurigheid:"
+msgstr "Tarkkuus:"
 
 #: .\vets\templates\vets\clinic_finder.html:74
 msgid "Or Enter Your Location Manually"
-msgstr "Of voer je locatie handmatig in"
+msgstr "Tai syötä sijaintisi manuaalisesti"
 
 #: .\vets\templates\vets\clinic_finder.html:83
 msgid "Enter your city"
-msgstr "Vul je stad in"
+msgstr "Kirjoita kaupunkisi"
 
 #: .\vets\templates\vets\clinic_finder.html:87
 msgid "Search Radius"
-msgstr "Zoekradius"
+msgstr "Hakusäde"
 
 #: .\vets\templates\vets\clinic_finder.html:100
 msgid "Search by City"
-msgstr "Zoek op stad"
+msgstr "Hae kaupungin mukaan"
 
 #: .\vets\templates\vets\clinic_finder.html:110
 msgid "Nearby Clinics"
-msgstr "Klinieken in de buurt"
+msgstr "Lähiklinikat"
 
 #: .\vets\templates\vets\clinic_finder.html:120
 msgid "Searching for nearby clinics..."
-msgstr "Bezig met zoeken naar klinieken in de buurt..."
+msgstr "Etsitään lähiklinikoita..."
 
 #: .\vets\templates\vets\clinic_finder.html:129
 msgid "No clinics found in your area"
-msgstr "Geen klinieken gevonden in jouw omgeving"
+msgstr "Alueeltasi ei löytynyt klinikoita"
 
 #: .\vets\templates\vets\clinic_finder.html:130
 msgid "Try increasing the search radius"
-msgstr "Probeer de zoekradius te vergroten"
+msgstr "Kokeile kasvattaa hakusädettä"
 
 #: .\vets\templates\vets\clinic_finder.html:161
 msgid ""
 "Location permission is granted. Click the button below to find nearby "
 "clinics."
 msgstr ""
-"Locatietoegang is toegestaan. Klik op de knop hieronder om klinieken in de "
-"buurt te vinden."
+"Sijaintilupa on myönnetty. Napsauta alla olevaa painiketta löytääksesi "
+"lähiklinikat."
 
 #: .\vets\templates\vets\clinic_finder.html:170
 msgid "Use My Current Location"
-msgstr "Gebruik mijn huidige locatie"
+msgstr "Käytä nykyistä sijaintiani"
 
 #: .\vets\templates\vets\clinic_finder.html:184
 msgid ""
 "Please enable location access in your browser settings or use the manual "
 "search below."
 msgstr ""
-"Schakel locatietoegang in je browserinstellingen in of gebruik de handmatige "
-"zoekoptie hieronder."
+"Ota sijainnin käyttö käyttöön selaimesi asetuksissa tai käytä alla olevaa "
+"manuaalista hakua."
 
 #: .\vets\templates\vets\clinic_finder.html:198
 msgid "Please enter a city name"
-msgstr "Vul een stadsnaam in"
+msgstr "Kirjoita kaupungin nimi"
 
 #: .\vets\templates\vets\clinic_finder.html:234
 msgid "Error loading clinics. Please try again."
-msgstr "Fout bij het laden van klinieken. Probeer het opnieuw."
+msgstr "Klinikoiden lataamisessa tapahtui virhe. Yritä uudelleen."
 
 #: .\vets\templates\vets\clinic_finder.html:312
 msgid "View Details"
-msgstr "Details bekijken"
+msgstr "Näytä tiedot"
 
 #: .\vets\templates\vets\clinic_finder.html:325
 msgid "Directions"
-msgstr "Route"
+msgstr "Reittiohjeet"
 
 #: .\vets\templates\vets\clinic_register.html:4
 msgid "Register Your Veterinary Clinic"
-msgstr "Registreer uw dierenkliniek"
+msgstr "Rekisteröi eläinklinikkasi"
 
 #: .\vets\templates\vets\clinic_register.html:11
 msgid "Join FAMMO as a Partner Clinic"
-msgstr "Sluit je aan bij FAMMO als partnerkliniek"
+msgstr "Liity FAMMOn yhteistyöklinikaksi"
 
 #: .\vets\templates\vets\clinic_register.html:14
 msgid ""
 "Connect with pet owners and grow your practice through our trusted platform"
 msgstr ""
-"Kom in contact met huisdiereigenaren en laat uw praktijk groeien via ons "
-"vertrouwde platform"
+"Tutustu lemmikinomistajiin ja kasvata toimintaasi luotettavan alustamme "
+"kautta"
 
 #: .\vets\templates\vets\clinic_register.html:31
 msgid "Account Information"
-msgstr "Accountgegevens"
+msgstr "Tilin tiedot"
 
 #: .\vets\templates\vets\clinic_register.html:72
 #: .\vets\templates\vets\dashboard\profile_update.html:57
 msgid "Clinic Information"
-msgstr "Kliniekinformatie"
+msgstr "Klinikan tiedot"
 
 #: .\vets\templates\vets\clinic_register.html:190
 #: .\vets\templates\vets\dashboard\profile_update.html:179
 msgid "Veterinarian Profile"
-msgstr "Dierenartsprofiel"
+msgstr "Eläinlääkärin profiili"
 
 #: .\vets\templates\vets\clinic_register.html:190
 #: .\vets\templates\vets\dashboard\profile_update.html:179
 msgid "Optional"
-msgstr "Optioneel"
+msgstr "Valinnainen"
 
 #: .\vets\templates\vets\clinic_register.html:237
 msgid "I have read and agree to"
-msgstr "Ik heb gelezen en ga akkoord met"
+msgstr "Olen lukenut ja hyväksyn"
 
 #: .\vets\templates\vets\clinic_register.html:239
 msgid "FAMMO.ai's Terms and Conditions for Clinics"
-msgstr "De algemene voorwaarden voor klinieken van FAMMO.ai"
+msgstr "FAMMO.ai:n klinikoille tarkoitetut käyttöehdot"
 
 #: .\vets\templates\vets\clinic_register.html:248
 msgid "I have read and agree to the"
-msgstr "Ik heb gelezen en ga akkoord met de"
+msgstr "Olen lukenut ja hyväksyn"
 
 #: .\vets\templates\vets\clinic_register.html:250
 msgid "FAMMO Clinic Partnership Agreement"
-msgstr "FAMMO-partnerovereenkomst voor klinieken"
+msgstr "FAMMOn klinikkakumppanuussopimuksen"
 
 #: .\vets\templates\vets\clinic_register.html:257
 #: .\vets\templates\vets\dashboard\profile_update.html:218
 msgid "Cancel"
-msgstr "Annuleren"
+msgstr "Peruuta"
 
 #: .\vets\templates\vets\clinic_register.html:260
 msgid "Register Clinic"
-msgstr "Kliniek registreren"
+msgstr "Rekisteröi klinikka"
 
 #: .\vets\templates\vets\clinic_register_success.html:16
 msgid "Check Your Email!"
-msgstr "Controleer je e-mail!"
+msgstr "Tarkista sähköpostisi!"
 
 #: .\vets\templates\vets\clinic_register_success.html:19
 msgid "Registration almost complete"
-msgstr "Registratie bijna voltooid"
+msgstr "Rekisteröinti melkein valmis"
 
 #: .\vets\templates\vets\clinic_register_success.html:27
 msgid "Thank you for registering!"
-msgstr "Bedankt voor je registratie!"
+msgstr "Kiitos rekisteröitymisestäsi!"
 
 #: .\vets\templates\vets\clinic_register_success.html:30
 msgid "We've sent a confirmation email to verify your clinic's email address."
 msgstr ""
-"We hebben een bevestigingsmail gestuurd om het e-mailadres van je kliniek te "
-"verifiëren."
+"Olemme lähettäneet vahvistussähköpostin klinikkasi sähköpostiosoitteen "
+"vahvistamiseksi."
 
 #: .\vets\templates\vets\clinic_register_success.html:38
 msgid "Next Steps"
-msgstr "Volgende stappen"
+msgstr "Seuraavat vaiheet"
 
 #: .\vets\templates\vets\clinic_register_success.html:44
 msgid "Check your email inbox"
-msgstr "Controleer je e-mailinbox"
+msgstr "Tarkista sähköpostilaatikkosi"
 
 #: .\vets\templates\vets\clinic_register_success.html:45
 msgid ""
 "Look for an email from FAMMO with the subject 'Confirm Your Clinic Email'"
 msgstr ""
-"Zoek naar een e-mail van FAMMO met als onderwerp 'Confirm Your Clinic Email'"
+"Etsi FAMMOlta saapunut viesti, jonka aiheena on \"Confirm Your Clinic Email\""
 
 #: .\vets\templates\vets\clinic_register_success.html:51
 msgid "Click the confirmation link"
-msgstr "Klik op de bevestigingslink"
+msgstr "Napsauta vahvistuslinkkiä"
 
 #: .\vets\templates\vets\clinic_register_success.html:52
 msgid "This will verify your email address"
-msgstr "Dit verifieert je e-mailadres"
+msgstr "Tämä vahvistaa sähköpostiosoitteesi"
 
 #: .\vets\templates\vets\clinic_register_success.html:58
 msgid "Wait for admin approval"
-msgstr "Wacht op goedkeuring door de beheerder"
+msgstr "Odota ylläpidon hyväksyntää"
 
 #: .\vets\templates\vets\clinic_register_success.html:59
 msgid "Our team will review and approve your clinic"
-msgstr "Ons team beoordeelt en keurt je kliniek goed"
+msgstr "Tiimimme tarkistaa ja hyväksyy klinikkasi"
 
 #: .\vets\templates\vets\clinic_register_success.html:65
 msgid "Access your dashboard"
-msgstr "Ga naar je dashboard"
+msgstr "Pääset hallintapaneeliisi"
 
 #: .\vets\templates\vets\clinic_register_success.html:66
 msgid "Get full access to referral tracking and analytics"
-msgstr "Krijg volledige toegang tot verwijzingsbeheer en statistieken"
+msgstr "Saat täyden pääsyn suositusten seurantaan ja analytiikkaan"
 
 #: .\vets\templates\vets\clinic_register_success.html:77
 msgid "Important"
-msgstr "Belangrijk"
+msgstr "Tärkeää"
 
 #: .\vets\templates\vets\clinic_register_success.html:79
 msgid "The confirmation link expires in 24 hours"
-msgstr "De bevestigingslink verloopt na 24 uur"
+msgstr "Vahvistuslinkki vanhenee 24 tunnin kuluttua"
 
 #: .\vets\templates\vets\clinic_register_success.html:80
 msgid "Check your spam/junk folder if you don't see the email"
-msgstr "Controleer je spam-/reclamefolder als je de e-mail niet ziet"
+msgstr "Tarkista roskapostikansio, jos et näe viestiä"
 
 #: .\vets\templates\vets\clinic_register_success.html:81
 msgid ""
 "Your clinic won't be publicly listed until both email confirmation and admin "
 "approval are complete"
 msgstr ""
-"Je kliniek wordt pas openbaar weergegeven nadat zowel e-mailbevestiging als "
-"goedkeuring door de beheerder zijn voltooid"
+"Klinikkaasi ei listata julkisesti ennen kuin sekä sähköpostin vahvistus että "
+"ylläpidon hyväksyntä on tehty"
 
 #: .\vets\templates\vets\clinic_register_success.html:91
 msgid "What you'll get after approval"
-msgstr "Wat je krijgt na goedkeuring"
+msgstr "Mitä saat hyväksynnän jälkeen"
 
 #: .\vets\templates\vets\clinic_register_success.html:96
 msgid "Public listing in FAMMO's trusted clinic directory"
-msgstr "Openbare vermelding in FAMMO's overzicht van vertrouwde klinieken"
+msgstr "Julkinen näkyvyys FAMMOn luotettujen klinikoiden hakemistossa"
 
 #: .\vets\templates\vets\clinic_register_success.html:100
 msgid "Referral code generation and tracking"
-msgstr "Aanmaak en tracking van verwijzingscodes"
+msgstr "Suosituskoodien luonti ja seuranta"
 
 #: .\vets\templates\vets\clinic_register_success.html:104
 msgid "Detailed analytics dashboard"
-msgstr "Gedetailleerd analysetableau"
+msgstr "Yksityiskohtainen analytiikkapaneeli"
 
 #: .\vets\templates\vets\clinic_register_success.html:108
 msgid "Access to referred customer information"
-msgstr "Toegang tot informatie over doorverwezen klanten"
+msgstr "Pääsy suositeltujen asiakkaiden tietoihin"
 
 #: .\vets\templates\vets\clinic_register_success.html:117
 #: .\vets\templates\vets\email_confirmed.html:101
 msgid "Return to Home"
-msgstr "Terug naar homepagina"
+msgstr "Palaa etusivulle"
 
 #: .\vets\templates\vets\clinic_register_success.html:122
 msgid "Browse Partner Clinics"
-msgstr "Bekijk partnerklinieken"
+msgstr "Selaa kumppaniklinikoita"
 
 #: .\vets\templates\vets\clinic_register_success.html:129
 msgid "Didn't receive the email?"
-msgstr "Heb je de e-mail niet ontvangen?"
+msgstr "Et saanut sähköpostia?"
 
 #: .\vets\templates\vets\clinic_register_success.html:132
 msgid "Please"
-msgstr "Neem dan"
+msgstr "Ole hyvä ja"
 
 #: .\vets\templates\vets\clinic_register_success.html:134
 msgid "contact our support team"
-msgstr "contact op met ons ondersteuningsteam"
+msgstr "ota yhteyttä tukeemme"
 
 #: .\vets\templates\vets\clinic_register_success.html:136
 msgid "and we'll help you complete the registration."
-msgstr "en we helpen je de registratie te voltooien."
+msgstr "niin autamme sinua viimeistelemään rekisteröinnin."
 
 #: .\vets\templates\vets\dashboard\analytics.html:4
 #: .\vets\templates\vets\dashboard\analytics.html:12
@@ -1987,496 +1994,497 @@ msgstr "en we helpen je de registratie te voltooien."
 #: .\vets\templates\vets\dashboard\profile_update.html:35
 #: .\vets\templates\vets\dashboard\referrals.html:35
 msgid "Analytics"
-msgstr "Analytics"
+msgstr "Analytiikka"
 
 #: .\vets\templates\vets\dashboard\analytics.html:17
 #: .\vets\templates\vets\dashboard\profile_update.html:17
 #: .\vets\templates\vets\dashboard\referrals.html:17
 msgid "Back to Dashboard"
-msgstr "Terug naar dashboard"
+msgstr "Takaisin hallintapaneeliin"
 
 #: .\vets\templates\vets\dashboard\analytics.html:27
 #: .\vets\templates\vets\dashboard\dashboard.html:400
 #: .\vets\templates\vets\dashboard\profile_update.html:27
 #: .\vets\templates\vets\dashboard\referrals.html:27
 msgid "Overview"
-msgstr "Overzicht"
+msgstr "Yleiskatsaus"
 
 #: .\vets\templates\vets\dashboard\analytics.html:31
 #: .\vets\templates\vets\dashboard\dashboard.html:404
 #: .\vets\templates\vets\dashboard\profile_update.html:31
 #: .\vets\templates\vets\dashboard\referrals.html:31
 msgid "Referrals"
-msgstr "Verwijzingen"
+msgstr "Suositukset"
 
 #: .\vets\templates\vets\dashboard\analytics.html:57
 #: .\vets\templates\vets\dashboard\dashboard.html:321
 msgid "Total Referrals"
-msgstr "Totaal aantal verwijzingen"
+msgstr "Suosituksia yhteensä"
 
 #: .\vets\templates\vets\dashboard\analytics.html:105
 #: .\vets\templates\vets\dashboard\analytics.html:174
 msgid "Conversion Rate"
-msgstr "Conversieratio"
+msgstr "Konversioprosentti"
 
 #: .\vets\templates\vets\dashboard\analytics.html:116
 msgid "Referral Code Performance"
-msgstr "Prestaties van verwijzingscodes"
+msgstr "Suosituskoodien toimivuus"
 
 #: .\vets\templates\vets\dashboard\analytics.html:128
 #: .\vets\templates\vets\dashboard\referrals.html:76
 #: .\vets\templates\vets\dashboard\referrals.html:255
 msgid "Active"
-msgstr "Actief"
+msgstr "Aktiivinen"
 
 #: .\vets\templates\vets\dashboard\analytics.html:132
 #: .\vets\templates\vets\dashboard\referrals.html:259
 msgid "Inactive"
-msgstr "Inactief"
+msgstr "Epäaktiivinen"
 
 #: .\vets\templates\vets\dashboard\analytics.html:141
 #: .\vets\templates\vets\dashboard\referrals.html:267
 msgid "referrals"
-msgstr "verwijzingen"
+msgstr "suositusta"
 
 #: .\vets\templates\vets\dashboard\analytics.html:147
 msgid "users"
-msgstr "gebruikers"
+msgstr "käyttäjää"
 
 #: .\vets\templates\vets\dashboard\analytics.html:157
 msgid "No referral data"
-msgstr "Geen verwijzingsgegevens"
+msgstr "Suositustietoja ei ole"
 
 #: .\vets\templates\vets\dashboard\analytics.html:158
 msgid "Start sharing your referral codes to see analytics."
-msgstr "Deel je verwijzingscodes om statistieken te zien."
+msgstr "Ala jakaa suosituskoodejasi nähdäksesi analytiikan."
 
 #: .\vets\templates\vets\dashboard\analytics.html:167
 msgid "Growth Insights"
-msgstr "Groei-inzichten"
+msgstr "Kasvun tunnusluvut"
 
 #: .\vets\templates\vets\dashboard\analytics.html:181
 msgid "Percentage of referrals that became active users"
-msgstr "Percentage verwijzingen dat actieve gebruikers is geworden"
+msgstr ""
+"Prosenttiosuus suosituksista, jotka muuttuivat aktiivisiksi käyttäjiksi"
 
 #: .\vets\templates\vets\dashboard\analytics.html:188
 msgid "Weekly Activity"
-msgstr "Wekelijkse activiteit"
+msgstr "Viikoittainen aktiivisuus"
 
 #: .\vets\templates\vets\dashboard\analytics.html:189
 msgid "this week"
-msgstr "deze week"
+msgstr "tällä viikolla"
 
 #: .\vets\templates\vets\dashboard\analytics.html:209
 msgid "Referrals received in the last 7 days"
-msgstr "Verwijzingen ontvangen in de afgelopen 7 dagen"
+msgstr "Viimeisen 7 päivän aikana saadut suositukset"
 
 #: .\vets\templates\vets\dashboard\analytics.html:216
 msgid "Monthly Activity"
-msgstr "Maandelijkse activiteit"
+msgstr "Kuukausittainen aktiivisuus"
 
 #: .\vets\templates\vets\dashboard\analytics.html:217
 msgid "this month"
-msgstr "deze maand"
+msgstr "tässä kuussa"
 
 #: .\vets\templates\vets\dashboard\analytics.html:237
 msgid "Referrals received in the last 30 days"
-msgstr "Verwijzingen ontvangen in de afgelopen 30 dagen"
+msgstr "Viimeisen 30 päivän aikana saadut suositukset"
 
 #: .\vets\templates\vets\dashboard\analytics.html:244
 msgid "Tips to Improve"
-msgstr "Tips ter verbetering"
+msgstr "Vinkkejä parantamiseen"
 
 #: .\vets\templates\vets\dashboard\analytics.html:246
 msgid "Share referral links on social media"
-msgstr "Deel verwijzingslinks op sociale media"
+msgstr "Jaa suosituslinkkejä sosiaalisessa mediassa"
 
 #: .\vets\templates\vets\dashboard\analytics.html:247
 msgid "Include links in email signatures"
-msgstr "Voeg links toe aan je e-mailhandtekening"
+msgstr "Lisää linkit sähköpostisi allekirjoitukseen"
 
 #: .\vets\templates\vets\dashboard\analytics.html:248
 msgid "Mention FAMMO to satisfied clients"
-msgstr "Noem FAMMO bij tevreden klanten"
+msgstr "Kerro FAMMOsta tyytyväisille asiakkaille"
 
 #: .\vets\templates\vets\dashboard\analytics.html:249
 msgid "Create custom QR codes for easy sharing"
-msgstr "Maak aangepaste QR-codes voor eenvoudig delen"
+msgstr "Luo omia QR-koodeja helppoa jakamista varten"
 
 #: .\vets\templates\vets\dashboard\analytics.html:261
 #: .\vets\templates\vets\dashboard\dashboard.html:525
 msgid "Manage Referrals"
-msgstr "Verwijzingen beheren"
+msgstr "Hallinnoi suosituksia"
 
 #: .\vets\templates\vets\dashboard\analytics.html:265
 #: .\vets\templates\vets\dashboard\profile_update.html:222
 msgid "Update Profile"
-msgstr "Profiel bijwerken"
+msgstr "Päivitä profiili"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:214
 msgid "View Public Profile"
-msgstr "Openbaar profiel bekijken"
+msgstr "Näytä julkinen profiili"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:233
 msgid "Clinic Verification Status"
-msgstr "Verificatiestatus van de kliniek"
+msgstr "Klinikan vahvistustila"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:242
 msgid "Email Confirmed"
-msgstr "E-mail bevestigd"
+msgstr "Sähköposti vahvistettu"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:243
 msgid "Your email is verified"
-msgstr "Je e-mailadres is geverifieerd"
+msgstr "Sähköpostisi on vahvistettu"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:248
 msgid "Email Pending"
-msgstr "E-mail in afwachting"
+msgstr "Sähköpostin vahvistus kesken"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:249
 msgid "Check your email for confirmation link"
-msgstr "Controleer je e-mail voor de bevestigingslink"
+msgstr "Tarkista sähköpostisi vahvistuslinkin varalta"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:259
 msgid "Admin Approved"
-msgstr "Goedgekeurd door beheerder"
+msgstr "Ylläpito hyväksynyt"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:260
 msgid "Your clinic is approved"
-msgstr "Je kliniek is goedgekeurd"
+msgstr "Klinikkasi on hyväksytty"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:265
 msgid "Admin Review"
-msgstr "Beoordeling door beheerder"
+msgstr "Ylläpidon tarkistus"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:266
 msgid "Waiting for admin approval"
-msgstr "In afwachting van goedkeuring door beheerder"
+msgstr "Odottaa ylläpidon hyväksyntää"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:276
 msgid "Public Listing"
-msgstr "Openbare vermelding"
+msgstr "Julkinen listaus"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:277
 msgid "Visible to users"
-msgstr "Zichtbaar voor gebruikers"
+msgstr "Näkyy käyttäjille"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:282
 msgid "Hidden"
-msgstr "Verborgen"
+msgstr "Piilotettu"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:283
 msgid "Not publicly visible yet"
-msgstr "Nog niet openbaar zichtbaar"
+msgstr "Ei vielä julkisesti näkyvissä"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:290
 msgid "Next Steps:"
-msgstr "Volgende stappen:"
+msgstr "Seuraavat vaiheet:"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:293
 msgid "Check your email and click the confirmation link"
-msgstr "Controleer je e-mail en klik op de bevestigingslink"
+msgstr "Tarkista sähköpostisi ja napsauta vahvistuslinkkiä"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:296
 msgid "Wait for admin review (typically 1-3 business days)"
-msgstr "Wacht op beoordeling door de beheerder (meestal 1–3 werkdagen)"
+msgstr "Odota ylläpidon tarkistusta (yleensä 1–3 arkipäivää)"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:299
 msgid "Your clinic should be publicly visible soon!"
-msgstr "Je kliniek zal binnenkort openbaar zichtbaar zijn!"
+msgstr "Klinikkasi pitäisi näkyä julkisesti pian!"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:337
 msgid "Active Users"
-msgstr "Actieve gebruikers"
+msgstr "Aktiiviset käyttäjät"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:353
 msgid "New Referrals"
-msgstr "Nieuwe verwijzingen"
+msgstr "Uudet suositukset"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:379
 #: .\vets\templates\vets\dashboard\dashboard.html:435
 #: .\vets\templates\vets\dashboard\referrals.html:113
 msgid "Status"
-msgstr "Status"
+msgstr "Tila"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:384
 msgid "Listed (Pending Verification)"
-msgstr "Vermeld (in afwachting van verificatie)"
+msgstr "Listattu (vahvistus kesken)"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:386
 msgid "Email Confirmation Pending"
-msgstr "E-mailbevestiging in afwachting"
+msgstr "Sähköpostin vahvistus odottaa"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:423
 msgid "Recent Referrals"
-msgstr "Recente verwijzingen"
+msgstr "Viimeisimmät suositukset"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:432
 #: .\vets\templates\vets\dashboard\referrals.html:110
 msgid "User"
-msgstr "Gebruiker"
+msgstr "Käyttäjä"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:438
 #: .\vets\templates\vets\dashboard\referrals.html:119
 msgid "Date"
-msgstr "Datum"
+msgstr "Päivämäärä"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:441
 msgid "Code"
-msgstr "Code"
+msgstr "Koodi"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:485
 #: .\vets\templates\vets\dashboard\referrals.html:210
 msgid "No referrals yet"
-msgstr "Nog geen verwijzingen"
+msgstr "Ei vielä suosituksia"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:486
 #: .\vets\templates\vets\dashboard\referrals.html:211
 msgid "Share your referral links to start getting new patients."
-msgstr "Deel je verwijzingslinks om nieuwe cliënten te krijgen."
+msgstr "Jaa suosituslinkkejä saadaksesi uusia potilaita."
 
 #: .\vets\templates\vets\dashboard\dashboard.html:497
 msgid "Referral Codes"
-msgstr "Verwijzingscodes"
+msgstr "Suosituskoodit"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:507
 #: .\vets\templates\vets\dashboard\referrals.html:264
 msgid "Created"
-msgstr "Aangemaakt"
+msgstr "Luotu"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:513
 msgid "Copy"
-msgstr "Kopiëren"
+msgstr "Kopioi"
 
 #: .\vets\templates\vets\dashboard\dashboard.html:519
 msgid "No referral codes available."
-msgstr "Geen verwijzingscodes beschikbaar."
+msgstr "Suosituskoodeja ei ole saatavilla."
 
 #: .\vets\templates\vets\dashboard\profile_update.html:4
 #: .\vets\templates\vets\dashboard\profile_update.html:12
 msgid "Update Clinic Profile"
-msgstr "Kliniekprofiel bijwerken"
+msgstr "Päivitä klinikan profiili"
 
 #: .\vets\templates\vets\dashboard\profile_update.html:166
 msgid "Current logo"
-msgstr "Huidig logo"
+msgstr "Nykyinen logo"
 
 #: .\vets\templates\vets\dashboard\referrals.html:4
 #: .\vets\templates\vets\dashboard\referrals.html:12
 msgid "Referrals Management"
-msgstr "Verwijzingen beheren"
+msgstr "Suositusten hallinta"
 
 #: .\vets\templates\vets\dashboard\referrals.html:60
 msgid "Total"
-msgstr "Totaal"
+msgstr "Yhteensä"
 
 #: .\vets\templates\vets\dashboard\referrals.html:92
 msgid "New"
-msgstr "Nieuw"
+msgstr "Uusi"
 
 #: .\vets\templates\vets\dashboard\referrals.html:102
 msgid "All Referrals"
-msgstr "Alle verwijzingen"
+msgstr "Kaikki suositukset"
 
 #: .\vets\templates\vets\dashboard\referrals.html:116
 msgid "Referral Code"
-msgstr "Verwijzingscode"
+msgstr "Suosituskoodi"
 
 #: .\vets\templates\vets\dashboard\referrals.html:136
 msgid "Registered User"
-msgstr "Geregistreerde gebruiker"
+msgstr "Rekisteröity käyttäjä"
 
 #: .\vets\templates\vets\dashboard\referrals.html:138
 msgid "Visitor"
-msgstr "Bezoeker"
+msgstr "Vierailija"
 
 #: .\vets\templates\vets\dashboard\referrals.html:173
 msgid "Showing"
-msgstr "Weergave"
+msgstr "Näytetään"
 
 #: .\vets\templates\vets\dashboard\referrals.html:175
 msgid "to"
-msgstr "tot"
+msgstr "–"
 
 #: .\vets\templates\vets\dashboard\referrals.html:177
 #: .\vets\templates\vets\dashboard\referrals.html:191
 #: .\vets\templates\vets\partner_clinics.html:198
 msgid "of"
-msgstr "van"
+msgstr "/"
 
 #: .\vets\templates\vets\dashboard\referrals.html:179
 msgid "results"
-msgstr "resultaten"
+msgstr "tuloksesta"
 
 #: .\vets\templates\vets\dashboard\referrals.html:191
 #: .\vets\templates\vets\partner_clinics.html:198
 msgid "Page"
-msgstr "Pagina"
+msgstr "Sivu"
 
 #: .\vets\templates\vets\dashboard\referrals.html:222
 msgid "Create New Referral Code"
-msgstr "Nieuwe verwijzingscode maken"
+msgstr "Luo uusi suosituskoodi"
 
 #: .\vets\templates\vets\dashboard\referrals.html:238
 msgid "Generate Code"
-msgstr "Code genereren"
+msgstr "Luo koodi"
 
 #: .\vets\templates\vets\dashboard\referrals.html:245
 msgid "Your Referral Codes"
-msgstr "Je verwijzingscodes"
+msgstr "Suosituskoodisi"
 
 #: .\vets\templates\vets\dashboard\referrals.html:274
 msgid "Copy Link"
-msgstr "Link kopiëren"
+msgstr "Kopioi linkki"
 
 #: .\vets\templates\vets\dashboard\referrals.html:281
 msgid "No referral codes created yet."
-msgstr "Er zijn nog geen verwijzingscodes aangemaakt."
+msgstr "Suosituskoodeja ei ole vielä luotu."
 
 #: .\vets\templates\vets\dashboard\referrals.html:287
 msgid "How to Use Referral Codes"
-msgstr "Hoe gebruik je verwijzingscodes"
+msgstr "Näin käytät suosituskoodeja"
 
 #: .\vets\templates\vets\dashboard\referrals.html:289
 msgid "Share referral links with your clients"
-msgstr "Deel verwijzingslinks met je cliënten"
+msgstr "Jaa suosituslinkkejä asiakkaillesi"
 
 #: .\vets\templates\vets\dashboard\referrals.html:290
 msgid "Track new user registrations"
-msgstr "Volg nieuwe gebruikersregistraties"
+msgstr "Seuraa uusia käyttäjärekisteröintejä"
 
 #: .\vets\templates\vets\dashboard\referrals.html:291
 msgid "Monitor conversion rates"
-msgstr "Monitor conversieratio's"
+msgstr "Seuraa konversioprosentteja"
 
 #: .\vets\templates\vets\dashboard\referrals.html:292
 msgid "Build your client base through FAMMO"
-msgstr "Bouw je klantenbestand op via FAMMO"
+msgstr "Kasvata asiakaskuntaasi FAMMOn avulla"
 
 #: .\vets\templates\vets\email_confirmed.html:19
 msgid "Thank you for confirming your email address"
-msgstr "Bedankt voor het bevestigen van je e-mailadres"
+msgstr "Kiitos, että vahvistit sähköpostiosoitteesi"
 
 #: .\vets\templates\vets\email_confirmed.html:27
 msgid "Welcome to FAMMO Partner Network!"
-msgstr "Welkom bij het FAMMO Partnernetwerk!"
+msgstr "Tervetuloa FAMMOn kumppaniverkostoon!"
 
 #: .\vets\templates\vets\email_confirmed.html:30
 msgid "Your clinic"
-msgstr "Je kliniek"
+msgstr "Klinikkasi"
 
 #: .\vets\templates\vets\email_confirmed.html:31
 msgid "has successfully confirmed its email address."
-msgstr "heeft het e-mailadres succesvol bevestigd."
+msgstr "on onnistuneesti vahvistanut sähköpostiosoitteensa."
 
 #: .\vets\templates\vets\email_confirmed.html:41
 msgid "Email Verified"
-msgstr "E-mail geverifieerd"
+msgstr "Sähköposti vahvistettu"
 
 #: .\vets\templates\vets\email_confirmed.html:44
 msgid "Your email address has been successfully confirmed."
-msgstr "Je e-mailadres is succesvol bevestigd."
+msgstr "Sähköpostiosoitteesi on vahvistettu onnistuneesti."
 
 #: .\vets\templates\vets\email_confirmed.html:52
 msgid "Pending Review"
-msgstr "In beoordeling"
+msgstr "Tarkistus kesken"
 
 #: .\vets\templates\vets\email_confirmed.html:55
 msgid "Our team is reviewing your clinic information."
-msgstr "Ons team beoordeelt op dit moment de gegevens van je kliniek."
+msgstr "Tiimimme tarkistaa klinikkasi tiedot."
 
 #: .\vets\templates\vets\email_confirmed.html:64
 msgid "What happens next?"
-msgstr "Wat gebeurt er nu?"
+msgstr "Mitä seuraavaksi tapahtuu?"
 
 #: .\vets\templates\vets\email_confirmed.html:69
 msgid "Our admin team reviews your clinic information"
-msgstr "Ons beheerteam beoordeelt de informatie van je kliniek"
+msgstr "Ylläpitotiimimme tarkistaa klinikkasi tiedot"
 
 #: .\vets\templates\vets\email_confirmed.html:73
 msgid "We verify your clinic's legitimacy and details"
-msgstr "We verifiëren de legitimiteit en gegevens van je kliniek"
+msgstr "Vahvistamme klinikkasi taustat ja tiedot"
 
 #: .\vets\templates\vets\email_confirmed.html:77
 msgid "Your clinic gets approved and listed publicly"
-msgstr "Je kliniek wordt goedgekeurd en openbaar vermeld"
+msgstr "Klinikkasi hyväksytään ja listataan julkisesti"
 
 #: .\vets\templates\vets\email_confirmed.html:81
 msgid "You get full access to your clinic dashboard"
-msgstr "Je krijgt volledige toegang tot je kliniekdashboard"
+msgstr "Saat täyden pääsyn klinikkasi hallintapaneeliin"
 
 #: .\vets\templates\vets\email_confirmed.html:90
 msgid "Expected Timeline"
-msgstr "Verwachte doorlooptijd"
+msgstr "Arvioitu aikataulu"
 
 #: .\vets\templates\vets\email_confirmed.html:93
 msgid ""
 "Review typically takes 1-3 business days. You'll receive an email "
 "notification once your clinic is approved."
 msgstr ""
-"De beoordeling duurt meestal 1–3 werkdagen. Je ontvangt een e-mail zodra je "
-"kliniek is goedgekeurd."
+"Tarkistus kestää yleensä 1–3 arkipäivää. Saat sähköposti-ilmoituksen, kun "
+"klinikkasi on hyväksytty."
 
 #: .\vets\templates\vets\email_confirmed.html:106
 msgid "View Partner Clinics"
-msgstr "Partnerklinieken bekijken"
+msgstr "Näytä kumppaniklinikat"
 
 #: .\vets\templates\vets\email_confirmed.html:113
 msgid "Questions about your registration?"
-msgstr "Vragen over je registratie?"
+msgstr "Kysyttävää rekisteröitymisestäsi?"
 
 #: .\vets\templates\vets\email_confirmed.html:115
 msgid "Contact our support team"
-msgstr "Neem contact op met ons ondersteuningsteam"
+msgstr "Ota yhteyttä tukeemme"
 
 #: .\vets\templates\vets\partials\clinic_card.html:25
 #: .\vets\templates\vets\partner_clinics.html:102
 #: .\vets\templates\vets\partner_clinics.html:279
 msgid "Verified"
-msgstr "Geverifieerd"
+msgstr "Vahvistettu"
 
 #: .\vets\templates\vets\partials\clinic_card.html:61
 #: .\vets\templates\vets\partner_clinics.html:166
 #: .\vets\templates\vets\partner_clinics.html:289
 msgid "View Profile"
-msgstr "Profiel bekijken"
+msgstr "Näytä profiili"
 
 #: .\vets\templates\vets\partials\clinic_card.html:67
 msgid "Get Referred"
-msgstr "Laat je doorverwijzen"
+msgstr "Hanki suositus"
 
 #: .\vets\templates\vets\partner_clinics.html:5
 msgid "Partner Clinics"
-msgstr "Partnerklinieken"
+msgstr "Yhteistyöklinikat"
 
 #: .\vets\templates\vets\partner_clinics.html:12
 msgid "Trusted Partner Clinics"
-msgstr "Vertrouwde partnerklinieken"
+msgstr "Luotetut yhteistyöklinikat"
 
 #: .\vets\templates\vets\partner_clinics.html:15
 msgid ""
 "Find verified veterinary clinics that are part of the FAMMO network. These "
 "trusted partners are committed to providing exceptional pet care."
 msgstr ""
-"Vind geverifieerde dierenklinieken die deel uitmaken van het FAMMO-netwerk. "
-"Deze vertrouwde partners zetten zich in voor uitstekende zorg voor "
-"huisdieren."
+"Löydä vahvistetut eläinklinikat, jotka kuuluvat FAMMOn verkostoon. Nämä "
+"luotetut kumppanit ovat sitoutuneet tarjoamaan poikkeuksellista lemmikkien "
+"hoitoa."
 
 #: .\vets\templates\vets\partner_clinics.html:25
 msgid "Search clinics by name, city, or specialization..."
-msgstr "Zoek klinieken op naam, stad of specialisatie..."
+msgstr "Hae klinikoita nimen, kaupungin tai erikoisalan perusteella..."
 
 #: .\vets\templates\vets\partner_clinics.html:38
 msgid "Search"
-msgstr "Zoeken"
+msgstr "Hae"
 
 #: .\vets\templates\vets\partner_clinics.html:42
 msgid "Find near me"
-msgstr "Zoek bij mij in de buurt"
+msgstr "Etsi läheltäni"
 
 #: .\vets\templates\vets\partner_clinics.html:44
 msgid "Search radius"
-msgstr "Zoekradius"
+msgstr "Hakusäde"
 
 #: .\vets\templates\vets\partner_clinics.html:45
 msgid "100 m"
@@ -2500,11 +2508,11 @@ msgstr "2 km"
 
 #: .\vets\templates\vets\partner_clinics.html:62
 msgid "Clinics near you"
-msgstr "Klinieken bij jou in de buurt"
+msgstr "Klinikat lähellä sinua"
 
 #: .\vets\templates\vets\partner_clinics.html:63
 msgid "Clear"
-msgstr "Wissen"
+msgstr "Tyhjennä"
 
 #: .\vets\templates\vets\partner_clinics.html:71
 #, python-format
@@ -2518,187 +2526,174 @@ msgid_plural ""
 "            "
 msgstr[0] ""
 "\n"
-"                %(counter)s kliniek gevonden\n"
+"                %(counter)s klinikka löytyi\n"
 "            "
 msgstr[1] ""
 "\n"
-"                %(counter)s klinieken gevonden\n"
+"                %(counter)s klinikkaa löytyi\n"
 "            "
 
 #: .\vets\templates\vets\partner_clinics.html:80
 msgid "Register Your Clinic"
-msgstr "Registreer je kliniek"
+msgstr "Rekisteröi klinikkasi"
 
 #: .\vets\templates\vets\partner_clinics.html:176
 msgid "No clinics found"
-msgstr "Geen klinieken gevonden"
+msgstr "Klinikoita ei löytynyt"
 
 #: .\vets\templates\vets\partner_clinics.html:177
 msgid "Try adjusting your search criteria."
-msgstr "Probeer je zoekcriteria aan te passen."
+msgstr "Kokeile muuttaa hakuehtoja."
 
 #: .\vets\templates\vets\partner_clinics.html:189
 msgid "First"
-msgstr "Eerste"
+msgstr "Ensimmäinen"
 
 #: .\vets\templates\vets\partner_clinics.html:208
 msgid "Last"
-msgstr "Laatste"
+msgstr "Viimeinen"
 
 #: .\vets\templates\vets\partner_clinics.html:264
 msgid "No nearby clinics found in the selected radius."
-msgstr "Geen klinieken in de buurt gevonden binnen de gekozen radius."
+msgstr "Valitun säteen sisältä ei löytynyt klinikoita."
 
 #: .\vets\templates\vets\partner_clinics.html:301
 msgid "Locating…"
-msgstr "Locatie wordt bepaald…"
+msgstr "Paikannetaan…"
 
 #: .\vets\templates\vets\partner_clinics.html:313
 msgid "Searching for clinics near your location…"
-msgstr "Bezig met zoeken naar klinieken bij jouw locatie…"
+msgstr "Etsitään klinikoita sijaintisi läheltä…"
 
 #: .\vets\templates\vets\partner_clinics.html:324
 msgid "Unable to fetch nearby clinics. Please try again."
-msgstr "Kan geen klinieken in de buurt ophalen. Probeer het opnieuw."
+msgstr "Lähiklinikoiden hakeminen epäonnistui. Yritä uudelleen."
 
 #: .\vets\templates\vets\partner_clinics.html:330
 msgid "Geolocation is not supported by your browser."
-msgstr "Geolocatie wordt niet ondersteund door je browser."
+msgstr "Sijainnin määritys ei ole tuettu selaimessasi."
 
 #: .\vets\templates\vets\partner_clinics.html:342
 msgid ""
 "Location permission denied or unavailable. You can type your city or try "
 "again."
 msgstr ""
-"Locatietoegang geweigerd of niet beschikbaar. Je kunt je stad intypen of het "
-"opnieuw proberen."
+"Sijaintilupa evätty tai ei käytettävissä. Voit kirjoittaa kaupunkisi tai "
+"yrittää uudelleen."
 
 #: .\vets\templates\vets\referral_landing.html:18
 msgid "Welcome from"
-msgstr "Welkom namens"
+msgstr "Tervetuloa – suositellut sinulle"
 
 #: .\vets\templates\vets\referral_landing.html:25
 msgid "Verified FAMMO Partner"
-msgstr "Geverifieerde FAMMO-partner"
+msgstr "Vahvistettu FAMMO-kumppani"
 
 #: .\vets\templates\vets\referral_landing.html:31
 msgid ""
 "You've been invited to join FAMMO by a trusted veterinary clinic. Get "
 "personalized pet care recommendations and expert advice."
 msgstr ""
-"Je bent uitgenodigd om lid te worden van FAMMO door een vertrouwde "
-"dierenkliniek. Krijg gepersonaliseerde aanbevelingen voor de zorg van je "
-"huisdier en deskundig advies."
+"Luotettu eläinklinikka on kutsunut sinut liittymään FAMMOon. Saat "
+"yksilöllisiä suosituksia lemmikkisi hoitoon ja asiantuntijaneuvoja."
 
 #: .\vets\templates\vets\referral_landing.html:40
 msgid "Why Join FAMMO?"
-msgstr "Waarom lid worden van FAMMO?"
+msgstr "Miksi liittyä FAMMOon?"
 
 #: .\vets\templates\vets\referral_landing.html:51
 msgid "Personalized Pet Care"
-msgstr "Gepersonaliseerde zorg voor huisdieren"
+msgstr "Yksilöllinen lemmikin hoito"
 
 #: .\vets\templates\vets\referral_landing.html:52
 msgid ""
 "Get AI-powered recommendations tailored to your pet's specific needs, age, "
 "and health conditions."
 msgstr ""
-"Krijg AI-gestuurde aanbevelingen die zijn afgestemd op de specifieke "
-"behoeften, leeftijd en gezondheidstoestand van je huisdier."
+"Saat tekoälyn tuottamia suosituksia, jotka on räätälöity lemmikkisi "
+"tarpeiden, iän ja terveydentilan mukaan."
 
 #: .\vets\templates\vets\referral_landing.html:63
 msgid "Trusted Network"
-msgstr "Vertrouwd netwerk"
+msgstr "Luotettu verkosto"
 
 #: .\vets\templates\vets\referral_landing.html:64
 msgid ""
 "Connect with verified veterinarians and get expert advice from professionals "
 "you can trust."
 msgstr ""
-"Kom in contact met geverifieerde dierenartsen en krijg deskundig advies van "
-"professionals die je kunt vertrouwen."
+"Yhdisty vahvistettuihin eläinlääkäreihin ja saa asiantuntijaneuvoja "
+"ammattilaisilta, joihin voit luottaa."
 
 #: .\vets\templates\vets\referral_landing.html:75
 msgid "Educational Resources"
-msgstr "Educatieve bronnen"
+msgstr "Opasmateriaali"
 
 #: .\vets\templates\vets\referral_landing.html:76
 msgid ""
 "Access a wealth of pet care information, guides, and tips from veterinary "
 "experts."
 msgstr ""
-"Krijg toegang tot een schat aan informatie, gidsen en tips over "
-"huisdierverzorging van dierenarts-experts."
+"Pääset käsiksi runsaaseen lemmikin hoitoa käsittelevään tietoon, oppaisiin "
+"ja vinkkeihin eläinlääkäriasiantuntijoilta."
 
 #: .\vets\templates\vets\referral_landing.html:87
 msgid "24/7 Support"
-msgstr "24/7 ondersteuning"
+msgstr "24/7-tuki"
 
 #: .\vets\templates\vets\referral_landing.html:88
 msgid ""
 "Get help whenever you need it with our AI-powered support and community."
 msgstr ""
-"Krijg hulp wanneer je die nodig hebt via onze AI-ondersteuning en community."
+"Saat apua milloin tahansa tekoälypohjaisen tukemme ja yhteisömme avulla."
 
 #: .\vets\templates\vets\referral_landing.html:96
 msgid "About Your Referring Clinic"
-msgstr "Over de doorverwijzende kliniek"
+msgstr "Tietoa suosittelevasta klinikasta"
 
 #: .\vets\templates\vets\referral_landing.html:99
 msgid "Location:"
-msgstr "Locatie:"
+msgstr "Sijainti:"
 
 #: .\vets\templates\vets\referral_landing.html:102
 msgid "Specializations:"
-msgstr "Specialisaties:"
+msgstr "Erikoisalat:"
 
 #: .\vets\templates\vets\referral_landing.html:105
 msgid "Hours:"
-msgstr "Openingstijden:"
+msgstr "Aukioloajat:"
 
 #: .\vets\templates\vets\referral_landing.html:111
 msgid "View Clinic Profile"
-msgstr "Kliniekprofiel bekijken"
+msgstr "Näytä klinikan profiili"
 
 #: .\vets\templates\vets\referral_landing.html:121
 msgid "Ready to Get Started?"
-msgstr "Klaar om te beginnen?"
+msgstr "Valmis aloittamaan?"
 
 #: .\vets\templates\vets\referral_landing.html:124
 msgid "Join thousands of pet owners who trust FAMMO for their pet care needs."
 msgstr ""
-"Sluit je aan bij duizenden huisdiereigenaren die FAMMO vertrouwen voor de "
-"zorg van hun huisdieren."
+"Liity tuhansien lemmikinomistajien joukkoon, jotka luottavat FAMMOon "
+"lemmikkiensä hoitotarpeissa."
 
 #: .\vets\templates\vets\referral_landing.html:149
 msgid "Special Referral Bonus"
-msgstr "Speciale verwijzingsbonus"
+msgstr "Erityinen suositusbonus"
 
 #: .\vets\templates\vets\referral_landing.html:150
 msgid "Free premium features for the first month!"
-msgstr "Gratis premiumfuncties gedurende de eerste maand!"
+msgstr "Premium-ominaisuudet maksutta ensimmäisen kuukauden ajan!"
 
 #: .\vets\templates\vets\referral_landing.html:162
 #, python-format
 msgid "100%% Secure"
-msgstr "100%% veilig"
+msgstr "100%% turvallinen"
 
 #: .\vets\templates\vets\referral_landing.html:168
 msgid "Vet Approved"
-msgstr "Goedgekeurd door dierenartsen"
+msgstr "Eläinlääkärien hyväksymä"
 
 #: .\vets\templates\vets\referral_landing.html:174
 msgid "Pet Loved"
-msgstr "Geliefd bij huisdieren"
-
-#~ msgid "years"
-#~ msgstr "jaar"
-
-#~ msgid "weeks"
-#~ msgstr "weken"
-
-#~ msgid "Top Countries by AI Requests"
-#~ msgstr "Toplanden naar AI-verzoeken"
-
-#~ msgid "Your account has been activated. You can now log in."
-#~ msgstr "Je account is geactiveerd. Je kunt nu inloggen."
+msgstr "Lemmikkien suosikki"

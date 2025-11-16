@@ -18,6 +18,11 @@ db.sqlite3
 media/
 staticfiles/
 
+# Tailwind CSS
+tailwindcss.exe
+tailwindcss
+node_modules/
+
 # Local environment files
 .env
 .env.*
@@ -28,3 +33,5 @@ staticfiles/
 *.swp
 .DS_Store
 Thumbs.db
+
+guide/

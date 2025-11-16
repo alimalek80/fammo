@@ -108,9 +108,9 @@
                             
                             <div class="text-base font-medium text-gray-700 mt-2">
                                 {% if radio.choice_label == "True" or radio.choice_label == "Yes" %}
-                                    Yes
+                                    {% trans "Yes" %}
                                 {% elif radio.choice_label == "False" or radio.choice_label == "No" %}
-                                    No
+                                    {% trans "No" %}
                                 {% else %}
                                     {{ radio.choice_label }}
                                 {% endif %}

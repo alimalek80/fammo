@@ -2,7 +2,7 @@
 <div class="mb-6">
   <div class="mb-6 text-lg font-medium text-center opacity-90">
     {% if form.pet_name %}
-      What is {{ form.pet_name }} currently eating?
+      {% blocktrans with name=form.pet_name %}What is {{ name }} currently eating?{% endblocktrans %}
     {% else %}
       {{ form.food_types.label }}
     {% endif %}

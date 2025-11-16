@@ -106,13 +106,13 @@
             <a href="{% url 'core:home' %}" class="flex items-center hover:opacity-80 transition duration-300">
                 <img src="{% static 'images/logo.png' %}" alt="FAMO Logo" class="h-6 w-auto mr-2">
             </a>
-            Chat with Fammo AI
+            {% trans "Chat with Fammo AI" %}
         </h1>
                 <div class="flex items-center space-x-3">
             <button id="theme-toggle-btn" class="text-sm px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg transition" aria-label="Toggle Light/Dark Mode">
                 <span id="theme-icon">🌙</span>
             </button>
-            <a href="?new=1" id="new-chat-btn" class="text-sm px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg transition">New Chat</a>
+            <a href="?new=1" id="new-chat-btn" class="text-sm px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg transition">{% trans "New Chat" %}</a>
                         {% if user_first %}
                             <span class="hidden sm:inline text-sm px-2 py-1 rounded-lg bg-gray-800 border border-gray-700">👋 {{ user_first }}</span>
                         {% endif %}
@@ -129,11 +129,11 @@
                 <div class="flex {% if msg.role == 'user' %}justify-end{% else %}justify-start{% endif %}">
                     <div class="flex items-start max-w-xl group">
                         <div class="flex-shrink-0 w-8 h-8 rounded-full {% if msg.role == 'user' %}bg-indigo-500 order-2 ml-3{% else %}bg-blue-500 mr-3{% endif %} flex items-center justify-center text-white font-bold text-sm">
-                            {% if msg.role == 'user' %}You{% else %}AI{% endif %}
+                            {% if msg.role == 'user' %}{% trans "You" %}{% else %}{% trans "AI" %}{% endif %}
                         </div>
                         <div class="message-content-wrapper flex items-end">
                             <div class="copy-action-wrapper flex items-center {% if msg.role == 'user' %}order-1 mr-1.5{% else %}order-2 ml-1.5{% endif %} opacity-0 group-hover:opacity-100 transition duration-150 text-gray-400">
-                                <span class="copy-feedback text-xs font-medium text-green-400 opacity-0 transition-opacity duration-300 ease-out pointer-events-none mr-1.5">Copied!</span>
+                                <span class="copy-feedback text-xs font-medium text-green-400 opacity-0 transition-opacity duration-300 ease-out pointer-events-none mr-1.5">{% trans "Copied!" %}</span>
                                 <button type="button" class="copy-btn p-1 hover:text-white hover:bg-gray-700 rounded-full transition" title="Copy message" onclick="copyMessage(this)">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect width="13" height="13" x="9" y="9" rx="2" ry="2"/>
@@ -157,10 +157,10 @@
         {% else %}
             <div class="flex justify-start">
                 <div class="flex items-start max-w-xl group">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm mr-3">AI</div>
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm mr-3">{% trans "AI" %}</div>
                     <div class="message-content-wrapper flex items-end">
                         <div class="copy-action-wrapper flex items-center order-2 ml-1.5 opacity-0 group-hover:opacity-100 transition duration-150 text-gray-400">
-                            <span class="copy-feedback text-xs font-medium text-green-400 opacity-0 transition-opacity duration-300 ease-out pointer-events-none mr-1.5">Copied!</span>
+                            <span class="copy-feedback text-xs font-medium text-green-400 opacity-0 transition-opacity duration-300 ease-out pointer-events-none mr-1.5">{% trans "Copied!" %}</span>
                             <button type="button" class="copy-btn p-1 hover:text-white hover:bg-gray-700 rounded-full transition" title="Copy message" onclick="copyMessage(this)">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect width="13" height="13" x="9" y="9" rx="2" ry="2"/>
@@ -173,7 +173,7 @@
                                 {% if greeting %}
                                     {{ greeting }}
                                 {% else %}
-                                    Hi! Ask me anything about dog & cat care.
+                                    {% trans "Hi! Ask me anything about dog & cat care." %}
                                 {% endif %}
                             </p>
                         </div>
@@ -184,11 +184,18 @@
             {% if primary_pet %}
             <div class="flex justify-start">
                 <div class="flex items-start max-w-xl group">
-                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white font-bold text-sm">AI</div>
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white font-bold text-sm">{% trans "AI" %}</div>
                     <div class="message-content-wrapper flex items-end">
                         <div class="message-bubble-content bg-gray-800 order-1 p-4 rounded-xl shadow-lg text-white">
                             <p class="message-text text-sm md:text-base">
-                                Profile on file for {{ primary_pet.name }}{% if primary_pet.pet_type %} ({{ primary_pet.pet_type.name }}){% endif %}{% if primary_pet.breed %}, {{ primary_pet.breed.name }}{% endif %}{% if primary_pet.weight %}, {{ primary_pet.weight }} kg{% endif %}. You can ask me about diet, health risks, and daily care.
+                                {% if primary_pet %}
+            <div class="flex justify-start">
+                <div class="flex items-start max-w-xl group">
+                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white font-bold text-sm">{% trans "AI" %}</div>
+                    <div class="message-content-wrapper flex items-end">
+                        <div class="message-bubble-content bg-gray-800 order-1 p-4 rounded-xl shadow-lg text-white">
+                            <p class="message-text text-sm md:text-base">
+                                {% blocktrans with name=primary_pet.name %}Profile on file for {{ name }}{% endblocktrans %}{% if primary_pet.pet_type %} ({{ primary_pet.pet_type.name }}){% endif %}{% if primary_pet.breed %}, {{ primary_pet.breed.name }}{% endif %}{% if primary_pet.weight %}, {{ primary_pet.weight }} kg{% endif %}. {% trans "You can ask me about diet, health risks, and daily care." %}
                             </p>
                         </div>
                     </div>
@@ -200,7 +207,7 @@
         {% if error %}
             <div class="flex justify-center mt-4">
                 <div class="p-3 bg-red-800 text-red-100 rounded-xl shadow-lg max-w-md">
-                    <p class="font-bold">Error:</p>
+                    <p class="font-bold">{% trans "Error:" %}</p>
                     <p>{{ error }}</p>
                 </div>
             </div>
@@ -229,7 +236,7 @@
                 <textarea
                     id="user-input"
                     class="flex-1 resize-none bg-gray-700 text-white rounded-2xl p-4 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 placeholder-gray-400 text-sm md:text-base"
-                    placeholder="Type your pet question…"
+                    placeholder="{% trans 'Type your pet question…' %}"
                     rows="1"
                 ></textarea>
 
@@ -245,7 +252,7 @@
                     </svg>
                 </button>
             </div>
-            <p class="text-xs text-gray-500 mt-2 text-center">The AI response is handled by the Django server.</p>
+            <p class="text-xs text-gray-500 mt-2 text-center">{% trans "The AI response is handled by the Django server." %}</p>
         </form>
     </div>
 </div>

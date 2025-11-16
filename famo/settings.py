@@ -51,8 +51,6 @@ INSTALLED_APPS = [
 
     'userapp',
     'core',
-    'tailwind',
-    'theme',
     'pet',
     'aihub',
     'subscription',
@@ -67,12 +65,6 @@ INSTALLED_APPS = [
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
 
-TAILWIND_APP_NAME = 'theme'
-NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
-
-if DEBUG:
-    INSTALLED_APPS += ['django_browser_reload']
-
 # MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,9 +77,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-if DEBUG:
-    MIDDLEWARE += ['django_browser_reload.middleware.BrowserReloadMiddleware']
 
 ROOT_URLCONF = 'famo.urls'
 WSGI_APPLICATION = 'famo.wsgi.application'
@@ -152,6 +141,7 @@ LANGUAGES = [
     ('en', 'English'),
     ('tr', 'Türkçe'),
     ('nl', 'Nederlands'),
+    ('fi', 'Suomi'),
 ]
 TIME_ZONE = 'UTC'
 USE_I18N = True

@@ -2,7 +2,7 @@
 <div class="mb-6">
   <div class="mb-4 text-lg font-medium text-center opacity-90">
     {% if form.pet_name %}
-      How old is {{ form.pet_name }}?
+      {% blocktrans with name=form.pet_name %}How old is {{ name }}?{% endblocktrans %}
     {% else %}
       {{ form.age_category.label }}
     {% endif %}
