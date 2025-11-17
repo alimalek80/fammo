@@ -16,6 +16,13 @@ urlpatterns = [
     path('admin-dashboard/kpis/', views.admin_dashboard_kpis, name='admin_dashboard_kpis'),
     path('export/users/', export_users_csv, name='export_users_csv'),
     path('terms/', views.terms_and_conditions_view, name='terms_and_conditions'),
+    # Translation Management
+    path('translations/', views.translation_dashboard, name='translation_dashboard'),
+    path('translations/update/', views.update_translation_ajax, name='update_translation'),
+    path('translations/compile/', views.compile_translations_ajax, name='compile_translations'),
+    path('translations/extract/', views.extract_translations_ajax, name='extract_translations'),
+    path('translations/export-csv/', views.export_translations_csv, name='export_translations_csv'),
+    path('translations/import-csv/', views.import_translations_csv, name='import_translations_csv'),
     # API
     path('api/save-location/', views.SaveUserLocationAPIView.as_view(), name='save_location_api'),
 ]

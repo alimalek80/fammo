@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAMMO 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-16 16:23+0300\n"
+"POT-Creation-Date: 2025-11-16 17:46+0300\n"
 "PO-Revision-Date: 2025-11-16 12:00+0300\n"
 "Last-Translator: FAMMO Team\n"
 "Language-Team: Finnish\n"
@@ -37,7 +37,7 @@ msgid "No meal recommendations yet."
 msgstr "Ateriasuosituksia ei ole vielä."
 
 #: .\aihub\templates\aihub\history.html:78
-#: .\userapp\templates\userapp\dashboard_base.html:103
+#: .\userapp\templates\userapp\dashboard_base.html:109
 msgid "Health Reports"
 msgstr "Terveysraportit"
 
@@ -1025,7 +1025,7 @@ msgid "Make Your Plan"
 msgstr "Luo suunnitelma"
 
 #: .\templates\partials\navbar.html:51 .\templates\partials\navbar.html:138
-#: .\userapp\templates\userapp\dashboard_base.html:67
+#: .\userapp\templates\userapp\dashboard_base.html:73
 msgid "AI History"
 msgstr "AI-historia"
 
@@ -1054,7 +1054,7 @@ msgid "Clinic Dashboard"
 msgstr "Klinikan hallintapaneeli"
 
 #: .\templates\partials\navbar.html:99 .\templates\partials\navbar.html:161
-#: .\userapp\templates\userapp\dashboard_base.html:81
+#: .\userapp\templates\userapp\dashboard_base.html:87
 msgid "Logout"
 msgstr "Kirjaudu ulos"
 
@@ -1331,14 +1331,18 @@ msgid "Homepage Hero"
 msgstr "Etusivun hero-osio"
 
 #: .\userapp\templates\userapp\dashboard_base.html:59
+msgid "Translations"
+msgstr ""
+
+#: .\userapp\templates\userapp\dashboard_base.html:65
 msgid "Social Links"
 msgstr "Sosiaalisen median linkit"
 
-#: .\userapp\templates\userapp\dashboard_base.html:73
+#: .\userapp\templates\userapp\dashboard_base.html:79
 msgid "My Plan"
 msgstr "Pakettini"
 
-#: .\userapp\templates\userapp\dashboard_base.html:99
+#: .\userapp\templates\userapp\dashboard_base.html:105
 msgid "Meal Suggestions"
 msgstr "Ateriasuositukset"
 
@@ -1503,6 +1507,172 @@ msgstr "Viimeistele asennus ja jatka"
 #: .\userapp\templates\userapp\set_password.html:144
 msgid "Your information is secure and encrypted"
 msgstr "Tietosi ovat turvassa ja salattuja"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:9
+#, fuzzy
+#| msgid "Pet Management"
+msgid "Translation Management"
+msgstr "Lemmikkien hallinta"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:11
+msgid "Manage pending translations for various target languages"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:27
+msgid "complete"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:47
+#, fuzzy
+#| msgid "Report Actions"
+msgid "Translation Actions"
+msgstr "Raporttitoiminnot"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:52
+msgid "Extract New Strings"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:56
+#, fuzzy
+#| msgid "Message"
+msgid "Compile Messages"
+msgstr "Viesti"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:67
+msgid "Target Language"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:83
+#, fuzzy
+#| msgid "Clinic Verification Status"
+msgid "Completion Status"
+msgstr "Klinikan vahvistustila"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:87
+#, fuzzy
+#| msgid "Message"
+msgid "All Messages"
+msgstr "Viesti"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:90
+msgid "Translated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:93
+msgid "Untranslated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:100
+#, fuzzy
+#| msgid "Continue"
+msgid "Context"
+msgstr "Jatka"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:103
+msgid "All Contexts"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:114
+#: .\vets\templates\vets\dashboard\referrals.html:173
+msgid "Showing"
+msgstr "Näytetään"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:114
+#, fuzzy
+#| msgid "Message"
+msgid "messages for"
+msgstr "Viesti"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:122
+msgid "translated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:122
+msgid "untranslated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:124
+#, fuzzy
+#| msgid "Total Users"
+msgid "Total messages"
+msgstr "Käyttäjiä yhteensä"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:145
+msgid "CONTEXT"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:146
+msgid "ENGLISH (SOURCE)"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:153
+msgid "TRANSLATION"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:188
+msgid "Enter translation..."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:199
+#, fuzzy
+#| msgid "No nearby clinics found in the selected radius."
+msgid "No translations found matching the selected filters."
+msgstr "Valitun säteen sisältä ei löytynyt klinikoita."
+
+#: .\userapp\templates\userapp\translation_dashboard.html:214
+#, fuzzy
+#| msgid "Processing, please wait..."
+msgid "Processing..."
+msgstr "Käsitellään, odota hetki..."
+
+#: .\userapp\templates\userapp\translation_dashboard.html:298
+#, fuzzy
+#| msgid "Profile updated successfully."
+msgid "Translation saved successfully!"
+msgstr "Profiili päivitetty onnistuneesti."
+
+#: .\userapp\templates\userapp\translation_dashboard.html:303
+msgid "Failed to save translation"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:306
+#: .\userapp\templates\userapp\translation_dashboard.html:337
+#: .\userapp\templates\userapp\translation_dashboard.html:367
+#: .\userapp\templates\userapp\translation_dashboard.html:401
+msgid "Network error occurred"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:315
+msgid "Compile all translations? This will update the .mo files."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:332
+msgid ""
+"Translations compiled successfully! Please restart your server for changes "
+"to take effect."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:334
+#: .\userapp\templates\userapp\translation_dashboard.html:364
+msgid "Failed to compile translations"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:345
+msgid "Compile all translations?"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:362
+msgid "Translations compiled successfully!"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:375
+msgid ""
+"Extract new translatable strings from templates? This may take a minute."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:398
+msgid "Failed to extract translations"
+msgstr ""
 
 #: .\userapp\templates\userapp\update_profile.html:7
 msgid "Edit Your Profile"
@@ -2297,10 +2467,6 @@ msgstr "Rekisteröity käyttäjä"
 #: .\vets\templates\vets\dashboard\referrals.html:138
 msgid "Visitor"
 msgstr "Vierailija"
-
-#: .\vets\templates\vets\dashboard\referrals.html:173
-msgid "Showing"
-msgstr "Näytetään"
 
 #: .\vets\templates\vets\dashboard\referrals.html:175
 msgid "to"

@@ -1,0 +1,547 @@
+{% extends 'userapp/dashboard_base.html' %}
+{% load i18n %}
+
+{% block dashboard_content %}
+<div class="w-full bg-white rounded-xl shadow-lg p-4 md:p-6">
+    <div class="mb-4">
+        <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+            <i class="fa-solid fa-language mr-2"></i>
+            {% trans "Translation Management" %}
+        </h2>
+        <p class="text-gray-600 mt-1 text-sm">{% trans "Manage pending translations for various target languages" %}</p>
+    </div>
+
+    <!-- Language Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+        {% for lang, stats in language_stats.items %}
+        <div class="bg-gradient-to-br from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-3">
+            <div class="flex items-center justify-between">
+                <div class="flex-1">
+                    <div class="text-xs font-medium text-gray-600">
+                        {% if lang == 'fi' %}Finnish (FI)
+                        {% elif lang == 'tr' %}Turkish (TR)
+                        {% elif lang == 'nl' %}Dutch (NL)
+                        {% else %}{{ lang|upper }}{% endif %}
+                    </div>
+                    <div class="text-xl font-bold text-gray-800">{{ stats.translated }}/{{ stats.total }}</div>
+                    <div class="text-xs text-gray-500">{{ stats.percentage }}% {% trans "complete" %}</div>
+                </div>
+                <div class="w-12 h-12">
+                    <svg class="transform -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                              fill="none" stroke="#3b82f6" stroke-width="3"
+                              stroke-dasharray="{{ stats.percentage }}, 100"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-lg p-4 mb-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="text-sm font-semibold text-gray-700">
+                <i class="fa-solid fa-tools mr-2"></i>{% trans "Translation Actions" %}
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <button id="extractTranslationsBtn" class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 hover:shadow-lg transition-all shadow-md">
+                    <i class="fa-solid fa-download"></i>
+                    <span>{% trans "Step 1: Update Translation List" %}</span>
+                </button>
+                <button id="compileTranslationsBtn" class="inline-flex items-center gap-2 px-5 py-2.5 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 hover:shadow-lg transition-all shadow-md">
+                    <i class="fa-solid fa-check-circle"></i>
+                    <span>{% trans "Step 2: Apply & Save Changes" %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import/Export Section -->
+    <div class="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-lg p-4 mb-4">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+            <div class="text-sm font-semibold text-gray-700">
+                <i class="fa-solid fa-file-import mr-2"></i>{% trans "Bulk Import/Export" %}
+            </div>
+            <div class="flex flex-wrap gap-3">
+                <!-- Export Dropdown -->
+                <div class="relative inline-block">
+                    <button id="exportDropdownBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-600 text-white text-sm font-medium rounded-lg hover:bg-orange-700 hover:shadow-lg transition-all shadow-md">
+                        <i class="fa-solid fa-file-export"></i>
+                        <span>{% trans "Export CSV" %}</span>
+                        <i class="fa-solid fa-chevron-down text-xs ml-1"></i>
+                    </button>
+                    <div id="exportDropdown" class="hidden absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+                        <div class="p-2">
+                            <a href="{% url 'export_translations_csv' %}?language={{ selected_language }}&status=untranslated" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                <i class="fa-solid fa-times-circle text-red-500 mr-2"></i>{% trans "Untranslated Only" %}
+                            </a>
+                            <a href="{% url 'export_translations_csv' %}?language={{ selected_language }}&status=translated" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                <i class="fa-solid fa-check-circle text-green-500 mr-2"></i>{% trans "Translated Only" %}
+                            </a>
+                            <a href="{% url 'export_translations_csv' %}?language={{ selected_language }}&status=all" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                                <i class="fa-solid fa-globe text-blue-500 mr-2"></i>{% trans "All Messages" %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Import Button -->
+                <button id="importBtn" type="button" class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 hover:shadow-lg transition-all shadow-md">
+                    <i class="fa-solid fa-file-import"></i>
+                    <span>{% trans "Import CSV" %}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white border border-gray-200 rounded-lg p-3 mb-4">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+        <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">
+                    {% trans "Target Language" %}
+                </label>
+                <select name="language" onchange="this.form.submit()" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    {% for lang in languages %}
+                    <option value="{{ lang }}" {% if lang == selected_language %}selected{% endif %}>
+                        {% if lang == 'fi' %}Finnish (FI)
+                        {% elif lang == 'tr' %}Turkish (TR)
+                        {% elif lang == 'nl' %}Dutch (NL)
+                        {% else %}{{ lang|upper }}{% endif %}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">
+                    {% trans "Completion Status" %}
+                </label>
+                <select name="status" onchange="this.form.submit()" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>
+                        {% trans "All Messages" %}
+                    </option>
+                    <option value="translated" {% if status_filter == 'translated' %}selected{% endif %}>
+                        {% trans "Translated" %}
+                    </option>
+                    <option value="untranslated" {% if status_filter == 'untranslated' %}selected{% endif %}>
+                        {% trans "Untranslated" %}
+                    </option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">
+                    {% trans "Context" %}
+                </label>
+                <select name="context" onchange="this.form.submit()" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">{% trans "All Contexts" %}</option>
+                    {% for ctx in all_contexts %}
+                    <option value="{{ ctx }}" {% if ctx == context_filter %}selected{% endif %}>{{ ctx }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="mb-3 text-xs text-gray-600">
+        {% trans "Showing" %} <span class="font-bold">{{ filtered_count }}</span> {% trans "messages for" %} 
+        <span class="font-bold">
+            {% if selected_language == 'fi' %}Finnish (FI)
+            {% elif selected_language == 'tr' %}Turkish (TR)
+            {% elif selected_language == 'nl' %}Dutch (NL)
+            {% else %}{{ selected_language|upper }}{% endif %}
+        </span>
+        {% if status_filter != 'all' %}
+            ({% if status_filter == 'translated' %}{% trans "translated" %}{% else %}{% trans "untranslated" %}{% endif %})
+        {% endif %}
+    </div>
+
+    <!-- Command Buttons -->
+    <div class="flex gap-3 mb-3">
+        <button onclick="document.getElementById('extractTranslationsBtn').click()" class="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 hover:shadow-lg transition-all text-sm font-medium shadow-md">
+            <i class="fa-solid fa-sync"></i>
+            {% trans "Refresh Translation List" %}
+        </button>
+        <button onclick="document.getElementById('compileTranslationsBtn').click()" class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-lg transition-all text-sm font-medium shadow-md">
+            <i class="fa-solid fa-check-circle"></i>
+            {% trans "Save & Apply Translations" %}
+        </button>
+    </div>
+
+    <!-- Translation Table -->
+    <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-blue-600 text-white">
+                    <tr>
+                        <th class="px-2 py-2 text-left text-xs font-semibold">{% trans "CONTEXT" %}</th>
+                        <th class="px-2 py-2 text-left text-xs font-semibold">{% trans "ENGLISH (SOURCE)" %}</th>
+                        <th class="px-2 py-2 text-left text-xs font-semibold">
+                            {% trans "TRANSLATION" %} ({{ selected_language|upper }})
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for context, trans_list in grouped_translations.items %}
+                        {% for trans in trans_list %}
+                        <tr class="border-b border-gray-200 hover:bg-gray-50 transition {% if not trans.msgstr %}bg-red-50{% else %}bg-green-50{% endif %}">
+                            <td class="px-2 py-2 text-xs text-gray-600" style="max-width: 150px;">
+                                {% if forloop.first %}
+                                <div class="font-medium truncate" title="{{ context }}">{{ context }}</div>
+                                {% endif %}
+                            </td>
+                            <td class="px-2 py-2 text-xs" style="max-width: 250px;">
+                                <div class="font-medium text-gray-800">{{ trans.msgid }}</div>
+                                {% if trans.locations %}
+                                <div class="text-xs text-gray-500 mt-0.5 truncate">
+                                    {{ trans.locations.0 }}
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td class="px-2 py-2">
+                                <div class="flex items-start gap-1">
+                                    <input type="text" 
+                                           class="translation-input flex-1 px-2 py-1.5 border border-gray-300 rounded text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                           data-msgid="{{ trans.msgid }}"
+                                           data-language="{{ selected_language }}"
+                                           value="{{ trans.msgstr }}"
+                                           placeholder="{% trans 'Enter translation...' %}">
+                                    <button class="save-translation-btn px-2 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 transition text-xs whitespace-nowrap">
+                                        <i class="fa-solid fa-save"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-4 py-6 text-center text-gray-500 text-sm">
+                            {% trans "No translations found matching the selected filters." %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Import CSV Modal -->
+<div id="importModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-gray-800">
+                <i class="fa-solid fa-file-import mr-2 text-purple-600"></i>
+                {% trans "Import Translations" %}
+            </h3>
+            <button onclick="closeImportModal()" class="text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-times text-xl"></i>
+            </button>
+        </div>
+        
+        <form id="importForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="language" value="{{ selected_language }}">
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    {% trans "Select CSV File" %}
+                </label>
+                <div class="flex items-center justify-center w-full">
+                    <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                            <i class="fa-solid fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                            <p class="text-sm text-gray-500"><span class="font-semibold">{% trans "Click to upload" %}</span></p>
+                            <p class="text-xs text-gray-500">{% trans "CSV file" %}</p>
+                        </div>
+                        <input id="csvFileInput" type="file" name="file" accept=".csv" class="hidden" required />
+                    </label>
+                </div>
+                <p id="fileName" class="mt-2 text-sm text-gray-600"></p>
+            </div>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                <p class="text-xs text-blue-800">
+                    <i class="fa-solid fa-info-circle mr-1"></i>
+                    {% trans "Upload a CSV file with columns: 'Original (English)' and 'Translation'" %}
+                </p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="button" onclick="closeImportModal()" class="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition">
+                    {% trans "Cancel" %}
+                </button>
+                <button type="submit" class="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition">
+                    <i class="fa-solid fa-upload mr-2"></i>
+                    {% trans "Upload" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-4 shadow-xl">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-spinner fa-spin text-xl text-blue-600"></i>
+            <span class="text-sm font-medium">{% trans "Processing..." %}</span>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Notification -->
+<div id="toast" class="hidden fixed top-4 right-4 z-50 bg-white rounded-lg shadow-xl border-l-4 p-3 max-w-sm">
+    <div class="flex items-center gap-2">
+        <i id="toastIcon" class="text-lg"></i>
+        <div class="flex-1">
+            <div id="toastMessage" class="text-sm font-medium"></div>
+        </div>
+        <button onclick="hideToast()" class="text-gray-400 hover:text-gray-600">
+            <i class="fa-solid fa-times text-sm"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+// Toast notification functions
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    const toastIcon = document.getElementById('toastIcon');
+    const toastMessage = document.getElementById('toastMessage');
+    
+    toastMessage.textContent = message;
+    
+    if (type === 'success') {
+        toast.className = 'fixed top-4 right-4 z-50 bg-white rounded-lg shadow-xl border-l-4 border-green-500 p-3 max-w-sm';
+        toastIcon.className = 'fa-solid fa-check-circle text-lg text-green-500';
+    } else if (type === 'error') {
+        toast.className = 'fixed top-4 right-4 z-50 bg-white rounded-lg shadow-xl border-l-4 border-red-500 p-3 max-w-sm';
+        toastIcon.className = 'fa-solid fa-exclamation-circle text-lg text-red-500';
+    } else {
+        toast.className = 'fixed top-4 right-4 z-50 bg-white rounded-lg shadow-xl border-l-4 border-blue-500 p-3 max-w-sm';
+        toastIcon.className = 'fa-solid fa-info-circle text-lg text-blue-500';
+    }
+    
+    toast.classList.remove('hidden');
+    
+    setTimeout(() => {
+        hideToast();
+    }, 5000);
+}
+
+function hideToast() {
+    document.getElementById('toast').classList.add('hidden');
+}
+
+function showLoading() {
+    document.getElementById('loadingOverlay').classList.remove('hidden');
+}
+
+function hideLoading() {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+}
+
+// Save individual translation
+document.querySelectorAll('.save-translation-btn').forEach(btn => {
+    btn.addEventListener('click', async function() {
+        const input = this.previousElementSibling;
+        const msgid = input.dataset.msgid;
+        const language = input.dataset.language;
+        const msgstr = input.value;
+        
+        showLoading();
+        
+        try {
+            const response = await fetch('{% url "update_translation" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams({
+                    'language': language,
+                    'msgid': msgid,
+                    'msgstr': msgstr
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showToast('{% trans "Translation saved successfully!" %}', 'success');
+                // Change row background to green
+                input.closest('tr').classList.remove('bg-red-50');
+                input.closest('tr').classList.add('bg-green-50');
+            } else {
+                showToast(data.error || '{% trans "Failed to save translation" %}', 'error');
+            }
+        } catch (error) {
+            showToast('{% trans "Network error occurred" %}', 'error');
+        } finally {
+            hideLoading();
+        }
+    });
+});
+
+// Compile translations
+document.getElementById('compileTranslationsBtn').addEventListener('click', async function() {
+    if (!confirm('{% trans "Compile all translations? This will update the .mo files." %}')) {
+        return;
+    }
+    
+    showLoading();
+    
+    try {
+        const response = await fetch('{% url "compile_translations" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('{% trans "Translations compiled successfully! Please restart your server for changes to take effect." %}', 'success');
+        } else {
+            showToast(data.error || '{% trans "Failed to compile translations" %}', 'error');
+        }
+    } catch (error) {
+        showToast('{% trans "Network error occurred" %}', 'error');
+    } finally {
+        hideLoading();
+    }
+});
+
+// Alternative compile button (removed - now unified)
+
+// Extract new translations
+document.getElementById('extractTranslationsBtn').addEventListener('click', async function() {
+    if (!confirm('{% trans "Extract new translatable strings from templates? This may take a minute." %}')) {
+        return;
+    }
+    
+    showLoading();
+    
+    try {
+        const response = await fetch('{% url "extract_translations" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast(data.message, 'success');
+            // Reload page after 2 seconds
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            showToast(data.error || '{% trans "Failed to extract translations" %}', 'error');
+        }
+    } catch (error) {
+        showToast('{% trans "Network error occurred" %}', 'error');
+    } finally {
+        hideLoading();
+    }
+});
+
+// Allow Enter key to save translation
+document.querySelectorAll('.translation-input').forEach(input => {
+    input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.nextElementSibling.click();
+        }
+    });
+});
+</script>
+
+<script>
+// Export dropdown toggle
+document.getElementById('exportDropdownBtn').addEventListener('click', function(e) {
+    e.stopPropagation();
+    document.getElementById('exportDropdown').classList.toggle('hidden');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', function(e) {
+    const dropdown = document.getElementById('exportDropdown');
+    const btn = document.getElementById('exportDropdownBtn');
+    if (!dropdown.contains(e.target) && !btn.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
+
+// Import modal functions
+function openImportModal() {
+    document.getElementById('importModal').classList.remove('hidden');
+}
+
+function closeImportModal() {
+    document.getElementById('importModal').classList.add('hidden');
+    document.getElementById('importForm').reset();
+    document.getElementById('fileName').textContent = '';
+}
+
+document.getElementById('importBtn').addEventListener('click', openImportModal);
+
+// Show selected file name
+document.getElementById('csvFileInput').addEventListener('change', function(e) {
+    const fileName = e.target.files[0]?.name;
+    if (fileName) {
+        document.getElementById('fileName').textContent = '{% trans "Selected:" %} ' + fileName;
+    }
+});
+
+// Handle import form submission
+document.getElementById('importForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    
+    showLoading();
+    closeImportModal();
+    
+    try {
+        const response = await fetch('{% url "import_translations_csv" %}', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast(`${data.message}`, 'success');
+            // Reload page after 2 seconds to show updated translations
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        } else {
+            let errorMsg = data.error || '{% trans "Failed to import translations" %}';
+            if (data.errors && data.errors.length > 0) {
+                errorMsg += '\n' + data.errors.join('\n');
+            }
+            showToast(errorMsg, 'error');
+        }
+    } catch (error) {
+        showToast('{% trans "Network error occurred" %}', 'error');
+    } finally {
+        hideLoading();
+    }
+});
+</script>
+{% endblock %}

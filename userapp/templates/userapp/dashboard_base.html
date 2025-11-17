@@ -54,6 +54,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{% url 'translation_dashboard' %}" class="flex items-center px-5 py-3 rounded-lg font-medium hover:bg-purple-500 hover:text-white transition group">
+                        <i class="fa-solid fa-language mr-4 text-lg group-hover:scale-110 transition"></i>
+                        <span>{% trans "Translations" %}</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{% url 'core:manage_social_links' %}" class="flex items-center px-5 py-3 rounded-lg font-medium hover:bg-blue-100 hover:text-blue-700 transition group">
                         <i class="fa-brands fa-share-nodes mr-4 text-lg group-hover:scale-110 transition"></i>
                         <span>{% trans "Social Links" %}</span>

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FAMMO 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-11-16 16:23+0300\n"
+"POT-Creation-Date: 2025-11-16 17:46+0300\n"
 "PO-Revision-Date: 2025-11-16 12:00+0300\n"
 "Last-Translator: FAMMO Team\n"
 "Language-Team: Dutch\n"
@@ -37,7 +37,7 @@ msgid "No meal recommendations yet."
 msgstr "Nog geen maaltijdaanbevelingen."
 
 #: .\aihub\templates\aihub\history.html:78
-#: .\userapp\templates\userapp\dashboard_base.html:103
+#: .\userapp\templates\userapp\dashboard_base.html:109
 msgid "Health Reports"
 msgstr "Gezondheidsrapporten"
 
@@ -1014,7 +1014,7 @@ msgid "Make Your Plan"
 msgstr "Maak je plan"
 
 #: .\templates\partials\navbar.html:51 .\templates\partials\navbar.html:138
-#: .\userapp\templates\userapp\dashboard_base.html:67
+#: .\userapp\templates\userapp\dashboard_base.html:73
 msgid "AI History"
 msgstr "AI-geschiedenis"
 
@@ -1043,7 +1043,7 @@ msgid "Clinic Dashboard"
 msgstr "Kliniekdashboard"
 
 #: .\templates\partials\navbar.html:99 .\templates\partials\navbar.html:161
-#: .\userapp\templates\userapp\dashboard_base.html:81
+#: .\userapp\templates\userapp\dashboard_base.html:87
 msgid "Logout"
 msgstr "Uitloggen"
 
@@ -1321,14 +1321,18 @@ msgid "Homepage Hero"
 msgstr "Startpagina-hero"
 
 #: .\userapp\templates\userapp\dashboard_base.html:59
+msgid "Translations"
+msgstr ""
+
+#: .\userapp\templates\userapp\dashboard_base.html:65
 msgid "Social Links"
 msgstr "Sociale links"
 
-#: .\userapp\templates\userapp\dashboard_base.html:73
+#: .\userapp\templates\userapp\dashboard_base.html:79
 msgid "My Plan"
 msgstr "Mijn abonnement"
 
-#: .\userapp\templates\userapp\dashboard_base.html:99
+#: .\userapp\templates\userapp\dashboard_base.html:105
 msgid "Meal Suggestions"
 msgstr "Maaltijdaanbevelingen"
 
@@ -1493,6 +1497,172 @@ msgstr "Setup voltooien & Doorgaan"
 #: .\userapp\templates\userapp\set_password.html:144
 msgid "Your information is secure and encrypted"
 msgstr "Je gegevens zijn veilig en versleuteld"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:9
+#, fuzzy
+#| msgid "Pet Management"
+msgid "Translation Management"
+msgstr "Huisdierenbeheer"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:11
+msgid "Manage pending translations for various target languages"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:27
+msgid "complete"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:47
+#, fuzzy
+#| msgid "Report Actions"
+msgid "Translation Actions"
+msgstr "Rapportacties"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:52
+msgid "Extract New Strings"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:56
+#, fuzzy
+#| msgid "Message"
+msgid "Compile Messages"
+msgstr "Bericht"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:67
+msgid "Target Language"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:83
+#, fuzzy
+#| msgid "Clinic Verification Status"
+msgid "Completion Status"
+msgstr "Verificatiestatus van de kliniek"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:87
+#, fuzzy
+#| msgid "Message"
+msgid "All Messages"
+msgstr "Bericht"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:90
+msgid "Translated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:93
+msgid "Untranslated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:100
+#, fuzzy
+#| msgid "Continue"
+msgid "Context"
+msgstr "Doorgaan"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:103
+msgid "All Contexts"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:114
+#: .\vets\templates\vets\dashboard\referrals.html:173
+msgid "Showing"
+msgstr "Weergave"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:114
+#, fuzzy
+#| msgid "Message"
+msgid "messages for"
+msgstr "Bericht"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:122
+msgid "translated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:122
+msgid "untranslated"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:124
+#, fuzzy
+#| msgid "Total Users"
+msgid "Total messages"
+msgstr "Totaal aantal gebruikers"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:145
+msgid "CONTEXT"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:146
+msgid "ENGLISH (SOURCE)"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:153
+msgid "TRANSLATION"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:188
+msgid "Enter translation..."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:199
+#, fuzzy
+#| msgid "No nearby clinics found in the selected radius."
+msgid "No translations found matching the selected filters."
+msgstr "Geen klinieken in de buurt gevonden binnen de gekozen radius."
+
+#: .\userapp\templates\userapp\translation_dashboard.html:214
+#, fuzzy
+#| msgid "Processing, please wait..."
+msgid "Processing..."
+msgstr "Bezig met verwerken, even geduld…"
+
+#: .\userapp\templates\userapp\translation_dashboard.html:298
+#, fuzzy
+#| msgid "Profile updated successfully."
+msgid "Translation saved successfully!"
+msgstr "Profiel succesvol bijgewerkt."
+
+#: .\userapp\templates\userapp\translation_dashboard.html:303
+msgid "Failed to save translation"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:306
+#: .\userapp\templates\userapp\translation_dashboard.html:337
+#: .\userapp\templates\userapp\translation_dashboard.html:367
+#: .\userapp\templates\userapp\translation_dashboard.html:401
+msgid "Network error occurred"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:315
+msgid "Compile all translations? This will update the .mo files."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:332
+msgid ""
+"Translations compiled successfully! Please restart your server for changes "
+"to take effect."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:334
+#: .\userapp\templates\userapp\translation_dashboard.html:364
+msgid "Failed to compile translations"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:345
+msgid "Compile all translations?"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:362
+msgid "Translations compiled successfully!"
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:375
+msgid ""
+"Extract new translatable strings from templates? This may take a minute."
+msgstr ""
+
+#: .\userapp\templates\userapp\translation_dashboard.html:398
+msgid "Failed to extract translations"
+msgstr ""
 
 #: .\userapp\templates\userapp\update_profile.html:7
 msgid "Edit Your Profile"
@@ -2290,10 +2460,6 @@ msgstr "Geregistreerde gebruiker"
 msgid "Visitor"
 msgstr "Bezoeker"
 
-#: .\vets\templates\vets\dashboard\referrals.html:173
-msgid "Showing"
-msgstr "Weergave"
-
 #: .\vets\templates\vets\dashboard\referrals.html:175
 msgid "to"
 msgstr "tot"
@@ -2690,15 +2856,3 @@ msgstr "Goedgekeurd door dierenartsen"
 #: .\vets\templates\vets\referral_landing.html:174
 msgid "Pet Loved"
 msgstr "Geliefd bij huisdieren"
-
-#~ msgid "years"
-#~ msgstr "jaar"
-
-#~ msgid "weeks"
-#~ msgstr "weken"
-
-#~ msgid "Top Countries by AI Requests"
-#~ msgstr "Toplanden naar AI-verzoeken"
-
-#~ msgid "Your account has been activated. You can now log in."
-#~ msgstr "Je account is geactiveerd. Je kunt nu inloggen."

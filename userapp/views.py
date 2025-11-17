@@ -757,3 +757,265 @@ def export_users_csv(request):
             user.is_superuser
         ])
     return response
+
+
+# ============================================
+# Translation Management Views
+# ============================================
+
+@user_passes_test(lambda u: u.is_staff)
+def translation_dashboard(request):
+    """
+    Main translation management dashboard.
+    Allows staff to view and edit translations for all languages.
+    """
+    from .translation_utils import (
+        get_available_languages,
+        parse_po_file,
+        get_translation_stats,
+        group_translations_by_context
+    )
+    
+    # Get available languages (excluding English)
+    languages = get_available_languages()
+    
+    # Get selected language from request (default to first available)
+    selected_language = request.GET.get('language', languages[0] if languages else 'fi')
+    
+    # Get completion status filter
+    status_filter = request.GET.get('status', 'all')  # all, translated, untranslated
+    
+    # Get context filter
+    context_filter = request.GET.get('context', '')
+    
+    # Parse translations for selected language
+    translations = parse_po_file(selected_language)
+    
+    # Apply status filter
+    if status_filter == 'translated':
+        translations = [t for t in translations if t['msgstr'].strip()]
+    elif status_filter == 'untranslated':
+        translations = [t for t in translations if not t['msgstr'].strip()]
+    
+    # Group by context
+    grouped_translations = group_translations_by_context(translations)
+    
+    # Apply context filter if specified
+    if context_filter:
+        translations = grouped_translations.get(context_filter, [])
+        grouped_translations = {context_filter: translations}
+    
+    # Get stats for all languages
+    language_stats = {}
+    for lang in languages:
+        language_stats[lang] = get_translation_stats(lang)
+    
+    # Get all contexts for dropdown
+    all_translations = parse_po_file(selected_language)
+    all_contexts = sorted(group_translations_by_context(all_translations).keys())
+    
+    context = {
+        'languages': languages,
+        'selected_language': selected_language,
+        'status_filter': status_filter,
+        'context_filter': context_filter,
+        'grouped_translations': grouped_translations,
+        'language_stats': language_stats,
+        'all_contexts': all_contexts,
+        'total_count': len(all_translations),
+        'filtered_count': sum(len(v) for v in grouped_translations.values()),
+    }
+    
+    return render(request, 'userapp/translation_dashboard.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def update_translation_ajax(request):
+    """
+    AJAX endpoint to update a single translation.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    
+    from .translation_utils import update_translation
+    
+    language = request.POST.get('language')
+    msgid = request.POST.get('msgid')
+    msgstr = request.POST.get('msgstr')
+    
+    if not all([language, msgid is not None, msgstr is not None]):
+        return JsonResponse({'success': False, 'error': 'Missing parameters'}, status=400)
+    
+    success = update_translation(language, msgid, msgstr)
+    
+    if success:
+        return JsonResponse({'success': True, 'message': 'Translation updated successfully'})
+    else:
+        return JsonResponse({'success': False, 'error': 'Failed to update translation'}, status=500)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def compile_translations_ajax(request):
+    """
+    AJAX endpoint to compile all translations.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    
+    from .translation_utils import compile_messages
+    
+    success, output, error = compile_messages()
+    
+    if success:
+        return JsonResponse({
+            'success': True,
+            'message': 'Translations compiled successfully! Please restart your Django server for changes to take effect.',
+            'output': output,
+            'error_detail': error  # Include stderr even on success for debugging
+        })
+    else:
+        error_message = error if error else 'Unknown error occurred'
+        if output:
+            error_message = f'{error_message}\n\nOutput: {output}'
+        
+        return JsonResponse({
+            'success': False,
+            'error': f'Failed to compile translations: {error_message}',
+            'output': output,
+            'error_detail': error
+        }, status=500)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def extract_translations_ajax(request):
+    """
+    AJAX endpoint to run makemessages and extract new translatable strings.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    
+    from .translation_utils import make_messages
+    
+    success, output, error = make_messages()
+    
+    if success:
+        return JsonResponse({
+            'success': True,
+            'message': 'New translatable strings extracted successfully. Please refresh the page.',
+            'output': output
+        })
+    else:
+        return JsonResponse({
+            'success': False,
+            'error': 'Failed to extract translations',
+            'output': output,
+            'error_detail': error
+        }, status=500)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def export_translations_csv(request):
+    """
+    Export untranslated or all translations as CSV for a specific language.
+    """
+    from .translation_utils import parse_po_file
+    
+    language = request.GET.get('language', 'fi')
+    status_filter = request.GET.get('status', 'untranslated')  # all, translated, untranslated
+    
+    # Parse translations
+    translations = parse_po_file(language)
+    
+    # Apply filter
+    if status_filter == 'untranslated':
+        translations = [t for t in translations if not t['msgstr'].strip()]
+        filename = f'translations_{language}_untranslated.csv'
+    elif status_filter == 'translated':
+        translations = [t for t in translations if t['msgstr'].strip()]
+        filename = f'translations_{language}_translated.csv'
+    else:
+        filename = f'translations_{language}_all.csv'
+    
+    # Create CSV response
+    response = HttpResponse(content_type='text/csv; charset=utf-8')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+    
+    # Add BOM for Excel UTF-8 compatibility
+    response.write('\ufeff')
+    
+    writer = csv.writer(response)
+    writer.writerow(['Original (English)', 'Translation', 'Context', 'Locations'])
+    
+    for trans in translations:
+        locations = '; '.join(trans.get('locations', []))
+        context = trans.get('locations', [''])[0].split(':')[0] if trans.get('locations') else ''
+        writer.writerow([
+            trans['msgid'],
+            trans['msgstr'],
+            context,
+            locations
+        ])
+    
+    return response
+
+
+@user_passes_test(lambda u: u.is_staff)
+def import_translations_csv(request):
+    """
+    Import translations from uploaded CSV file.
+    """
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=405)
+    
+    from .translation_utils import update_translation
+    
+    language = request.POST.get('language')
+    csv_file = request.FILES.get('file')
+    
+    if not csv_file:
+        return JsonResponse({'success': False, 'error': 'No file uploaded'}, status=400)
+    
+    if not language:
+        return JsonResponse({'success': False, 'error': 'Language not specified'}, status=400)
+    
+    try:
+        # Decode the file
+        decoded_file = csv_file.read().decode('utf-8-sig')  # utf-8-sig handles BOM
+        csv_reader = csv.DictReader(decoded_file.splitlines())
+        
+        updated_count = 0
+        failed_count = 0
+        errors = []
+        
+        for row in csv_reader:
+            msgid = row.get('Original (English)', '').strip()
+            msgstr = row.get('Translation', '').strip()
+            
+            if msgid and msgstr:
+                success = update_translation(language, msgid, msgstr)
+                if success:
+                    updated_count += 1
+                else:
+                    failed_count += 1
+                    errors.append(f"Failed to update: {msgid[:50]}...")
+        
+        if updated_count > 0:
+            return JsonResponse({
+                'success': True,
+                'message': f'Successfully imported {updated_count} translations. Failed: {failed_count}',
+                'updated': updated_count,
+                'failed': failed_count,
+                'errors': errors[:5]  # Return first 5 errors
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': f'No translations were imported. Failed: {failed_count}',
+                'errors': errors[:5]
+            }, status=400)
+    
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Failed to process CSV file: {str(e)}'
+        }, status=500)
