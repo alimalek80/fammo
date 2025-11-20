@@ -47,13 +47,31 @@
             </div>
         {% endif %}
         
-        {% if clinic.working_hours %}
-            <p class="text-sm text-gray-600 mb-3">
-                <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                {{ clinic.working_hours }}
-            </p>
+        {% if clinic.working_hours_schedule.exists or clinic.working_hours %}
+            <div class="text-sm text-gray-600 mb-3">
+                <div class="flex items-center mb-1">
+                    <svg class="inline w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-medium">{% trans "Hours" %}:</span>
+                </div>
+                {% if clinic.working_hours_schedule.exists %}
+                    <div class="ml-5 space-y-0.5 text-xs">
+                        {% for hours in clinic.working_hours_schedule.all %}
+                            {% if not hours.is_closed %}
+                                <div class="flex justify-between">
+                                    <span>{{ hours.get_day_of_week_display }}:</span>
+                                    {% if hours.open_time and hours.close_time %}
+                                        <span>{{ hours.open_time|time:"H:i" }}-{{ hours.close_time|time:"H:i" }}</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="ml-5 text-xs">{{ clinic.working_hours }}</p>
+                {% endif %}
+            </div>
         {% endif %}
         
         <div class="flex items-center justify-between">

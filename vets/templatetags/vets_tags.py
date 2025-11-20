@@ -46,6 +46,28 @@ def div(value, arg):
     except (ValueError, TypeError, ZeroDivisionError):
         return 0
 
+@register.filter
+def format_working_hours(clinic):
+    """Format working hours for display"""
+    try:
+        schedule = clinic.working_hours_schedule.all().order_by('day_of_week')
+        if not schedule.exists():
+            return clinic.working_hours if clinic.working_hours else "Not set"
+        
+        hours_html = '<div class="space-y-1">'
+        for hours in schedule:
+            day_name = hours.get_day_of_week_display()
+            if hours.is_closed:
+                hours_html += f'<div class="flex justify-between"><span class="font-medium">{day_name}:</span> <span class="text-gray-500">Closed</span></div>'
+            elif hours.open_time and hours.close_time:
+                time_str = f"{hours.open_time.strftime('%H:%M')} - {hours.close_time.strftime('%H:%M')}"
+                hours_html += f'<div class="flex justify-between"><span class="font-medium">{day_name}:</span> <span>{time_str}</span></div>'
+        hours_html += '</div>'
+        
+        return hours_html
+    except:
+        return clinic.working_hours if clinic.working_hours else "Not set"
+
 @register.inclusion_tag('vets/partials/clinic_card.html')
 def clinic_card(clinic, show_referral=False):
     """Render a clinic card"""

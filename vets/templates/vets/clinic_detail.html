@@ -48,16 +48,33 @@
                     </div>
                     {% endif %}
 
-                    {% if clinic.working_hours %}
-                    <div class="flex items-center">
+                    {% if clinic.working_hours_schedule.exists or clinic.working_hours %}
+                    <div class="flex items-start">
                         <div class="flex-shrink-0 w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
                             <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div>
-                            <p class="text-sm text-gray-500">{% trans "Hours" %}</p>
-                            <p class="font-medium">{{ clinic.working_hours }}</p>
+                        <div class="flex-1">
+                            <p class="text-sm text-gray-500 mb-2">{% trans "Hours" %}</p>
+                            {% if clinic.working_hours_schedule.exists %}
+                                <div class="space-y-1 text-sm">
+                                    {% for hours in clinic.working_hours_schedule.all %}
+                                        <div class="flex justify-between">
+                                            <span class="font-medium text-gray-700">{{ hours.get_day_of_week_display }}:</span>
+                                            {% if hours.is_closed %}
+                                                <span class="text-gray-500">{% trans "Closed" %}</span>
+                                            {% elif hours.open_time and hours.close_time %}
+                                                <span>{{ hours.open_time|time:"H:i" }} - {{ hours.close_time|time:"H:i" }}</span>
+                                            {% else %}
+                                                <span class="text-gray-400">{% trans "Not set" %}</span>
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="font-medium">{{ clinic.working_hours }}</p>
+                            {% endif %}
                         </div>
                     </div>
                     {% endif %}

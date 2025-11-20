@@ -101,8 +101,26 @@
                             {% if clinic.specializations %}
                             <p><strong>{% trans "Specializations:" %}</strong> {{ clinic.specializations }}</p>
                             {% endif %}
-                            {% if clinic.working_hours %}
-                            <p><strong>{% trans "Hours:" %}</strong> {{ clinic.working_hours }}</p>
+                            {% if clinic.working_hours_schedule.exists or clinic.working_hours %}
+                            <div>
+                                <strong>{% trans "Hours:" %}</strong>
+                                {% if clinic.working_hours_schedule.exists %}
+                                    <div class="ml-4 mt-1 space-y-0.5">
+                                        {% for hours in clinic.working_hours_schedule.all %}
+                                            <div class="flex justify-between">
+                                                <span>{{ hours.get_day_of_week_display }}:</span>
+                                                {% if hours.is_closed %}
+                                                    <span class="text-gray-500">{% trans "Closed" %}</span>
+                                                {% elif hours.open_time and hours.close_time %}
+                                                    <span>{{ hours.open_time|time:"H:i" }} - {{ hours.close_time|time:"H:i" }}</span>
+                                                {% endif %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ clinic.working_hours }}
+                                {% endif %}
+                            </div>
                             {% endif %}
                         </div>
                         <div class="mt-4">

@@ -81,6 +81,22 @@ class Clinic(TimeStampedModel):
     def is_active_clinic(self):
         """Clinic is active only if both email confirmed and admin approved"""
         return self.email_confirmed and self.admin_approved
+    
+    def get_formatted_working_hours(self):
+        """Return formatted working hours for display"""
+        hours_list = []
+        schedule = self.working_hours_schedule.all().order_by('day_of_week')
+        
+        for hours in schedule:
+            day_name = hours.get_day_of_week_display()
+            if hours.is_closed:
+                hours_list.append(f"{day_name}: Closed")
+            elif hours.open_time and hours.close_time:
+                hours_list.append(f"{day_name}: {hours.open_time.strftime('%H:%M')} - {hours.close_time.strftime('%H:%M')}")
+            else:
+                hours_list.append(f"{day_name}: Not set")
+        
+        return hours_list if hours_list else ["Working hours not set"]
 
     class Meta:
         ordering = ["name"]
@@ -167,6 +183,40 @@ class ReferralCode(TimeStampedModel):
         while ReferralCode.objects.filter(code=candidate).exists():
             candidate = _gen_ref_code()
         return ReferralCode.objects.create(clinic=clinic, code=candidate, is_active=True)
+
+
+class WorkingHours(models.Model):
+    """
+    Structured working hours for each day of the week
+    """
+    DAYS_OF_WEEK = [
+        (0, 'Monday'),
+        (1, 'Tuesday'),
+        (2, 'Wednesday'),
+        (3, 'Thursday'),
+        (4, 'Friday'),
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+    ]
+    
+    clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="working_hours_schedule")
+    day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
+    is_closed = models.BooleanField(default=False, help_text="Clinic is closed on this day")
+    open_time = models.TimeField(null=True, blank=True, help_text="Opening time")
+    close_time = models.TimeField(null=True, blank=True, help_text="Closing time")
+    
+    class Meta:
+        ordering = ['day_of_week']
+        unique_together = ['clinic', 'day_of_week']
+        verbose_name_plural = "Working hours"
+    
+    def __str__(self):
+        day_name = self.get_day_of_week_display()
+        if self.is_closed:
+            return f"{day_name}: Closed"
+        elif self.open_time and self.close_time:
+            return f"{day_name}: {self.open_time.strftime('%H:%M')} - {self.close_time.strftime('%H:%M')}"
+        return f"{day_name}: Not set"
 
 
 class ReferralStatus(models.TextChoices):

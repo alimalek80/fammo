@@ -1,5 +1,12 @@
 from django.contrib import admin
-from .models import Clinic, VetProfile, ReferralCode, ReferredUser, ReferralStatus
+from .models import Clinic, VetProfile, ReferralCode, ReferredUser, ReferralStatus, WorkingHours
+
+
+class WorkingHoursInline(admin.TabularInline):
+    model = WorkingHours
+    extra = 0
+    ordering = ['day_of_week']
+    fields = ['day_of_week', 'is_closed', 'open_time', 'close_time']
 
 
 @admin.register(Clinic)
@@ -22,6 +29,7 @@ class ClinicAdmin(admin.ModelAdmin):
     )
     prepopulated_fields = {}
     ordering = ("name",)
+    inlines = [WorkingHoursInline]
 
     fieldsets = (
         ('Basic Information', {

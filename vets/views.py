@@ -56,6 +56,27 @@ class ClinicRegistrationView(CreateView):
         clinic.is_verified = False  # Keep this False until both confirmations
         clinic.save()
         
+        # Initialize default working hours (Mon-Fri 9:00-17:00, closed weekends)
+        from .models import WorkingHours
+        default_hours = [
+            {'day': 0, 'open': '09:00', 'close': '17:00', 'closed': False},  # Monday
+            {'day': 1, 'open': '09:00', 'close': '17:00', 'closed': False},  # Tuesday
+            {'day': 2, 'open': '09:00', 'close': '17:00', 'closed': False},  # Wednesday
+            {'day': 3, 'open': '09:00', 'close': '17:00', 'closed': False},  # Thursday
+            {'day': 4, 'open': '09:00', 'close': '17:00', 'closed': False},  # Friday
+            {'day': 5, 'open': '09:00', 'close': '14:00', 'closed': False},  # Saturday
+            {'day': 6, 'open': None, 'close': None, 'closed': True},          # Sunday
+        ]
+        
+        for hours in default_hours:
+            WorkingHours.objects.create(
+                clinic=clinic,
+                day_of_week=hours['day'],
+                open_time=hours['open'],
+                close_time=hours['close'],
+                is_closed=hours['closed']
+            )
+        
         # Create vet profile if provided
         vet_name = form.cleaned_data.get('vet_name')
         if vet_name:
@@ -136,7 +157,7 @@ class PartnerClinicsListView(ListView):
         # Badge will only show for admin_approved clinics
         queryset = Clinic.objects.filter(
             email_confirmed=True
-        ).order_by('name')
+        ).prefetch_related('working_hours_schedule').order_by('name')
         
         # Handle search within email-confirmed clinics
         form = ClinicSearchForm(self.request.GET)
@@ -175,7 +196,7 @@ class ClinicDetailView(DetailView):
         """Show clinics that have confirmed email"""
         return Clinic.objects.filter(
             email_confirmed=True
-        )
+        ).prefetch_related('working_hours_schedule')
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -279,31 +300,88 @@ class ClinicProfileUpdateView(ClinicOwnerRequiredMixin, UpdateView):
         except VetProfile.DoesNotExist:
             context['vet_form'] = VetProfileForm(prefix='vet')
         
+        # Add working hours formset
+        from .forms import WorkingHoursFormSet
+        from .models import WorkingHours
+        
+        if self.request.POST:
+            context['working_hours_formset'] = WorkingHoursFormSet(
+                self.request.POST,
+                instance=self.clinic
+            )
+        else:
+            # Initialize working hours if they don't exist
+            existing_days = set(self.clinic.working_hours_schedule.values_list('day_of_week', flat=True))
+            for day in range(7):
+                if day not in existing_days:
+                    WorkingHours.objects.create(
+                        clinic=self.clinic,
+                        day_of_week=day,
+                        is_closed=(day == 6),  # Sunday closed by default
+                        open_time='09:00' if day != 6 else None,
+                        close_time='17:00' if day != 6 else None
+                    )
+            
+            context['working_hours_formset'] = WorkingHoursFormSet(instance=self.clinic)
+        
         return context
     
-    def form_valid(self, form):
-        # Handle vet profile form
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        
+        from .forms import WorkingHoursFormSet
+        working_hours_formset = WorkingHoursFormSet(
+            self.request.POST,
+            instance=self.object
+        )
+        
         vet_form = VetProfileForm(
             self.request.POST,
             prefix='vet'
         )
         
+        # Debug: Log formset data
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"POST data: {request.POST}")
+        logger.info(f"Formset valid: {working_hours_formset.is_valid()}")
+        if not working_hours_formset.is_valid():
+            logger.error(f"Formset errors: {working_hours_formset.errors}")
+            logger.error(f"Non-form errors: {working_hours_formset.non_form_errors()}")
+        
+        # Check if all forms are valid
+        if form.is_valid() and working_hours_formset.is_valid():
+            return self.form_valid(form, working_hours_formset, vet_form)
+        else:
+            if not working_hours_formset.is_valid():
+                messages.error(request, f'Working hours validation failed: {working_hours_formset.errors}')
+            return self.form_invalid(form)
+    
+    def form_valid(self, form, working_hours_formset, vet_form):
+        # Save the main form first
+        response = super().form_valid(form)
+        
+        # Save working hours formset
+        working_hours_formset.save()
+        
+        # Handle vet profile form
         if vet_form.is_valid():
             vet_data = vet_form.cleaned_data
             if any(vet_data.values()):  # If any vet data is provided
                 try:
-                    vet_profile = self.clinic.vet_profile
+                    vet_profile = self.object.vet_profile
                     for field, value in vet_data.items():
                         setattr(vet_profile, field, value)
                     vet_profile.save()
                 except VetProfile.DoesNotExist:
                     VetProfile.objects.create(
-                        clinic=self.clinic,
+                        clinic=self.object,
                         **vet_data
                     )
         
         messages.success(self.request, 'Profile updated successfully!')
-        return super().form_valid(form)
+        return response
 
 
 class ClinicReferralsView(ClinicOwnerRequiredMixin, TemplateView):

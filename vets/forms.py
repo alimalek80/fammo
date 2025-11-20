@@ -1,8 +1,56 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Clinic, VetProfile
+from django.forms import inlineformset_factory, BaseInlineFormSet
+from .models import Clinic, VetProfile, WorkingHours
 
 User = get_user_model()
+
+
+class WorkingHoursFormSetBase(BaseInlineFormSet):
+    """Custom formset to handle working hours validation"""
+    
+    def clean(self):
+        super().clean()
+        for form in self.forms:
+            if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                is_closed = form.cleaned_data.get('is_closed', False)
+                open_time = form.cleaned_data.get('open_time')
+                close_time = form.cleaned_data.get('close_time')
+                
+                # If not closed, require both times
+                if not is_closed and (not open_time or not close_time):
+                    form.add_error('open_time', 'Opening and closing times are required when not closed.')
+                
+                # If closed, clear the times
+                if is_closed:
+                    form.cleaned_data['open_time'] = None
+                    form.cleaned_data['close_time'] = None
+
+
+# Working Hours Formset
+WorkingHoursFormSet = inlineformset_factory(
+    Clinic,
+    WorkingHours,
+    formset=WorkingHoursFormSetBase,
+    fields=['day_of_week', 'is_closed', 'open_time', 'close_time'],
+    extra=0,  # No extra forms since we auto-create all 7 days
+    max_num=7,
+    min_num=7,  # Require all 7 days
+    validate_min=True,
+    can_delete=False,
+    widgets={
+        'day_of_week': forms.HiddenInput(),
+        'is_closed': forms.CheckboxInput(attrs={'class': 'day-closed-checkbox'}),
+        'open_time': forms.TimeInput(attrs={
+            'type': 'time',
+            'class': 'time-input',
+        }),
+        'close_time': forms.TimeInput(attrs={
+            'type': 'time',
+            'class': 'time-input',
+        }),
+    }
+)
 
 
 class ClinicRegistrationForm(forms.ModelForm):
