@@ -837,6 +837,9 @@
   .resize-none {
     resize: none;
   }
+  .scroll-mt-32 {
+    scroll-margin-top: calc(var(--spacing) * 32);
+  }
   .list-inside {
     list-style-position: inside;
   }
