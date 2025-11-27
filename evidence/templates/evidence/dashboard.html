@@ -5,6 +5,9 @@
 {% block title %}Evidence Dashboard - Staff Only{% endblock %}
 
 {% block content %}
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
 <div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -111,30 +114,619 @@
             </div>
         </div>
 
-        <!-- Section 2: Placeholder -->
+        <!-- Section 2: Product Usage Graphs -->
         <div class="mb-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-chart-pie mr-3 text-indigo-600"></i>
-                    Section 2: Coming Soon
+                    <i class="fa-solid fa-chart-line mr-3 text-indigo-600"></i>
+                    Section 2: Product Usage Graphs
                 </h2>
-                <div class="bg-gray-50 rounded-lg p-8 text-center">
-                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600">This section is reserved for future analytics and insights.</p>
+                <p class="text-gray-600 mb-6">Real product usage data demonstrating active user engagement and platform growth trends.</p>
+                
+                <!-- Week-over-Week User Growth -->
+                <div class="mb-8">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                                    <i class="fa-solid fa-users-line mr-2 text-blue-600"></i>
+                                    Week-over-Week User Growth
+                                </h3>
+                                <p class="text-sm text-gray-600">
+                                    Shows new user registrations each week and cumulative total, demonstrating consistent platform adoption.
+                                </p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="toggleView('userGrowth', 'table')" id="userGrowth-table-btn" class="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition">
+                                    <i class="fa-solid fa-table mr-1"></i>Table
+                                </button>
+                                <button onclick="toggleView('userGrowth', 'graph')" id="userGrowth-graph-btn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">
+                                    <i class="fa-solid fa-chart-line mr-1"></i>Graph
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Table View -->
+                        <div id="userGrowth-table" class="overflow-x-auto">
+                            <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                                <thead class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Week Period</th>
+                                        <th class="px-4 py-3 text-center text-sm font-semibold">New Users</th>
+                                        <th class="px-4 py-3 text-center text-sm font-semibold">Total Users</th>
+                                        <th class="px-4 py-3 text-center text-sm font-semibold">Growth %</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    {% for week in weekly_users %}
+                                    <tr class="hover:bg-blue-50 transition">
+                                        <td class="px-4 py-3 text-sm text-gray-700 font-medium">{{ week.week_start }} - {{ week.week_end }}</td>
+                                        <td class="px-4 py-3 text-sm text-center">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">
+                                                +{{ week.new_users }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-center font-semibold text-gray-800">{{ week.total_users }}</td>
+                                        <td class="px-4 py-3 text-sm text-center">
+                                            {% if week.growth_percent > 0 %}
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                <i class="fa-solid fa-arrow-up mr-1"></i>{{ week.growth_percent }}%
+                                            </span>
+                                            {% elif week.growth_percent < 0 %}
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                                <i class="fa-solid fa-arrow-down mr-1"></i>{{ week.growth_percent }}%
+                                            </span>
+                                            {% else %}
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                                                0%
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="4" class="px-4 py-3 text-sm text-center text-gray-500">No data available</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Graph View -->
+                        <div id="userGrowth-graph" class="hidden">
+                            <div class="bg-white rounded-lg p-6">
+                                <canvas id="userGrowthChart" height="80"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meal Plans Generated per Week -->
+                <div class="mb-8">
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                                    <i class="fa-solid fa-bowl-food mr-2 text-purple-600"></i>
+                                    Meal Plans Generated per Week
+                                </h3>
+                                <p class="text-sm text-gray-600">
+                                    Weekly AI-generated meal plans, indicating active product usage and value delivery to users.
+                                </p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="toggleView('mealPlans', 'table')" id="mealPlans-table-btn" class="px-4 py-2 bg-purple-600 text-white rounded-lg text-sm font-semibold hover:bg-purple-700 transition">
+                                    <i class="fa-solid fa-table mr-1"></i>Table
+                                </button>
+                                <button onclick="toggleView('mealPlans', 'graph')" id="mealPlans-graph-btn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">
+                                    <i class="fa-solid fa-chart-bar mr-1"></i>Graph
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Table View -->
+                        <div id="mealPlans-table" class="overflow-x-auto">
+                            <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                                <thead class="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Week Period</th>
+                                        <th class="px-4 py-3 text-center text-sm font-semibold">Meal Plans Generated</th>
+                                        <th class="px-4 py-3 text-center text-sm font-semibold">Trend</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    {% for week in weekly_meal_plans %}
+                                    <tr class="hover:bg-purple-50 transition">
+                                        <td class="px-4 py-3 text-sm text-gray-700 font-medium">{{ week.week_start }} - {{ week.week_end }}</td>
+                                        <td class="px-4 py-3 text-sm text-center">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-800">
+                                                <i class="fa-solid fa-utensils mr-1"></i>{{ week.meal_plans }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-center">
+                                            {% if forloop.counter0 > 0 %}
+                                                {% with prev_week=weekly_meal_plans|slice:":"|last %}
+                                                {% if week.meal_plans > prev_week.meal_plans %}
+                                                <span class="text-green-600 font-semibold">
+                                                    <i class="fa-solid fa-arrow-trend-up"></i> Increasing
+                                                </span>
+                                                {% elif week.meal_plans < prev_week.meal_plans %}
+                                                <span class="text-red-600 font-semibold">
+                                                    <i class="fa-solid fa-arrow-trend-down"></i> Decreasing
+                                                </span>
+                                                {% else %}
+                                                <span class="text-gray-600 font-semibold">
+                                                    <i class="fa-solid fa-minus"></i> Stable
+                                                </span>
+                                                {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                            <span class="text-gray-400 text-xs">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-3 text-sm text-center text-gray-500">No data available</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Graph View -->
+                        <div id="mealPlans-graph" class="hidden">
+                            <div class="bg-white rounded-lg p-6">
+                                <canvas id="mealPlansChart" height="80"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Health Reports Generated per Week -->
+                <div class="mb-8">
+                    <div class="bg-gradient-to-r from-red-50 to-rose-50 rounded-lg p-6 border border-red-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                                    <i class="fa-solid fa-heart-pulse mr-2 text-red-600"></i>
+                                    Health Reports Generated per Week
+                                </h3>
+                                <p class="text-sm text-gray-600">
+                                    Weekly AI-generated health reports, demonstrating continued engagement with health monitoring features.
+                                </p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button onclick="toggleView('healthReports', 'table')" id="healthReports-table-btn" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-semibold hover:bg-red-700 transition">
+                                    <i class="fa-solid fa-table mr-1"></i>Table
+                                </button>
+                                <button onclick="toggleView('healthReports', 'graph')" id="healthReports-graph-btn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">
+                                    <i class="fa-solid fa-chart-bar mr-1"></i>Graph
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Table View -->
+                        <div id="healthReports-table" class="overflow-x-auto">
+                            <table class="min-w-full bg-white rounded-lg overflow-hidden">
+                                <thead class="bg-gradient-to-r from-red-600 to-rose-600 text-white">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-sm font-semibold">Week Period</th>
+                                        <th class="px-4 py-3 text-center text-sm font-semibold">Health Reports Generated</th>
+                                        <th class="px-4 py-3 text-center text-sm font-semibold">Trend</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200">
+                                    {% for week in weekly_health_reports %}
+                                    <tr class="hover:bg-red-50 transition">
+                                        <td class="px-4 py-3 text-sm text-gray-700 font-medium">{{ week.week_start }} - {{ week.week_end }}</td>
+                                        <td class="px-4 py-3 text-sm text-center">
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                                <i class="fa-solid fa-file-medical mr-1"></i>{{ week.health_reports }}
+                                            </span>
+                                        </td>
+                                        <td class="px-4 py-3 text-sm text-center">
+                                            {% if forloop.counter0 > 0 %}
+                                                {% with prev_week=weekly_health_reports|slice:":"|last %}
+                                                {% if week.health_reports > prev_week.health_reports %}
+                                                <span class="text-green-600 font-semibold">
+                                                    <i class="fa-solid fa-arrow-trend-up"></i> Increasing
+                                                </span>
+                                                {% elif week.health_reports < prev_week.health_reports %}
+                                                <span class="text-red-600 font-semibold">
+                                                    <i class="fa-solid fa-arrow-trend-down"></i> Decreasing
+                                                </span>
+                                                {% else %}
+                                                <span class="text-gray-600 font-semibold">
+                                                    <i class="fa-solid fa-minus"></i> Stable
+                                                </span>
+                                                {% endif %}
+                                                {% endwith %}
+                                            {% else %}
+                                            <span class="text-gray-400 text-xs">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="3" class="px-4 py-3 text-sm text-center text-gray-500">No data available</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Graph View -->
+                        <div id="healthReports-graph" class="hidden">
+                            <div class="bg-white rounded-lg p-6">
+                                <canvas id="healthReportsChart" height="80"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Usage Note -->
+                <div class="mb-8">
+                    <div class="bg-gradient-to-r from-cyan-50 to-blue-50 rounded-lg p-6 border border-cyan-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                            <i class="fa-solid fa-comments mr-2 text-cyan-600"></i>
+                            AI Chat Feature
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Interactive AI chat assistant available to all users for real-time pet care questions and guidance.
+                        </p>
+                        
+                        <div class="bg-white rounded-lg p-6 border border-cyan-300">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="bg-cyan-100 rounded-full p-4">
+                                        <i class="fa-solid fa-robot text-3xl text-cyan-600"></i>
+                                    </div>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="text-lg font-semibold text-gray-800 mb-2">Session-Based Chat System</h4>
+                                    <p class="text-sm text-gray-600 mb-3">
+                                        The chat feature uses session-based storage for privacy and real-time interaction. 
+                                        Users can ask questions about pet care, nutrition, and health, receiving instant AI-powered responses.
+                                    </p>
+                                    <div class="bg-cyan-50 rounded p-3 border-l-4 border-cyan-400">
+                                        <p class="text-xs text-gray-700">
+                                            <i class="fa-solid fa-info-circle mr-1 text-cyan-600"></i>
+                                            <strong>Note:</strong> Chat interactions are not permanently stored in the database for user privacy. 
+                                            Usage metrics would require implementing conversation logging if needed for future analytics.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Returning Users Count -->
+                <div class="mb-0">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-6 border border-green-200">
+                        <h3 class="text-xl font-bold text-gray-800 mb-2 flex items-center">
+                            <i class="fa-solid fa-user-check mr-2 text-green-600"></i>
+                            Returning Users Count
+                        </h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Users who returned to use the platform after their initial registration, demonstrating product stickiness and user retention.
+                        </p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- 7-Day Returning Users -->
+                            <div class="bg-white rounded-lg p-6 border-2 border-green-300 shadow-sm">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center">
+                                        <div class="bg-green-100 rounded-full p-3 mr-4">
+                                            <i class="fa-solid fa-rotate text-2xl text-green-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 font-medium">7-Day Window</p>
+                                            <h4 class="text-3xl font-bold text-green-700">{{ returning_users_7d|default:0 }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-600">
+                                    Users who registered before the last 7 days and logged in again within this period.
+                                </p>
+                            </div>
+
+                            <!-- 30-Day Returning Users -->
+                            <div class="bg-white rounded-lg p-6 border-2 border-emerald-300 shadow-sm">
+                                <div class="flex items-center justify-between mb-4">
+                                    <div class="flex items-center">
+                                        <div class="bg-emerald-100 rounded-full p-3 mr-4">
+                                            <i class="fa-solid fa-calendar-check text-2xl text-emerald-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm text-gray-600 font-medium">30-Day Window</p>
+                                            <h4 class="text-3xl font-bold text-emerald-700">{{ returning_users_30d|default:0 }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-600">
+                                    Users who registered before the last 30 days and logged in again within this period.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Section 3: Placeholder -->
+        <!-- Section 3: Sample Meal Plan -->
         <div class="mb-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-chart-area mr-3 text-indigo-600"></i>
-                    Section 3: Coming Soon
+                    <i class="fa-solid fa-utensils mr-3 text-indigo-600"></i>
+                    Section 3: Sample Meal Plan Output
                 </h2>
-                <div class="bg-gray-50 rounded-lg p-8 text-center">
-                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600">This section is reserved for future analytics and insights.</p>
+                <p class="text-gray-600 mb-6">Live example of AI-generated personalized meal plan demonstrating the platform's core value proposition.</p>
+                
+                {% if sample_meal_plan and sample_meal_plan.content_json %}
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-6 border border-purple-200 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-1">
+                                    <i class="fa-solid fa-dog mr-2 text-purple-600"></i>
+                                    {{ sample_meal_plan.pet.name }}'s Personalized Meal Plan
+                                </h3>
+                                <p class="text-sm text-gray-600">
+                                    Generated on {{ sample_meal_plan.created_at|date:"F d, Y" }} • 
+                                    {{ sample_meal_plan.pet.pet_type.name }} • 
+                                    {{ sample_meal_plan.pet.breed.name|default:"Mixed Breed" }}
+                                </p>
+                            </div>
+                            <div class="bg-white rounded-lg px-4 py-2 shadow-sm">
+                                <span class="text-xs text-gray-500 font-medium">Latest Sample</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- UI Screenshot Thumbnail -->
+                        <div class="bg-white rounded-xl p-6 border-2 border-gray-200 shadow-md hover:shadow-xl transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-lg font-bold text-gray-800 flex items-center">
+                                    <i class="fa-solid fa-desktop mr-2 text-indigo-600"></i>
+                                    User Interface Preview
+                                </h4>
+                                <span class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full font-semibold">UI</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">Clean, professional presentation of meal plan results shown to pet owners.</p>
+                            
+                            <!-- Screenshot Container -->
+                            <div class="relative group cursor-pointer" onclick="openModal('uiModal')">
+                                <div class="border-4 border-gray-300 rounded-lg overflow-hidden shadow-lg hover:border-indigo-500 transition-all">
+                                    <!-- Mini Preview of meal_result.html structure -->
+                                    <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-3">
+                                        <div class="text-white text-xs font-bold">🍽️ Personalized Pet Meal Plan</div>
+                                    </div>
+                                    <div class="bg-white p-4 space-y-2">
+                                        <div class="flex gap-2">
+                                            <div class="bg-yellow-100 rounded p-2 flex-1 text-xs">⚡ DER: {{ sample_meal_plan.content_json.der_kcal }} kcal</div>
+                                            <div class="bg-blue-100 rounded p-2 flex-1 text-xs">📊 Nutrients</div>
+                                        </div>
+                                        <div class="bg-purple-50 rounded p-2 text-xs">🍴 Meal Options ({{ sample_meal_plan.content_json.options|length }})</div>
+                                        <div class="flex gap-2">
+                                            <div class="bg-green-50 rounded p-2 flex-1 text-xs">🕐 Schedule</div>
+                                            <div class="bg-red-50 rounded p-2 flex-1 text-xs">⚠️ Safety</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="absolute inset-0 bg-indigo-600 bg-opacity-0 group-hover:bg-opacity-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-lg">
+                                    <span class="bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg">
+                                        <i class="fa-solid fa-expand mr-2"></i>Click to View Full UI
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- JSON Data Thumbnail -->
+                        <div class="bg-white rounded-xl p-6 border-2 border-gray-200 shadow-md hover:shadow-xl transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-lg font-bold text-gray-800 flex items-center">
+                                    <i class="fa-solid fa-code mr-2 text-green-600"></i>
+                                    Structured JSON Output
+                                </h4>
+                                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">JSON</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">Machine-readable format for integration with other systems and services.</p>
+                            
+                            <!-- JSON Container -->
+                            <div class="relative group cursor-pointer" onclick="openModal('jsonModal')">
+                                <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:ring-4 hover:ring-green-500 transition-all">
+                                    <div class="p-4 font-mono text-xs text-green-400 overflow-hidden" style="max-height: 200px;">
+                                        <pre class="whitespace-pre-wrap break-words">{{ sample_meal_plan_json|slice:":400" }}...</pre>
+                                    </div>
+                                </div>
+                                <div class="absolute inset-0 bg-green-600 bg-opacity-0 group-hover:bg-opacity-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-lg">
+                                    <span class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg">
+                                        <i class="fa-solid fa-expand mr-2"></i>Click to View Full JSON
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics from Sample -->
+                    <div class="mt-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+                        <h4 class="text-md font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fa-solid fa-chart-pie mr-2 text-indigo-600"></i>
+                            Sample Plan Highlights
+                        </h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-purple-600">{{ sample_meal_plan.content_json.der_kcal }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Daily Calories</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-indigo-600">{{ sample_meal_plan.content_json.options|length }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Meal Options</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-green-600">{{ sample_meal_plan.content_json.feeding_schedule|length }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Feeding Times</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-red-600">{{ sample_meal_plan.content_json.safety_notes|length }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Safety Notes</div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <div class="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed border-gray-300">
+                        <i class="fa-solid fa-inbox text-5xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600 font-medium">No meal plans available yet.</p>
+                        <p class="text-sm text-gray-500 mt-2">Sample meal plan will appear here once generated.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Modals for Full View -->
+        <!-- UI Modal -->
+        <div id="uiModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4" onclick="closeModal('uiModal')">
+            <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-auto shadow-2xl" onclick="event.stopPropagation()">
+                <div class="sticky top-0 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-4 flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-white">
+                        <i class="fa-solid fa-desktop mr-2"></i>Full Meal Plan UI Preview
+                    </h3>
+                    <button onclick="closeModal('uiModal')" class="text-white hover:text-gray-200 transition">
+                        <i class="fa-solid fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div class="p-8">
+                    {% if sample_meal_plan and sample_meal_plan.content_json %}
+                    {% with data=sample_meal_plan.content_json %}
+                    <!-- Render full meal plan UI (similar to meal_result.html) -->
+                    <div class="space-y-6">
+                        <!-- DER & Nutrients -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="border-2 rounded-xl p-6 bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
+                                <div class="flex items-center mb-3">
+                                    <span class="text-3xl mr-3">⚡</span>
+                                    <h3 class="font-bold text-lg text-yellow-900">Daily Energy Requirement</h3>
+                                </div>
+                                <p class="text-5xl font-extrabold text-orange-600">{{ data.der_kcal }}</p>
+                                <p class="font-medium text-orange-700 mt-2">Target Kilocalories (kcal)</p>
+                            </div>
+                            <div class="border-2 rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                                <div class="flex items-center mb-3">
+                                    <span class="text-3xl mr-3">📊</span>
+                                    <h3 class="font-bold text-lg text-blue-900">Nutrient Breakdown</h3>
+                                </div>
+                                <div class="space-y-2 mt-4">
+                                    <div class="flex justify-between bg-white rounded-lg px-3 py-2">
+                                        <span class="font-medium">🥩 Protein:</span>
+                                        <span class="font-bold text-blue-600">{{ data.nutrient_targets.protein_percent }}</span>
+                                    </div>
+                                    <div class="flex justify-between bg-white rounded-lg px-3 py-2">
+                                        <span class="font-medium">🥑 Fat:</span>
+                                        <span class="font-bold text-blue-600">{{ data.nutrient_targets.fat_percent }}</span>
+                                    </div>
+                                    <div class="flex justify-between bg-white rounded-lg px-3 py-2">
+                                        <span class="font-medium">🌾 Carbs:</span>
+                                        <span class="font-bold text-blue-600">{{ data.nutrient_targets.carbs_percent }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Meal Options -->
+                        <div>
+                            <h3 class="text-2xl font-bold mb-4 flex items-center">
+                                <span class="text-3xl mr-3">🍴</span>
+                                Meal Plan Options
+                            </h3>
+                            <div class="space-y-4">
+                                {% for opt in data.options %}
+                                <div class="bg-white border-2 rounded-xl p-6 shadow-lg border-gray-200">
+                                    <div class="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-2 rounded-full inline-block font-bold text-sm mb-3">
+                                        Option {{ forloop.counter }}
+                                    </div>
+                                    <h4 class="text-xl font-bold mb-2">{{ opt.name }}</h4>
+                                    <p class="text-gray-600 italic mb-4">{{ opt.overview }}</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        {% for sec in opt.sections %}
+                                        <div class="rounded-lg p-4 bg-gray-50 border border-gray-200">
+                                            <h5 class="font-bold mb-2 text-indigo-600">{{ sec.title }}</h5>
+                                            <ul class="space-y-1">
+                                                {% for it in sec.items %}
+                                                <li class="text-sm text-gray-700 flex items-start">
+                                                    <span class="mr-2 text-indigo-500">▸</span>
+                                                    <span>{{ it }}</span>
+                                                </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <!-- Feeding Schedule & Safety Notes -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <!-- Feeding Schedule -->
+                            <div class="border-2 rounded-xl p-6 bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+                                <div class="flex items-center mb-4">
+                                    <span class="text-3xl mr-3">🕐</span>
+                                    <h3 class="font-bold text-lg text-green-900">Recommended Feeding Schedule</h3>
+                                </div>
+                                <div class="space-y-3">
+                                    {% for sched in data.feeding_schedule %}
+                                    <div class="bg-white rounded-lg p-4 border-l-4 border-green-500">
+                                        <div class="font-bold text-green-700 mb-1">{{ sched.time }}</div>
+                                        <div class="text-sm text-gray-700">{{ sched.note }}</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <!-- Safety Notes -->
+                            <div class="border-2 rounded-xl p-6 bg-gradient-to-br from-red-50 to-orange-50 border-red-200">
+                                <div class="flex items-center mb-4">
+                                    <span class="text-3xl mr-3">⚠️</span>
+                                    <h3 class="font-bold text-lg text-red-900">Crucial Safety & Transition Notes</h3>
+                                </div>
+                                <div class="space-y-3">
+                                    {% for note in data.safety_notes %}
+                                    <div class="bg-white rounded-lg p-4 border-l-4 border-red-500">
+                                        <div class="text-sm text-gray-700 flex items-start">
+                                            <span class="text-red-600 mr-2 font-bold">•</span>
+                                            <span>{{ note }}</span>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- JSON Modal -->
+        <div id="jsonModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4" onclick="closeModal('jsonModal')">
+            <div class="bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto shadow-2xl" onclick="event.stopPropagation()">
+                <div class="sticky top-0 bg-green-600 p-4 flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-white">
+                        <i class="fa-solid fa-code mr-2"></i>Complete JSON Structure
+                    </h3>
+                    <button onclick="closeModal('jsonModal')" class="text-white hover:text-gray-200 transition">
+                        <i class="fa-solid fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    {% if sample_meal_plan and sample_meal_plan.content_json %}
+                    <pre class="font-mono text-sm text-green-400 whitespace-pre-wrap break-words">{{ sample_meal_plan_json|safe }}</pre>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -183,4 +775,228 @@
 
     </div>
 </div>
+
+<script>
+// Toggle between table and graph views
+function toggleView(section, viewType) {
+    const tableDiv = document.getElementById(section + '-table');
+    const graphDiv = document.getElementById(section + '-graph');
+    const tableBtn = document.getElementById(section + '-table-btn');
+    const graphBtn = document.getElementById(section + '-graph-btn');
+    
+    if (viewType === 'table') {
+        tableDiv.classList.remove('hidden');
+        graphDiv.classList.add('hidden');
+        tableBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        tableBtn.classList.add('bg-blue-600', 'text-white');
+        if (section === 'mealPlans') {
+            tableBtn.classList.remove('bg-blue-600');
+            tableBtn.classList.add('bg-purple-600');
+        } else if (section === 'healthReports') {
+            tableBtn.classList.remove('bg-blue-600');
+            tableBtn.classList.add('bg-red-600');
+        }
+        graphBtn.classList.remove('bg-blue-600', 'bg-purple-600', 'bg-red-600', 'text-white');
+        graphBtn.classList.add('bg-gray-200', 'text-gray-700');
+    } else {
+        tableDiv.classList.add('hidden');
+        graphDiv.classList.remove('hidden');
+        graphBtn.classList.remove('bg-gray-200', 'text-gray-700');
+        graphBtn.classList.add('bg-blue-600', 'text-white');
+        if (section === 'mealPlans') {
+            graphBtn.classList.remove('bg-blue-600');
+            graphBtn.classList.add('bg-purple-600');
+        } else if (section === 'healthReports') {
+            graphBtn.classList.remove('bg-blue-600');
+            graphBtn.classList.add('bg-red-600');
+        }
+        tableBtn.classList.remove('bg-blue-600', 'bg-purple-600', 'bg-red-600', 'text-white');
+        tableBtn.classList.add('bg-gray-200', 'text-gray-700');
+    }
+}
+
+// Chart data from Django context
+const weeklyUsersData = {
+    labels: [{% for week in weekly_users %}'{{ week.week_start }} - {{ week.week_end }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+    newUsers: [{% for week in weekly_users %}{{ week.new_users }}{% if not forloop.last %}, {% endif %}{% endfor %}],
+    totalUsers: [{% for week in weekly_users %}{{ week.total_users }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+};
+
+const weeklyMealPlansData = {
+    labels: [{% for week in weekly_meal_plans %}'{{ week.week_start }} - {{ week.week_end }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+    values: [{% for week in weekly_meal_plans %}{{ week.meal_plans }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+};
+
+const weeklyHealthReportsData = {
+    labels: [{% for week in weekly_health_reports %}'{{ week.week_start }} - {{ week.week_end }}'{% if not forloop.last %}, {% endif %}{% endfor %}],
+    values: [{% for week in weekly_health_reports %}{{ week.health_reports }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+};
+
+// User Growth Chart
+const userGrowthCtx = document.getElementById('userGrowthChart').getContext('2d');
+const userGrowthChart = new Chart(userGrowthCtx, {
+    type: 'line',
+    data: {
+        labels: weeklyUsersData.labels,
+        datasets: [
+            {
+                label: 'New Users',
+                data: weeklyUsersData.newUsers,
+                borderColor: 'rgb(59, 130, 246)',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            },
+            {
+                label: 'Total Users',
+                data: weeklyUsersData.totalUsers,
+                borderColor: 'rgb(99, 102, 241)',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            },
+            title: {
+                display: true,
+                text: 'User Growth Trend',
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// Meal Plans Chart
+const mealPlansCtx = document.getElementById('mealPlansChart').getContext('2d');
+const mealPlansChart = new Chart(mealPlansCtx, {
+    type: 'bar',
+    data: {
+        labels: weeklyMealPlansData.labels,
+        datasets: [{
+            label: 'Meal Plans Generated',
+            data: weeklyMealPlansData.values,
+            backgroundColor: 'rgba(168, 85, 247, 0.6)',
+            borderColor: 'rgb(168, 85, 247)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            },
+            title: {
+                display: true,
+                text: 'Weekly Meal Plans Generated',
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// Health Reports Chart
+const healthReportsCtx = document.getElementById('healthReportsChart').getContext('2d');
+const healthReportsChart = new Chart(healthReportsCtx, {
+    type: 'bar',
+    data: {
+        labels: weeklyHealthReportsData.labels,
+        datasets: [{
+            label: 'Health Reports Generated',
+            data: weeklyHealthReportsData.values,
+            backgroundColor: 'rgba(239, 68, 68, 0.6)',
+            borderColor: 'rgb(239, 68, 68)',
+            borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top'
+            },
+            title: {
+                display: true,
+                text: 'Weekly Health Reports Generated',
+                font: {
+                    size: 16,
+                    weight: 'bold'
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    precision: 0
+                }
+            }
+        }
+    }
+});
+
+// Modal functions
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = 'auto';
+    }
+}
+
+// Close modals on ESC key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeModal('uiModal');
+        closeModal('jsonModal');
+    }
+});
+</script>
+
 {% endblock %}
