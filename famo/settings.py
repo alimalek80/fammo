@@ -14,6 +14,9 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = True
 ALLOWED_HOSTS = ['fammo.ai', 'localhost', '127.0.0.1']
 
+# GOOGLE MAPS
+GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY", default="")
+
 # LOGGING
 LOGGING = {
     'version': 1,

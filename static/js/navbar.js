@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
+    const userDropdownToggle = document.getElementById('user-dropdown-toggle');
+    const userDropdownMenu = document.getElementById('user-dropdown-menu');
     const mainNavbar = document.getElementById('main-navbar');
     let lastScrollTop = 0;
 
@@ -12,21 +14,41 @@ document.addEventListener('DOMContentLoaded', function () {
             mobileMenu.classList.toggle('hidden');
             console.log('Mobile menu toggled, hidden class:', mobileMenu.classList.contains('hidden'));
         });
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
-                if (!mobileMenu.classList.contains('hidden')) {
-                    mobileMenu.classList.add('hidden');
-                }
-            }
-        });
     } else {
         console.error('Mobile menu elements not found:', {
             button: !!mobileMenuButton,
             menu: !!mobileMenu
         });
     }
+
+    // User dropdown toggle
+    if (userDropdownToggle && userDropdownMenu) {
+        userDropdownToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            userDropdownMenu.classList.toggle('show');
+            console.log('User dropdown toggled, show class:', userDropdownMenu.classList.contains('show'));
+        });
+    }
+
+    // Single global click handler to close both dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        // Close mobile menu if clicking outside
+        if (mobileMenuButton && mobileMenu) {
+            if (!mobileMenu.contains(e.target) && !mobileMenuButton.contains(e.target)) {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                }
+            }
+        }
+
+        // Close user dropdown if clicking outside
+        if (userDropdownToggle && userDropdownMenu) {
+            if (!userDropdownToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
+                userDropdownMenu.classList.remove('show');
+            }
+        }
+    });
 
     // Hide/Show Navbar on Scroll
     if (mainNavbar) {

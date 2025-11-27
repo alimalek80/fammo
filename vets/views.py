@@ -202,6 +202,14 @@ class ClinicDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         clinic = self.object
         
+        # Add Google Maps API key
+        from django.conf import settings
+        context['GOOGLE_MAPS_API_KEY'] = settings.GOOGLE_MAPS_API_KEY
+        
+        # Add current day of week (0=Monday, 6=Sunday)
+        from datetime import datetime
+        context['current_day'] = datetime.now().weekday()
+        
         # Show referral functionality for email-confirmed clinics (even if not admin approved)
         if clinic.email_confirmed:
             # Get referral code for sharing
