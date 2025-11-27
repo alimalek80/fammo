@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     'formtools',
     'chat',
     'vets.apps.VetsConfig',
+    'evidence',
 ]
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
