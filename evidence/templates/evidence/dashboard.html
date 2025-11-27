@@ -731,44 +731,373 @@
             </div>
         </div>
 
-        <!-- Section 4: Placeholder -->
+        <!-- Section 4: Sample Health Report (UI + JSON) -->
         <div class="mb-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-chart-column mr-3 text-indigo-600"></i>
-                    Section 4: Coming Soon
+                    <i class="fa-solid fa-heart-pulse mr-3 text-red-600"></i>
+                    Section 4: Sample Health Report (UI + JSON)
                 </h2>
-                <div class="bg-gray-50 rounded-lg p-8 text-center">
-                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600">This section is reserved for future analytics and insights.</p>
+                <p class="text-gray-600 mb-6">
+                    AI-generated health assessments providing breed-specific insights, health summaries, and personalized recommendations.
+                </p>
+
+                {% if sample_health_report %}
+                    <!-- Two Columns: UI Preview and JSON Data -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <!-- UI Preview Thumbnail -->
+                        <div class="bg-white rounded-xl p-6 border-2 border-gray-200 shadow-md hover:shadow-xl transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-lg font-bold text-gray-800 flex items-center">
+                                    <i class="fa-solid fa-desktop mr-2 text-red-600"></i>
+                                    User-Facing Interface
+                                </h4>
+                                <span class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-semibold">UI</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">Beautiful, easy-to-read format for pet owners with organized health insights.</p>
+                            
+                            <!-- UI Container -->
+                            <div class="relative group cursor-pointer" onclick="openModal('healthUiModal')">
+                                <div class="border-4 border-gray-300 rounded-lg overflow-hidden shadow-lg hover:border-red-500 transition-all">
+                                    <!-- Mini Preview of health report structure -->
+                                    <div class="bg-gradient-to-r from-red-600 via-orange-600 to-pink-600 p-3">
+                                        <div class="text-white text-xs font-bold">💊 AI Health Assessment for {{ sample_health_report.pet.name }}</div>
+                                    </div>
+                                    <div class="bg-white p-4 space-y-2">
+                                        <div class="bg-blue-50 rounded p-2 text-xs">📋 Health Summary</div>
+                                        <div class="flex gap-2">
+                                            <div class="bg-orange-50 rounded p-2 flex-1 text-xs">🏃 Activity Tips</div>
+                                            <div class="bg-purple-50 rounded p-2 flex-1 text-xs">⚖️ Weight & Diet</div>
+                                        </div>
+                                        <div class="flex gap-2">
+                                            <div class="bg-yellow-50 rounded p-2 flex-1 text-xs">🍖 Feeding Tips</div>
+                                            <div class="bg-red-50 rounded p-2 flex-1 text-xs">⚠️ Breed Risks</div>
+                                        </div>
+                                        <div class="bg-green-50 rounded p-2 text-xs">🚨 Health Alerts</div>
+                                    </div>
+                                </div>
+                                <div class="absolute inset-0 bg-red-600 bg-opacity-0 group-hover:bg-opacity-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-lg">
+                                    <span class="bg-red-600 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg">
+                                        <i class="fa-solid fa-expand mr-2"></i>Click to View Full UI
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- JSON Data Thumbnail -->
+                        <div class="bg-white rounded-xl p-6 border-2 border-gray-200 shadow-md hover:shadow-xl transition-all">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-lg font-bold text-gray-800 flex items-center">
+                                    <i class="fa-solid fa-code mr-2 text-green-600"></i>
+                                    Structured JSON Output
+                                </h4>
+                                <span class="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">JSON</span>
+                            </div>
+                            <p class="text-sm text-gray-600 mb-4">Machine-readable format for integration with other systems and services.</p>
+                            
+                            <!-- JSON Container -->
+                            <div class="relative group cursor-pointer" onclick="openModal('healthJsonModal')">
+                                <div class="bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:ring-4 hover:ring-green-500 transition-all">
+                                    <div class="p-4 font-mono text-xs text-green-400 overflow-hidden" style="max-height: 200px;">
+                                        <pre class="whitespace-pre-wrap break-words">{{ sample_health_report_json|slice:":400" }}...</pre>
+                                    </div>
+                                </div>
+                                <div class="absolute inset-0 bg-green-600 bg-opacity-0 group-hover:bg-opacity-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all rounded-lg">
+                                    <span class="bg-green-600 text-white px-4 py-2 rounded-lg font-semibold text-sm shadow-lg">
+                                        <i class="fa-solid fa-expand mr-2"></i>Click to View Full JSON
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics from Sample -->
+                    <div class="mt-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-6 border border-gray-200">
+                        <h4 class="text-md font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fa-solid fa-chart-pie mr-2 text-red-600"></i>
+                            Sample Health Report Highlights
+                        </h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-blue-600">{{ sample_health_report.pet.name }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Pet Name</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-orange-600">{{ sample_health_report.summary_json.breed_risks|length }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Breed Risks</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-yellow-600">{{ sample_health_report.summary_json.feeding_tips|length }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Feeding Tips</div>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <div class="text-2xl font-bold text-red-600">{{ sample_health_report.summary_json.alerts|length }}</div>
+                                <div class="text-xs text-gray-600 mt-1">Health Alerts</div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <div class="bg-gray-50 rounded-lg p-8 text-center border-2 border-dashed border-gray-300">
+                        <i class="fa-solid fa-heart-pulse text-4xl text-gray-400 mb-4"></i>
+                        <p class="text-gray-600">No health reports available yet. Health reports will appear here once generated by the AI system.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Health Report UI Modal -->
+        <div id="healthUiModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4" onclick="closeModal('healthUiModal')">
+            <div class="bg-white rounded-xl max-w-6xl w-full max-h-[90vh] overflow-auto shadow-2xl" onclick="event.stopPropagation()">
+                <div class="sticky top-0 bg-gradient-to-r from-red-600 via-orange-600 to-pink-600 p-4 flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-white">
+                        <i class="fa-solid fa-desktop mr-2"></i>Full Health Report UI Preview
+                    </h3>
+                    <button onclick="closeModal('healthUiModal')" class="text-white hover:text-gray-200 transition">
+                        <i class="fa-solid fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div class="p-8">
+                    {% if sample_health_report and sample_health_report.summary_json %}
+                    {% with data=sample_health_report.summary_json pet=sample_health_report.pet %}
+                    <!-- Render full health report UI -->
+                    <div class="space-y-6">
+                        <!-- Header -->
+                        <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-xl p-6 border-2 border-red-200">
+                            <h2 class="text-3xl font-bold text-red-900 mb-2">
+                                <i class="fa-solid fa-heart-pulse mr-2"></i>
+                                AI Health Assessment for {{ pet.name }}
+                            </h2>
+                            <p class="text-gray-600">{{ pet.breed }} • {{ pet.get_gender_display }} • {{ pet.age_display }}</p>
+                        </div>
+
+                        <!-- Health Summary -->
+                        <div class="bg-blue-50 rounded-xl p-6 border-2 border-blue-200">
+                            <h3 class="text-xl font-bold text-blue-900 mb-3 flex items-center">
+                                <i class="fa-solid fa-clipboard-check mr-2"></i>Health Summary
+                            </h3>
+                            <p class="text-gray-700 leading-relaxed">{{ data.health_summary }}</p>
+                        </div>
+
+                        <!-- Activity & Weight/Diet -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="bg-orange-50 rounded-xl p-6 border-2 border-orange-200">
+                                <h3 class="text-xl font-bold text-orange-900 mb-3 flex items-center">
+                                    <i class="fa-solid fa-running mr-2"></i>Activity Recommendations
+                                </h3>
+                                <p class="text-gray-700 leading-relaxed">{{ data.activity }}</p>
+                            </div>
+                            <div class="bg-purple-50 rounded-xl p-6 border-2 border-purple-200">
+                                <h3 class="text-xl font-bold text-purple-900 mb-3 flex items-center">
+                                    <i class="fa-solid fa-weight-scale mr-2"></i>Weight & Diet Analysis
+                                </h3>
+                                <p class="text-gray-700 leading-relaxed">{{ data.weight_and_diet }}</p>
+                            </div>
+                        </div>
+
+                        <!-- Feeding Tips -->
+                        <div class="bg-yellow-50 rounded-xl p-6 border-2 border-yellow-200">
+                            <h3 class="text-xl font-bold text-yellow-900 mb-3 flex items-center">
+                                <i class="fa-solid fa-utensils mr-2"></i>Feeding Tips
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for tip in data.feeding_tips %}
+                                <li class="flex items-start">
+                                    <i class="fa-solid fa-check-circle text-yellow-600 mr-2 mt-1"></i>
+                                    <span class="text-gray-700">{{ tip }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Breed Risks -->
+                        <div class="bg-red-50 rounded-xl p-6 border-2 border-red-200">
+                            <h3 class="text-xl font-bold text-red-900 mb-3 flex items-center">
+                                <i class="fa-solid fa-triangle-exclamation mr-2"></i>Breed-Specific Health Risks
+                            </h3>
+                            <ul class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                {% for risk in data.breed_risks %}
+                                <li class="flex items-start bg-white rounded-lg p-3">
+                                    <i class="fa-solid fa-circle-exclamation text-red-600 mr-2 mt-1"></i>
+                                    <span class="text-gray-700">{{ risk }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Health Alerts -->
+                        <div class="bg-green-50 rounded-xl p-6 border-2 border-green-200">
+                            <h3 class="text-xl font-bold text-green-900 mb-3 flex items-center">
+                                <i class="fa-solid fa-bell mr-2"></i>Health Monitoring Alerts
+                            </h3>
+                            <ul class="space-y-2">
+                                {% for alert in data.alerts %}
+                                <li class="flex items-start bg-white rounded-lg p-3">
+                                    <i class="fa-solid fa-eye text-green-600 mr-2 mt-1"></i>
+                                    <span class="text-gray-700">{{ alert }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    {% endwith %}
+                    {% endif %}
                 </div>
             </div>
         </div>
 
-        <!-- Section 5: Placeholder -->
-        <div class="mb-8">
-            <div class="bg-white rounded-xl shadow-lg p-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-chart-simple mr-3 text-indigo-600"></i>
-                    Section 5: Coming Soon
-                </h2>
-                <div class="bg-gray-50 rounded-lg p-8 text-center">
-                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600">This section is reserved for future analytics and insights.</p>
+        <!-- Health Report JSON Modal -->
+        <div id="healthJsonModal" class="fixed inset-0 bg-black bg-opacity-75 z-50 hidden items-center justify-center p-4" onclick="closeModal('healthJsonModal')">
+            <div class="bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto shadow-2xl" onclick="event.stopPropagation()">
+                <div class="sticky top-0 bg-green-600 p-4 flex items-center justify-between">
+                    <h3 class="text-xl font-bold text-white">
+                        <i class="fa-solid fa-code mr-2"></i>Complete Health Report JSON
+                    </h3>
+                    <button onclick="closeModal('healthJsonModal')" class="text-white hover:text-gray-200 transition">
+                        <i class="fa-solid fa-times text-2xl"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    {% if sample_health_report and sample_health_report.summary_json %}
+                    <pre class="font-mono text-sm text-green-400 whitespace-pre-wrap break-words">{{ sample_health_report_json|safe }}</pre>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
-        <!-- Section 6: Placeholder -->
+        <!-- Section 5: Platform Demo Video -->
         <div class="mb-8">
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fa-solid fa-chart-gantt mr-3 text-indigo-600"></i>
-                    Section 6: Coming Soon
+                    <i class="fa-solid fa-video mr-3 text-red-600"></i>
+                    Section 5: Platform Demo Video
                 </h2>
-                <div class="bg-gray-50 rounded-lg p-8 text-center">
-                    <i class="fa-solid fa-circle-notch fa-spin text-4xl text-gray-400 mb-4"></i>
-                    <p class="text-gray-600">This section is reserved for future analytics and insights.</p>
+                <p class="text-gray-600 mb-6">
+                    Watch a comprehensive demonstration of the FAMMO platform showcasing our AI-powered pet nutrition and health features in action.
+                </p>
+                
+                <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-8">
+                    <!-- Video Container -->
+                    <div class="max-w-4xl mx-auto">
+                        <div class="relative overflow-hidden rounded-xl shadow-2xl" style="padding-bottom: 56.25%; height: 0;">
+                            <iframe 
+                                class="absolute top-0 left-0 w-full h-full"
+                                src="https://www.youtube.com/embed/39XQOxOkXww?si=x-L4xnncee7OGJTK" 
+                                title="YouTube video player" 
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                                referrerpolicy="strict-origin-when-cross-origin"
+                                allowfullscreen>
+                            </iframe>
+                        </div>
+                    </div>
+                    
+                    <!-- Video Description -->
+                    <div class="max-w-4xl mx-auto mt-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <i class="fa-solid fa-utensils text-2xl text-indigo-600 mb-2"></i>
+                                <h4 class="font-bold text-gray-800 text-sm">AI Meal Plans</h4>
+                                <p class="text-xs text-gray-600 mt-1">Personalized nutrition recommendations</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <i class="fa-solid fa-heart-pulse text-2xl text-red-600 mb-2"></i>
+                                <h4 class="font-bold text-gray-800 text-sm">Health Reports</h4>
+                                <p class="text-xs text-gray-600 mt-1">Breed-specific health insights</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-4 text-center shadow-sm">
+                                <i class="fa-solid fa-comments text-2xl text-green-600 mb-2"></i>
+                                <h4 class="font-bold text-gray-800 text-sm">AI Chat</h4>
+                                <p class="text-xs text-gray-600 mt-1">Interactive pet care assistance</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- External Link -->
+                    <div class="text-center mt-6">
+                        <a href="https://youtu.be/39XQOxOkXww" target="_blank" rel="noopener noreferrer" 
+                           class="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transition-colors">
+                            <i class="fa-brands fa-youtube mr-2 text-xl"></i>
+                            Watch on YouTube
+                            <i class="fa-solid fa-external-link-alt ml-2 text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 6: Technology Overview – AI Nutrition Engine -->
+        <div class="mb-8">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 flex items-center">
+                    <i class="fa-solid fa-brain mr-3 text-purple-600"></i>
+                    Technology Overview – AI Nutrition Engine
+                </h2>
+                
+                <div class="bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl p-8 border border-gray-200">
+                    <div class="prose prose-lg max-w-none">
+                        <p class="text-gray-700 leading-relaxed text-justify">
+                            Our AI nutrition engine processes comprehensive pet profile data—including species, breed, age, weight, body condition, allergies, health conditions, feeding history, and activity level—to deliver personalized dietary recommendations. 
+                            The system employs advanced feature engineering to convert raw inputs into structured nutritional parameters such as caloric requirements (MER/DER), nutrient ratios, risk flags, and constraint sets. 
+                            Our AI model combines evidence-based veterinary nutrition guidelines with machine-learning rules to generate tailored meal plans that respect breed-specific needs, age categories, allergy exclusions, and safe ingredient ranges. 
+                            All outputs are produced as deterministic JSON blocks containing meals, precise quantities, complete nutrition totals, and critical safety notes, ensuring reproducibility and transparency. 
+                            The engine enforces strict constraints around calorie limits, macronutrient balance, and allergen avoidance to maintain pet health and safety. 
+                            User behavior and outcomes are continuously collected to refine the AI's recommendations over time, creating an adaptive feedback loop that improves accuracy and personalization with each interaction.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Technical Highlights -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+                    <div class="bg-white rounded-lg p-6 border-2 border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-3">
+                            <i class="fa-solid fa-database text-3xl text-purple-600 mr-3"></i>
+                            <h3 class="text-lg font-bold text-gray-800">Input Processing</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Multi-dimensional pet profile analysis with 15+ data points</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-6 border-2 border-blue-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-3">
+                            <i class="fa-solid fa-gears text-3xl text-blue-600 mr-3"></i>
+                            <h3 class="text-lg font-bold text-gray-800">Feature Engineering</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Caloric calculations, nutrient ratios, and constraint modeling</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-6 border-2 border-green-200 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex items-center mb-3">
+                            <i class="fa-solid fa-code-branch text-3xl text-green-600 mr-3"></i>
+                            <h3 class="text-lg font-bold text-gray-800">Deterministic Output</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Structured JSON with meals, quantities, and safety protocols</p>
+                    </div>
+                </div>
+                
+                <!-- Key Technologies -->
+                <div class="mt-8 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl p-6 border border-purple-200">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa-solid fa-microchip mr-2 text-purple-600"></i>
+                        Core Technologies
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <div class="text-2xl font-bold text-purple-600">AI/ML</div>
+                            <div class="text-xs text-gray-600 mt-1">Machine Learning</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <div class="text-2xl font-bold text-blue-600">JSON</div>
+                            <div class="text-xs text-gray-600 mt-1">Structured Data</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <div class="text-2xl font-bold text-green-600">API</div>
+                            <div class="text-xs text-gray-600 mt-1">Integration Ready</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center shadow-sm">
+                            <div class="text-2xl font-bold text-orange-600">VET</div>
+                            <div class="text-xs text-gray-600 mt-1">Expert Guidelines</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -995,6 +1324,8 @@ document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeModal('uiModal');
         closeModal('jsonModal');
+        closeModal('healthUiModal');
+        closeModal('healthJsonModal');
     }
 });
 </script>

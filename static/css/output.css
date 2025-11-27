@@ -18,10 +18,12 @@
     --color-red-800: oklch(44.4% 0.177 26.899);
     --color-red-900: oklch(39.6% 0.141 25.723);
     --color-orange-50: oklch(98% 0.016 73.684);
+    --color-orange-200: oklch(90.1% 0.076 70.697);
     --color-orange-500: oklch(70.5% 0.213 47.604);
     --color-orange-600: oklch(64.6% 0.222 41.116);
     --color-orange-700: oklch(55.3% 0.195 38.402);
     --color-orange-800: oklch(47% 0.157 37.304);
+    --color-orange-900: oklch(40.8% 0.123 38.172);
     --color-amber-50: oklch(98.7% 0.022 95.277);
     --color-amber-100: oklch(96.2% 0.059 95.617);
     --color-amber-200: oklch(92.4% 0.12 95.746);
@@ -1179,6 +1181,9 @@
   .border-indigo-600 {
     border-color: var(--color-indigo-600);
   }
+  .border-orange-200 {
+    border-color: var(--color-orange-200);
+  }
   .border-pink-200 {
     border-color: var(--color-pink-200);
   }
@@ -1322,6 +1327,9 @@
   }
   .bg-indigo-600 {
     background-color: var(--color-indigo-600);
+  }
+  .bg-orange-50 {
+    background-color: var(--color-orange-50);
   }
   .bg-orange-500 {
     background-color: var(--color-orange-500);
@@ -1486,6 +1494,11 @@
   .from-yellow-50 {
     --tw-gradient-from: var(--color-yellow-50);
     --tw-gradient-stops: var(--tw-gradient-via-stops, var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-to) var(--tw-gradient-to-position));
+  }
+  .via-orange-600 {
+    --tw-gradient-via: var(--color-orange-600);
+    --tw-gradient-via-stops: var(--tw-gradient-position), var(--tw-gradient-from) var(--tw-gradient-from-position), var(--tw-gradient-via) var(--tw-gradient-via-position), var(--tw-gradient-to) var(--tw-gradient-to-position);
+    --tw-gradient-stops: var(--tw-gradient-via-stops);
   }
   .via-purple-600 {
     --tw-gradient-via: var(--color-purple-600);
@@ -1755,6 +1768,9 @@
   .text-center {
     text-align: center;
   }
+  .text-justify {
+    text-align: justify;
+  }
   .text-left {
     text-align: left;
   }
@@ -1993,6 +2009,9 @@
   }
   .text-orange-800 {
     color: var(--color-orange-800);
+  }
+  .text-orange-900 {
+    color: var(--color-orange-900);
   }
   .text-pink-500 {
     color: var(--color-pink-500);
@@ -2325,6 +2344,13 @@
     &:hover {
       @media (hover: hover) {
         border-color: var(--color-indigo-500);
+      }
+    }
+  }
+  .hover\:border-red-500 {
+    &:hover {
+      @media (hover: hover) {
+        border-color: var(--color-red-500);
       }
     }
   }

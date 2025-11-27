@@ -147,6 +147,26 @@ def evidence_dashboard(request):
     if latest_meal_plan and latest_meal_plan.content_json:
         sample_meal_plan_json_formatted = json.dumps(latest_meal_plan.content_json, indent=2)
     
+    # Section 4: Sample Health Report
+    # Try to get from admin user first, otherwise get any latest health report
+    latest_health_report = None
+    if admin_user:
+        latest_health_report = AIHealthReport.objects.filter(
+            pet__user=admin_user,
+            summary_json__isnull=False
+        ).order_by('-created_at').first()
+    
+    # Fallback to any latest health report with JSON if admin doesn't have one
+    if not latest_health_report:
+        latest_health_report = AIHealthReport.objects.filter(
+            summary_json__isnull=False
+        ).order_by('-created_at').first()
+    
+    # Format health report JSON for display
+    sample_health_report_json_formatted = None
+    if latest_health_report and latest_health_report.summary_json:
+        sample_health_report_json_formatted = json.dumps(latest_health_report.summary_json, indent=2)
+    
     context = {
         'total_users': total_users,
         'total_dogs': total_dogs,
@@ -167,6 +187,10 @@ def evidence_dashboard(request):
         # Section 3 data
         'sample_meal_plan': latest_meal_plan,
         'sample_meal_plan_json': sample_meal_plan_json_formatted,
+        
+        # Section 4 data
+        'sample_health_report': latest_health_report,
+        'sample_health_report_json': sample_health_report_json_formatted,
     }
     
     return render(request, 'evidence/dashboard.html', context)
