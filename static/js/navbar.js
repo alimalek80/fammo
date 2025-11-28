@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const mobileMenu = document.getElementById('mobile-menu');
     const userDropdownToggle = document.getElementById('user-dropdown-toggle');
     const userDropdownMenu = document.getElementById('user-dropdown-menu');
+    const howItWorksToggle = document.getElementById('how-it-works-toggle');
+    const howItWorksMenu = document.getElementById('how-it-works-menu');
     const mainNavbar = document.getElementById('main-navbar');
     let lastScrollTop = 0;
 
@@ -27,11 +29,29 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault();
             e.stopPropagation();
             userDropdownMenu.classList.toggle('show');
+            // Close how it works dropdown if open
+            if (howItWorksMenu) {
+                howItWorksMenu.classList.remove('show');
+            }
             console.log('User dropdown toggled, show class:', userDropdownMenu.classList.contains('show'));
         });
     }
 
-    // Single global click handler to close both dropdowns when clicking outside
+    // How it Works dropdown toggle
+    if (howItWorksToggle && howItWorksMenu) {
+        howItWorksToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            howItWorksMenu.classList.toggle('show');
+            // Close user dropdown if open
+            if (userDropdownMenu) {
+                userDropdownMenu.classList.remove('show');
+            }
+            console.log('How it Works dropdown toggled, show class:', howItWorksMenu.classList.contains('show'));
+        });
+    }
+
+    // Single global click handler to close all dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         // Close mobile menu if clicking outside
         if (mobileMenuButton && mobileMenu) {
@@ -46,6 +66,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (userDropdownToggle && userDropdownMenu) {
             if (!userDropdownToggle.contains(e.target) && !userDropdownMenu.contains(e.target)) {
                 userDropdownMenu.classList.remove('show');
+            }
+        }
+
+        // Close how it works dropdown if clicking outside
+        if (howItWorksToggle && howItWorksMenu) {
+            if (!howItWorksToggle.contains(e.target) && !howItWorksMenu.contains(e.target)) {
+                howItWorksMenu.classList.remove('show');
             }
         }
     });

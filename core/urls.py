@@ -14,9 +14,12 @@ urlpatterns = [
     path("manage/faqs/<int:pk>/edit/", edit_faq, name="edit_faq"),
     path("manage/faqs/<int:pk>/delete/", delete_faq, name="delete_faq"),
     path('about/', TemplateView.as_view(template_name='core/about.html'), name='about'),
-    path("how-it-works/", TemplateView.as_view(
+    path("how-it-works/user-guide/", TemplateView.as_view(
         template_name="core/how_it_works.html"
     ), name="how_it_works"),
+    path("how-it-works/ai-engine/", TemplateView.as_view(
+        template_name="core/how_fammo_works.html"
+    ), name="how_fammo_works"),
     path('collect-lead/', views.collect_lead, name='collect_lead'),
     path('start/lead/<str:uuid>/', views.start_from_lead, name='start_from_lead'),
 ]

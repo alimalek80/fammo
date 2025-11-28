@@ -33,6 +33,24 @@
     display: block;
 }
 
+/* How it Works dropdown styles */
+.how-it-works-dropdown {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 0.5rem;
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    z-index: 1000;
+}
+
+.how-it-works-dropdown.show {
+    display: block;
+}
+
 .user-dropdown-header {
     padding: 1rem;
     border-bottom: 1px solid #e5e7eb;
@@ -101,9 +119,26 @@
                     <a href="{% url 'core:about' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
                         {% trans "About Us" %}
                     </a>
-                    <a href="{% url 'core:how_it_works' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
-                        {% trans "How it Works" %}
-                    </a>
+                    
+                    <!-- How it Works Dropdown -->
+                    <div class="relative">
+                        <button id="how-it-works-toggle" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out flex items-center focus:outline-none">
+                            {% trans "How it Works" %}
+                            <i class="fas fa-chevron-down text-sm ml-1"></i>
+                        </button>
+                        
+                        <div id="how-it-works-menu" class="how-it-works-dropdown">
+                            <a href="{% url 'core:how_it_works' %}" class="user-dropdown-item">
+                                <i class="fas fa-book-open"></i>
+                                <span>{% trans "User Guide" %}</span>
+                            </a>
+                            <a href="{% url 'core:how_fammo_works' %}" class="user-dropdown-item">
+                                <i class="fas fa-brain"></i>
+                                <span>{% trans "AI Engine" %}</span>
+                            </a>
+                        </div>
+                    </div>
+                    
                     <a href="{% url 'blog_list' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
                         {% trans "Blog" %}
                     </a>
@@ -244,7 +279,18 @@
         {% else %}
             <!-- Public Navigation -->
             <a href="{% url 'core:about' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "About Us" %}</a>
-            <a href="{% url 'core:how_it_works' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "How it Works" %}</a>
+            
+            <!-- How it Works Submenu -->
+            <div class="border-t border-b border-gray-200 py-2">
+                <div class="text-gray-600 font-semibold text-sm uppercase px-2 mb-1">{% trans "How it Works" %}</div>
+                <a href="{% url 'core:how_it_works' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 pl-4 text-center">
+                    <i class="fas fa-book-open mr-2"></i>{% trans "User Guide" %}
+                </a>
+                <a href="{% url 'core:how_fammo_works' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 pl-4 text-center">
+                    <i class="fas fa-brain mr-2"></i>{% trans "AI Engine" %}
+                </a>
+            </div>
+            
             <a href="{% url 'blog_list' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Blog" %}</a>
             <a href="{% url 'core:contact' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Contact Us" %}</a>
             

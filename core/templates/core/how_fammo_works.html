@@ -1,0 +1,554 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}How FAMMO Works — AI Nutrition Engine{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12">
+    <div class="container mx-auto px-4 max-w-6xl">
+        
+        <!-- Hero Section -->
+        <header class="bg-white rounded-2xl shadow-lg p-8 md:p-12 mb-8">
+            <div class="max-w-4xl mx-auto text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+                    How FAMMO Works
+                </h1>
+                <p class="text-lg md:text-xl text-gray-700 leading-relaxed">
+                    FAMMO is an AI-powered nutrition engine that generates personalized meal plans and health guidance for dogs and cats.
+                    It processes structured pet data, applies veterinary nutrition science, and produces deterministic JSON outputs for meal planning and health reporting.
+                </p>
+            </div>
+        </header>
+
+        <!-- Section 1: Input Layer -->
+        <section class="bg-white rounded-2xl shadow-lg p-8 md:p-10 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="bg-blue-100 rounded-full p-3 mr-4">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">1. Input Layer — Pet & Owner Data</h2>
+            </div>
+            
+            <p class="text-gray-700 mb-6 leading-relaxed">
+                The system starts from structured pet profiles collected through our web interface. 
+                Each profile captures comprehensive data points that form the foundation for personalized nutrition planning.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Pet Profile Inputs -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
+                    <h3 class="text-xl font-bold text-blue-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                        </svg>
+                        Pet Profile Inputs
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Species (dog/cat)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Breed</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Age & life stage</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Weight & body condition</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Activity level</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Allergies</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Health conditions</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-blue-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Feeding history</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Owner Preferences -->
+                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border-2 border-purple-200">
+                    <h3 class="text-xl font-bold text-purple-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                        </svg>
+                        Owner Preferences
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-purple-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Feeding goals (weight loss, maintenance, growth)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Treat usage preferences</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Veterinarian recommendations</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-purple-600 font-bold mr-2">•</span>
+                            <span class="text-gray-700">Food type preferences</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Feature Engineering -->
+        <section class="bg-white rounded-2xl shadow-lg p-8 md:p-10 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="bg-green-100 rounded-full p-3 mr-4">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">2. Feature Engineering — Turning Profiles into Nutrition Targets</h2>
+            </div>
+            
+            <p class="text-gray-700 mb-6 leading-relaxed">
+                Raw pet data is transformed into structured nutritional features through our feature engineering pipeline. 
+                This layer applies veterinary formulas and evidence-based logic to calculate precise dietary requirements.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div class="font-bold text-green-900 mb-1">Caloric Needs</div>
+                    <div class="text-sm text-gray-600">MER/DER calculation based on weight, age, and activity</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div class="font-bold text-green-900 mb-1">Nutrient Ratio Targets</div>
+                    <div class="text-sm text-gray-600">Protein, fat, and carbohydrate percentages</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div class="font-bold text-green-900 mb-1">Ingredient Safety Mapping</div>
+                    <div class="text-sm text-gray-600">Allergen exclusions and toxic food identification</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div class="font-bold text-green-900 mb-1">Breed-Specific Adjustments</div>
+                    <div class="text-sm text-gray-600">Tailored recommendations for breed characteristics</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div class="font-bold text-green-900 mb-1">Health Flags</div>
+                    <div class="text-sm text-gray-600">Overweight, senior, sensitive digestion markers</div>
+                </div>
+                <div class="bg-green-50 rounded-lg p-4 border border-green-200">
+                    <div class="font-bold text-green-900 mb-1">Portion Scaling</div>
+                    <div class="text-sm text-gray-600">Precise quantities based on weight and DER</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: AI Decision Layer -->
+        <section class="bg-white rounded-2xl shadow-lg p-8 md:p-10 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="bg-indigo-100 rounded-full p-3 mr-4">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">3. AI Decision Layer — How Meals Are Generated</h2>
+            </div>
+            
+            <p class="text-gray-700 mb-6 leading-relaxed">
+                The AI engine combines veterinary nutrition rules with machine-learning logic to generate safe, balanced meal plans. 
+                This layer ensures compliance with nutritional guidelines while respecting all constraints.
+            </p>
+
+            <div class="bg-indigo-50 rounded-xl p-6 border-2 border-indigo-200">
+                <ol class="space-y-4">
+                    <li class="flex items-start">
+                        <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">1</span>
+                        <div>
+                            <div class="font-bold text-gray-900">Calculate Daily Caloric Requirement</div>
+                            <div class="text-gray-600 text-sm">Apply MER/DER formulas based on pet profile</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">2</span>
+                        <div>
+                            <div class="font-bold text-gray-900">Apply Constraints</div>
+                            <div class="text-gray-600 text-sm">Filter for allergies, safety rules, breed considerations, and age requirements</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">3</span>
+                        <div>
+                            <div class="font-bold text-gray-900">Generate Meal Plan Options</div>
+                            <div class="text-gray-600 text-sm">Create 1–2 diverse meal plans with balanced variety</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">4</span>
+                        <div>
+                            <div class="font-bold text-gray-900">Build Daily Structure</div>
+                            <div class="text-gray-600 text-sm">Distribute calories across breakfast, lunch, dinner, and treats</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">5</span>
+                        <div>
+                            <div class="font-bold text-gray-900">Validate Nutrient Balance</div>
+                            <div class="text-gray-600 text-sm">Ensure protein, fat, and carbs meet target percentages</div>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-indigo-600 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold mr-4 flex-shrink-0">6</span>
+                        <div>
+                            <div class="font-bold text-gray-900">Attach Safety Notes</div>
+                            <div class="text-gray-600 text-sm">Include feeding tips, transition guidance, and monitoring alerts</div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Section 4: Structured JSON Output -->
+        <section class="bg-white rounded-2xl shadow-lg p-8 md:p-10 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="bg-orange-100 rounded-full p-3 mr-4">
+                    <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">4. Structured JSON Output</h2>
+            </div>
+            
+            <p class="text-gray-700 mb-6 leading-relaxed">
+                All outputs are deterministic JSON structures, ensuring reliability, reproducibility, and seamless integration with partner systems. 
+                This structured format enables API consumption by veterinary clinics, pet food companies, and third-party applications.
+            </p>
+
+            <div class="bg-gray-900 rounded-xl p-6 overflow-x-auto">
+                <pre class="text-green-400 text-xs md:text-sm font-mono leading-relaxed"><code>{
+  "der_kcal": 240,
+  "nutrient_targets": {
+    "protein_percent": "35%",
+    "fat_percent": "20%",
+    "carbs_percent": "45%"
+  },
+  "options": [
+    {
+      "name": "Option 1",
+      "overview": "Balanced diet using both dry and wet food.",
+      "sections": [
+        {
+          "title": "Breakfast",
+          "items": ["30g high-quality kitten dry food"]
+        },
+        {
+          "title": "Lunch",
+          "items": ["40g premium kitten wet food (chicken)"]
+        },
+        {
+          "title": "Dinner",
+          "items": ["30g high-quality kitten dry food"]
+        }
+      ]
+    }
+  ],
+  "feeding_schedule": [
+    {
+      "time": "8:00 AM",
+      "note": "Serve breakfast with fresh water."
+    }
+  ],
+  "safety_notes": [
+    "Ensure fresh water is available at all times.",
+    "Introduce any new foods gradually."
+  ]
+}</code></pre>
+            </div>
+
+            <div class="mt-4 bg-orange-50 rounded-lg p-4 border border-orange-200">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 text-orange-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div class="text-sm text-gray-700">
+                        <span class="font-bold">API Ready:</span> This JSON structure can be consumed via REST API endpoints, 
+                        enabling clinics and partners to integrate FAMMO's nutrition intelligence into their own systems.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Constraints & Safety -->
+        <section class="bg-white rounded-2xl shadow-lg p-8 md:p-10 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="bg-red-100 rounded-full p-3 mr-4">
+                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">5. Constraints & Safety Rules</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Hard Constraints -->
+                <div class="bg-red-50 rounded-xl p-6 border-2 border-red-200">
+                    <h3 class="text-xl font-bold text-red-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        Hard Constraints
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-red-600 font-bold mr-2">✓</span>
+                            <span class="text-gray-700">Calorie range must match DER ±5%</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-600 font-bold mr-2">✓</span>
+                            <span class="text-gray-700">All allergens must be excluded</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-600 font-bold mr-2">✓</span>
+                            <span class="text-gray-700">Species-specific safety rules enforced</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-600 font-bold mr-2">✓</span>
+                            <span class="text-gray-700">No toxic ingredients (onions, chocolate, grapes, etc.)</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Soft Constraints -->
+                <div class="bg-yellow-50 rounded-xl p-6 border-2 border-yellow-200">
+                    <h3 class="text-xl font-bold text-yellow-900 mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM5.05 6.464A1 1 0 106.464 5.05l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM5 10a1 1 0 01-1 1H3a1 1 0 110-2h1a1 1 0 011 1zM8 16v-1h4v1a2 2 0 11-4 0zM12 14c.015-.34.208-.646.477-.859a4 4 0 10-4.954 0c.27.213.462.519.476.859h4.002z"></path>
+                        </svg>
+                        Soft Constraints
+                    </h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <span class="text-yellow-600 font-bold mr-2">◆</span>
+                            <span class="text-gray-700">Palatability and taste preferences</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-yellow-600 font-bold mr-2">◆</span>
+                            <span class="text-gray-700">Variety and ingredient rotation</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-yellow-600 font-bold mr-2">◆</span>
+                            <span class="text-gray-700">Owner budget and availability preferences</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-yellow-600 font-bold mr-2">◆</span>
+                            <span class="text-gray-700">Food type preferences (wet/dry/raw)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <p class="text-sm text-gray-700">
+                    <span class="font-bold">Clinical Grade:</span> This multi-layer constraint system makes FAMMO suitable for real clinical use, 
+                    ensuring that every meal plan meets both safety requirements and practical feeding considerations.
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 6: System Architecture -->
+        <section class="bg-white rounded-2xl shadow-lg p-8 md:p-10 mb-8">
+            <div class="flex items-center mb-6">
+                <div class="bg-purple-100 rounded-full p-3 mr-4">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">6. System Architecture (High-Level)</h2>
+            </div>
+            
+            <p class="text-gray-700 mb-6 leading-relaxed">
+                FAMMO is built on a robust, scalable technology stack designed for reliability and integration flexibility:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <div class="font-bold text-purple-900 mb-1">Django Backend</div>
+                    <div class="text-sm text-gray-600">Python web framework with ORM and REST API</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <div class="font-bold text-purple-900 mb-1">AI Engine</div>
+                    <div class="text-sm text-gray-600">Python-based nutrition logic and ML models</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <div class="font-bold text-purple-900 mb-1">PostgreSQL Database</div>
+                    <div class="text-sm text-gray-600">Relational data storage for pets, users, and plans</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <div class="font-bold text-purple-900 mb-1">Tailwind UI</div>
+                    <div class="text-sm text-gray-600">Modern, responsive user interface</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <div class="font-bold text-purple-900 mb-1">JSON Outputs</div>
+                    <div class="text-sm text-gray-600">Structured data for consumption</div>
+                </div>
+                <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
+                    <div class="font-bold text-purple-900 mb-1">REST API</div>
+                    <div class="text-sm text-gray-600">Partner integration endpoints</div>
+                </div>
+            </div>
+
+            <!-- Architecture Flow Diagram -->
+            <div class="bg-gradient-to-r from-purple-100 to-pink-100 rounded-xl p-6 border-2 border-purple-200">
+                <h3 class="text-center text-sm font-bold text-gray-700 mb-4">Data Flow Pipeline</h3>
+                <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-2">
+                    <div class="bg-white rounded-lg px-4 py-3 shadow-md text-center flex-1 w-full">
+                        <div class="text-sm font-bold text-purple-900">Pet Profile</div>
+                        <div class="text-xs text-gray-600 mt-1">Input Layer</div>
+                    </div>
+                    <svg class="w-6 h-6 text-purple-600 transform md:rotate-0 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                    <div class="bg-white rounded-lg px-4 py-3 shadow-md text-center flex-1 w-full">
+                        <div class="text-sm font-bold text-green-900">Feature Engineering</div>
+                        <div class="text-xs text-gray-600 mt-1">Transformation</div>
+                    </div>
+                    <svg class="w-6 h-6 text-purple-600 transform md:rotate-0 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                    <div class="bg-white rounded-lg px-4 py-3 shadow-md text-center flex-1 w-full">
+                        <div class="text-sm font-bold text-indigo-900">AI Decision Layer</div>
+                        <div class="text-xs text-gray-600 mt-1">Generation</div>
+                    </div>
+                    <svg class="w-6 h-6 text-purple-600 transform md:rotate-0 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                    <div class="bg-white rounded-lg px-4 py-3 shadow-md text-center flex-1 w-full">
+                        <div class="text-sm font-bold text-orange-900">JSON Output</div>
+                        <div class="text-xs text-gray-600 mt-1">Structured Data</div>
+                    </div>
+                    <svg class="w-6 h-6 text-purple-600 transform md:rotate-0 rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                    </svg>
+                    <div class="bg-white rounded-lg px-4 py-3 shadow-md text-center flex-1 w-full">
+                        <div class="text-sm font-bold text-pink-900">UI & API</div>
+                        <div class="text-xs text-gray-600 mt-1">Delivery</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Why FAMMO is Deep-Tech -->
+        <section class="bg-gradient-to-br from-indigo-900 to-purple-900 rounded-2xl shadow-2xl p-8 md:p-10 mb-8 text-white">
+            <div class="flex items-center mb-6">
+                <div class="bg-white rounded-full p-3 mr-4">
+                    <svg class="w-6 h-6 text-indigo-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold">7. Why FAMMO is Deep-Tech</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg p-5 shadow-lg">
+                    <div class="flex items-start">
+                        <svg class="w-6 h-6 mr-3 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="font-bold mb-1 text-gray-900">Deterministic AI Outputs</div>
+                            <div class="text-sm text-gray-600">Structured JSON ensures reproducibility and reliability</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-lg">
+                    <div class="flex items-start">
+                        <svg class="w-6 h-6 mr-3 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="font-bold mb-1 text-gray-900">Evidence-Based Veterinary Logic</div>
+                            <div class="text-sm text-gray-600">Grounded in clinical nutrition guidelines and research</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-lg">
+                    <div class="flex items-start">
+                        <svg class="w-6 h-6 mr-3 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="font-bold mb-1 text-gray-900">Multi-Layer Constraints</div>
+                            <div class="text-sm text-gray-600">Complex feature engineering and safety validation</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-lg">
+                    <div class="flex items-start">
+                        <svg class="w-6 h-6 mr-3 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="font-bold mb-1 text-gray-900">Clinic & Partner Integration</div>
+                            <div class="text-sm text-gray-600">REST API ready for B2B partnerships and white-label use</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-lg">
+                    <div class="flex items-start">
+                        <svg class="w-6 h-6 mr-3 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="font-bold mb-1 text-gray-900">Built to Scale Across EU</div>
+                            <div class="text-sm text-gray-600">Multi-language support and localized nutrition guidelines</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg p-5 shadow-lg">
+                    <div class="flex items-start">
+                        <svg class="w-6 h-6 mr-3 flex-shrink-0 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div>
+                            <div class="font-bold mb-1 text-gray-900">Continuous Learning System</div>
+                            <div class="text-sm text-gray-600">Feedback loops improve accuracy and personalization over time</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 bg-white rounded-lg p-4 shadow-lg">
+                <p class="text-gray-700 text-sm leading-relaxed">
+                    <span class="font-bold text-gray-900">Investment Opportunity:</span> FAMMO combines proprietary AI technology with clinical-grade nutrition science, 
+                    creating a defensible moat in the pet health market. Our structured approach enables rapid scaling and B2B partnerships across the European Union.
+                </p>
+            </div>
+        </section>
+
+        <!-- Footer CTA -->
+        <div class="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">Ready to Learn More?</h3>
+            <p class="text-gray-600 mb-6">Contact us for partnership opportunities.</p>
+            <div class="flex justify-center">
+                <a href="{% url 'core:contact' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg transition duration-200">
+                    Contact Us
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -234,3 +234,7 @@ ACCOUNT_ADAPTER = 'userapp.adapters.CustomAccountAdapter'
 SOCIALACCOUNT_ADAPTER = 'userapp.adapters.CustomSocialAccountAdapter'
 
 CONTACT_EMAIL = "info@fammo.ai"
+
+# Screenshot Generation
+# Set to False on cPanel if Playwright system dependencies are not available
+ENABLE_PLAYWRIGHT_SCREENSHOTS = config('ENABLE_PLAYWRIGHT_SCREENSHOTS', default=True, cast=bool)
