@@ -77,6 +77,12 @@ class Clinic(TimeStampedModel):
     email_confirmation_token = models.CharField(max_length=100, blank=True)
     email_confirmation_sent_at = models.DateTimeField(null=True, blank=True)
     
+    # Expression of Interest (EOI) for pilot program
+    clinic_eoi = models.BooleanField(
+        default=False,
+        help_text="Indicates whether the clinic has expressed interest in participating in FAMMO's pilot program."
+    )
+    
     @property
     def is_active_clinic(self):
         """Clinic is active only if both email confirmed and admin approved"""

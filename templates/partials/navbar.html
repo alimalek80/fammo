@@ -215,6 +215,11 @@
                         {% trans "Chat" %}
                     </a>
                     
+                    <!-- Trusted Partners Button -->
+                    <a href="{% url 'vets:partner_clinics' %}" class="bg-green-500 text-white hover:bg-green-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg">
+                        {% trans "Trusted Partners" %}
+                    </a>
+                    
                     <!-- Login Button -->
                     <a href="{% url 'login' %}" class="text-gray-800 hover:text-indigo-600 font-medium px-4 py-2 transition duration-300 ease-in-out flex items-center">
                         <i class="fas fa-right-to-bracket mr-2"></i>
@@ -222,7 +227,7 @@
                     </a>
                     
                     <!-- Sign Up Button -->
-                    <a href="{% url 'register' %}" class="bg-green-500 text-white hover:bg-green-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg flex items-center">
+                    <a href="{% url 'register' %}" class="bg-indigo-600 text-white hover:bg-indigo-700 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg flex items-center">
                         <i class="fas fa-user-plus mr-2"></i>
                         {% trans "Sign Up" %}
                     </a>
@@ -294,9 +299,10 @@
             <a href="{% url 'blog_list' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Blog" %}</a>
             <a href="{% url 'core:contact' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Contact Us" %}</a>
             
-            <!-- Chat Button -->
-            <div class="py-2">
+            <!-- Action Buttons -->
+            <div class="py-2 space-y-2">
                 <a href="{% url 'chat' %}" class="block bg-orange-500 text-white hover:bg-orange-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Chat" %}</a>
+                <a href="{% url 'vets:partner_clinics' %}" class="block bg-green-500 text-white hover:bg-green-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Trusted Partners" %}</a>
             </div>
             
             <div class="border-t border-gray-200 pt-2 mt-2">

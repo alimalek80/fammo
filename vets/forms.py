@@ -91,25 +91,35 @@ class ClinicRegistrationForm(forms.ModelForm):
         widget=forms.Textarea(attrs={'rows': 3})
     )
     
-    # Terms and conditions
-    terms_accepted = forms.BooleanField(
+    # Terms and conditions checkboxes
+    agree_clinic_terms = forms.BooleanField(
         required=True,
-        label="I accept the terms and conditions"
+        label="I have read and agree to FAMMO.ai's Terms and Conditions for Clinics",
+        error_messages={'required': 'You must accept the Terms and Conditions to register.'}
+    )
+    
+    agree_partnership = forms.BooleanField(
+        required=True,
+        label="I have read and agree to the FAMMO Clinic Partnership Agreement",
+        error_messages={'required': 'You must accept the Partnership Agreement to register.'}
+    )
+    
+    # Expression of Interest for pilot program
+    clinic_eoi = forms.BooleanField(
+        required=False,
+        label="I confirm that our clinic is interested in participating in FAMMO's upcoming pilot program and receiving collaboration updates."
     )
     
     class Meta:
         model = Clinic
         fields = [
             'name', 'city', 'address', 'phone', 'email', 'website',
-            'instagram', 'specializations', 'working_hours', 'bio', 'logo'
+            'instagram', 'specializations', 'bio', 'logo', 'clinic_eoi'
         ]
         widgets = {
             'bio': forms.Textarea(attrs={'rows': 4}),
             'specializations': forms.TextInput(attrs={
                 'placeholder': 'e.g., Dogs, Cats, Exotic Animals, Surgery'
-            }),
-            'working_hours': forms.TextInput(attrs={
-                'placeholder': 'e.g., Mon-Fri 9:00-18:00, Sat 9:00-14:00'
             }),
             'instagram': forms.TextInput(attrs={
                 'placeholder': '@yourclinicinsta or full URL'

@@ -26,6 +26,7 @@ urlpatterns = [
     # Legal documents
     path('clinic-terms/', views.clinic_terms_and_conditions_view, name='clinic_terms_and_conditions'),
     path('clinic-partnership/', views.clinic_partnership_agreement_view, name='clinic_partnership_agreement'),
+    path('eoi-terms/', views.eoi_terms, name='eoi_terms'),
     
     # Location & Clinic Finder
     path('find/', views.ClinicFinderView.as_view(), name='clinic_finder'),

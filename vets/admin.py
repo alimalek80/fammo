@@ -13,10 +13,10 @@ class WorkingHoursInline(admin.TabularInline):
 class ClinicAdmin(admin.ModelAdmin):
     list_display = (
         "name", "city", "owner", "email_status", "admin_status", 
-        "public_status", "latitude", "longitude", "created_at"
+        "public_status", "eoi_status", "latitude", "longitude", "created_at"
     )
     list_filter = (
-        "email_confirmed", "admin_approved", "is_verified", 
+        "email_confirmed", "admin_approved", "is_verified", "clinic_eoi",
         "city", "created_at"
     )
     search_fields = (
@@ -44,6 +44,10 @@ class ClinicAdmin(admin.ModelAdmin):
         ('Verification Status', {
             'fields': ('email_confirmed', 'admin_approved', 'is_verified'),
             'description': 'Email confirmation is automatic. Admin approval and verification are manual.'
+        }),
+        ('Pilot Program Interest', {
+            'fields': ('clinic_eoi',),
+            'description': 'Expression of Interest for FAMMO pilot program'
         }),
         ('Email Confirmation Details', {
             'fields': ('email_confirmation_sent_at', 'email_confirmation_token'),
@@ -83,6 +87,13 @@ class ClinicAdmin(admin.ModelAdmin):
         else:
             return "🔒 Hidden"
     public_status.short_description = "Public Listing"
+
+    def eoi_status(self, obj):
+        if obj.clinic_eoi:
+            return "✅ Interested"
+        else:
+            return "➖ Not Indicated"
+    eoi_status.short_description = "EOI (Pilot)"
 
     @admin.action(description="Approve selected clinics (admin approval)")
     def approve_clinics(self, request, queryset):

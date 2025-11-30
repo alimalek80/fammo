@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Expression of Interest (EOI) Terms" %} - FAMMO{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-md mt-8 mb-8">
+    <h1 class="text-3xl font-bold mb-6 text-gray-900">FAMMO.ai – Expression of Interest (EOI) Terms</h1>
+    <p class="mb-6 text-gray-700"><strong>Effective Date:</strong> November 2025</p>
+    
+    <p class="mb-6 text-gray-700">
+        By checking the Expression of Interest (EOI) box during registration, the Clinic ("Clinic") acknowledges the following:
+    </p>
+    
+    <div class="space-y-6 text-gray-700">
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">1. Non-binding Interest</h2>
+            <ul class="list-disc ml-6 space-y-2">
+                <li>This EOI is not a contract, partnership agreement, or legal commitment.</li>
+                <li>It simply indicates that the Clinic is interested in receiving information about FAMMO's upcoming pilot program and potential collaboration opportunities.</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">2. Purpose of the EOI</h2>
+            <p>
+                The purpose of this EOI is to allow FAMMO.ai to identify clinics that may be willing to participate in future pilot studies, platform evaluations, or early access programs.
+            </p>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">3. No Financial Obligation</h2>
+            <p>
+                This EOI does not require any fees, payments, subscriptions, or commercial commitments.
+            </p>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">4. No Obligation to Participate</h2>
+            <ul class="list-disc ml-6 space-y-2">
+                <li>The Clinic is not required to join the pilot program or use FAMMO's services.</li>
+                <li>Participation in any future program will require a separate agreement.</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">5. Communication Consent</h2>
+            <p class="mb-2">By submitting this EOI, the Clinic agrees to receive occasional emails related to:</p>
+            <ul class="list-disc ml-6 space-y-2">
+                <li>Pilot program details</li>
+                <li>Early access invitations</li>
+                <li>Collaboration opportunities</li>
+                <li>Technical updates relevant to clinic use</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">6. Clinic Information</h2>
+            <ul class="list-disc ml-6 space-y-2">
+                <li>The Clinic confirms that the information provided during registration is accurate.</li>
+                <li>FAMMO.ai may use this information solely for contacting the Clinic regarding pilot or collaboration updates.</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">7. Privacy and Data Protection</h2>
+            <ul class="list-disc ml-6 space-y-2">
+                <li>All information submitted through the EOI is processed under GDPR and FAMMO.ai's Privacy Policy.</li>
+                <li>No pet or client health data is collected as part of this EOI.</li>
+            </ul>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">8. Withdrawal</h2>
+            <p>
+                The Clinic may withdraw its Expression of Interest at any time by contacting support or deleting its account.
+            </p>
+        </section>
+        
+        <section>
+            <h2 class="text-xl font-semibold mb-3 text-gray-900">9. Acceptance</h2>
+            <p>
+                By checking the box labeled <em>"I confirm that our clinic is interested in participating in FAMMO's upcoming pilot program and receiving collaboration updates"</em>, the Clinic acknowledges and accepts these non-binding terms.
+            </p>
+        </section>
+    </div>
+    
+    <div class="mt-8 pt-6 border-t border-gray-200">
+        <a href="{% url 'vets:clinic_register' %}" class="inline-block px-6 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700 transition">
+            {% trans "Back to Registration" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

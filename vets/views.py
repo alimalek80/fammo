@@ -38,7 +38,41 @@ class ClinicRegistrationView(CreateView):
     template_name = 'vets/clinic_register.html'
     success_url = reverse_lazy('vets:clinic_register_success')
     
-    def form_valid(self, form):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from .forms import WorkingHoursFormSet
+        from .models import WorkingHours
+        
+        if self.request.POST:
+            context['working_hours_formset'] = WorkingHoursFormSet(self.request.POST)
+        else:
+            # Pre-populate with default working hours for registration
+            import datetime
+            initial_hours = []
+            for day in range(7):
+                initial_hours.append({
+                    'day_of_week': day,
+                    'is_closed': (day == 6),  # Sunday closed by default
+                    'open_time': datetime.time(9, 0) if day != 6 else None,
+                    'close_time': datetime.time(17, 0) if day != 6 else None,
+                })
+            context['working_hours_formset'] = WorkingHoursFormSet(initial=initial_hours, queryset=WorkingHours.objects.none())
+        
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        form = self.get_form()
+        
+        from .forms import WorkingHoursFormSet
+        working_hours_formset = WorkingHoursFormSet(self.request.POST)
+        
+        if form.is_valid() and working_hours_formset.is_valid():
+            return self.form_valid(form, working_hours_formset)
+        else:
+            return self.form_invalid(form)
+    
+    def form_valid(self, form, working_hours_formset=None):
         # Create user account first
         user = User.objects.create_user(
             email=form.cleaned_data['owner_email'],
@@ -56,26 +90,13 @@ class ClinicRegistrationView(CreateView):
         clinic.is_verified = False  # Keep this False until both confirmations
         clinic.save()
         
-        # Initialize default working hours (Mon-Fri 9:00-17:00, closed weekends)
-        from .models import WorkingHours
-        default_hours = [
-            {'day': 0, 'open': '09:00', 'close': '17:00', 'closed': False},  # Monday
-            {'day': 1, 'open': '09:00', 'close': '17:00', 'closed': False},  # Tuesday
-            {'day': 2, 'open': '09:00', 'close': '17:00', 'closed': False},  # Wednesday
-            {'day': 3, 'open': '09:00', 'close': '17:00', 'closed': False},  # Thursday
-            {'day': 4, 'open': '09:00', 'close': '17:00', 'closed': False},  # Friday
-            {'day': 5, 'open': '09:00', 'close': '14:00', 'closed': False},  # Saturday
-            {'day': 6, 'open': None, 'close': None, 'closed': True},          # Sunday
-        ]
-        
-        for hours in default_hours:
-            WorkingHours.objects.create(
-                clinic=clinic,
-                day_of_week=hours['day'],
-                open_time=hours['open'],
-                close_time=hours['close'],
-                is_closed=hours['closed']
-            )
+        # Save working hours from formset
+        if working_hours_formset:
+            for hours_form in working_hours_formset:
+                if hours_form.cleaned_data and not hours_form.cleaned_data.get('DELETE', False):
+                    working_hours = hours_form.save(commit=False)
+                    working_hours.clinic = clinic
+                    working_hours.save()
         
         # Create vet profile if provided
         vet_name = form.cleaned_data.get('vet_name')
@@ -608,6 +629,11 @@ def clinic_terms_and_conditions_view(request):
 def clinic_partnership_agreement_view(request):
     """Display clinic partnership agreement"""
     return render(request, 'vets/clinic_partnership_agreement.html')
+
+
+def eoi_terms(request):
+    """Display Expression of Interest (EOI) terms"""
+    return render(request, 'vets/eoi_terms.html')
 
 
 # ========== Location & Nearby Clinics API ==========
