@@ -48,6 +48,15 @@ class Profile(models.Model):
     )
 
     is_writer = models.BooleanField(default=False, verbose_name="Writer")
+    
+    # Language preference for mobile app
+    preferred_language = models.CharField(
+        _("Preferred Language"),
+        max_length=7,
+        choices=settings.LANGUAGES,
+        default='en',
+        help_text="User's preferred language for the mobile app"
+    )
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} - {self.user.email}"

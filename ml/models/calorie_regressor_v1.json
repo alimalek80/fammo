@@ -1,0 +1,18 @@
+{
+  "model_type": "RandomForestRegressor",
+  "n_samples": 13,
+  "n_features": 7,
+  "numeric_features": [
+    "weight_kg",
+    "age_years",
+    "body_condition_score"
+  ],
+  "categorical_features": [
+    "species",
+    "life_stage",
+    "breed_size_category",
+    "health_goal"
+  ],
+  "target": "calories_per_day",
+  "description": "Baseline calorie prediction model for FAMMO pet nutrition"
+}

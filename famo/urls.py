@@ -24,6 +24,8 @@ urlpatterns += i18n_patterns(
     path('blog/', include('blog.urls')),
     path('chat/', include('chat.urls')),
     path('evidence/', include(('evidence.urls', 'evidence'), namespace='evidence')),
+    path('api/v1/', include('api.urls')),
+    path('api/v1/ai/', include(('ai_core.urls', 'ai_core'), namespace='ai_core')),
 )
 
 urlpatterns += [

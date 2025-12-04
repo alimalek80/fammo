@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'core',
     'pet',
     'aihub',
+    'ai_core.apps.AiCoreConfig',
     'subscription',
     'blog',
     'markdownify',
@@ -65,7 +66,17 @@ INSTALLED_APPS = [
     'chat',
     'vets.apps.VetsConfig',
     'evidence',
+
+    'corsheaders',
+    'rest_framework',
+    'api',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
 
@@ -74,6 +85,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -84,6 +96,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'famo.urls'
 WSGI_APPLICATION = 'famo.wsgi.application'
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 # DATABASE
 DATABASES = {
@@ -96,6 +110,15 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+# Use SQLite for tests to avoid permission issues (especially on cPanel)
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'test_db.sqlite3',
+        }
+    }
 
 # DATABASE ON CPANEL HOST
 # DATABASES = {
@@ -200,6 +223,15 @@ MARKDOWNX_MARKDOWN_EXTENSIONS = [
 
 # OPENAI KEY
 OPENAI_API_KEY = config("OPENAI_API_KEY")
+
+# AI BACKEND CONFIGURATION
+# Controls which AI engine is used for nutrition predictions
+# Options: "openai" (default) or "proprietary" (FAMMO's trained models)
+# Can be overridden with environment variable: FAMMO_AI_BACKEND
+AI_BACKEND = config("FAMMO_AI_BACKEND", default="openai")
+
+# Optional: Override default proprietary model path
+# PROPRIETARY_MODEL_PATH = "ml/models/calorie_regressor_v1.pkl"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 

@@ -1,0 +1,43 @@
+# ML experiments .gitignore
+
+# Data files (can be large)
+data/*.jsonl
+data/*.csv
+data/*.parquet
+data/*.pkl
+
+# Keep example files but ignore actual data
+!data/.gitkeep
+!data/README.md
+
+# Model files (can be large - regenerate with training script)
+models/*.h5
+models/*.pkl
+models/*.joblib
+models/*.pt
+models/*.pth
+!models/.gitkeep
+!models/README.md
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+ml_env/
+venv/
+env/
+
+# Plots (generated files)
+data/*.png
+data/*.jpg
+data/*.pdf
+
+# Logs
+*.log

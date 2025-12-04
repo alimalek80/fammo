@@ -1,0 +1,13 @@
+{
+    "species": "dog",
+    "breed": "Golden Retriever",
+    "breed_size_category": "large",
+    "age_years": 3.5,
+    "life_stage": "adult",
+    "weight_kg": 29.0,
+    "body_condition_score": 4,
+    "sex": "male",
+    "neutered": true,
+    "activity_level": "moderate",
+    "health_goal": "weight_loss"
+}

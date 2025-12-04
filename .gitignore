@@ -36,5 +36,5 @@ Thumbs.db
 
 guide/
 
-userapp\management\commands\create_sample_users.py
+userapp/management/commands/create_sample_users.py
 userapp/management/commands/set_random_activity.py
