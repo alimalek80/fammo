@@ -14,6 +14,31 @@ class PingView(APIView):
         return Response({"message": "pong from FAMMO API"})
 
 
+class AppConfigView(APIView):
+    """
+    GET /api/v1/config/
+    Returns app configuration including static asset URLs
+    No authentication required - needed on app launch
+    """
+    permission_classes = []
+    
+    def get(self, request):
+        # Build absolute URLs
+        base_url = request.build_absolute_uri('/').rstrip('/')
+        
+        return Response({
+            "base_url": base_url,
+            "static_url": f"{base_url}{settings.STATIC_URL}",
+            "media_url": f"{base_url}{settings.MEDIA_URL}",
+            "assets": {
+                "logo": f"{base_url}{settings.STATIC_URL}images/logo.png",
+                "favicon": f"{base_url}{settings.STATIC_URL}images/favicon.png",
+                "placeholder_pet": f"{base_url}{settings.STATIC_URL}images/pet-waiting.gif",
+            },
+            "api_version": "1.0.0",
+        })
+
+
 class LanguageListView(APIView):
     """
     GET /api/v1/languages/

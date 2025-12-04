@@ -10,9 +10,12 @@ urlpatterns = [
     # ✅ This is required for {% url 'set_language' %} to work
     path('i18n/', include('django.conf.urls.i18n')),
     path('markdownx/', include('markdownx.urls')),  # move outside i18n for uploads
+    # API routes should be outside i18n_patterns for mobile apps
+    path('api/v1/', include('api.urls')),
+    path('api/v1/ai/', include(('ai_core.urls', 'ai_core'), namespace='ai_core')),
 ]
 
-# Your actual app routes
+# Your actual app routes (web interface with i18n)
 urlpatterns += i18n_patterns(
     path('', include(('core.urls', 'core'), namespace='core')),
     path('users/', include('userapp.urls')),
@@ -24,8 +27,6 @@ urlpatterns += i18n_patterns(
     path('blog/', include('blog.urls')),
     path('chat/', include('chat.urls')),
     path('evidence/', include(('evidence.urls', 'evidence'), namespace='evidence')),
-    path('api/v1/', include('api.urls')),
-    path('api/v1/ai/', include(('ai_core.urls', 'ai_core'), namespace='ai_core')),
 )
 
 urlpatterns += [

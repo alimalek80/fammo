@@ -1,6 +1,7 @@
 from django.urls import path, include
 from .views import (
     PingView,
+    AppConfigView,
     MeProfileView,
     MyPetsListCreateView,
     MyPetDetailView,
@@ -14,6 +15,7 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api-ping'),
+    path('config/', AppConfigView.as_view(), name='api-config'),
 
     # JWT auth
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
