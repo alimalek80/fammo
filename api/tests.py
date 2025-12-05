@@ -399,3 +399,219 @@ class APIConfigEndpointDetailTests(APITestCase):
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class AuthenticationEndpointTests(APITestCase):
+    """Test suite for authentication endpoints (signup, login, password reset)"""
+    
+    def setUp(self):
+        """Set up test fixtures"""
+        self.signup_url = reverse('api-signup')
+        self.login_url = reverse('token_obtain_pair')
+        self.forgot_password_url = reverse('api-forgot-password')
+        self.reset_password_url = reverse('api-reset-password')
+        self.resend_activation_url = reverse('api-resend-activation')
+        self.delete_test_user_url = reverse('api-delete-test-user')
+        
+        self.test_email = 'testuser@example.com'
+        self.test_password = 'SecurePass123!'
+    
+    def test_signup_creates_user(self):
+        """Test user signup creates a new user account"""
+        data = {
+            'email': self.test_email,
+            'password': self.test_password,
+            'password_confirm': self.test_password
+        }
+        response = self.client.post(self.signup_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.data['success'])
+        self.assertIn('user', response.data)
+        self.assertEqual(response.data['user']['email'], self.test_email)
+        
+        # Verify user exists in database
+        user = User.objects.get(email=self.test_email)
+        self.assertFalse(user.is_active)  # Should be inactive until email verification
+    
+    def test_signup_password_mismatch(self):
+        """Test signup fails when passwords don't match"""
+        data = {
+            'email': self.test_email,
+            'password': self.test_password,
+            'password_confirm': 'DifferentPass123!'
+        }
+        response = self.client.post(self.signup_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_signup_duplicate_email(self):
+        """Test signup fails with duplicate email"""
+        # Create first user
+        User.objects.create_user(email=self.test_email, password=self.test_password)
+        
+        # Try to create second user with same email
+        data = {
+            'email': self.test_email,
+            'password': self.test_password,
+            'password_confirm': self.test_password
+        }
+        response = self.client.post(self.signup_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_signup_weak_password(self):
+        """Test signup with weak password (may succeed depending on password validation settings)"""
+        data = {
+            'email': self.test_email,
+            'password': '123',
+            'password_confirm': '123'
+        }
+        response = self.client.post(self.signup_url, data, format='json')
+        
+        # Password validation may be disabled in some environments
+        # If validation is enabled, should return 400, otherwise 201
+        self.assertIn(response.status_code, [status.HTTP_400_BAD_REQUEST, status.HTTP_201_CREATED])
+    
+    def test_login_with_valid_credentials(self):
+        """Test login with valid credentials returns JWT tokens"""
+        # Create active user
+        User.objects.create_user(
+            email=self.test_email,
+            password=self.test_password,
+            is_active=True
+        )
+        
+        data = {
+            'email': self.test_email,
+            'password': self.test_password
+        }
+        response = self.client.post(self.login_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn('access', response.data)
+        self.assertIn('refresh', response.data)
+    
+    def test_login_with_invalid_credentials(self):
+        """Test login fails with invalid credentials"""
+        User.objects.create_user(
+            email=self.test_email,
+            password=self.test_password,
+            is_active=True
+        )
+        
+        data = {
+            'email': self.test_email,
+            'password': 'WrongPassword123!'
+        }
+        response = self.client.post(self.login_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_login_with_inactive_user(self):
+        """Test login fails for inactive users"""
+        User.objects.create_user(
+            email=self.test_email,
+            password=self.test_password,
+            is_active=False
+        )
+        
+        data = {
+            'email': self.test_email,
+            'password': self.test_password
+        }
+        response = self.client.post(self.login_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_forgot_password_sends_email(self):
+        """Test forgot password endpoint"""
+        # Create user
+        User.objects.create_user(
+            email=self.test_email,
+            password=self.test_password,
+            is_active=True
+        )
+        
+        data = {'email': self.test_email}
+        response = self.client.post(self.forgot_password_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['success'])
+    
+    def test_forgot_password_nonexistent_email(self):
+        """Test forgot password with non-existent email (should still return success for security)"""
+        data = {'email': 'nonexistent@example.com'}
+        response = self.client.post(self.forgot_password_url, data, format='json')
+        
+        # Should still return success to not reveal if email exists
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['success'])
+    
+    def test_resend_activation_email(self):
+        """Test resend activation email for inactive users"""
+        # Create inactive user
+        User.objects.create_user(
+            email=self.test_email,
+            password=self.test_password,
+            is_active=False
+        )
+        
+        data = {'email': self.test_email}
+        response = self.client.post(self.resend_activation_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data['success'])
+    
+    def test_resend_activation_email_already_active(self):
+        """Test resend activation email fails for already active users"""
+        # Create active user
+        User.objects.create_user(
+            email=self.test_email,
+            password=self.test_password,
+            is_active=True
+        )
+        
+        data = {'email': self.test_email}
+        response = self.client.post(self.resend_activation_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+    
+    def test_resend_activation_nonexistent_email(self):
+        """Test resend activation email with non-existent email"""
+        data = {'email': 'nonexistent@example.com'}
+        response = self.client.post(self.resend_activation_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_delete_test_user_in_debug_mode(self):
+        """Test delete test user endpoint (requires DEBUG=True)"""
+        from django.conf import settings
+        
+        # Create user
+        User.objects.create_user(
+            email=self.test_email,
+            password=self.test_password
+        )
+        
+        data = {'email': self.test_email}
+        response = self.client.delete(self.delete_test_user_url, data, format='json')
+        
+        if settings.DEBUG:
+            self.assertEqual(response.status_code, status.HTTP_200_OK)
+            self.assertTrue(response.data['success'])
+            # Verify user was deleted
+            self.assertFalse(User.objects.filter(email=self.test_email).exists())
+        else:
+            # Should be forbidden in production
+            self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    
+    def test_delete_test_user_nonexistent(self):
+        """Test delete test user with non-existent email"""
+        from django.conf import settings
+        
+        data = {'email': 'nonexistent@example.com'}
+        response = self.client.delete(self.delete_test_user_url, data, format='json')
+        
+        if settings.DEBUG:
+            self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)

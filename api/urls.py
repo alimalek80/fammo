@@ -8,6 +8,11 @@ from .views import (
     LanguageListView,
     SetUserLanguageView,
     OnboardingSlideListView,
+    SignupView,
+    ForgotPasswordView,
+    ResetPasswordView,
+    ResendActivationEmailView,
+    DeleteTestUserView,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -20,8 +25,13 @@ urlpatterns = [
     path('onboarding/', OnboardingSlideListView.as_view(), name='api-onboarding'),
 
     # JWT auth
+    path('auth/signup/', SignupView.as_view(), name='api-signup'),
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('auth/forgot-password/', ForgotPasswordView.as_view(), name='api-forgot-password'),
+    path('auth/reset-password/', ResetPasswordView.as_view(), name='api-reset-password'),
+    path('auth/resend-activation/', ResendActivationEmailView.as_view(), name='api-resend-activation'),
+    path('auth/delete-test-user/', DeleteTestUserView.as_view(), name='api-delete-test-user'),
 
     # Language management
     path('languages/', LanguageListView.as_view(), name='api-languages'),
