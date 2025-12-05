@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import HeroSection, SocialLinks, FAQ, ContactMessage, Lead
+from .models import HeroSection, SocialLinks, FAQ, ContactMessage, Lead, OnboardingSlide
 from modeltranslation.admin import TranslationAdmin
 
 @admin.register(Lead)
@@ -31,3 +31,11 @@ class ContactMessageAdmin(admin.ModelAdmin):
     list_display = ("name", "email", "subject", "is_resolved", "created_at")
     list_filter = ("is_resolved", "created_at")
     search_fields = ("name", "email", "subject", "message")
+
+@admin.register(OnboardingSlide)
+class OnboardingSlidAdmin(TranslationAdmin):
+    list_display = ("order", "title", "is_active", "updated_at")
+    list_editable = ("is_active",)
+    list_filter = ("is_active",)
+    search_fields = ("title", "description")
+    ordering = ("order",)

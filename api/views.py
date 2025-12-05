@@ -9,6 +9,9 @@ from userapp.serializers import ProfileSerializer
 from pet.models import Pet
 from pet.serializers import PetSerializer
 
+from core.models import OnboardingSlide
+from core.serializers import OnboardingSlideSerializer
+
 class PingView(APIView):
     def get(self, request):
         return Response({"message": "pong from FAMMO API"})
@@ -131,3 +134,17 @@ class MyPetDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Pet.objects.filter(user=self.request.user)
+
+
+class OnboardingSlideListView(generics.ListAPIView):
+    """
+    GET /api/v1/onboarding/
+    Returns active onboarding slides ordered by 'order' field
+    No authentication required - shown on first app launch
+    Supports language headers for localized content
+    """
+    serializer_class = OnboardingSlideSerializer
+    permission_classes = []
+    
+    def get_queryset(self):
+        return OnboardingSlide.objects.filter(is_active=True).order_by('order')

@@ -1,5 +1,5 @@
 from modeltranslation.translator import register, TranslationOptions
-from .models import HeroSection, FAQ
+from .models import HeroSection, FAQ, OnboardingSlide
 
 @register(HeroSection)
 class HeroSectionTranslationOptions(TranslationOptions):
@@ -8,3 +8,7 @@ class HeroSectionTranslationOptions(TranslationOptions):
 @register(FAQ)
 class FAQTranslationOptions(TranslationOptions):
     fields = ('question', 'answer',)
+
+@register(OnboardingSlide)
+class OnboardingSlideTranslationOptions(TranslationOptions):
+    fields = ('title', 'description', 'button_text',)

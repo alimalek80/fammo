@@ -92,3 +92,24 @@ class ContactMessage(models.Model):
 
     def __str__(self):
         return f"{self.name} — {self.subject or 'No subject'}"
+
+
+class OnboardingSlide(models.Model):
+    """Model for app onboarding slides with multilanguage support."""
+    title = models.CharField(max_length=200, help_text="Slide title")
+    description = models.TextField(help_text="Slide description text")
+    icon = models.ImageField(upload_to='onboarding_icons/', help_text="Icon/image for the slide. Recommended size: 200x200px.")
+    order = models.PositiveIntegerField(default=0, help_text="Display order (lower numbers appear first)")
+    is_active = models.BooleanField(default=True, help_text="Show this slide in the app")
+    button_text = models.CharField(max_length=50, default="Next", help_text="Button text for this slide")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['order']
+        verbose_name = "Onboarding Slide"
+        verbose_name_plural = "Onboarding Slides"
+
+    def __str__(self):
+        return f"{self.order}. {self.title}"

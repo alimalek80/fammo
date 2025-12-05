@@ -7,6 +7,7 @@ from .views import (
     MyPetDetailView,
     LanguageListView,
     SetUserLanguageView,
+    OnboardingSlideListView,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -16,6 +17,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api-ping'),
     path('config/', AppConfigView.as_view(), name='api-config'),
+    path('onboarding/', OnboardingSlideListView.as_view(), name='api-onboarding'),
 
     # JWT auth
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
