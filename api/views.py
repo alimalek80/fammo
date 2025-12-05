@@ -181,12 +181,19 @@ class SignupView(generics.CreateAPIView):
             
             # Send activation email (same as website registration)
             current_site = get_current_site(request)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            
+            # Add source=app parameter so activation knows user came from mobile app
+            activation_url = f"http://{current_site.domain}/en/users/activate/{uid}/{token}/?source=app"
+            
             subject = "Activate your Fammo account"
             html_message = render_to_string('userapp/account_activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
+                'uid': uid,
+                'token': token,
+                'from_app': True,  # Flag to show app-specific messaging in template
             })
             
             # Create plain text version as fallback
@@ -196,7 +203,7 @@ Hello {user.email},
 Thank you for joining Fammo! We're thrilled to have you as part of our community.
 
 To activate your account, please visit:
-http://{current_site.domain}/en/users/activate/{urlsafe_base64_encode(force_bytes(user.pk))}/{default_token_generator.make_token(user)}/
+{activation_url}
 
 This activation link will expire in 24 hours.
 
@@ -346,12 +353,19 @@ class ResendActivationEmailView(APIView):
             
             # Resend activation email
             current_site = get_current_site(request)
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            
+            # Add source=app parameter for mobile app users
+            activation_url = f"http://{current_site.domain}/en/users/activate/{uid}/{token}/?source=app"
+            
             subject = "Activate your Fammo account"
             html_message = render_to_string('userapp/account_activation_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': default_token_generator.make_token(user),
+                'uid': uid,
+                'token': token,
+                'from_app': True,  # Flag to show app-specific messaging
             })
             
             # Create plain text version as fallback
@@ -359,7 +373,7 @@ class ResendActivationEmailView(APIView):
 Hello {user.email},
 
 To activate your account, please visit:
-http://{current_site.domain}/en/users/activate/{urlsafe_base64_encode(force_bytes(user.pk))}/{default_token_generator.make_token(user)}/
+{activation_url}
 
 This activation link will expire in 24 hours.
 

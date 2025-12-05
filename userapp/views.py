@@ -334,13 +334,29 @@ def activate(request, uidb64, token):
                 if pending_pet_key in request.session:
                     del request.session[pending_pet_key]
         
-        # Store activation info in session for password setup
-        request.session['newly_activated_user_id'] = user.pk
-        if pet_created and pet_name:
-            request.session['activated_with_pet'] = pet_name
+        # Check if user already has a password (API signup) or needs to set one (web wizard)
+        user_has_password = user.has_usable_password()
         
-        # Redirect to password setup instead of login
-        return redirect('set_password_after_activation')
+        if user_has_password:
+            # User signed up via API (mobile app) - redirect to success page or app redirect page
+            messages.success(request, _("Your account has been activated successfully! You can now log in."))
+            
+            # Check if request came from mobile app (via query parameter)
+            if request.GET.get('source') == 'app':
+                # Store activation info for app redirect page
+                request.session['activation_email'] = user.email
+                return redirect('app_activation_redirect')
+            else:
+                # Web activation - redirect to login page
+                return redirect('login')
+        else:
+            # User signed up via web wizard - needs to set password
+            request.session['newly_activated_user_id'] = user.pk
+            if pet_created and pet_name:
+                request.session['activated_with_pet'] = pet_name
+            
+            # Redirect to password setup
+            return redirect('set_password_after_activation')
     else:
         messages.error(request, _("Activation link is invalid!"))
         return redirect('login')
@@ -397,6 +413,30 @@ def set_password_after_activation(request):
         'pet_name': pet_name,
     }
     return render(request, 'userapp/set_password.html', context)
+
+
+def app_activation_redirect(request):
+    """
+    Intermediary page that redirects to mobile app deep link.
+    This page uses JavaScript/meta refresh to trigger the deep link,
+    avoiding Django's DisallowedRedirect security error.
+    """
+    email = request.session.get('activation_email', '')
+    
+    if not email:
+        messages.error(request, _("Invalid access."))
+        return redirect('login')
+    
+    # Clear session
+    if 'activation_email' in request.session:
+        del request.session['activation_email']
+    
+    context = {
+        'email': email,
+        'deep_link': f'fammo://login?activated=true&email={email}',
+    }
+    return render(request, 'userapp/app_activation_redirect.html', context)
+
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def admin_dashboard_view(request):
