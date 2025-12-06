@@ -12,8 +12,18 @@ from django.contrib.sites.shortcuts import get_current_site
 from userapp.models import Profile, CustomUser
 from userapp.serializers import ProfileSerializer, SignupSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 
-from pet.models import Pet
-from pet.serializers import PetSerializer
+from pet.models import (
+    Pet, PetType, Gender, AgeCategory, Breed,
+    FoodType, FoodFeeling, FoodImportance, BodyType,
+    ActivityLevel, FoodAllergy, HealthIssue, TreatFrequency
+)
+from pet.serializers import (
+    PetSerializer, PetTypeSerializer, GenderSerializer,
+    AgeCategorySerializer, BreedSerializer, FoodTypeSerializer,
+    FoodFeelingSerializer, FoodImportanceSerializer, BodyTypeSerializer,
+    ActivityLevelSerializer, FoodAllergySerializer, HealthIssueSerializer,
+    TreatFrequencySerializer
+)
 
 from core.models import OnboardingSlide
 from core.serializers import OnboardingSlideSerializer
@@ -140,6 +150,103 @@ class MyPetDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Pet.objects.filter(user=self.request.user)
+
+
+# Pet Form Options Views
+class PetTypeListView(generics.ListAPIView):
+    """GET /api/v1/pet-types/ - List all pet types (Cat, Dog, etc.)"""
+    serializer_class = PetTypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = PetType.objects.all()
+
+
+class GenderListView(generics.ListAPIView):
+    """GET /api/v1/genders/ - List all genders"""
+    serializer_class = GenderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Gender.objects.all()
+
+
+class AgeCategoryListView(generics.ListAPIView):
+    """GET /api/v1/age-categories/ - List all age categories, optionally filtered by pet_type"""
+    serializer_class = AgeCategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = AgeCategory.objects.all().order_by('order')
+        pet_type_id = self.request.query_params.get('pet_type', None)
+        if pet_type_id:
+            queryset = queryset.filter(pet_type_id=pet_type_id)
+        return queryset
+
+
+class BreedListView(generics.ListAPIView):
+    """GET /api/v1/breeds/ - List all breeds, optionally filtered by pet_type"""
+    serializer_class = BreedSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = Breed.objects.all().order_by('name')
+        pet_type_id = self.request.query_params.get('pet_type', None)
+        if pet_type_id:
+            queryset = queryset.filter(pet_type_id=pet_type_id)
+        return queryset
+
+
+class FoodTypeListView(generics.ListAPIView):
+    """GET /api/v1/food-types/ - List all food types"""
+    serializer_class = FoodTypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = FoodType.objects.all()
+
+
+class FoodFeelingListView(generics.ListAPIView):
+    """GET /api/v1/food-feelings/ - List all food feelings"""
+    serializer_class = FoodFeelingSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = FoodFeeling.objects.all()
+
+
+class FoodImportanceListView(generics.ListAPIView):
+    """GET /api/v1/food-importance/ - List all food importance levels"""
+    serializer_class = FoodImportanceSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = FoodImportance.objects.all()
+
+
+class BodyTypeListView(generics.ListAPIView):
+    """GET /api/v1/body-types/ - List all body types"""
+    serializer_class = BodyTypeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = BodyType.objects.all()
+
+
+class ActivityLevelListView(generics.ListAPIView):
+    """GET /api/v1/activity-levels/ - List all activity levels"""
+    serializer_class = ActivityLevelSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = ActivityLevel.objects.all().order_by('order')
+
+
+class FoodAllergyListView(generics.ListAPIView):
+    """GET /api/v1/food-allergies/ - List all food allergies"""
+    serializer_class = FoodAllergySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = FoodAllergy.objects.all().order_by('order')
+
+
+class HealthIssueListView(generics.ListAPIView):
+    """GET /api/v1/health-issues/ - List all health issues"""
+    serializer_class = HealthIssueSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = HealthIssue.objects.all().order_by('order')
+
+
+class TreatFrequencyListView(generics.ListAPIView):
+    """GET /api/v1/treat-frequencies/ - List all treat frequency options"""
+    serializer_class = TreatFrequencySerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = TreatFrequency.objects.all()
 
 
 class OnboardingSlideListView(generics.ListAPIView):
