@@ -1,5 +1,34 @@
 <!-- Step 1: Pet Name and Type -->
 <div class="space-y-6">
+    <!-- Pet Image Upload Section -->
+    <div class="text-center mb-6">
+        <label class="block text-lg font-bold text-gray-700 dark:text-gray-300 mb-4">
+            {{ form.image.label }}
+        </label>
+        <div class="flex flex-col items-center">
+            <!-- Image Preview -->
+            <div id="image-preview-container" class="mb-4 {% if not pet or not pet.image %}hidden{% endif %}">
+                <img id="image-preview" src="{% if pet and pet.image %}{{ pet.image.url }}{% endif %}" alt="Pet preview" class="w-32 h-32 object-cover rounded-full border-4 border-gray-300">
+            </div>
+            
+            <!-- Upload Button -->
+            <label for="id_step1-image" class="cursor-pointer inline-flex items-center px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg shadow-md transition duration-200">
+                <i class="fas fa-camera mr-2"></i>
+                <span id="upload-button-text">{% if pet and pet.image %}Change Image{% else %}Choose Image{% endif %}</span>
+            </label>
+            {{ form.image }}
+            
+            <!-- File name display -->
+            <p id="file-name" class="text-sm text-gray-600 mt-2 {% if not pet or not pet.image %}hidden{% endif %}">
+                {% if pet and pet.image %}{{ pet.image.name|slice:"11:" }}{% endif %}
+            </p>
+            
+            {% if form.image.errors %}
+                <p class="text-red-500 text-sm mt-2">{{ form.image.errors|join:"," }}</p>
+            {% endif %}
+        </div>
+    </div>
+
     <!-- Pet Name Section -->
     <div class="text-center">
         <label class="block text-lg font-bold text-gray-700 dark:text-gray-300 mb-4">
@@ -39,6 +68,33 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Handle image upload preview
+    const imageInput = document.getElementById('id_step1-image');
+    const imagePreview = document.getElementById('image-preview');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const fileName = document.getElementById('file-name');
+    const uploadButtonText = document.getElementById('upload-button-text');
+    
+    if (imageInput) {
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Show file name
+                fileName.textContent = file.name;
+                fileName.classList.remove('hidden');
+                uploadButtonText.textContent = 'Change Image';
+                
+                // Preview image
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.src = e.target.result;
+                    imagePreviewContainer.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+    
     // Handle radio button selection styling
     const radioButtons = document.querySelectorAll('input[type="radio"][name="step1-pet_type"]');
     const labels = document.querySelectorAll('.pet-type-btn');

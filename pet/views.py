@@ -8,7 +8,11 @@ from django.contrib import messages
 import csv
 from django.http import HttpResponse
 from formtools.wizard.views import SessionWizardView
+from formtools.wizard.storage import get_storage
+from django.core.files.storage import FileSystemStorage
 from core.models import Lead
+import os
+from django.conf import settings
 
 
 @login_required
@@ -161,6 +165,7 @@ class PetWizard(SessionWizardView):
     form_list = dict(FORMS)
     condition_dict = CONDITION_DICT
     template_name = "pet/wizard_step.html"
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'wizard_temp'))
     
     def get_form_kwargs(self, step=None):
         """Pass wizard instance to forms that need it"""
@@ -322,6 +327,12 @@ class PetWizard(SessionWizardView):
             pet.activity_level = form_data.get('activity_level')
             pet.food_allergy_other = form_data.get('food_allergy_other')
             pet.treat_frequency = form_data.get('treat_frequency')
+            
+            # Handle image upload
+            image = form_data.get('image')
+            if image:
+                pet.image = image
+            
             pet.save()
             
             # Handle many-to-many fields after saving the pet
@@ -541,6 +552,12 @@ class PetWizard(SessionWizardView):
         pet.activity_level = form_data.get('activity_level')
         pet.food_allergy_other = form_data.get('food_allergy_other')
         pet.treat_frequency = form_data.get('treat_frequency')
+        
+        # Handle image upload
+        image = form_data.get('image')
+        if image:
+            pet.image = image
+        
         pet.save()
         
         # Handle many-to-many fields after saving the pet
@@ -557,5 +574,224 @@ class PetWizard(SessionWizardView):
             pet.health_issues.set(health_issues)
         
         return pet
+
+
+class PetEditWizard(SessionWizardView):
+    """Wizard for editing existing pets - same multi-step form as creation"""
+    form_list = dict(FORMS)
+    condition_dict = {
+        "step14": lambda wizard: False,  # Never show email step for logged-in edit
+        "step15": lambda wizard: False,  # Never show account choice for logged-in edit
+    }
+    template_name = "pet/wizard_step.html"
+    file_storage = FileSystemStorage(location=os.path.join(settings.MEDIA_ROOT, 'wizard_temp'))
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Ensure user is logged in and owns the pet"""
+        self.pet_id = kwargs.get('pet_id')
+        self.pet = get_object_or_404(Pet, pk=self.pet_id, user=request.user)
+        return super().dispatch(request, *args, **kwargs)
+    
+    def get_form_kwargs(self, step=None):
+        """Pass wizard instance to forms that need it"""
+        kwargs = super().get_form_kwargs(step)
+        if step in ['step2', 'step3', 'step4', 'step5', 'step6', 'step7', 'step8', 'step9', 'step10', 'step11', 'step12', 'step13']:
+            kwargs['wizard'] = self
+        return kwargs
+    
+    def get_form_initial(self, step):
+        """Pre-fill form data from existing pet"""
+        initial = super().get_form_initial(step)
+        
+        if step == "step1":
+            initial.update({
+                "name": self.pet.name,
+                "pet_type": self.pet.pet_type.id if self.pet.pet_type else None,
+            })
+        elif step == "step2":
+            initial.update({
+                "gender": self.pet.gender.id if self.pet.gender else None,
+                "neutered": self.pet.neutered,
+            })
+        elif step == "step3":
+            # Get current age from birth_date if available
+            if self.pet.birth_date:
+                current_age = self.pet.get_current_age()
+                initial.update({
+                    "age_category": self.pet.age_category.id if self.pet.age_category else None,
+                    "age_years": current_age['years'],
+                    "age_months": current_age['months'],
+                    "age_weeks": current_age['weeks'],
+                })
+            else:
+                initial.update({
+                    "age_category": self.pet.age_category.id if self.pet.age_category else None,
+                    "age_years": self.pet.age_years,
+                    "age_months": self.pet.age_months,
+                    "age_weeks": self.pet.age_weeks,
+                })
+        elif step == "step4":
+            initial.update({
+                "breed": self.pet.breed.id if self.pet.breed else None,
+                "unknown_breed": self.pet.unknown_breed,
+            })
+        elif step == "step5":
+            initial.update({
+                "food_types": list(self.pet.food_types.values_list('id', flat=True)),
+            })
+        elif step == "step6":
+            initial.update({
+                "food_feeling": self.pet.food_feeling.id if self.pet.food_feeling else None,
+            })
+        elif step == "step7":
+            initial.update({
+                "food_importance": self.pet.food_importance.id if self.pet.food_importance else None,
+            })
+        elif step == "step8":
+            initial.update({
+                "body_type": self.pet.body_type.id if self.pet.body_type else None,
+            })
+        elif step == "step9":
+            initial.update({
+                "weight": self.pet.weight,
+            })
+        elif step == "step10":
+            initial.update({
+                "activity_level": self.pet.activity_level.id if self.pet.activity_level else None,
+            })
+        elif step == "step11":
+            initial.update({
+                "food_allergies": list(self.pet.food_allergies.values_list('id', flat=True)),
+                "food_allergy_other": self.pet.food_allergy_other,
+            })
+        elif step == "step12":
+            initial.update({
+                "health_issues": list(self.pet.health_issues.values_list('id', flat=True)),
+            })
+        elif step == "step13":
+            initial.update({
+                "treat_frequency": self.pet.treat_frequency.id if self.pet.treat_frequency else None,
+            })
+        
+        return initial
+    
+    def get_form(self, step=None, data=None, files=None):
+        """Handle invalid choice issues when user changes pet type and navigates back"""
+        
+        # Handle step3 age_category invalid choice issue
+        if step == 'step3' and data:
+            step1_data = self.get_cleaned_data_for_step('step1') or {}
+            current_pet_type = step1_data.get('pet_type')
+            
+            if current_pet_type:
+                age_category_id = data.get('step3-age_category')
+                if age_category_id:
+                    try:
+                        from .models import AgeCategory
+                        age_category = AgeCategory.objects.get(pk=age_category_id)
+                        if age_category.pet_type != current_pet_type:
+                            data = data.copy()
+                            data.pop('step3-age_category', None)
+                            data.pop('step3-age_years', None) 
+                            data.pop('step3-age_months', None)
+                            data.pop('step3-age_weeks', None)
+                    except (AgeCategory.DoesNotExist, ValueError):
+                        data = data.copy()
+                        data.pop('step3-age_category', None)
+                        data.pop('step3-age_years', None)
+                        data.pop('step3-age_months', None) 
+                        data.pop('step3-age_weeks', None)
+        
+        # Handle step4 breed invalid choice issue
+        if step == 'step4' and data:
+            step1_data = self.get_cleaned_data_for_step('step1') or {}
+            current_pet_type = step1_data.get('pet_type')
+            
+            if current_pet_type:
+                breed_id = data.get('step4-breed')
+                if breed_id:
+                    try:
+                        from .models import Breed
+                        breed = Breed.objects.get(pk=breed_id)
+                        if breed.pet_type != current_pet_type:
+                            data = data.copy()
+                            data.pop('step4-breed', None)
+                    except (Breed.DoesNotExist, ValueError):
+                        data = data.copy()
+                        data.pop('step4-breed', None)
+        
+        return super().get_form(step, data, files)
+    
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form=form, **kwargs)
+        current_step = int(self.steps.current.replace('step', ''))
+        total_steps = len([s for s in self.form_list.keys() if self.condition_dict.get(s, lambda w: True)(self)])
+        
+        if current_step == 1:
+            progress_percent = 0
+        else:
+            progress_percent = int(((current_step - 1) / total_steps) * 100)
+        
+        context.update({
+            'step_number': current_step,
+            'step_total': total_steps,
+            'progress_percent': progress_percent,
+            'is_edit': True,
+            'pet': self.pet,
+        })
+        return context
+    
+    def done(self, form_list, **kwargs):
+        """Update the existing pet with new data"""
+        form_data = {}
+        for form in form_list:
+            form_data.update(form.cleaned_data)
+        
+        # Update pet fields
+        self.pet.name = form_data.get('name')
+        self.pet.pet_type = form_data.get('pet_type')
+        self.pet.gender = form_data.get('gender')
+        self.pet.neutered = form_data.get('neutered')
+        self.pet.age_category = form_data.get('age_category')
+        self.pet.age_years = form_data.get('age_years')
+        self.pet.age_months = form_data.get('age_months')
+        self.pet.age_weeks = form_data.get('age_weeks')
+        self.pet.breed = form_data.get('breed')
+        self.pet.unknown_breed = form_data.get('unknown_breed')
+        self.pet.food_feeling = form_data.get('food_feeling')
+        self.pet.food_importance = form_data.get('food_importance')
+        self.pet.body_type = form_data.get('body_type')
+        self.pet.weight = form_data.get('weight')
+        self.pet.activity_level = form_data.get('activity_level')
+        self.pet.food_allergy_other = form_data.get('food_allergy_other')
+        self.pet.treat_frequency = form_data.get('treat_frequency')
+        
+        # Handle image upload
+        image = form_data.get('image')
+        if image:
+            self.pet.image = image
+        
+        # Calculate birth_date from age if provided
+        if any([self.pet.age_years, self.pet.age_months, self.pet.age_weeks]):
+            self.pet.birth_date = self.pet.calculate_birth_date_from_age()
+        
+        self.pet.save()
+        
+        # Handle many-to-many fields
+        food_types = form_data.get('food_types')
+        if food_types:
+            self.pet.food_types.set(food_types)
+        
+        food_allergies = form_data.get('food_allergies')
+        if food_allergies:
+            self.pet.food_allergies.set(food_allergies)
+        
+        health_issues = form_data.get('health_issues')
+        if health_issues:
+            self.pet.health_issues.set(health_issues)
+        
+        messages.success(self.request, f"✅ {self.pet.name}'s profile has been updated!")
+        return redirect('pet:my_pets')
+
 
 

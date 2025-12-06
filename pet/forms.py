@@ -104,8 +104,12 @@ class PetForm(forms.ModelForm):
 class Step1NameForm(forms.ModelForm):
     class Meta:
         model = Pet
-        fields = ["name", "pet_type"]
+        fields = ["image", "name", "pet_type"]
         widgets = {
+            "image": forms.FileInput(attrs={
+                "class": "hidden",
+                "accept": "image/*",
+            }),
             "name": forms.TextInput(attrs={
                 "class": "w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white",
                 "placeholder": "Enter your Pet's Name",
@@ -114,13 +118,17 @@ class Step1NameForm(forms.ModelForm):
             "pet_type": forms.RadioSelect(),
         }
         labels = {
+            "image": "Upload Pet Image (Optional)",
             "name": "What's your Pet's Name?",
             "pet_type": "What is your Pet Type?"
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Make both fields required
+        # Make image field optional
+        self.fields['image'].required = False
+        
+        # Make both name and pet_type fields required
         self.fields['name'].required = True
         self.fields['name'].error_messages = {
             'required': 'Please enter your pet\'s name before proceeding to the next step.'
