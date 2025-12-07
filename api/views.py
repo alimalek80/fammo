@@ -11,6 +11,7 @@ from django.contrib.sites.shortcuts import get_current_site
 
 from userapp.models import Profile, CustomUser
 from userapp.serializers import ProfileSerializer, SignupSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
+from .serializers import CombinedClinicUserRegistrationSerializer
 
 from pet.models import (
     Pet, PetType, Gender, AgeCategory, Breed,
@@ -890,4 +891,112 @@ class SearchClinicsView(APIView):
             "count": queryset.count(),
             "results": serializer.data
         })
+    
+
+class CombinedClinicUserClinicRegistrationView(APIView):
+    """
+    POST /api/v1/clinics/register/
+    Register a new user and clinic in one request (unauthenticated)
+    """
+    permission_classes = []
+
+    def post(self, request):
+        serializer = CombinedClinicUserRegistrationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        # Create user
+        user = CustomUser.objects.create_user(
+            email=data['email'],
+            password=data['password']
+        )
+        user.is_active = False  # Require email confirmation
+        user.save()
+        profile, created = Profile.objects.get_or_create(user=user)
+        profile.first_name = data.get('first_name', '')
+        profile.last_name = data.get('last_name', '')
+        profile.save()
+
+        # Create clinic
+        clinic = Clinic.objects.create(
+            owner=user,
+            name=data['clinic_name'],
+            address=data.get('address', ''),
+            city=data.get('city', ''),
+            phone=data.get('phone', ''),
+            email=data.get('email_clinic', ''),
+            website=data.get('website', ''),
+            instagram=data.get('instagram', ''),
+            specializations=data.get('specializations', ''),
+            bio=data.get('bio', ''),
+            clinic_eoi=data.get('clinic_eoi', False),
+            latitude=data.get('latitude', None),
+            longitude=data.get('longitude', None),
+        )
+        # Optionally create vet profile
+        if data.get('vet_name'):
+            from vets.models import VetProfile
+            VetProfile.objects.create(
+                clinic=clinic,
+                vet_name=data['vet_name'],
+                degrees=data.get('degrees', ''),
+                certifications=data.get('certifications', '')
+            )
+        # Create working hours
+        wh_data = data.get('working_hours', [])
+        from vets.models import WorkingHours
+        for wh in wh_data:
+            WorkingHours.objects.create(
+                clinic=clinic,
+                day_of_week=wh.get('day_of_week'),
+                is_closed=wh.get('is_closed', False),
+                open_time=wh.get('open_time'),
+                close_time=wh.get('close_time')
+            )
+        # Send activation email (same as SignupView)
+        current_site = get_current_site(request)
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        activation_url = f"http://{current_site.domain}/en/users/activate/{uid}/{token}/?source=app"
+        subject = "Activate your Fammo account"
+        html_message = render_to_string('userapp/account_activation_email.html', {
+            'user': user,
+            'domain': current_site.domain,
+            'uid': uid,
+            'token': token,
+            'from_app': True,
+        })
+        plain_message = f"""
+Hello {user.email},
+
+Thank you for joining Fammo! We're thrilled to have you as part of our community.
+
+To activate your account, please visit:
+{activation_url}
+
+This activation link will expire in 24 hours.
+
+Best regards,
+The Fammo Team
+        """.strip()
+        email = EmailMultiAlternatives(
+            subject=subject,
+            body=plain_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            to=[user.email]
+        )
+        email.attach_alternative(html_message, "text/html")
+        email.send()
+        return Response({
+            "success": True,
+            "message": "Registration successful. Please check your email to activate your account.",
+            "user": {
+                "id": user.id,
+                "email": user.email
+            },
+            "clinic": {
+                "id": clinic.id,
+                "name": clinic.name
+            }
+        }, status=status.HTTP_201_CREATED)
 

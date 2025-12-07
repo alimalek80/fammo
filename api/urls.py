@@ -33,6 +33,7 @@ from .views import (
     ClinicWorkingHoursView,
     ClinicVetProfileView,
     SearchClinicsView,
+    CombinedClinicUserClinicRegistrationView,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -86,6 +87,7 @@ urlpatterns = [
     path("clinics/<int:pk>/", ClinicDetailView.as_view(), name="api-clinic-detail"),
     path("clinics/<int:clinic_id>/working-hours/", ClinicWorkingHoursView.as_view(), name="api-clinic-working-hours"),
     path("clinics/<int:clinic_id>/vet-profile/", ClinicVetProfileView.as_view(), name="api-clinic-vet-profile"),
+    path("clinics/register/", CombinedClinicUserClinicRegistrationView.as_view(), name="api-clinic-user-register"),
     
     # AI Core endpoints (nutrition predictions, etc.)
     path("", include('ai_core.urls')),
