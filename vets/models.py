@@ -137,6 +137,45 @@ class Clinic(TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("vets:clinic_detail", kwargs={"slug": self.slug})
+    
+    def send_confirmation_email(self):
+        """Send email confirmation link to clinic owner"""
+        import uuid
+        from django.core.mail import send_mail
+        from django.conf import settings
+        from django.utils import timezone
+        
+        # Generate token
+        self.email_confirmation_token = str(uuid.uuid4())
+        self.email_confirmation_sent_at = timezone.now()
+        self.save(update_fields=['email_confirmation_token', 'email_confirmation_sent_at'])
+        
+        # Build confirmation URL
+        confirmation_url = f"{settings.SITE_URL}/api/v1/clinics/confirm-email/{self.email_confirmation_token}/"
+        
+        # Send email
+        subject = "Confirm your FAMMO Clinic Email"
+        message = f"""
+Hello {self.owner.get_full_name() or self.owner.username},
+
+Thank you for registering your clinic "{self.name}" with FAMMO.
+
+Please confirm your email address by clicking the link below:
+{confirmation_url}
+
+Once your email is confirmed, your clinic will be submitted for admin approval.
+
+Best regards,
+The FAMMO Team
+        """
+        
+        send_mail(
+            subject,
+            message,
+            settings.DEFAULT_FROM_EMAIL,
+            [self.email or self.owner.email],
+            fail_silently=False,
+        )
 
     @property
     def active_referral_code(self) -> str | None:

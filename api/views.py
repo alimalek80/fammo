@@ -28,6 +28,13 @@ from pet.serializers import (
 from core.models import OnboardingSlide
 from core.serializers import OnboardingSlideSerializer
 
+from vets.models import Clinic, WorkingHours, VetProfile
+from vets.serializers import (
+    ClinicListSerializer, ClinicDetailSerializer, ClinicRegistrationSerializer,
+    ClinicUpdateSerializer, WorkingHoursSerializer, WorkingHoursUpdateSerializer,
+    VetProfileSerializer, VetProfileUpdateSerializer
+)
+
 class PingView(APIView):
     def get(self, request):
         return Response({"message": "pong from FAMMO API"})
@@ -552,3 +559,335 @@ class DeleteTestUserView(APIView):
             return Response({
                 "error": f"Error deleting user: {str(e)}"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# ============================================================================
+# CLINIC API ENDPOINTS
+# ============================================================================
+
+class ClinicListCreateView(generics.ListCreateAPIView):
+    """
+    GET /api/v1/clinics/
+    List all active clinics (email confirmed and admin approved)
+    
+    POST /api/v1/clinics/
+    Create a new clinic (requires authentication)
+    """
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return ClinicRegistrationSerializer
+        return ClinicListSerializer
+    
+    def get_queryset(self):
+        queryset = Clinic.objects.all()
+        
+        # Filter by active status (default: show only active)
+        show_all = self.request.query_params.get('show_all', 'false').lower() == 'true'
+        if not show_all:
+            queryset = queryset.filter(email_confirmed=True, admin_approved=True)
+        
+        # Filter by city
+        city = self.request.query_params.get('city')
+        if city:
+            queryset = queryset.filter(city__icontains=city)
+        
+        # Filter by EOI status
+        eoi = self.request.query_params.get('eoi')
+        if eoi:
+            queryset = queryset.filter(clinic_eoi=eoi.lower() == 'true')
+        
+        return queryset.select_related('owner').order_by('-created_at')
+    
+    def perform_create(self, serializer):
+        clinic = serializer.save(owner=self.request.user)
+        # Send confirmation email
+        clinic.send_confirmation_email()
+
+
+class ClinicDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    GET /api/v1/clinics/<id>/
+    Retrieve clinic details
+    
+    PUT/PATCH /api/v1/clinics/<id>/
+    Update clinic (owner only)
+    
+    DELETE /api/v1/clinics/<id>/
+    Delete clinic (owner only)
+    """
+    queryset = Clinic.objects.all()
+    
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return ClinicUpdateSerializer
+        return ClinicDetailSerializer
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+    
+    def perform_update(self, serializer):
+        # Only owner can update
+        if self.get_object().owner != self.request.user:
+            raise permissions.PermissionDenied("You don't have permission to edit this clinic")
+        serializer.save()
+    
+    def perform_destroy(self, instance):
+        # Only owner can delete
+        if instance.owner != self.request.user:
+            raise permissions.PermissionDenied("You don't have permission to delete this clinic")
+        instance.delete()
+
+
+class MyClinicView(APIView):
+    """
+    GET /api/v1/clinics/my/
+    Get current user's clinic
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        try:
+            clinic = Clinic.objects.get(owner=request.user)
+            serializer = ClinicDetailSerializer(clinic)
+            return Response(serializer.data)
+        except Clinic.DoesNotExist:
+            return Response(
+                {"error": "You don't have a clinic registered"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class ConfirmClinicEmailView(APIView):
+    """
+    GET /api/v1/clinics/confirm-email/<token>/
+    Confirm clinic email address
+    """
+    permission_classes = []
+    
+    def get(self, request, token):
+        try:
+            clinic = Clinic.objects.get(email_confirmation_token=token)
+            
+            if clinic.email_confirmed:
+                return Response({
+                    "message": "Email already confirmed",
+                    "clinic_id": clinic.id
+                })
+            
+            clinic.email_confirmed = True
+            clinic.email_confirmation_token = ''
+            clinic.save()
+            
+            return Response({
+                "message": "Email confirmed successfully. Your clinic is now pending admin approval.",
+                "clinic_id": clinic.id,
+                "admin_approved": clinic.admin_approved
+            })
+            
+        except Clinic.DoesNotExist:
+            return Response(
+                {"error": "Invalid confirmation token"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class ClinicWorkingHoursView(APIView):
+    """
+    GET /api/v1/clinics/<clinic_id>/working-hours/
+    Get working hours for a clinic
+    
+    POST /api/v1/clinics/<clinic_id>/working-hours/
+    Create/Update working hours (bulk operation)
+    """
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+    
+    def get(self, request, clinic_id):
+        try:
+            clinic = Clinic.objects.get(id=clinic_id)
+            working_hours = WorkingHours.objects.filter(clinic=clinic).order_by('day_of_week')
+            serializer = WorkingHoursSerializer(working_hours, many=True)
+            return Response(serializer.data)
+        except Clinic.DoesNotExist:
+            return Response(
+                {"error": "Clinic not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    def post(self, request, clinic_id):
+        try:
+            clinic = Clinic.objects.get(id=clinic_id)
+            
+            # Check permission
+            if clinic.owner != request.user:
+                return Response(
+                    {"error": "You don't have permission to edit this clinic's working hours"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Expect array of working hours data
+            hours_data = request.data if isinstance(request.data, list) else [request.data]
+            
+            created_hours = []
+            errors = []
+            
+            for hour_data in hours_data:
+                serializer = WorkingHoursUpdateSerializer(data=hour_data)
+                if serializer.is_valid():
+                    # Update or create
+                    day = serializer.validated_data['day_of_week']
+                    obj, created = WorkingHours.objects.update_or_create(
+                        clinic=clinic,
+                        day_of_week=day,
+                        defaults=serializer.validated_data
+                    )
+                    created_hours.append(WorkingHoursSerializer(obj).data)
+                else:
+                    errors.append({
+                        "day": hour_data.get('day_of_week'),
+                        "errors": serializer.errors
+                    })
+            
+            if errors:
+                return Response(
+                    {"success": False, "errors": errors},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            return Response({
+                "success": True,
+                "working_hours": created_hours
+            }, status=status.HTTP_201_CREATED)
+            
+        except Clinic.DoesNotExist:
+            return Response(
+                {"error": "Clinic not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class ClinicVetProfileView(APIView):
+    """
+    GET /api/v1/clinics/<clinic_id>/vet-profile/
+    Get vet profile for a clinic
+    
+    PUT/PATCH /api/v1/clinics/<clinic_id>/vet-profile/
+    Update vet profile (owner only)
+    """
+    
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [permissions.AllowAny()]
+        return [permissions.IsAuthenticated()]
+    
+    def get(self, request, clinic_id):
+        try:
+            clinic = Clinic.objects.get(id=clinic_id)
+            try:
+                vet_profile = clinic.vet_profile
+                serializer = VetProfileSerializer(vet_profile)
+                return Response(serializer.data)
+            except VetProfile.DoesNotExist:
+                return Response(
+                    {"error": "No vet profile found for this clinic"},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        except Clinic.DoesNotExist:
+            return Response(
+                {"error": "Clinic not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+    
+    def put(self, request, clinic_id):
+        return self._update(request, clinic_id)
+    
+    def patch(self, request, clinic_id):
+        return self._update(request, clinic_id, partial=True)
+    
+    def _update(self, request, clinic_id, partial=False):
+        try:
+            clinic = Clinic.objects.get(id=clinic_id)
+            
+            # Check permission
+            if clinic.owner != request.user:
+                return Response(
+                    {"error": "You don't have permission to edit this vet profile"},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Get or create vet profile
+            vet_profile, created = VetProfile.objects.get_or_create(clinic=clinic)
+            
+            serializer = VetProfileUpdateSerializer(
+                vet_profile,
+                data=request.data,
+                partial=partial
+            )
+            
+            if serializer.is_valid():
+                serializer.save()
+                return Response(VetProfileSerializer(vet_profile).data)
+            
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        except Clinic.DoesNotExist:
+            return Response(
+                {"error": "Clinic not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class SearchClinicsView(APIView):
+    """
+    POST /api/v1/clinics/search/
+    Search clinics by location, specialization, etc.
+    """
+    permission_classes = []
+    
+    def post(self, request):
+        queryset = Clinic.objects.filter(email_confirmed=True, admin_approved=True)
+        
+        # Search by text (name, city, specializations)
+        search_text = request.data.get('search')
+        if search_text:
+            from django.db.models import Q
+            queryset = queryset.filter(
+                Q(name__icontains=search_text) |
+                Q(city__icontains=search_text) |
+                Q(specializations__icontains=search_text)
+            )
+        
+        # Filter by location (radius search)
+        latitude = request.data.get('latitude')
+        longitude = request.data.get('longitude')
+        radius_km = request.data.get('radius', 50)  # Default 50km
+        
+        if latitude and longitude:
+            # Simple bounding box filter
+            # For production, consider using PostGIS for accurate distance calculations
+            lat_range = float(radius_km) / 111  # Rough conversion: 1 degree ≈ 111 km
+            lon_range = float(radius_km) / (111 * abs(float(latitude)))
+            
+            queryset = queryset.filter(
+                latitude__range=(float(latitude) - lat_range, float(latitude) + lat_range),
+                longitude__range=(float(longitude) - lon_range, float(longitude) + lon_range)
+            )
+        
+        # Filter by EOI
+        eoi = request.data.get('eoi')
+        if eoi is not None:
+            queryset = queryset.filter(clinic_eoi=eoi)
+        
+        serializer = ClinicListSerializer(queryset, many=True)
+        return Response({
+            "count": queryset.count(),
+            "results": serializer.data
+        })
+

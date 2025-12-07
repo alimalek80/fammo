@@ -25,6 +25,14 @@ from .views import (
     ResetPasswordView,
     ResendActivationEmailView,
     DeleteTestUserView,
+    # Clinic views
+    ClinicListCreateView,
+    ClinicDetailView,
+    MyClinicView,
+    ConfirmClinicEmailView,
+    ClinicWorkingHoursView,
+    ClinicVetProfileView,
+    SearchClinicsView,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -69,6 +77,15 @@ urlpatterns = [
     path("food-allergies/", FoodAllergyListView.as_view(), name="api-food-allergies"),
     path("health-issues/", HealthIssueListView.as_view(), name="api-health-issues"),
     path("treat-frequencies/", TreatFrequencyListView.as_view(), name="api-treat-frequencies"),
+    
+    # Clinics
+    path("clinics/", ClinicListCreateView.as_view(), name="api-clinics-list-create"),
+    path("clinics/my/", MyClinicView.as_view(), name="api-my-clinic"),
+    path("clinics/search/", SearchClinicsView.as_view(), name="api-clinics-search"),
+    path("clinics/confirm-email/<str:token>/", ConfirmClinicEmailView.as_view(), name="api-clinic-confirm-email"),
+    path("clinics/<int:pk>/", ClinicDetailView.as_view(), name="api-clinic-detail"),
+    path("clinics/<int:clinic_id>/working-hours/", ClinicWorkingHoursView.as_view(), name="api-clinic-working-hours"),
+    path("clinics/<int:clinic_id>/vet-profile/", ClinicVetProfileView.as_view(), name="api-clinic-vet-profile"),
     
     # AI Core endpoints (nutrition predictions, etc.)
     path("", include('ai_core.urls')),

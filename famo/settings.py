@@ -14,6 +14,9 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = True
 ALLOWED_HOSTS = ['fammo.ai', 'localhost', '127.0.0.1']
 
+# Site URL for email links
+SITE_URL = config("SITE_URL", default="https://fammo.ai")
+
 # GOOGLE MAPS
 GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY", default="")
 
