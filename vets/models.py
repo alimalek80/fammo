@@ -111,6 +111,9 @@ class Clinic(TimeStampedModel):
         return self.name
 
     def save(self, *args, **kwargs):
+        import logging
+        logger = logging.getLogger(__name__)
+        
         # auto-generate a unique slug
         if not self.slug:
             base = slugify(self.name) or "clinic"
@@ -121,17 +124,46 @@ class Clinic(TimeStampedModel):
                 slug_candidate = f"{base}-{i}"
             self.slug = slug_candidate
         
-        # Auto-geocode if coordinates are missing but address exists
-        if (not self.latitude or not self.longitude) and (self.address or self.city):
+        # Check if address/city changed from database
+        should_geocode = False
+        
+        if self.pk:
+            try:
+                existing = Clinic.objects.get(pk=self.pk)
+                
+                # Normalize for comparison (lowercase, stripped)
+                old_addr = (existing.address or "").strip().lower()
+                new_addr = (self.address or "").strip().lower()
+                old_city = (existing.city or "").strip().lower()
+                new_city = (self.city or "").strip().lower()
+                
+                # Check if anything changed
+                if old_addr != new_addr or old_city != new_city:
+                    logger.info(f"[CLINIC SAVE] Address/City changed for '{self.name}'")
+                    logger.info(f"  OLD: {existing.address} | {existing.city}")
+                    logger.info(f"  NEW: {self.address} | {self.city}")
+                    
+                    # Reset coordinates and force geocoding
+                    self.latitude = None
+                    self.longitude = None
+                    should_geocode = True
+                    
+            except Clinic.DoesNotExist:
+                # New clinic
+                pass
+        
+        # Geocode if: address/city changed OR coordinates are missing but address exists
+        if should_geocode or ((not self.latitude or not self.longitude) and (self.address or self.city)):
             from .utils import geocode_address
-            import logging
-            logger = logging.getLogger(__name__)
             
+            logger.info(f"[CLINIC SAVE] Geocoding '{self.name}' with address='{self.address}', city='{self.city}'")
             coords = geocode_address(self.address, self.city)
+            
             if coords:
                 self.latitude, self.longitude = coords
-                # Use logger instead of print to avoid encoding issues
-                logger.info(f"Auto-geocoded {self.name}: {self.latitude}, {self.longitude}")
+                logger.info(f"[CLINIC SAVE] ✅ SUCCESS: Got coordinates {self.latitude}, {self.longitude}")
+            else:
+                logger.warning(f"[CLINIC SAVE] ⚠️ FAILED: Could not geocode address")
         
         super().save(*args, **kwargs)
 

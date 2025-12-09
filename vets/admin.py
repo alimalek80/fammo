@@ -12,7 +12,7 @@ class WorkingHoursInline(admin.TabularInline):
 @admin.register(Clinic)
 class ClinicAdmin(admin.ModelAdmin):
     list_display = (
-        "name", "city", "owner", "email_status", "admin_status", 
+        "name", "city", "address", "owner", "email_status", "admin_status", 
         "public_status", "eoi_status", "latitude", "longitude", "created_at"
     )
     list_filter = (
@@ -94,6 +94,20 @@ class ClinicAdmin(admin.ModelAdmin):
         else:
             return "➖ Not Indicated"
     eoi_status.short_description = "EOI (Pilot)"
+
+    def save_model(self, request, obj, form, change):
+        """
+        Override save_model to ensure clinic.save() is always called,
+        which triggers address change detection and auto-geocoding.
+        """
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.info(f"[ADMIN SAVE_MODEL] Saving clinic: {obj.name}, change={change}")
+        if hasattr(form, 'changed_data'):
+            logger.info(f"[ADMIN SAVE_MODEL] Changed fields: {form.changed_data}")
+        logger.info(f"[ADMIN SAVE_MODEL] Current address: {obj.address}, city: {obj.city}")
+        obj.save()
+        logger.info(f"[ADMIN SAVE_MODEL] After save - lat: {obj.latitude}, lon: {obj.longitude}")
 
     @admin.action(description="Approve selected clinics (admin approval)")
     def approve_clinics(self, request, queryset):

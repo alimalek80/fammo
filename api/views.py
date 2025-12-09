@@ -8,10 +8,14 @@ from django.utils.encoding import force_bytes, force_str
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
+from django.db import IntegrityError
+import secrets
+import string
 
 from userapp.models import Profile, CustomUser
 from userapp.serializers import ProfileSerializer, SignupSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
 from .serializers import CombinedClinicUserRegistrationSerializer
+
 
 from pet.models import (
     Pet, PetType, Gender, AgeCategory, Breed,
@@ -571,6 +575,12 @@ class ClinicListCreateView(generics.ListCreateAPIView):
     GET /api/v1/clinics/
     List all active clinics (email confirmed and admin approved)
     
+    Query parameters:
+    - ?show_all=true : Show all clinics (including unconfirmed/unapproved)
+    - ?verified_email=true : Show all clinics with email confirmed (regardless of admin approval)
+    - ?city=Paris : Filter by city
+    - ?eoi=true : Filter by Expression of Interest
+    
     POST /api/v1/clinics/
     Create a new clinic (requires authentication)
     """
@@ -584,9 +594,15 @@ class ClinicListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         queryset = Clinic.objects.all()
         
-        # Filter by active status (default: show only active)
+        # Filter by status
         show_all = self.request.query_params.get('show_all', 'false').lower() == 'true'
-        if not show_all:
+        verified_email = self.request.query_params.get('verified_email', 'false').lower() == 'true'
+        
+        if verified_email:
+            # Show all clinics with email confirmed (regardless of admin approval)
+            queryset = queryset.filter(email_confirmed=True)
+        elif not show_all:
+            # Default: show only active clinics (email confirmed AND admin approved)
             queryset = queryset.filter(email_confirmed=True, admin_approved=True)
         
         # Filter by city
@@ -902,7 +918,10 @@ class CombinedClinicUserClinicRegistrationView(APIView):
 
     def post(self, request):
         serializer = CombinedClinicUserRegistrationSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
         data = serializer.validated_data
 
         # Create user
@@ -918,21 +937,32 @@ class CombinedClinicUserClinicRegistrationView(APIView):
         profile.save()
 
         # Create clinic
-        clinic = Clinic.objects.create(
-            owner=user,
-            name=data['clinic_name'],
-            address=data.get('address', ''),
-            city=data.get('city', ''),
-            phone=data.get('phone', ''),
-            email=data.get('email_clinic', ''),
-            website=data.get('website', ''),
-            instagram=data.get('instagram', ''),
-            specializations=data.get('specializations', ''),
-            bio=data.get('bio', ''),
-            clinic_eoi=data.get('clinic_eoi', False),
-            latitude=data.get('latitude', None),
-            longitude=data.get('longitude', None),
-        )
+        try:
+            clinic = Clinic.objects.create(
+                owner=user,
+                name=data['clinic_name'],
+                address=data.get('address', ''),
+                city=data.get('city', ''),
+                phone=data.get('phone', ''),
+                email=data.get('email_clinic', ''),
+                website=data.get('website', ''),
+                instagram=data.get('instagram', ''),
+                specializations=data.get('specializations', ''),
+                bio=data.get('bio', ''),
+                clinic_eoi=data.get('clinic_eoi', False),
+                latitude=data.get('latitude', None),
+                longitude=data.get('longitude', None),
+            )
+            # Generate clinic email confirmation token
+            clinic.email_confirmation_token = secrets.token_urlsafe(32)
+            clinic.save()
+        except IntegrityError:
+            # Clean up the user that was just created
+            user.delete()
+            return Response(
+                {"clinic_name": "A clinic with this name already exists. Please choose a different name."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         # Optionally create vet profile
         if data.get('vet_name'):
             from vets.models import VetProfile
@@ -987,6 +1017,42 @@ The Fammo Team
         )
         email.attach_alternative(html_message, "text/html")
         email.send()
+        
+        # Send clinic email confirmation email
+        if clinic.email:
+            clinic_confirmation_url = f"http://{current_site.domain}/en/clinics/confirm-email/{clinic.email_confirmation_token}/?source=app"
+            clinic_subject = "Confirm your clinic email address on Fammo"
+            clinic_html_message = render_to_string('vets/clinic_confirmation_email.html', {
+                'clinic': clinic,
+                'domain': current_site.domain,
+                'confirmation_url': clinic_confirmation_url,
+                'token': clinic.email_confirmation_token,
+                'from_app': True,
+            }) if 'vets/clinic_confirmation_email.html' in str(settings.TEMPLATES) else None
+            
+            clinic_plain_message = f"""
+Hello,
+
+Thank you for registering your clinic on Fammo. To verify your clinic email address and make your clinic visible in the directory, please click the link below:
+
+{clinic_confirmation_url}
+
+After you confirm your email, your clinic will be pending admin review for public listing.
+
+Best regards,
+The Fammo Team
+            """.strip()
+            
+            clinic_email = EmailMultiAlternatives(
+                subject=clinic_subject,
+                body=clinic_plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                to=[clinic.email]
+            )
+            if clinic_html_message:
+                clinic_email.attach_alternative(clinic_html_message, "text/html")
+            clinic_email.send()
+        
         return Response({
             "success": True,
             "message": "Registration successful. Please check your email to activate your account.",

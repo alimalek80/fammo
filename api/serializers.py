@@ -27,6 +27,18 @@ class CombinedClinicUserRegistrationSerializer(serializers.Serializer):
     longitude = serializers.DecimalField(required=False, allow_null=True, max_digits=9, decimal_places=6)
     working_hours = serializers.ListField(child=serializers.DictField(), required=False)
 
+    def validate_email(self, value):
+        """Check if email already exists"""
+        if CustomUser.objects.filter(email=value.lower()).exists():
+            raise serializers.ValidationError("This email address is already registered. Please use a different email or try logging in.")
+        return value
+
+    def validate_clinic_name(self, value):
+        """Check if clinic name already exists"""
+        if Clinic.objects.filter(name=value.strip()).exists():
+            raise serializers.ValidationError("A clinic with this name already exists. Please choose a different name.")
+        return value
+
     def validate(self, data):
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError({'password_confirm': "Passwords do not match."})
