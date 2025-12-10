@@ -1,4 +1,5 @@
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from .views import (
     PingView,
     AppConfigView,
@@ -30,15 +31,24 @@ from .views import (
     ClinicDetailView,
     MyClinicView,
     ConfirmClinicEmailView,
+    SendClinicConfirmationEmailView,
     ClinicWorkingHoursView,
     ClinicVetProfileView,
     SearchClinicsView,
     CombinedClinicUserClinicRegistrationView,
+    # AI Hub views
+    AIRecommendationViewSet,
+    AIHealthReportViewSet,
 )
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
+
+# Initialize router for viewsets
+router = DefaultRouter()
+router.register(r'ai/recommendations', AIRecommendationViewSet, basename='ai-recommendations')
+router.register(r'ai/health-reports', AIHealthReportViewSet, basename='ai-health-reports')
 
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api-ping'),
@@ -83,11 +93,15 @@ urlpatterns = [
     path("clinics/", ClinicListCreateView.as_view(), name="api-clinics-list-create"),
     path("clinics/my/", MyClinicView.as_view(), name="api-my-clinic"),
     path("clinics/search/", SearchClinicsView.as_view(), name="api-clinics-search"),
+    path("clinics/send-confirmation-email/", SendClinicConfirmationEmailView.as_view(), name="api-send-clinic-confirmation-email"),
     path("clinics/confirm-email/<str:token>/", ConfirmClinicEmailView.as_view(), name="api-clinic-confirm-email"),
     path("clinics/<int:pk>/", ClinicDetailView.as_view(), name="api-clinic-detail"),
     path("clinics/<int:clinic_id>/working-hours/", ClinicWorkingHoursView.as_view(), name="api-clinic-working-hours"),
     path("clinics/<int:clinic_id>/vet-profile/", ClinicVetProfileView.as_view(), name="api-clinic-vet-profile"),
     path("clinics/register/", CombinedClinicUserClinicRegistrationView.as_view(), name="api-clinic-user-register"),
+    
+    # AI Hub endpoints (meal recommendations and health reports)
+    path("", include(router.urls)),
     
     # AI Core endpoints (nutrition predictions, etc.)
     path("", include('ai_core.urls')),
