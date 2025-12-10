@@ -194,47 +194,6 @@ def get_clinics_within_radius(latitude: float, longitude: float, radius_km: floa
     return clinics_with_distance
 
 
-def geocode_address(address: str, city: str = None) -> Optional[Tuple[float, float]]:
-    """
-    Convert an address to latitude/longitude coordinates using OpenStreetMap Nominatim.
-    
-    Args:
-        address: Street address
-        city: City name
-    
-    Returns:
-        Tuple of (latitude, longitude) or None if geocoding fails
-    """
-    try:
-        from geopy.geocoders import Nominatim
-        from geopy.exc import GeocoderTimedOut, GeocoderServiceError
-        
-        # Create geolocator with user agent
-        geolocator = Nominatim(user_agent="fammo_veterinary_app", timeout=10)
-        
-        # Build full address
-        full_address = f"{address}, {city}" if city else address
-        
-        # Geocode the address
-        location = geolocator.geocode(full_address)
-        
-        if location:
-            return (location.latitude, location.longitude)
-        else:
-            # Try with just city if full address failed
-            if city:
-                location = geolocator.geocode(city)
-                if location:
-                    return (location.latitude, location.longitude)
-        
-    except (GeocoderTimedOut, GeocoderServiceError) as e:
-        print(f"Geocoding service error: {e}")
-    except Exception as e:
-        print(f"Geocoding error: {e}")
-    
-    return None
-
-
 def get_location_from_ip(ip_address: str) -> Optional[dict]:
     """
     Get approximate location from IP address.
@@ -268,6 +227,68 @@ def get_location_from_ip(ip_address: str) -> Optional[dict]:
         print(f"IP geolocation error: {e}")
     
     return None
+
+
+def geocode_address(address: str = '', city: str = '') -> Optional[dict]:
+    """
+    Convert address and city to latitude and longitude using Google Geocoding API.
+    
+    Args:
+        address: Street address
+        city: City name
+        
+    Returns:
+        dict with 'latitude' and 'longitude' keys, or None if geocoding fails
+        (non-blocking - returns None gracefully on any error)
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Check if geopy is available
+        try:
+            from geopy.geocoders import GoogleV3
+            from geopy.exc import GeocoderTimedOut, GeocoderServiceError
+        except ImportError:
+            logger.warning("[GEOCODING] geopy not installed - skipping geocoding")
+            return None
+        
+        # Build full address
+        full_address = f"{address}, {city}".strip(', ')
+        
+        if not full_address:
+            logger.debug("[GEOCODING] Empty address - skipping")
+            return None
+        
+        # Get Google Maps API key
+        google_api_key = getattr(settings, 'GOOGLE_MAPS_API_KEY', None)
+        if not google_api_key:
+            logger.warning("[GEOCODING] GOOGLE_MAPS_API_KEY not configured - skipping")
+            return None
+        
+        # Initialize geocoder
+        geolocator = GoogleV3(api_key=google_api_key, timeout=5)
+        
+        # Geocode address
+        location = geolocator.geocode(full_address)
+        
+        if location:
+            logger.info(f"[GEOCODING] ✅ Success for '{full_address}': ({location.latitude}, {location.longitude})")
+            return {
+                'latitude': location.latitude,
+                'longitude': location.longitude
+            }
+        else:
+            logger.warning(f"[GEOCODING] No location found for '{full_address}'")
+            return None
+        
+    except ImportError as e:
+        logger.warning(f"[GEOCODING] Missing dependency: {str(e)}")
+        return None
+    except Exception as e:
+        # Don't let geocoding errors crash the admin
+        logger.error(f"[GEOCODING] Unexpected error: {str(e)}", exc_info=True)
+        return None
 
 
 def get_client_ip(request) -> str:

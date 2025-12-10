@@ -124,7 +124,7 @@ class Clinic(TimeStampedModel):
                 slug_candidate = f"{base}-{i}"
             self.slug = slug_candidate
         
-        # Check if address/city changed from database
+        # Check if we need to trigger geocoding (but don't do it here - do it after save)
         should_geocode = False
         
         if self.pk:
@@ -143,29 +143,45 @@ class Clinic(TimeStampedModel):
                     logger.info(f"  OLD: {existing.address} | {existing.city}")
                     logger.info(f"  NEW: {self.address} | {self.city}")
                     
-                    # Reset coordinates and force geocoding
-                    self.latitude = None
-                    self.longitude = None
+                    # Don't reset coordinates here - let geocoding task handle it
                     should_geocode = True
                     
             except Clinic.DoesNotExist:
                 # New clinic
                 pass
         
-        # Geocode if: address/city changed OR coordinates are missing but address exists
-        if should_geocode or ((not self.latitude or not self.longitude) and (self.address or self.city)):
-            from .utils import geocode_address
-            
-            logger.info(f"[CLINIC SAVE] Geocoding '{self.name}' with address='{self.address}', city='{self.city}'")
-            coords = geocode_address(self.address, self.city)
-            
-            if coords:
-                self.latitude, self.longitude = coords
-                logger.info(f"[CLINIC SAVE] ✅ SUCCESS: Got coordinates {self.latitude}, {self.longitude}")
-            else:
-                logger.warning(f"[CLINIC SAVE] ⚠️ FAILED: Could not geocode address")
+        # Check if coordinates are missing but address exists (also trigger geocoding)
+        if not should_geocode and ((not self.latitude or not self.longitude) and (self.address or self.city)):
+            should_geocode = True
         
+        # Save the clinic first (don't block on geocoding)
         super().save(*args, **kwargs)
+        
+        # NOW trigger async geocoding if needed (non-blocking after save)
+        if should_geocode:
+            from .tasks import geocode_clinic_async
+            try:
+                # Try to use Celery if available
+                geocode_clinic_async.delay(self.id)
+                logger.info(f"[CLINIC SAVE] Scheduled async geocoding for clinic {self.id}")
+            except Exception as e:
+                # Fallback: try to geocode synchronously but with timeout protection
+                logger.info(f"[CLINIC SAVE] Celery not available, attempting sync geocoding for clinic {self.id}")
+                try:
+                    from .utils import geocode_address
+                    coords = geocode_address(self.address, self.city)
+                    if coords:
+                        # Update clinic with coordinates
+                        self.latitude = coords['latitude']
+                        self.longitude = coords['longitude']
+                        # Save directly without triggering save() again
+                        super().save(*args, **kwargs)
+                        logger.info(f"[CLINIC SAVE] ✅ Geocoding complete: {self.latitude}, {self.longitude}")
+                    else:
+                        logger.warning(f"[CLINIC SAVE] ⚠️ Geocoding failed for clinic {self.id}")
+                except Exception as geocode_error:
+                    # Don't let geocoding errors crash the save
+                    logger.error(f"[CLINIC SAVE] Geocoding error: {str(geocode_error)}", exc_info=True)
 
     def get_absolute_url(self):
         return reverse("vets:clinic_detail", kwargs={"slug": self.slug})

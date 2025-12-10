@@ -1093,6 +1093,19 @@ class CombinedClinicUserClinicRegistrationView(APIView):
                 latitude=data.get('latitude', None),
                 longitude=data.get('longitude', None),
             )
+            
+            # Trigger async geocoding if coordinates are missing
+            # This is non-blocking - won't delay the API response
+            if not clinic.latitude or not clinic.longitude:
+                try:
+                    from vets.tasks import geocode_clinic_async
+                    geocode_clinic_async.delay(clinic.id)
+                except Exception as e:
+                    # If async fails, that's okay - geocoding will happen on next save
+                    import logging
+                    logger = logging.getLogger(__name__)
+                    logger.warning(f"[API REGISTER] Could not trigger async geocoding: {str(e)}")
+            
             # Generate clinic email confirmation token
             clinic.email_confirmation_token = secrets.token_urlsafe(32)
             clinic.save()

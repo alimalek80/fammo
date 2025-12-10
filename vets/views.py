@@ -388,8 +388,27 @@ class ClinicProfileUpdateView(ClinicOwnerRequiredMixin, UpdateView):
             return self.form_invalid(form)
     
     def form_valid(self, form, working_hours_formset, vet_form):
+        # Check if address or city was modified
+        clinic = self.object
+        address_changed = (
+            form.cleaned_data.get('address') != clinic.address or
+            form.cleaned_data.get('city') != clinic.city
+        )
+        
         # Save the main form first
         response = super().form_valid(form)
+        
+        # If address changed, geocode to update coordinates
+        if address_changed:
+            from .utils import geocode_address
+            geocoded_coords = geocode_address(
+                address=clinic.address,
+                city=clinic.city
+            )
+            if geocoded_coords:
+                clinic.latitude = geocoded_coords['latitude']
+                clinic.longitude = geocoded_coords['longitude']
+                clinic.save()
         
         # Save working hours formset
         working_hours_formset.save()
