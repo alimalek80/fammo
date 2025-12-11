@@ -10,10 +10,21 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+    is_clinic_owner = serializers.SerializerMethodField()
+    owned_clinics = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
         fields = "__all__"
+    
+    def get_is_clinic_owner(self, obj):
+        """Check if user owns any clinics"""
+        return obj.user.owned_clinics.exists()
+    
+    def get_owned_clinics(self, obj):
+        """Get list of clinics owned by user"""
+        clinics = obj.user.owned_clinics.all()
+        return [{"id": clinic.id, "name": clinic.name} for clinic in clinics]
 
 class SignupSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})

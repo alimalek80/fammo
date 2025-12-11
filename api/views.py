@@ -140,7 +140,7 @@ class SetUserLanguageView(APIView):
             "language": profile.preferred_language
         })
     
-class MeProfileView(generics.RetrieveAPIView):
+class MeProfileView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -879,6 +879,12 @@ class ClinicWorkingHoursView(APIView):
             )
     
     def post(self, request, clinic_id):
+        return self._update_working_hours(request, clinic_id)
+    
+    def patch(self, request, clinic_id):
+        return self._update_working_hours(request, clinic_id)
+    
+    def _update_working_hours(self, request, clinic_id):
         try:
             clinic = Clinic.objects.get(id=clinic_id)
             
