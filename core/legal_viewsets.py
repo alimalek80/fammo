@@ -33,14 +33,13 @@ class LegalDocumentViewSet(viewsets.ReadOnlyModelViewSet):
     Endpoints:
     - GET /legal/documents/ - List all active documents (public)
     - GET /legal/documents/?doc_type=user_terms - Filter by document type
-    - GET /legal/documents/?language=en - Filter by language
     - GET /legal/documents/{id}/ - Get specific document
-    - GET /legal/documents/by_type/ - Get latest version by type and language
+    - GET /legal/documents/by_type/ - Get latest version by type
     """
     queryset = LegalDocument.objects.filter(is_active=True)
     serializer_class = LegalDocumentSerializer
     pagination_class = PageNumberPagination
-    filterset_fields = ['doc_type', 'language']
+    filterset_fields = ['doc_type']
     ordering_fields = ['effective_date', 'created_at']
     ordering = ['-effective_date']
     
@@ -49,16 +48,16 @@ class LegalDocumentViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=False, methods=['get'])
     def by_type(self, request):
         """
-        Get the latest active document by type and language.
+        Get the latest active document by type.
         
         Query params:
         - doc_type: Document type (user_terms, user_privacy, clinic_terms, clinic_partnership, clinic_eoi)
-        - language: Language code (default: en)
         
-        Example: GET /legal/documents/by_type/?doc_type=user_terms&language=en
+        Example: GET /legal/documents/by_type/?doc_type=user_terms
+        
+        Note: Content is automatically translated based on Accept-Language header.
         """
         doc_type = request.query_params.get('doc_type')
-        language = request.query_params.get('language', 'en')
         
         if not doc_type:
             return Response(
@@ -76,7 +75,6 @@ class LegalDocumentViewSet(viewsets.ReadOnlyModelViewSet):
         document = get_object_or_404(
             LegalDocument,
             doc_type=doc_type,
-            language=language,
             is_active=True
         )
         

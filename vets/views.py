@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 import json
 
 from .models import Clinic, VetProfile, ReferralCode, ReferredUser, ReferralStatus
+from core.models import LegalDocument, DocumentType
 from .forms import (
     ClinicRegistrationForm, ClinicProfileForm, VetProfileForm, 
     ReferralCodeForm, ClinicSearchForm
@@ -641,18 +642,33 @@ class TrackReferralAPIView(View):
 
 
 def clinic_terms_and_conditions_view(request):
-    """Display clinic terms and conditions"""
-    return render(request, 'vets/clinic_terms_and_conditions.html')
+    """Display clinic terms and conditions from database"""
+    document = get_object_or_404(
+        LegalDocument,
+        doc_type=DocumentType.CLINIC_TERMS_CONDITIONS,
+        is_active=True
+    )
+    return render(request, 'vets/clinic_terms_and_conditions.html', {'document': document})
 
 
 def clinic_partnership_agreement_view(request):
-    """Display clinic partnership agreement"""
-    return render(request, 'vets/clinic_partnership_agreement.html')
+    """Display clinic partnership agreement from database"""
+    document = get_object_or_404(
+        LegalDocument,
+        doc_type=DocumentType.CLINIC_PARTNERSHIP,
+        is_active=True
+    )
+    return render(request, 'vets/clinic_partnership_agreement.html', {'document': document})
 
 
 def eoi_terms(request):
-    """Display Expression of Interest (EOI) terms"""
-    return render(request, 'vets/eoi_terms.html')
+    """Display Expression of Interest (EOI) terms from database"""
+    document = get_object_or_404(
+        LegalDocument,
+        doc_type=DocumentType.CLINIC_EOI,
+        is_active=True
+    )
+    return render(request, 'vets/eoi_terms.html', {'document': document})
 
 
 # ========== Location & Nearby Clinics API ==========

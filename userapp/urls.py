@@ -18,6 +18,7 @@ urlpatterns = [
     path('admin-dashboard/kpis/', views.admin_dashboard_kpis, name='admin_dashboard_kpis'),
     path('export/users/', export_users_csv, name='export_users_csv'),
     path('terms/', views.terms_and_conditions_view, name='terms_and_conditions'),
+    path('privacy-policy/', views.privacy_policy_view, name='privacy_policy'),
     # Translation Management
     path('translations/', views.translation_dashboard, name='translation_dashboard'),
     path('translations/update/', views.update_translation_ajax, name='update_translation'),

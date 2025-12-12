@@ -33,19 +33,12 @@ class DocumentType(models.TextChoices):
 class LegalDocument(models.Model):
     """
     Stores legal documents (Terms, Privacy Policy, Agreements, etc.)
-    Supports versioning and multi-language content.
+    Supports versioning and multi-language content via django-modeltranslation.
     """
     doc_type = models.CharField(
         max_length=50,
         choices=DocumentType.choices,
         help_text="Type of legal document"
-    )
-    
-    # Content in multiple languages
-    language = models.CharField(
-        max_length=10,
-        default='en',
-        help_text="Language code (e.g., 'en', 'fi', 'nl', 'tr')"
     )
     
     # Document metadata
@@ -58,12 +51,12 @@ class LegalDocument(models.Model):
         help_text="Version identifier (e.g., '1.0', '2.1', 'v2021-11-01')"
     )
     
-    # Document content
+    # Document content (will be translated via modeltranslation)
     content = models.TextField(
         help_text="Full legal document content (HTML allowed)"
     )
     
-    # Metadata
+    # Metadata (will be translated via modeltranslation)
     summary = models.TextField(
         blank=True,
         help_text="Brief summary of document (optional)"
@@ -90,16 +83,22 @@ class LegalDocument(models.Model):
     class Meta:
         verbose_name = "Legal Document"
         verbose_name_plural = "Legal Documents"
-        # Ensure only one active version per doc type and language
-        unique_together = ('doc_type', 'language', 'is_active')
+        # Ensure only one active version per doc type
+        constraints = [
+            models.UniqueConstraint(
+                fields=['doc_type'],
+                condition=models.Q(is_active=True),
+                name='unique_active_doc_per_type'
+            )
+        ]
         indexes = [
-            models.Index(fields=['doc_type', 'language', 'is_active']),
+            models.Index(fields=['doc_type', 'is_active']),
             models.Index(fields=['doc_type', 'effective_date']),
         ]
         ordering = ['-effective_date']
     
     def __str__(self):
-        return f"{self.get_doc_type_display()} ({self.language}) v{self.version}"
+        return f"{self.get_doc_type_display()} v{self.version}"
 
 
 class UserConsent(models.Model):

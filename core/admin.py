@@ -49,15 +49,15 @@ class OnboardingSlidAdmin(TranslationAdmin):
 # ============================================
 
 @admin.register(LegalDocument)
-class LegalDocumentAdmin(admin.ModelAdmin):
-    list_display = ('title', 'doc_type', 'language', 'version', 'is_active', 'effective_date', 'updated_at')
-    list_filter = ('doc_type', 'language', 'is_active', 'effective_date')
+class LegalDocumentAdmin(TranslationAdmin):
+    list_display = ('title', 'doc_type', 'version', 'is_active', 'effective_date', 'updated_at')
+    list_filter = ('doc_type', 'is_active', 'effective_date')
     search_fields = ('title', 'content', 'admin_notes')
     readonly_fields = ('created_at', 'updated_at')
     
     fieldsets = (
         ('Document Type', {
-            'fields': ('doc_type', 'language', 'title', 'version')
+            'fields': ('doc_type', 'title', 'version')
         }),
         ('Content', {
             'fields': ('content', 'summary'),

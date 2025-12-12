@@ -1,26 +1,19 @@
 {% extends 'base.html' %}
 {% load i18n %}
 
-{% block title %}{{ document.title }} - FAMMO{% endblock %}
-
 {% block content %}
-<div class="max-w-4xl mx-auto p-8 bg-white rounded-xl shadow-md mt-8">
+<div class="max-w-3xl mx-auto p-8 bg-white rounded-xl shadow-md mt-8">
     <h1 class="text-3xl font-bold mb-6">{{ document.title }}</h1>
     {% if document.effective_date %}
     <p class="mb-4 text-gray-700"><strong>{% trans "Effective Date:" %}</strong> {{ document.effective_date|date:"F j, Y" }}</p>
     {% endif %}
     {% if document.summary %}
-    <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 text-gray-700">
+    <div class="mb-6 text-gray-600 italic">
         {{ document.summary|safe }}
     </div>
     {% endif %}
     <div class="prose max-w-none text-gray-700">
         {{ document.content|safe }}
-    </div>
-    <div class="mt-8 pt-6 border-t border-gray-200">
-        <a href="{% url 'register' %}" class="text-indigo-600 hover:text-indigo-800 underline">
-            ← {% trans "Back to Registration" %}
-        </a>
     </div>
 </div>
 {% endblock %}

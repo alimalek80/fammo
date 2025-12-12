@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .forms import UserRegistrationForm, ProfileForm, CustomLoginForm, SetPasswordForm
@@ -16,6 +16,7 @@ from collections import Counter
 from pet.models import Pet
 from aihub.models import AIRecommendation, AIHealthReport
 from aihub.utils import get_country_from_ip
+from core.models import LegalDocument, DocumentType
 import csv
 from django.http import HttpResponse, JsonResponse
 from django.db.models import Count
@@ -46,7 +47,23 @@ def _google_enabled():
 
 
 def terms_and_conditions_view(request):
-    return render(request, 'userapp/terms_and_conditions.html')
+    """Display the Terms and Conditions from the database."""
+    document = get_object_or_404(
+        LegalDocument,
+        doc_type=DocumentType.USER_TERMS_CONDITIONS,
+        is_active=True
+    )
+    return render(request, 'userapp/terms_and_conditions.html', {'document': document})
+
+
+def privacy_policy_view(request):
+    """Display the Privacy Policy from the database."""
+    document = get_object_or_404(
+        LegalDocument,
+        doc_type=DocumentType.USER_PRIVACY_POLICY,
+        is_active=True
+    )
+    return render(request, 'userapp/privacy_policy.html', {'document': document})
 
 
 def register_view(request):
