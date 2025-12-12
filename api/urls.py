@@ -24,6 +24,7 @@ from .views import (
     SignupView,
     ForgotPasswordView,
     ResetPasswordView,
+    ChangePasswordView,
     ResendActivationEmailView,
     DeleteTestUserView,
     # Clinic views
@@ -40,6 +41,12 @@ from .views import (
     AIRecommendationViewSet,
     AIHealthReportViewSet,
 )
+from core.legal_viewsets import (
+    LegalDocumentViewSet,
+    UserConsentViewSet,
+    ClinicConsentViewSet,
+    ConsentLogViewSet,
+)
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
@@ -49,6 +56,11 @@ from rest_framework_simplejwt.views import (
 router = DefaultRouter()
 router.register(r'ai/recommendations', AIRecommendationViewSet, basename='ai-recommendations')
 router.register(r'ai/health-reports', AIHealthReportViewSet, basename='ai-health-reports')
+router.register(r'legal/documents', LegalDocumentViewSet, basename='legal-documents')
+router.register(r'legal/consent/user', UserConsentViewSet, basename='legal-user-consent')
+router.register(r'legal/consent/clinic', ClinicConsentViewSet, basename='legal-clinic-consent')
+router.register(r'legal/logs', ConsentLogViewSet, basename='legal-consent-logs')
+
 
 urlpatterns = [
     path('ping/', PingView.as_view(), name='api-ping'),
@@ -61,6 +73,7 @@ urlpatterns = [
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/forgot-password/', ForgotPasswordView.as_view(), name='api-forgot-password'),
     path('auth/reset-password/', ResetPasswordView.as_view(), name='api-reset-password'),
+    path('auth/change-password/', ChangePasswordView.as_view(), name='api-change-password'),
     path('auth/resend-activation/', ResendActivationEmailView.as_view(), name='api-resend-activation'),
     path('auth/delete-test-user/', DeleteTestUserView.as_view(), name='api-delete-test-user'),
 

@@ -447,6 +447,64 @@ class ResetPasswordView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
+class ChangePasswordView(APIView):
+    """
+    POST /api/auth/change-password/
+    Change password for authenticated user (requires old password)
+    Request body: {"old_password": "...", "new_password": "...", "new_password_confirm": "..."}
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        old_password = request.data.get('old_password')
+        new_password = request.data.get('new_password')
+        new_password_confirm = request.data.get('new_password_confirm')
+        
+        # Validate inputs
+        if not old_password:
+            return Response({
+                "error": "Old password is required"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not new_password:
+            return Response({
+                "error": "New password is required"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if new_password != new_password_confirm:
+            return Response({
+                "error": "New passwords do not match"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if len(new_password) < 8:
+            return Response({
+                "error": "Password must be at least 8 characters long"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        user = request.user
+        
+        # Check if old password is correct
+        if not user.check_password(old_password):
+            return Response({
+                "error": "Old password is incorrect"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Check if new password is same as old password
+        if old_password == new_password:
+            return Response({
+                "error": "New password must be different from old password"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Set new password
+        user.set_password(new_password)
+        user.save()
+        
+        return Response({
+            "success": True,
+            "message": "Password has been changed successfully"
+        })
+
+
 class ResendActivationEmailView(APIView):
     """
     POST /api/auth/resend-activation/

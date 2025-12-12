@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend API Architecture & Data Flow Documentation - Fammo</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+            font-size: 10pt;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header with Logo */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #4A90E2;
+            page-break-after: avoid;
+        }
+
+        .logo {
+            width: 150px;
+            height: auto;
+        }
+
+        .header-info {
+            text-align: right;
+            font-size: 9pt;
+            color: #666;
+        }
+
+        /* Typography */
+        h1 {
+            color: #2C3E50;
+            font-size: 24pt;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+
+        h2 {
+            color: #34495E;
+            font-size: 18pt;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #4A90E2;
+            page-break-after: avoid;
+        }
+
+        h3 {
+            color: #4A90E2;
+            font-size: 14pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            page-break-after: avoid;
+        }
+
+        h4 {
+            color: #5A6C7D;
+            font-size: 12pt;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            page-break-after: avoid;
+        }
+
+        p {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+
+        /* Lists */
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        /* Code blocks */
+        pre, code {
+            font-family: 'Courier New', Courier, monospace;
+            background: #F8F9FA;
+            border: 1px solid #DEE2E6;
+            border-radius: 4px;
+            font-size: 9pt;
+        }
+
+        pre {
+            padding: 12px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+
+        code {
+            padding: 2px 6px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            font-size: 9pt;
+        }
+
+        th {
+            background: #4A90E2;
+            color: white;
+            padding: 10px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 8px 10px;
+            border: 1px solid #DEE2E6;
+        }
+
+        tr:nth-child(even) {
+            background: #F8F9FA;
+        }
+
+        /* Info boxes */
+        .info-box {
+            background: #E3F2FD;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+
+        .tech-stack {
+            background: #F1F8E9;
+            border-left: 4px solid #8BC34A;
+            padding: 15px;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+        }
+
+        .diagram-box {
+            background: #FAFAFA;
+            border: 2px solid #E0E0E0;
+            padding: 15px;
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            overflow-x: auto;
+        }
+
+        .diagram-box pre {
+            background: transparent;
+            border: none;
+            margin: 0;
+            font-size: 8pt;
+            line-height: 1.4;
+        }
+
+        /* Checkmarks and icons */
+        .checkmark {
+            color: #4CAF50;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* Executive Summary */
+        .executive-summary {
+            background: #FFFFFF;
+            border: 2px solid #4A90E2;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            page-break-inside: avoid;
+        }
+
+        /* Endpoint badge */
+        .method {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 8pt;
+            margin-right: 5px;
+        }
+
+        .method.get { background: #61AFFE; color: white; }
+        .method.post { background: #49CC90; color: white; }
+        .method.patch { background: #FCA130; color: white; }
+        .method.put { background: #FCA130; color: white; }
+        .method.delete { background: #F93E3E; color: white; }
+
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #4A90E2;
+            text-align: center;
+            font-size: 9pt;
+            color: #666;
+            page-break-inside: avoid;
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                font-size: 9pt;
+            }
+
+            .container {
+                padding: 0;
+            }
+
+            h1 { font-size: 20pt; }
+            h2 { font-size: 16pt; }
+            h3 { font-size: 12pt; }
+            h4 { font-size: 11pt; }
+
+            a {
+                color: #000;
+                text-decoration: none;
+            }
+
+            .no-print {
+                display: none;
+            }
+
+            pre, code {
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: #F8F9FA;
+            border: 2px solid #DEE2E6;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            page-break-inside: avoid;
+        }
+
+        .toc h2 {
+            margin-top: 0;
+            border-bottom: none;
+        }
+
+        .toc ul {
+            list-style-type: none;
+            margin-left: 0;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+        }
+
+        .toc a {
+            color: #4A90E2;
+            text-decoration: none;
+        }
+
+        .toc a:hover {
+            text-decoration: underline;
+        }
+
+        /* Section divider */
+        .section-divider {
+            height: 3px;
+            background: linear-gradient(to right, #4A90E2, #E3F2FD);
+            margin: 40px 0;
+            page-break-after: always;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with Logo -->
+        <div class="header">
+            <div>
+                <img src="static/images/logo.png" alt="Fammo Logo" class="logo" style="max-height: 80px; width: auto;">
+            </div>
+            <div class="header-info">
+                <strong>API Version:</strong> v1.0.0<br>
+                <strong>Document Version:</strong> 1.0<br>
+                <strong>Date:</strong> December 12, 2024
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h1>Backend API Architecture &amp; Data Flow Documentation</h1>
+
+        <!-- Executive Summary -->
+        <div class="executive-summary">
+            <h2 style="margin-top: 0; border-bottom: none;">Executive Summary</h2>
+            <p>This document provides a comprehensive overview of the RESTful API backend architecture designed for a multi-platform pet care and veterinary services application. The system is built using Django REST Framework and follows industry best practices for scalability, security, and maintainability.</p>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="tech-stack">
+            <h3 style="margin-top: 0;">Technology Stack</h3>
+            <ul>
+                <li><strong>Framework:</strong> Django 4.x with Django REST Framework</li>
+                <li><strong>Database:</strong> PostgreSQL/SQLite</li>
+                <li><strong>Authentication:</strong> JWT (JSON Web Tokens)</li>
+                <li><strong>AI Integration:</strong> OpenAI API with structured outputs</li>
+                <li><strong>Multi-language Support:</strong> Django Modeltranslation</li>
+                <li><strong>Geolocation:</strong> Integrated geocoding services</li>
+            </ul>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+                <li><a href="#architecture">1. System Architecture Overview</a></li>
+                <li><a href="#modules">2. Core Modules &amp; Functionality</a>
+                    <ul style="margin-left: 20px;">
+                        <li><a href="#user-module">2.1 User Management Module</a></li>
+                        <li><a href="#pet-module">2.2 Pet Management Module</a></li>
+                        <li><a href="#clinic-module">2.3 Veterinary Clinic Module</a></li>
+                        <li><a href="#ai-module">2.4 AI-Powered Recommendations Module</a></li>
+                        <li><a href="#legal-module">2.5 Legal &amp; Compliance Module</a></li>
+                    </ul>
+                </li>
+                <li><a href="#security">3. Authentication &amp; Security</a></li>
+                <li><a href="#dataflow">4. Data Flow Examples</a></li>
+                <li><a href="#errors">5. Error Handling</a></li>
+                <li><a href="#database">6. Database Schema</a></li>
+                <li><a href="#scalability">7. Scalability Considerations</a></li>
+                <li><a href="#versioning">8. API Versioning Strategy</a></li>
+                <li><a href="#monitoring">9. Monitoring &amp; Logging</a></li>
+                <li><a href="#testing">10. Testing Strategy</a></li>
+                <li><a href="#deployment">11. Deployment Architecture</a></li>
+                <li><a href="#conclusion">12. Conclusion</a></li>
+                <li><a href="#appendix">Appendix A: Complete Endpoint Reference</a></li>
+            </ul>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 1. System Architecture Overview -->
+        <h2 id="architecture">1. System Architecture Overview</h2>
+
+        <h3>1.1 High-Level Architecture</h3>
+        <div class="diagram-box">
+            <pre>
+┌─────────────────────────────────────────────────────────────────┐
+│                      Client Applications                         │
+│  (Flutter Mobile App, Web Dashboard, Future Platforms)          │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │ HTTPS/REST API
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    API Gateway Layer                             │
+│  - JWT Authentication                                            │
+│  - Request Validation                                            │
+│  - Rate Limiting                                                 │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                   Application Layer                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │ User Module  │  │  Pet Module  │  │ Clinic Module│         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │  AI Module   │  │ Auth Module  │  │ Legal Module │         │
+│  └──────────────┘  └──────────────┘  └──────────────┘         │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Data Layer                                    │
+│  - Relational Database (PostgreSQL)                              │
+│  - Media Storage (Files/Images)                                  │
+│  - Caching Layer (Future)                                        │
+└─────────────────────┬───────────────────────────────────────────┘
+                      │
+                      ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                 External Services                                │
+│  - OpenAI API (AI Recommendations)                               │
+│  - Email Service (SMTP)                                          │
+│  - Geocoding Service                                             │
+└─────────────────────────────────────────────────────────────────┘
+            </pre>
+        </div>
+
+        <h3>1.2 Architectural Principles</h3>
+        <ul>
+            <li><strong>RESTful Design:</strong> All endpoints follow REST conventions with proper HTTP methods</li>
+            <li><strong>Stateless Communication:</strong> JWT tokens for authentication without server-side sessions</li>
+            <li><strong>Separation of Concerns:</strong> Modular architecture with distinct apps for different domains</li>
+            <li><strong>Security First:</strong> Authentication, authorization, and data validation at every layer</li>
+            <li><strong>Scalability:</strong> Designed for horizontal scaling with minimal state dependency</li>
+            <li><strong>API Versioning:</strong> Prepared for future version management</li>
+        </ul>
+
+        <div class="section-divider"></div>
+
+        <!-- 2. Core Modules & Functionality -->
+        <h2 id="modules">2. Core Modules &amp; Functionality</h2>
+
+        <h3 id="user-module">2.1 User Management Module</h3>
+        <p><strong>Purpose:</strong> Handle user registration, authentication, profile management, and language preferences.</p>
+
+        <h4>Data Models:</h4>
+        <pre><code>CustomUser (Authentication)
+├── email (unique identifier)
+├── password (hashed)
+├── is_active (email verification status)
+├── is_staff (admin access)
+└── date_joined
+
+Profile (User Details)
+├── user (OneToOne → CustomUser)
+├── first_name, last_name
+├── phone, address, city, zip_code, country
+├── latitude, longitude (location data)
+├── location_consent (privacy compliance)
+├── preferred_language (en, fi, nl, tr)
+├── subscription_plan (→ SubscriptionPlan)
+└── is_writer (content creator flag)</code></pre>
+
+        <h4>Key API Endpoints:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Method</th>
+                    <th>Auth</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>/api/auth/signup/</code></td>
+                    <td><span class="method post">POST</span></td>
+                    <td>None</td>
+                    <td>Register new user account</td>
+                </tr>
+                <tr>
+                    <td><code>/api/auth/token/</code></td>
+                    <td><span class="method post">POST</span></td>
+                    <td>None</td>
+                    <td>Obtain JWT access/refresh tokens</td>
+                </tr>
+                <tr>
+                    <td><code>/api/auth/token/refresh/</code></td>
+                    <td><span class="method post">POST</span></td>
+                    <td>None</td>
+                    <td>Refresh expired access token</td>
+                </tr>
+                <tr>
+                    <td><code>/api/auth/forgot-password/</code></td>
+                    <td><span class="method post">POST</span></td>
+                    <td>None</td>
+                    <td>Request password reset email</td>
+                </tr>
+                <tr>
+                    <td><code>/api/auth/change-password/</code></td>
+                    <td><span class="method post">POST</span></td>
+                    <td>Required</td>
+                    <td>Change password (authenticated)</td>
+                </tr>
+                <tr>
+                    <td><code>/api/me/</code></td>
+                    <td><span class="method get">GET</span> / <span class="method patch">PATCH</span></td>
+                    <td>Required</td>
+                    <td>Retrieve/update user profile</td>
+                </tr>
+                <tr>
+                    <td><code>/api/me/language/</code></td>
+                    <td><span class="method get">GET</span> / <span class="method post">POST</span></td>
+                    <td>Required</td>
+                    <td>Get/set language preference</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h4>Authentication Flow:</h4>
+        <div class="diagram-box">
+            <pre>
+┌──────────┐         ┌──────────┐         ┌──────────┐
+│  Client  │         │   API    │         │ Database │
+└────┬─────┘         └────┬─────┘         └────┬─────┘
+     │                    │                     │
+     │ 1. POST /signup    │                     │
+     ├───────────────────>│                     │
+     │                    │ 2. Validate data    │
+     │                    ├────────────────────>│
+     │                    │ 3. Create user      │
+     │                    │    (is_active=False)│
+     │                    │<────────────────────┤
+     │                    │ 4. Send email       │
+     │                    │    verification     │
+     │ 5. Response        │                     │
+     │<───────────────────┤                     │
+     │                    │                     │
+     │ 6. User clicks     │                     │
+     │    email link      │                     │
+     │                    │                     │
+     │ 7. POST /token     │                     │
+     ├───────────────────>│ 8. Verify creds    │
+     │                    ├────────────────────>│
+     │                    │ 9. Return user      │
+     │                    │<────────────────────┤
+     │ 10. JWT tokens     │                     │
+     │<───────────────────┤                     │
+            </pre>
+        </div>
+
+        <h4>Sample Request/Response:</h4>
+        <pre><code>// POST /api/auth/signup/
+Request:
+{
+  "email": "user@example.com",
+  "password": "SecurePass123!",
+  "password_confirm": "SecurePass123!"
+}
+
+Response: 201 Created
+{
+  "success": true,
+  "message": "Registration successful. Please check your email to activate your account.",
+  "user": {
+    "id": 42,
+    "email": "user@example.com"
+  }
+}</code></pre>
+
+        <div style="page-break-after: always;"></div>
+
+        <h3 id="pet-module">2.2 Pet Management Module</h3>
+        <p><strong>Purpose:</strong> Comprehensive pet profile management with detailed health, nutrition, and behavioral data.</p>
+
+        <h4>Data Models:</h4>
+        <pre><code>Pet (Core Entity)
+├── user (ForeignKey → CustomUser)
+├── name, image
+├── pet_type (→ PetType: Dog, Cat)
+├── breed (→ Breed)
+├── gender (→ Gender)
+├── birth_date, age_years, age_months, age_weeks
+├── age_category (→ AgeCategory: Puppy, Adult, Senior)
+├── neutered (boolean)
+├── weight (decimal)
+├── body_type (→ BodyType)
+├── activity_level (→ ActivityLevel)
+├── food_types (ManyToMany → FoodType)
+├── food_feeling (→ FoodFeeling)
+├── food_importance (→ FoodImportance)
+├── food_allergies (ManyToMany → FoodAllergy)
+├── health_issues (ManyToMany → HealthIssue)
+└── treat_frequency (→ TreatFrequency)
+
+Supporting Models (Reference Data):
+- PetType, Gender, Breed
+- AgeCategory, BodyType, ActivityLevel
+- FoodType, FoodFeeling, FoodImportance
+- FoodAllergy, HealthIssue, TreatFrequency</code></pre>
+
+        <h4>Key API Endpoints:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Method</th>
+                    <th>Auth</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>/api/pets/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>Required</td>
+                    <td>List all user's pets</td>
+                </tr>
+                <tr>
+                    <td><code>/api/pets/</code></td>
+                    <td><span class="method post">POST</span></td>
+                    <td>Required</td>
+                    <td>Create new pet profile</td>
+                </tr>
+                <tr>
+                    <td><code>/api/pets/{id}/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>Required</td>
+                    <td>Retrieve specific pet details</td>
+                </tr>
+                <tr>
+                    <td><code>/api/pets/{id}/</code></td>
+                    <td><span class="method patch">PATCH</span></td>
+                    <td>Required</td>
+                    <td>Update pet information</td>
+                </tr>
+                <tr>
+                    <td><code>/api/pets/{id}/</code></td>
+                    <td><span class="method delete">DELETE</span></td>
+                    <td>Required</td>
+                    <td>Delete pet profile</td>
+                </tr>
+                <tr>
+                    <td><code>/api/breeds/?pet_type={id}</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>Required</td>
+                    <td>List breeds (filtered by type)</td>
+                </tr>
+                <tr>
+                    <td><code>/api/food-allergies/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>Required</td>
+                    <td>List food allergies</td>
+                </tr>
+                <tr>
+                    <td><code>/api/health-issues/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>Required</td>
+                    <td>List health issues</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="info-box">
+            <h4 style="margin-top: 0;">Multi-language Support</h4>
+            <p>All reference data (PetType, Breed, AgeCategory, etc.) supports multiple languages through Django Modeltranslation. The API automatically returns translations based on the <code>Accept-Language</code> header, supporting English (en), Finnish (fi), Dutch (nl), and Turkish (tr).</p>
+        </div>
+
+        <div style="page-break-after: always;"></div>
+
+        <h3 id="clinic-module">2.3 Veterinary Clinic Module</h3>
+        <p><strong>Purpose:</strong> Manage veterinary clinic profiles, enable service discovery, and facilitate clinic-user connections.</p>
+
+        <h4>Data Models:</h4>
+        <pre><code>Clinic
+├── owner (ForeignKey → CustomUser)
+├── name, slug (unique identifiers)
+├── address, city
+├── latitude, longitude (geocoded location)
+├── phone, email, website, instagram
+├── specializations (comma-separated)
+├── bio (clinic description)
+├── logo (image)
+├── is_verified (admin verification)
+├── email_confirmed (email verification)
+├── admin_approved (public listing approval)
+└── clinic_eoi (pilot program interest)
+
+WorkingHours
+├── clinic (ForeignKey → Clinic)
+├── day_of_week (0-6: Monday-Sunday)
+├── open_time, close_time
+└── is_closed (boolean)
+
+VetProfile
+├── clinic (OneToOne → Clinic)
+├── vet_name
+├── degrees (education)
+└── certifications</code></pre>
+
+        <h4>Key Features:</h4>
+        <ul>
+            <li><strong>Geolocation Integration:</strong> Automatic geocoding of clinic addresses for proximity-based search</li>
+            <li><strong>Two-Step Verification:</strong> Email confirmation and admin approval for public listing</li>
+            <li><strong>Search Capabilities:</strong> Find clinics by city, location coordinates, or specialization</li>
+            <li><strong>Working Hours Management:</strong> Detailed schedule for each day of the week</li>
+        </ul>
+
+        <h4>Key API Endpoints:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Method</th>
+                    <th>Auth</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>/api/clinics/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>None</td>
+                    <td>List approved clinics</td>
+                </tr>
+                <tr>
+                    <td><code>/api/clinics/register/</code></td>
+                    <td><span class="method post">POST</span></td>
+                    <td>None</td>
+                    <td>Register clinic + user account</td>
+                </tr>
+                <tr>
+                    <td><code>/api/clinics/search/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>None</td>
+                    <td>Search clinics by location</td>
+                </tr>
+                <tr>
+                    <td><code>/api/clinics/{id}/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>None</td>
+                    <td>Get clinic details</td>
+                </tr>
+                <tr>
+                    <td><code>/api/clinics/{id}/</code></td>
+                    <td><span class="method patch">PATCH</span></td>
+                    <td>Required</td>
+                    <td>Update clinic (owner only)</td>
+                </tr>
+                <tr>
+                    <td><code>/api/clinics/{id}/working-hours/</code></td>
+                    <td><span class="method get">GET</span></td>
+                    <td>None</td>
+                    <td>Get clinic working hours</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="page-break-after: always;"></div>
+
+        <h3 id="ai-module">2.4 AI-Powered Recommendations Module</h3>
+        <p><strong>Purpose:</strong> Provide intelligent, personalized pet care recommendations using OpenAI's API with structured outputs.</p>
+
+        <h4>Data Models:</h4>
+        <pre><code>AIRecommendation
+├── pet (ForeignKey → Pet)
+├── type (MEAL or HEALTH)
+├── content (plain text)
+├── content_json (structured data)
+├── created_at
+└── ip_address
+
+AIHealthReport
+├── pet (ForeignKey → Pet)
+├── summary (text)
+├── suggestions (text)
+├── summary_json (structured data)
+├── created_at
+└── ip_address</code></pre>
+
+        <h4>AI Features:</h4>
+        <ul>
+            <li><strong>Structured Outputs:</strong> Uses Pydantic models for reliable, parseable AI responses</li>
+            <li><strong>Personalized Recommendations:</strong> Based on comprehensive pet profile data</li>
+            <li><strong>Subscription-Based Limits:</strong> Usage tracking and quota management</li>
+            <li><strong>Multiple Recommendation Types:</strong> Meal plans and health reports</li>
+        </ul>
+
+        <h4>Structured Meal Plan Output:</h4>
+        <pre><code>{
+  "der_kcal": 1500,
+  "nutrient_targets": {
+    "protein_percent": "25-30%",
+    "fat_percent": "12-15%",
+    "carbs_percent": "40-45%"
+  },
+  "options": [
+    {
+      "name": "Balanced Home-Cooked Meal",
+      "overview": "A nutritious home-prepared meal...",
+      "sections": [
+        {
+          "title": "Protein Source",
+          "items": ["200g lean beef", "150g turkey breast"]
+        }
+      ]
+    }
+  ],
+  "feeding_schedule": [
+    {"time": "8:00 AM", "note": "Morning meal - 50% of daily calories"}
+  ],
+  "safety_notes": ["Avoid chicken and wheat due to allergies"]
+}</code></pre>
+
+        <div style="page-break-after: always;"></div>
+
+        <h3 id="legal-module">2.5 Legal &amp; Compliance Module</h3>
+        <p><strong>Purpose:</strong> Manage privacy policies, terms of service, and user consent tracking for GDPR compliance.</p>
+
+        <h4>Data Models:</h4>
+        <pre><code>LegalDocument
+├── title (multilingual)
+├── content (multilingual)
+├── document_type (PRIVACY_POLICY, TERMS_OF_SERVICE, etc.)
+├── version
+├── effective_date
+├── is_active
+└── requires_acceptance
+
+UserConsent
+├── user (ForeignKey → CustomUser)
+├── document (ForeignKey → LegalDocument)
+├── accepted (boolean)
+├── accepted_at
+└── ip_address
+
+ConsentLog
+├── user (nullable)
+├── document
+├── action (ACCEPTED, REJECTED, VIEWED)
+├── ip_address
+└── timestamp</code></pre>
+
+        <h4>Compliance Features:</h4>
+        <ul>
+            <li><strong>Audit Trail:</strong> Complete logging of all consent actions</li>
+            <li><strong>Version Control:</strong> Track document versions and effective dates</li>
+            <li><strong>IP Address Tracking:</strong> Record location data for legal requirements</li>
+            <li><strong>Multilingual Support:</strong> Legal documents in multiple languages</li>
+        </ul>
+
+        <div class="section-divider"></div>
+
+        <!-- 3. Authentication & Security -->
+        <h2 id="security">3. Authentication &amp; Security</h2>
+
+        <h3>3.1 JWT Authentication</h3>
+        <p>The system uses JSON Web Tokens (JWT) for stateless authentication:</p>
+        <ul>
+            <li><strong>Access Token:</strong> Short-lived (5-15 minutes) for API requests</li>
+            <li><strong>Refresh Token:</strong> Long-lived (1-7 days) for obtaining new access tokens</li>
+            <li><strong>Token Payload:</strong> Contains user_id, email, expiration, and unique identifier</li>
+        </ul>
+
+        <h4>Authentication Header Format:</h4>
+        <pre><code>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...</code></pre>
+
+        <h3>3.2 Security Measures</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Security Layer</th>
+                    <th>Implementation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Input Validation</strong></td>
+                    <td>All serializers validate data types, lengths, and formats</td>
+                </tr>
+                <tr>
+                    <td><strong>Password Security</strong></td>
+                    <td>PBKDF2 hashing, minimum length, complexity validation</td>
+                </tr>
+                <tr>
+                    <td><strong>Email Verification</strong></td>
+                    <td>Time-limited activation tokens, prevents unauthorized access</td>
+                </tr>
+                <tr>
+                    <td><strong>Authorization</strong></td>
+                    <td>Resource ownership validation, permission classes</td>
+                </tr>
+                <tr>
+                    <td><strong>Rate Limiting</strong></td>
+                    <td>Prevents brute force attacks and API abuse</td>
+                </tr>
+                <tr>
+                    <td><strong>HTTPS Enforcement</strong></td>
+                    <td>SSL/TLS encryption, secure cookies, HSTS headers</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="page-break-after: always;"></div>
+
+        <!-- 4. Data Flow Examples -->
+        <h2 id="dataflow">4. Data Flow Examples</h2>
+
+        <h3>4.1 Complete User Journey: Registration to AI Recommendation</h3>
+        <pre><code>Step 1: User Registration
+Client → POST /api/auth/signup/
+     ← 201 Created {user_id, email}
+
+Step 2: Email Verification
+User clicks email link → Web/API verifies token → User activated
+
+Step 3: Login
+Client → POST /api/auth/token/ {email, password}
+     ← 200 OK {access_token, refresh_token}
+
+Step 4: Set Language Preference
+Client → POST /api/me/language/ {language: "fi"}
+     ← 200 OK {language: "fi"}
+
+Step 5: Get Form Options
+Client → GET /api/pet-types/
+     ← 200 OK [{id:1, name:"Dog"}, {id:2, name:"Cat"}]
+
+Step 6: Create Pet Profile
+Client → POST /api/pets/ {name, pet_type, breed, ...}
+     ← 201 Created {pet object with nested details}
+
+Step 7: Generate AI Meal Recommendation
+Client → POST /api/ai/recommendations/ {pet_id: 123, type: "meal"}
+     ← 201 Created {structured meal plan}</code></pre>
+
+        <div class="section-divider"></div>
+
+        <!-- 5. Error Handling -->
+        <h2 id="errors">5. Error Handling</h2>
+
+        <h3>5.1 Standard Error Responses</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Status Code</th>
+                    <th>Error Type</th>
+                    <th>Example Response</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>400</strong></td>
+                    <td>Validation Error</td>
+                    <td><code>{"error": "Validation failed", "details": {...}}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>401</strong></td>
+                    <td>Authentication Error</td>
+                    <td><code>{"detail": "Authentication credentials were not provided."}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>403</strong></td>
+                    <td>Authorization Error</td>
+                    <td><code>{"error": "You don't have permission to edit this clinic."}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>404</strong></td>
+                    <td>Not Found</td>
+                    <td><code>{"error": "Pet not found or you don't have access."}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>429</strong></td>
+                    <td>Rate Limit</td>
+                    <td><code>{"error": "You've reached your monthly limit...", "limit": 3}</code></td>
+                </tr>
+                <tr>
+                    <td><strong>500</strong></td>
+                    <td>Server Error</td>
+                    <td><code>{"error": "An unexpected error occurred...", "error_id": "..."}</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="page-break-after: always;"></div>
+
+        <!-- 6. Database Schema -->
+        <h2 id="database">6. Database Schema</h2>
+
+        <h3>6.1 Entity Relationship Overview</h3>
+        <div class="diagram-box">
+            <pre>
+┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+│ CustomUser  │1      1│   Profile   │1      * │     Pet     │
+│─────────────│◄────────│─────────────│◄────────│─────────────│
+│ id          │         │ user_id FK  │         │ user_id FK  │
+│ email       │         │ first_name  │         │ name        │
+│ password    │         │ last_name   │         │ pet_type_id │
+│ is_active   │         │ phone       │         │ breed_id    │
+└─────────────┘         │ address     │         │ weight      │
+       │                │ preferred_  │         └─────────────┘
+       │                │  language   │                │
+       │                └─────────────┘                │
+       │1                                              │1
+       │*                                              │*
+┌─────────────┐                               ┌─────────────┐
+│   Clinic    │                               │AIRecommendat│
+│─────────────│                               │─────────────│
+│ owner_id FK │                               │ pet_id FK   │
+│ name        │                               │ type        │
+│ address     │                               │ content_json│
+│ latitude    │                               │ created_at  │
+│ longitude   │                               └─────────────┘
+└─────────────┘
+            </pre>
+        </div>
+
+        <h3>6.2 Key Database Optimizations</h3>
+        <ul>
+            <li><strong>Indexes:</strong> Foreign keys, email fields, date fields, geocoding coordinates</li>
+            <li><strong>Query Optimization:</strong> select_related() for ForeignKey, prefetch_related() for ManyToMany</li>
+            <li><strong>Pagination:</strong> All list endpoints use pagination to reduce data transfer</li>
+            <li><strong>Filtered Querysets:</strong> Efficient filtering to minimize database load</li>
+        </ul>
+
+        <div class="section-divider"></div>
+
+        <!-- 7. Scalability Considerations -->
+        <h2 id="scalability">7. Scalability Considerations</h2>
+
+        <h3>7.1 Current Architecture Strengths</h3>
+        <ul>
+            <li><span class="checkmark">✓</span> <strong>Stateless API:</strong> JWT authentication eliminates session state</li>
+            <li><span class="checkmark">✓</span> <strong>Modular Design:</strong> Independent apps can scale separately</li>
+            <li><span class="checkmark">✓</span> <strong>Database Optimization:</strong> Proper indexing and query optimization</li>
+            <li><span class="checkmark">✓</span> <strong>Caching Ready:</strong> Structure supports Redis/Memcached integration</li>
+            <li><span class="checkmark">✓</span> <strong>Async Ready:</strong> Django supports async views for I/O operations</li>
+        </ul>
+
+        <h3>7.2 Future Scaling Strategies</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Strategy</th>
+                    <th>Implementation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Horizontal Scaling</strong></td>
+                    <td>Load balancer with multiple API servers, database read replicas</td>
+                </tr>
+                <tr>
+                    <td><strong>Caching Layer</strong></td>
+                    <td>Redis for frequently accessed data, reference data, AI recommendations</td>
+                </tr>
+                <tr>
+                    <td><strong>Background Tasks</strong></td>
+                    <td>Celery for email sending, AI generation queue, geocoding</td>
+                </tr>
+                <tr>
+                    <td><strong>CDN Integration</strong></td>
+                    <td>Static assets, pet images, clinic logos served via CDN</td>
+                </tr>
+                <tr>
+                    <td><strong>Microservices</strong></td>
+                    <td>AI module, geolocation service, email service as separate services</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="page-break-after: always;"></div>
+
+        <!-- 8. API Versioning -->
+        <h2 id="versioning">8. API Versioning Strategy</h2>
+
+        <h3>8.1 Current Implementation</h3>
+        <p>All endpoints are implicitly versioned with URL prefix:</p>
+        <pre><code>/api/v1/pets/
+/api/v1/clinics/
+/api/v1/auth/token/</code></pre>
+
+        <h3>8.2 Future Version Management</h3>
+        <ul>
+            <li><strong>URL Versioning:</strong> <code>/api/v1/</code> vs <code>/api/v2/</code> for major changes</li>
+            <li><strong>Deprecation Policy:</strong> 6 months notice, 12 months minimum support</li>
+            <li><strong>Migration Documentation:</strong> Clear guides for version transitions</li>
+        </ul>
+
+        <div class="section-divider"></div>
+
+        <!-- 9. Monitoring & Logging -->
+        <h2 id="monitoring">9. Monitoring &amp; Logging</h2>
+
+        <h3>9.1 Request Logging</h3>
+        <p>All API requests are logged with comprehensive metadata:</p>
+        <ul>
+            <li>Timestamp and User ID (if authenticated)</li>
+            <li>Endpoint, HTTP method, Response status</li>
+            <li>Response time and IP address</li>
+        </ul>
+
+        <h3>9.2 Error Tracking</h3>
+        <p>Errors are logged with full context for debugging:</p>
+        <ul>
+            <li>Stack trace and User context</li>
+            <li>Request payload (sanitized for security)</li>
+            <li>Unique error ID for user reference</li>
+        </ul>
+
+        <h3>9.3 Performance Metrics</h3>
+        <p>System tracks key performance indicators:</p>
+        <ul>
+            <li>Response times per endpoint</li>
+            <li>Database query counts</li>
+            <li>AI API response times</li>
+            <li>Error rates and Usage patterns</li>
+        </ul>
+
+        <div class="section-divider"></div>
+
+        <!-- 10. Testing Strategy -->
+        <h2 id="testing">10. Testing Strategy</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Test Type</th>
+                    <th>Coverage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Unit Tests</strong></td>
+                    <td>Serializer validation, Model methods, Business logic, Permission classes</td>
+                </tr>
+                <tr>
+                    <td><strong>Integration Tests</strong></td>
+                    <td>Complete API workflows, Authentication flows, Database transactions, External API integration</td>
+                </tr>
+                <tr>
+                    <td><strong>Load Testing</strong></td>
+                    <td>Concurrent user simulation, Peak load handling, Database connection pooling, Memory leak detection</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="page-break-after: always;"></div>
+
+        <!-- 11. Deployment Architecture -->
+        <h2 id="deployment">11. Deployment Architecture</h2>
+
+        <div class="diagram-box">
+            <pre>
+┌─────────────────────────────────────────────────────────────┐
+│                      Load Balancer                          │
+│                    (HTTPS/SSL Termination)                  │
+└────────────────────────┬────────────────────────────────────┘
+                         │
+         ┌───────────────┴───────────────┐
+         │                               │
+┌────────▼────────┐             ┌────────▼────────┐
+│  API Server 1   │             │  API Server 2   │
+│(Django/Gunicorn)│             │(Django/Gunicorn)│
+└────────┬────────┘             └────────┬────────┘
+         │                               │
+         └───────────────┬───────────────┘
+                         │
+                ┌────────▼────────┐
+                │   PostgreSQL    │
+                │   (Primary DB)  │
+                └─────────────────┘
+                         │
+                ┌────────▼────────┐
+                │  Media Storage  │
+                │ (S3/Local Files)│
+                └─────────────────┘
+            </pre>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- 12. Conclusion -->
+        <h2 id="conclusion">12. Conclusion</h2>
+
+        <p>This RESTful API backend provides a robust, scalable foundation for a multi-platform pet care application. Key strengths include:</p>
+
+        <div class="info-box">
+            <ul>
+                <li><span class="checkmark">✓</span> <strong>Comprehensive Coverage:</strong> User management, pet profiles, clinic discovery, and AI recommendations</li>
+                <li><span class="checkmark">✓</span> <strong>Security First:</strong> JWT authentication, email verification, permission-based access control</li>
+                <li><span class="checkmark">✓</span> <strong>Developer Friendly:</strong> Clear documentation, consistent patterns, comprehensive error handling</li>
+                <li><span class="checkmark">✓</span> <strong>Multi-language Support:</strong> Internationalization built into core data models</li>
+                <li><span class="checkmark">✓</span> <strong>AI Integration:</strong> Structured outputs for reliable, parseable AI recommendations</li>
+                <li><span class="checkmark">✓</span> <strong>Scalable Design:</strong> Stateless architecture ready for horizontal scaling</li>
+                <li><span class="checkmark">✓</span> <strong>Compliance Ready:</strong> GDPR-compliant consent tracking and audit logs</li>
+                <li><span class="checkmark">✓</span> <strong>Production Ready:</strong> Error handling, logging, monitoring capabilities</li>
+            </ul>
+        </div>
+
+        <p>The architecture supports current mobile application requirements while providing a flexible foundation for future platform expansion and feature enhancements.</p>
+
+        <div style="page-break-after: always;"></div>
+
+        <!-- Appendix A: Complete Endpoint Reference -->
+        <h2 id="appendix">Appendix A: Complete Endpoint Reference</h2>
+
+        <h3>Authentication Endpoints</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>POST /api/auth/signup/</code></td><td>Register new user</td></tr>
+                <tr><td><code>POST /api/auth/token/</code></td><td>Obtain JWT tokens</td></tr>
+                <tr><td><code>POST /api/auth/token/refresh/</code></td><td>Refresh access token</td></tr>
+                <tr><td><code>POST /api/auth/forgot-password/</code></td><td>Request password reset</td></tr>
+                <tr><td><code>POST /api/auth/reset-password/</code></td><td>Reset password with token</td></tr>
+                <tr><td><code>POST /api/auth/change-password/</code></td><td>Change password (authenticated)</td></tr>
+            </tbody>
+        </table>
+
+        <h3>User Endpoints</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>GET /api/me/</code></td><td>Get current user profile</td></tr>
+                <tr><td><code>PATCH /api/me/</code></td><td>Update user profile</td></tr>
+                <tr><td><code>GET /api/me/language/</code></td><td>Get language preference</td></tr>
+                <tr><td><code>POST /api/me/language/</code></td><td>Set language preference</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Pet Endpoints</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>GET /api/pets/</code></td><td>List user's pets</td></tr>
+                <tr><td><code>POST /api/pets/</code></td><td>Create new pet</td></tr>
+                <tr><td><code>GET /api/pets/{id}/</code></td><td>Get pet details</td></tr>
+                <tr><td><code>PATCH /api/pets/{id}/</code></td><td>Update pet</td></tr>
+                <tr><td><code>DELETE /api/pets/{id}/</code></td><td>Delete pet</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Pet Reference Data Endpoints</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>GET /api/pet-types/</code></td><td>List pet types</td></tr>
+                <tr><td><code>GET /api/genders/</code></td><td>List genders</td></tr>
+                <tr><td><code>GET /api/breeds/?pet_type={id}</code></td><td>List breeds</td></tr>
+                <tr><td><code>GET /api/age-categories/?pet_type={id}</code></td><td>List age categories</td></tr>
+                <tr><td><code>GET /api/food-types/</code></td><td>List food types</td></tr>
+                <tr><td><code>GET /api/food-allergies/</code></td><td>List food allergies</td></tr>
+                <tr><td><code>GET /api/health-issues/</code></td><td>List health issues</td></tr>
+                <tr><td><code>GET /api/body-types/</code></td><td>List body types</td></tr>
+                <tr><td><code>GET /api/activity-levels/</code></td><td>List activity levels</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Clinic Endpoints</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>GET /api/clinics/</code></td><td>List approved clinics</td></tr>
+                <tr><td><code>POST /api/clinics/register/</code></td><td>Register clinic + user</td></tr>
+                <tr><td><code>GET /api/clinics/my/</code></td><td>Get user's clinic</td></tr>
+                <tr><td><code>GET /api/clinics/{id}/</code></td><td>Get clinic details</td></tr>
+                <tr><td><code>PATCH /api/clinics/{id}/</code></td><td>Update clinic</td></tr>
+                <tr><td><code>GET /api/clinics/search/</code></td><td>Search clinics by location</td></tr>
+                <tr><td><code>GET /api/clinics/{id}/working-hours/</code></td><td>Get working hours</td></tr>
+                <tr><td><code>POST /api/clinics/{id}/working-hours/</code></td><td>Set working hours</td></tr>
+                <tr><td><code>GET /api/clinics/{id}/vet-profile/</code></td><td>Get vet profile</td></tr>
+            </tbody>
+        </table>
+
+        <h3>AI Endpoints</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>GET /api/ai/recommendations/</code></td><td>List recommendations</td></tr>
+                <tr><td><code>POST /api/ai/recommendations/</code></td><td>Generate meal recommendation</td></tr>
+                <tr><td><code>GET /api/ai/recommendations/{id}/</code></td><td>Get specific recommendation</td></tr>
+                <tr><td><code>GET /api/ai/health-reports/</code></td><td>List health reports</td></tr>
+                <tr><td><code>POST /api/ai/health-reports/</code></td><td>Generate health report</td></tr>
+            </tbody>
+        </table>
+
+        <h3>Legal & Configuration Endpoints</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Endpoint</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><code>GET /api/legal/documents/</code></td><td>List legal documents</td></tr>
+                <tr><td><code>GET /api/legal/consent/user/</code></td><td>Get user consents</td></tr>
+                <tr><td><code>POST /api/legal/consent/user/</code></td><td>Record consent</td></tr>
+                <tr><td><code>GET /api/config/</code></td><td>App configuration</td></tr>
+                <tr><td><code>GET /api/languages/</code></td><td>Available languages</td></tr>
+                <tr><td><code>GET /api/onboarding/</code></td><td>Onboarding slides</td></tr>
+                <tr><td><code>GET /api/ping/</code></td><td>Health check</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>Fammo - Pet Care & Veterinary Services Platform</strong></p>
+            <p>Backend API Architecture Documentation</p>
+            <p>Document Version: 1.0 | API Version: v1.0.0 | Last Updated: December 12, 2024</p>
+            <p style="margin-top: 10px; font-size: 8pt; color: #999;">
+                This document is confidential and proprietary. Unauthorized distribution is prohibited.
+            </p>
+        </div>
+    </div>
+
+    <!-- Print Button (hidden when printing) -->
+    <div class="no-print" style="position: fixed; bottom: 20px; right: 20px;">
+        <button onclick="window.print()" style="background: #4A90E2; color: white; border: none; padding: 15px 30px; border-radius: 5px; cursor: pointer; font-size: 14pt; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+            Print / Save as PDF
+        </button>
+    </div>
+</body>
+</html>

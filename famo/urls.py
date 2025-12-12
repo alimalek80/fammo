@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
+from userapp.views import reset_password_from_email
 
 urlpatterns = [
     # ✅ This is required for {% url 'set_language' %} to work
@@ -34,6 +35,8 @@ urlpatterns += [
     path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='userapp/password_reset_done.html'), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='userapp/password_reset_confirm.html'), name='password_reset_confirm'),
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='userapp/password_reset_complete.html'), name='password_reset_complete'),
+    # API-based password reset (for forgot password via email from app)
+    path('reset-password/<uidb64>/<token>/', reset_password_from_email, name='api_reset_password_from_email'),
     path('accounts/', include('allauth.urls')),
     
 ]

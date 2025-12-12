@@ -1,6 +1,15 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 
+# Import legal document models
+from .legal_models import (
+    LegalDocument,
+    DocumentType,
+    UserConsent,
+    ClinicConsent,
+    ConsentLog,
+)
+
 # Create your models here.
 
 class HeroSection(models.Model):

@@ -1059,3 +1059,51 @@ def import_translations_csv(request):
             'success': False,
             'error': f'Failed to process CSV file: {str(e)}'
         }, status=500)
+
+
+def reset_password_from_email(request, uidb64, token):
+    """
+    Web page for resetting password from email link
+    Used for API-based password reset (forgot password flow)
+    URL: /reset-password/<uidb64>/<token>/
+    """
+    try:
+        from django.utils.encoding import force_str
+        from userapp.models import CustomUser
+        user_id = force_str(urlsafe_base64_decode(uidb64))
+        user = CustomUser.objects.get(pk=user_id)
+        
+        # Verify token is valid
+        if not default_token_generator.check_token(user, token):
+            messages.error(request, _("This password reset link is invalid or has expired."))
+            return render(request, 'userapp/password_reset_error.html')
+        
+        # Show form
+        if request.method == 'POST':
+            password = request.POST.get('password')
+            password_confirm = request.POST.get('password_confirm')
+            
+            # Validation
+            if not password or not password_confirm:
+                messages.error(request, _("Both password fields are required."))
+            elif password != password_confirm:
+                messages.error(request, _("Passwords do not match."))
+            elif len(password) < 8:
+                messages.error(request, _("Password must be at least 8 characters long."))
+            else:
+                # Reset password
+                user.set_password(password)
+                user.save()
+                messages.success(request, _("Your password has been reset successfully! You can now log in with your new password."))
+                return redirect('login')
+        
+        # Show reset form
+        return render(request, 'userapp/password_reset_from_email.html', {
+            'uidb64': uidb64,
+            'token': token,
+            'user_email': user.email
+        })
+        
+    except (TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        messages.error(request, _("This password reset link is invalid or has expired."))
+        return render(request, 'userapp/password_reset_error.html')
