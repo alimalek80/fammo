@@ -7,6 +7,8 @@ from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from userapp.views import reset_password_from_email
 
+from userapp.views import account_deletion_view, privacy_policy_view
+
 urlpatterns = [
     # ✅ This is required for {% url 'set_language' %} to work
     path('i18n/', include('django.conf.urls.i18n')),
@@ -14,6 +16,9 @@ urlpatterns = [
     # API routes should be outside i18n_patterns for mobile apps
     path('api/v1/', include('api.urls')),
     path('api/v1/ai/', include(('ai_core.urls', 'ai_core'), namespace='ai_core')),
+    # Legal pages outside i18n for direct access (required for app store)
+    path('delete-account/', account_deletion_view, name='delete_account_direct'),
+    path('privacy-policy/', privacy_policy_view, name='privacy_policy_direct'),
 ]
 
 # Your actual app routes (web interface with i18n)

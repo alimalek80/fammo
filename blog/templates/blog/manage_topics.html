@@ -1,0 +1,412 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Manage Topics" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="flex h-screen overflow-hidden bg-slate-50">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0">
+        <div class="p-6 flex items-center gap-3 text-white font-bold text-xl border-b border-slate-800">
+            <div class="bg-indigo-500 p-2 rounded-lg">
+                <i class="fas fa-blog text-white"></i>
+            </div>
+            <span>Blog AI</span>
+        </div>
+        
+        <nav class="flex-1 px-4 py-6 space-y-1">
+            <a href="{% url 'blog:dashboard' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-layer-group"></i> {% trans "Pipeline" %}
+            </a>
+            <a href="{% url 'blog:manage_topics' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600 text-white">
+                <i class="fas fa-lightbulb"></i> {% trans "Topics" %}
+            </a>
+            <a href="{% url 'blog:my_generation_requests' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-history"></i> {% trans "Requests" %}
+            </a>
+            <a href="{% url 'blog:my_blog_posts' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-file-alt"></i> {% trans "My Posts" %}
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800">
+            <div class="flex items-center gap-3 px-2">
+                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-sm">
+                    {{ user.email|first|upper }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-semibold text-white leading-none truncate">
+                        {% if user.profile.first_name %}{{ user.profile.first_name }}{% else %}{{ user.email }}{% endif %}
+                    </p>
+                    <p class="text-[10px] text-slate-500 truncate">{{ user.email }}</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="h-16 border-b bg-white flex items-center justify-between px-8 shrink-0">
+            <h1 class="text-xl font-bold text-slate-800 uppercase tracking-wider">{% trans "Manage Topics" %}</h1>
+            <button onclick="document.getElementById('create-topic-modal').classList.remove('hidden')" 
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition shadow-sm">
+                <i class="fas fa-plus mr-2"></i>{% trans "New Topic" %}
+            </button>
+        </header>
+
+        <!-- Kanban Board for Topics -->
+        <div class="p-8 flex-1 overflow-y-auto">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Column: TODO Topics -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-500 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-slate-400 rounded-full"></span>
+                        {% trans "TO DO" %}
+                    </h3>
+                    <span class="bg-slate-200 text-slate-600 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                        {{ todo_topics|length }}
+                    </span>
+                </div>
+                <div class="space-y-3">
+                    {% for topic in todo_topics %}
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-indigo-300 transition group">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded uppercase">{{ topic.language }}</span>
+                                <div class="flex items-center gap-2">
+                                    {% if topic.priority > 0 %}
+                                        <span class="text-[10px] text-amber-500 font-bold">
+                                            <i class="fas fa-star"></i> {{ topic.priority }}
+                                        </span>
+                                    {% endif %}
+                                    <button onclick="openEditModal({{ topic.id }}, '{{ topic.title|escapejs }}', '{{ topic.language }}', '{{ topic.primary_keyword|escapejs }}', '{{ topic.secondary_keywords|escapejs }}', '{{ topic.target_audience|escapejs }}', '{{ topic.notes|escapejs }}', {{ topic.priority }})" 
+                                            class="text-slate-400 hover:text-indigo-600 transition text-xs">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <form method="post" action="{% url 'blog:delete_topic' topic.id %}" class="inline" onsubmit="return confirm('Delete this topic?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="text-slate-300 hover:text-red-500 transition text-xs">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                            <h4 class="font-semibold text-slate-800 text-sm mb-2">{{ topic.title }}</h4>
+                            {% if topic.primary_keyword %}
+                                <p class="text-xs text-slate-500"><i class="fas fa-key mr-1"></i>{{ topic.primary_keyword }}</p>
+                            {% endif %}
+                            {% if topic.target_audience %}
+                                <p class="text-xs text-slate-500 mt-1"><i class="fas fa-users mr-1"></i>{{ topic.target_audience }}</p>
+                            {% endif %}
+                            <form method="post" action="{% url 'blog:generate_from_topic' topic.id %}" class="mt-3">
+                                {% csrf_token %}
+                                <button type="submit" class="w-full px-3 py-2 bg-indigo-600 text-white text-xs font-medium rounded-lg hover:bg-indigo-700 transition">
+                                    <i class="fas fa-magic mr-1"></i>{% trans "Generate Blog" %}
+                                </button>
+                            </form>
+                        </div>
+                    {% empty %}
+                        <div class="bg-slate-100 p-6 rounded-xl text-center">
+                            <p class="text-xs text-slate-400">{% trans "No topics yet" %}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Column: IN PROGRESS Topics -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-amber-500 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-amber-400 rounded-full"></span>
+                        {% trans "IN PROGRESS" %}
+                    </h3>
+                    <span class="bg-amber-100 text-amber-600 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                        {{ in_progress_topics|length }}
+                    </span>
+                </div>
+                <div class="space-y-3">
+                    {% for topic in in_progress_topics %}
+                        <div class="bg-white p-4 rounded-xl border-2 border-dashed border-amber-200 shadow-sm">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded uppercase">{{ topic.language }}</span>
+                                <i class="fas fa-sync fa-spin text-amber-500"></i>
+                            </div>
+                            <h4 class="font-semibold text-slate-800 text-sm mb-2">{{ topic.title }}</h4>
+                            {% if topic.last_used_at %}
+                                <p class="text-[10px] text-slate-400">
+                                    <i class="fas fa-clock mr-1"></i>{% trans "Started" %} {{ topic.last_used_at|timesince }} {% trans "ago" %}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="bg-amber-50 p-6 rounded-xl text-center">
+                            <p class="text-xs text-amber-600">{% trans "No topics in progress" %}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Column: COMPLETED Topics -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-emerald-500 flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full"></span>
+                        {% trans "COMPLETED" %}
+                    </h3>
+                    <span class="bg-emerald-100 text-emerald-600 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                        {{ completed_topics|length }}
+                    </span>
+                </div>
+                <div class="space-y-3 max-h-screen overflow-y-auto">
+                    {% for topic in completed_topics %}
+                        <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm hover:border-emerald-300 transition">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded uppercase">{{ topic.language }}</span>
+                                <i class="fas fa-check-circle text-emerald-500"></i>
+                            </div>
+                            <h4 class="font-semibold text-slate-800 text-sm mb-2">{{ topic.title }}</h4>
+                            {% if topic.last_used_at %}
+                                <p class="text-[10px] text-slate-400">
+                                    <i class="fas fa-check mr-1"></i>{{ topic.last_used_at|timesince }} {% trans "ago" %}
+                                </p>
+                            {% endif %}
+                        </div>
+                    {% empty %}
+                        <div class="bg-emerald-50 p-6 rounded-xl text-center">
+                            <p class="text-xs text-emerald-600">{% trans "No completed topics" %}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Create Topic Modal -->
+<div id="create-topic-modal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b sticky top-0 bg-white">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-800">
+                    <i class="fas fa-lightbulb text-indigo-500 mr-2"></i>{% trans "Create New Topic" %}
+                </h3>
+                <button onclick="document.getElementById('create-topic-modal').classList.add('hidden')" 
+                        class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <form method="post" action="{% url 'blog:create_topic' %}" class="p-6 space-y-4">
+            {% csrf_token %}
+            
+            <div>
+                <label for="title" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Topic Title" %} <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="title" id="title" required 
+                       placeholder="e.g., The Future of AI in Healthcare"
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="language" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                        {% trans "Language" %}
+                    </label>
+                    <select name="language" id="language" required 
+                            class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        {% for code, name in languages %}
+                            <option value="{{ code }}" {% if code == 'en' %}selected{% endif %}>{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="priority" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                        {% trans "Priority" %}
+                    </label>
+                    <input type="number" name="priority" id="priority" value="0" min="0" max="100"
+                           class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <div>
+                <label for="primary_keyword" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Primary Keyword" %}
+                </label>
+                <input type="text" name="primary_keyword" id="primary_keyword" 
+                       placeholder="e.g., artificial intelligence"
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+
+            <div>
+                <label for="secondary_keywords" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Secondary Keywords" %}
+                </label>
+                <input type="text" name="secondary_keywords" id="secondary_keywords" 
+                       placeholder="e.g., machine learning, healthcare tech, patient care"
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <p class="text-xs text-slate-400 mt-1">{% trans "Comma-separated keywords" %}</p>
+            </div>
+
+            <div>
+                <label for="target_audience" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Target Audience" %}
+                </label>
+                <input type="text" name="target_audience" id="target_audience" 
+                       placeholder="e.g., Healthcare professionals, Tech enthusiasts"
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+
+            <div>
+                <label for="notes" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Additional Notes for AI" %}
+                </label>
+                <textarea name="notes" id="notes" rows="3" 
+                          placeholder="e.g., Focus on practical applications, include case studies, maintain optimistic tone"
+                          class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button type="button" 
+                        onclick="document.getElementById('create-topic-modal').classList.add('hidden')"
+                        class="flex-1 px-4 py-3 border border-slate-200 text-slate-600 font-medium rounded-lg hover:bg-slate-50 transition">
+                    {% trans "Cancel" %}
+                </button>
+                <button type="submit" 
+                        class="flex-1 px-4 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition shadow-sm">
+                    <i class="fas fa-plus mr-2"></i>{% trans "Create Topic" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Topic Modal -->
+<div id="edit-topic-modal" class="hidden fixed inset-0 bg-slate-900 bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b sticky top-0 bg-white">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-slate-800">
+                    <i class="fas fa-edit text-indigo-500 mr-2"></i>{% trans "Edit Topic" %}
+                </h3>
+                <button onclick="closeEditModal()" 
+                        class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <form method="post" id="edit-topic-form" class="p-6 space-y-4">
+            {% csrf_token %}
+            
+            <div>
+                <label for="edit-title" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Topic Title" %} <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="title" id="edit-title" required 
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="edit-language" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                        {% trans "Language" %}
+                    </label>
+                    <select name="language" id="edit-language" required 
+                            class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                        {% for code, name in languages %}
+                            <option value="{{ code }}">{{ name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div>
+                    <label for="edit-priority" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                        {% trans "Priority" %}
+                    </label>
+                    <input type="number" name="priority" id="edit-priority" value="0" min="0" max="100"
+                           class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                </div>
+            </div>
+
+            <div>
+                <label for="edit-primary_keyword" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Primary Keyword" %}
+                </label>
+                <input type="text" name="primary_keyword" id="edit-primary_keyword" 
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+
+            <div>
+                <label for="edit-secondary_keywords" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Secondary Keywords" %}
+                </label>
+                <input type="text" name="secondary_keywords" id="edit-secondary_keywords" 
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                <p class="text-xs text-slate-400 mt-1">{% trans "Comma-separated keywords" %}</p>
+            </div>
+
+            <div>
+                <label for="edit-target_audience" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Target Audience" %}
+                </label>
+                <input type="text" name="target_audience" id="edit-target_audience" 
+                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            </div>
+
+            <div>
+                <label for="edit-notes" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {% trans "Additional Notes for AI" %}
+                </label>
+                <textarea name="notes" id="edit-notes" rows="3" 
+                          class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"></textarea>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+                <button type="button" 
+                        onclick="closeEditModal()"
+                        class="flex-1 px-4 py-3 border border-slate-200 text-slate-600 font-medium rounded-lg hover:bg-slate-50 transition">
+                    {% trans "Cancel" %}
+                </button>
+                <button type="submit" 
+                        class="flex-1 px-4 py-3 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition shadow-sm">
+                    <i class="fas fa-save mr-2"></i>{% trans "Save Changes" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openEditModal(topicId, title, language, primaryKeyword, secondaryKeywords, targetAudience, notes, priority) {
+    // Set form action
+    const form = document.getElementById('edit-topic-form');
+    form.action = "{% url 'blog:manage_topics' %}".replace('topics/', `topics/${topicId}/edit/`);
+    
+    // Populate form fields
+    document.getElementById('edit-title').value = title;
+    document.getElementById('edit-language').value = language;
+    document.getElementById('edit-primary_keyword').value = primaryKeyword;
+    document.getElementById('edit-secondary_keywords').value = secondaryKeywords;
+    document.getElementById('edit-target_audience').value = targetAudience;
+    document.getElementById('edit-notes').value = notes;
+    document.getElementById('edit-priority').value = priority;
+    
+    // Show modal
+    document.getElementById('edit-topic-modal').classList.remove('hidden');
+}
+
+function closeEditModal() {
+    document.getElementById('edit-topic-modal').classList.add('hidden');
+}
+</script>
+{% endblock %}

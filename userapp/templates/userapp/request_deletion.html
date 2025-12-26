@@ -1,0 +1,130 @@
+{% extends 'userapp/dashboard_base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Request Account Deletion - Fammo{% endblock %}
+
+{% block dashboard_content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h1 class="display-6 mb-4 text-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Request Account Deletion
+                    </h1>
+                    
+                    <div class="alert alert-danger">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-warning me-2"></i>
+                            Warning: This Action is Permanent
+                        </h5>
+                        <p class="mb-0">
+                            Once approved, your account and all associated data will be permanently deleted and cannot be recovered.
+                        </p>
+                    </div>
+
+                    <div class="card bg-light border-warning mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning">
+                                <i class="fas fa-info-circle me-2"></i>
+                                What will be deleted:
+                            </h5>
+                            <ul class="mb-0">
+                                <li>Your account and profile information</li>
+                                {% if pets_count > 0 %}
+                                <li><strong>{{ pets_count }} pet profile{{ pets_count|pluralize }}</strong> and all associated data</li>
+                                {% endif %}
+                                {% if has_clinic %}
+                                <li><strong>Your clinic information</strong> and all related data</li>
+                                {% endif %}
+                                <li>All AI recommendations and health reports</li>
+                                <li>All uploaded photos and documents</li>
+                                <li>All chat history</li>
+                                <li>Subscription information</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card bg-info text-white mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <i class="fas fa-clock me-2"></i>
+                                Deletion Process:
+                            </h5>
+                            <ol class="mb-0 ps-3">
+                                <li>Your request will be reviewed by our admin team</li>
+                                <li>Once approved, you'll have <strong>15 days</strong> to cancel if you change your mind</li>
+                                <li>After 15 days, your account will be permanently deleted</li>
+                                <li>You'll receive email confirmations at each step</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        
+                        <div class="card border-secondary mb-4">
+                            <div class="card-header bg-light border-secondary">
+                                <h5 class="mb-0 text-dark">
+                                    <i class="fas fa-comment-dots me-2 text-muted"></i>
+                                    Help Us Improve (Optional)
+                                </h5>
+                            </div>
+                            <div class="card-body bg-white">
+                                <textarea 
+                                    class="form-control form-control-lg" 
+                                    id="reason" 
+                                    name="reason" 
+                                    rows="5"
+                                    placeholder="We'd love to hear your feedback. What could we do better? What made you decide to leave? Your insights help us serve our community better..."
+                                    style="resize: vertical;"
+                                ></textarea>
+                                <div class="alert alert-light border mt-3 mb-0 py-2">
+                                    <small class="text-muted">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        <strong>Your feedback is valuable:</strong> While optional, sharing your reason helps us understand how to improve Fammo for other pet owners. All feedback is reviewed by our team.
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-check mb-4">
+                            <input 
+                                class="form-check-input" 
+                                type="checkbox" 
+                                id="confirm_deletion" 
+                                required
+                            >
+                            <label class="form-check-label" for="confirm_deletion">
+                                <strong>I understand that this action is permanent and cannot be undone</strong>
+                            </label>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'dashboard' %}" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left me-2"></i>
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-danger btn-lg">
+                                <i class="fas fa-trash me-2"></i>
+                                Submit Deletion Request
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-5 pt-4 border-top">
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-question-circle me-2"></i>
+                            <strong>Changed your mind?</strong> 
+                            You can temporarily deactivate your account instead. 
+                            <a href="{% url 'update_profile' %}">Go to Profile Settings</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock dashboard_content %}

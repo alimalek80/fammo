@@ -1,0 +1,151 @@
+email,password,first_name,last_name,phone,address,city,zip_code,country,date_joined,pet_name,pet_type,pet_gender,pet_breed,pet_neutered,pet_age_category,pet_age_years,pet_age_months,pet_age_weeks,pet_weight,pet_body_type,pet_activity_level,pet_food_types,pet_food_feeling,pet_food_importance,pet_treat_frequency,pet_food_allergies,pet_health_issues
+jan.hendriks0100@gmail.com,Jahe60@2025o,Jan,Hendriks,+31 6 32099242,Damrak 78,The Hague,5932 MF,Netherlands,2025-12-11T21:34:11,Max,Dog,Girl,Labrador Retriever,false,A Mature Dog,2.0,8.0,0.0,10.4,A bit chubby,Active,"Dry,Raw",Very fussy,Supports full-body health,Doesn't eat any,Nothing,No Health Issues
+jan.vandenberg0101@icloud.com,Java20@2024i,Jan,van den Berg,+31 6 54970870,Witte de Withstraat 168,Eindhoven,8672 MX,Netherlands,2025-10-10T21:42:29,Max,Dog,Girl,French Bulldog,true,A Senior Dog,12.0,4.0,0.0,6.4,A little skinny,Active,"Dry,Home-Cooked",A good eater,Supports full-body health,Has lots,Goat,No Health Issues
+sude.korkmaz0102@hotmail.com,Suko16!2024y,Sude,Korkmaz,+90 5579 749 61 58,Cumhuriyet Cd 200,Üsküdar,23442,Turkey,2025-10-09T18:03:30,Luna,Cat,Boy,British Shorthair,true,An Adult Cat,4.0,2.0,0.0,5.3,A little skinny,Very active,"Raw,Wet",A good eater,Great value,Has lots,Nothing,No Health Issues
+william.hernandez0103@icloud.com,Wihe62$2025t,William,Hernandez,+1 (384) 881-8161,Pine Ave 93,Los Angeles,25025,United States,2025-11-01T16:22:02,Coco,Cat,Boy,Maine Coon,false,An Adult Cat,7.0,4.0,0.0,7.1,A bit chubby,A serial snoozer,Dry,Can be fussy,Great value,Doesn't eat any,"Dairy,Quinoa",Struvite stones
+aylin.yalcin0104@hotmail.com,Ayya24@2024f,Aylin,Yalçın,+90 5457 690 19 95,Atatürk Blv 295,Ankara,54713,Turkey,2025-12-10T19:25:52,,,,,,,,,,,,,,,,,,
+roya.moradi0105@gmail.com,Romo85#2025l,Roya,Moradi,+98 949 791 2996,Pasdaran Ave 276,Tehran,36780-53066,Iran,2025-10-22T13:19:06,Zeus,Dog,Girl,Poodle,false,A Mature Dog,2.0,3.0,0.0,10.1,A little skinny,Active,"Home-Cooked,Raw",Can be fussy,Made with top-quality ingredients,Doesn't eat any,Nothing,"Joint problems,Obesity"
+ethan.thomas0106@icloud.com,Etth58@2024j,Ethan,Thomas,+1 (964) 945-5774,Oak St 91,Los Angeles,27286,United States,2025-11-13T09:31:13,Zoe,Cat,Boy,Birman,false,An Adult Cat,4.0,5.0,0.0,5.1,Ideal,Active,Raw,A foodie,Made with top-quality ingredients,Has some,Nothing,No Health Issues
+sahar.nouri0107@outlook.com,Sano87@2024c,Sahar,Nouri,+98 973 312 1495,Niavaran St 19,Tehran,83863-42253,Iran,2025-10-11T13:34:34,Sushi,Cat,Girl,Ragdoll,false,An Adult Cat,3.0,4.0,0.0,3.8,Just right,Very active,Raw,Very fussy,Great value,Has some,Nothing,No Health Issues
+emil.laine0108@outlook.com,Emla24#2024j,Emil,Laine,+358 47 483 8361,Mannerheimintie 134,Espoo,64155,Finland,2025-10-05T20:20:31,Bailey,Dog,Girl,Mixed,false,Puppy,0.0,10.0,3.0,17.5,Just right,Active,"Dry,Home-Cooked,Wet",A foodie,Made with top-quality ingredients,Has some,Nothing,No Health Issues
+amelia.wilson0109@outlook.com,Amwi68#2024z,Amelia,Wilson,+1 (847) 874-2458,Maple St 255,Chicago,20698,United States,2025-10-23T22:08:38,Koda,Dog,Girl,Bulldog (English Bulldog),true,A Mature Dog,6.0,9.0,0.0,20.4,Just right,Active,"Home-Cooked,Raw",Can be fussy,Tasty and enjoyable,Doesn't eat any,Nothing,No Health Issues
+aylin.aydin0110@outlook.com,Ayay13!2024f,Aylin,Aydın,+90 5561 405 65 68,İstiklal Cd 103,Izmir,33579,Turkey,2025-11-05T20:35:27,,,,,,,,,,,,,,,,,,
+mustafa.sezer0111@hotmail.com,Muse99#2024u,Mustafa,Sezer,+90 5536 225 10 65,Atatürk Blv 121,Ankara,25194,Turkey,2025-11-27T21:56:54,Mia,Cat,Girl,Birman,true,An Adult Cat,2.0,8.0,0.0,6.8,Ideal,Somewhat active,Wet,Very fussy,Supports full-body health,Has some,Nothing,Malabsorption
+gizem.ozer0112@gmail.com,Gize21#2025w,Gizem,Özer,+90 5339 718 12 16,Cumhuriyet Cd 34,Izmir,69474,Turkey,2025-11-02T10:21:53,,,,,,,,,,,,,,,,,,
+serkan.tekin0113@outlook.com,Sete52@2024y,Serkan,Tekin,+90 5543 505 85 18,İstiklal Cd 261,Bursa,46665,Turkey,2025-11-30T17:31:11,Koda,Dog,Girl,Yorkshire Terrier,true,Puppy,0.0,5.0,2.0,5.5,A little skinny,Active,Raw,Very fussy,Great value,Doesn't eat any,Nothing,No Health Issues
+helmi.heinonen0114@gmail.com,Hehe76@2025p,Helmi,Heinonen,+358 43 267 5496,Mannerheimintie 237,Oulu,32925,Finland,2025-12-10T20:50:07,,,,,,,,,,,,,,,,,,
+arda.kara0115@gmail.com,Arka61!2024t,Arda,Kara,+90 5196 290 23 51,Atatürk Blv 115,Istanbul,68025,Turkey,2025-09-29T19:36:26,,,,,,,,,,,,,,,,,,
+elif.yilmaz0116@icloud.com,Elyl85$2025s,Elif,Yılmaz,+90 5455 841 90 90,Cumhuriyet Cd 293,Antalya,76412,Turkey,2025-11-23T16:21:54,Cooper,Dog,Girl,Siberian Husky,false,A Mature Dog,3.0,2.0,0.0,33.3,A little skinny,A serial snoozer,"Home-Cooked,Raw",A foodie,Great value,Has some,"Chicken,Venison",Arthritis
+atena.bahrami0117@yahoo.com,Atba95@2025n,Atena,Bahrami,+98 962 819 4733,Sattarkhan St 72,Karaj,33167-15011,Iran,2025-10-16T23:37:04,,,,,,,,,,,,,,,,,,
+aylin.arslan0118@gmail.com,Ayar40#2025h,Aylin,Arslan,+90 5052 749 42 35,Cumhuriyet Cd 11,Antalya,47794,Turkey,2025-10-28T14:05:20,,,,,,,,,,,,,,,,,,
+furkan.demir0119@outlook.com,Fude76@2025t,Furkan,Demir,+90 5131 688 56 86,Atatürk Blv 286,Istanbul,50577,Turkey,2025-09-28T20:02:56,,,,,,,,,,,,,,,,,,
+selin.kara0120@hotmail.com,Seka25$2025f,Selin,Kara,+90 5414 648 71 11,Bağdat Cd 151,Kadıköy,45069,Turkey,2025-11-18T19:33:28,,,,,,,,,,,,,,,,,,
+soheil.taheri0121@outlook.com,Sota59#2025o,Soheil,Taheri,+98 943 497 7141,Mirdamad Blvd 187,Qom,42611-16471,Iran,2025-12-05T23:10:03,,,,,,,,,,,,,,,,,,
+yusuf.korkmaz0122@hotmail.com,Yuko19@2025w,Yusuf,Korkmaz,+90 5389 802 57 25,Bağdat Cd 151,Istanbul,12593,Turkey,2025-10-23T08:08:05,,,,,,,,,,,,,,,,,,
+arman.soltani0123@gmail.com,Arso61$2024p,Arman,Soltani,+98 918 287 3133,Pasdaran Ave 128,Isfahan,42772-94059,Iran,2025-11-23T20:28:09,Luna,Cat,Girl,Birman,false,Kitten,0.0,10.0,3.0,1.8,Just right,Full of energy,"Home-Cooked,Raw",A good eater,Supports full-body health,Has some,Nothing,"Cancer,Heart condition"
+olivia.thomas0124@icloud.com,Olth94!2024u,Olivia,Thomas,+1 (467) 593-3221,Broadway 16,Boston,78194,United States,2025-12-02T22:25:03,,,,,,,,,,,,,,,,,,
+yasin.soltani0125@outlook.com,Yaso15$2024m,Yasin,Soltani,+98 953 282 8297,Enghelab Ave 157,Tehran,20237-92981,Iran,2025-11-02T21:58:16,,,,,,,,,,,,,,,,,,
+milan.vanleeuwen0126@icloud.com,Miva47$2024v,Milan,van Leeuwen,+31 6 87235302,Prinsengracht 45,Eindhoven,5548 FQ,Netherlands,2025-10-19T08:44:36,,,,,,,,,,,,,,,,,,
+abigail.lopez0127@gmail.com,Ablo47#2024s,Abigail,Lopez,+1 (666) 577-2618,Cedar Rd 176,Seattle,48417,United States,2025-10-04T16:11:08,,,,,,,,,,,,,,,,,,
+mustafa.bulut0128@icloud.com,Mubu28$2025q,Mustafa,Bulut,+90 5546 689 52 96,İnönü Cd 266,Istanbul,30522,Turkey,2025-12-10T19:19:04,,,,,,,,,,,,,,,,,,
+pouya.rostami0129@yahoo.com,Poro17!2024q,Pouya,Rostami,+98 914 844 8178,Pasdaran Ave 297,Qom,12286-21282,Iran,2025-10-22T18:08:49,,,,,,,,,,,,,,,,,,
+emilia.makinen0130@outlook.com,Emmk87!2025y,Emilia,Mäkinen,+358 43 512 9400,Aleksanterinkatu 130,Tampere,77190,Finland,2025-11-21T14:59:05,,,,,,,,,,,,,,,,,,
+nazanin.hedayati0131@yahoo.com,Nahe33#2024y,Nazanin,Hedayati,+98 939 267 2436,Enghelab Ave 191,Isfahan,32658-50735,Iran,2025-11-08T09:31:23,,,,,,,,,,,,,,,,,,
+yasaman.karimi0132@yahoo.com,Yaka73$2024m,Yasaman,Karimi,+98 915 202 6349,Pasdaran Ave 268,Tabriz,43936-30862,Iran,2025-12-04T20:51:37,,,,,,,,,,,,,,,,,,
+neda.ansari0133@yahoo.com,Nean21$2025s,Neda,Ansari,+98 951 425 5339,Enghelab Ave 158,Tehran,44123-55926,Iran,2025-10-23T23:37:31,,,,,,,,,,,,,,,,,,
+melis.korkmaz0134@gmail.com,Meko44#2025u,Melis,Korkmaz,+90 5213 673 17 95,Halaskargazi Cd 14,Ankara,11255,Turkey,2025-12-04T19:40:22,,,,,,,,,,,,,,,,,,
+busra.dogan0135@hotmail.com,Büdo45#2025g,Büşra,Doğan,+90 5390 436 14 10,İstiklal Cd 213,Bursa,59627,Turkey,2025-12-09T15:21:02,Cooper,Dog,Girl,Rottweiler,true,A Mature Dog,6.0,11.0,0.0,28.5,A bit chubby,Full of energy,Home-Cooked,Very fussy,Supports full-body health,Has some,"Lamb,Quinoa",No Health Issues
+ege.tekin0136@hotmail.com,Egte63@2024y,Ege,Tekin,+90 5426 866 33 28,Turan Güneş Blv 143,Izmir,36100,Turkey,2025-12-04T12:46:19,,,,,,,,,,,,,,,,,,
+logan.brown0137@hotmail.com,Lobr25!2025d,Logan,Brown,+1 (758) 488-4544,Cedar Rd 243,Chicago,80898,United States,2025-10-23T23:50:57,,,,,,,,,,,,,,,,,,
+fatma.arslan0138@icloud.com,Faar23@2024q,Fatma,Arslan,+90 5251 302 12 84,Halaskargazi Cd 45,Ankara,21293,Turkey,2025-10-20T22:21:08,,,,,,,,,,,,,,,,,,
+louis.fischer0139@outlook.com,Lofi66!2024j,Louis,Fischer,+34 643 615 871,Hauptstraße 240,Berlin,80454,European Union,2025-11-02T10:29:15,,,,,,,,,,,,,,,,,,
+arda.tas0140@gmail.com,Arta32$2025l,Arda,Taş,+90 5237 965 76 24,Atatürk Blv 40,Antalya,81395,Turkey,2025-11-30T22:31:50,Loki,Dog,Boy,French Bulldog,false,A Mature Dog,1.0,8.0,0.0,14.4,A bit chubby,Full of energy,Home-Cooked,Very fussy,Tasty and enjoyable,Has lots,Nothing,"Renal issues / Kidney disease,Sensitive stomach"
+reza.abbasi0141@gmail.com,Reab20#2024b,Reza,Abbasi,+98 967 666 4712,Mirdamad Blvd 14,Tabriz,22194-55090,Iran,2025-11-21T21:26:08,,,,,,,,,,,,,,,,,,
+yagmur.ozer0142@hotmail.com,Yaze15$2025z,Yağmur,Özer,+90 5257 284 86 13,Bağdat Cd 29,Kadıköy,20440,Turkey,2025-10-15T16:25:06,Buddy,Dog,Boy,Boxer,true,A Mature Dog,6.0,4.0,0.0,17.3,Just right,Full of energy,"Home-Cooked,Raw",A foodie,Made with top-quality ingredients,Doesn't eat any,Beef,No Health Issues
+arman.sadeghi0143@yahoo.com,Arsa79$2024o,Arman,Sadeghi,+98 994 988 2985,Mirdamad Blvd 46,Mashhad,23219-11861,Iran,2025-11-06T19:17:40,,,,,,,,,,,,,,,,,,
+arman.khosravi0144@outlook.com,Arkh95!2025y,Arman,Khosravi,+98 971 455 4694,Mirdamad Blvd 227,Karaj,94582-61220,Iran,2025-10-13T17:14:12,,,,,,,,,,,,,,,,,,
+lotte.vandenberg0145@outlook.com,Lova12#2024r,Lotte,van den Berg,+31 6 99508122,Prinsengracht 255,Utrecht,5544 SK,Netherlands,2025-12-02T18:30:01,,,,,,,,,,,,,,,,,,
+zahra.bahrami0146@yahoo.com,Zaba38!2024g,Zahra,Bahrami,+98 974 376 7309,Azadi St 60,Karaj,56553-13277,Iran,2025-12-06T20:25:34,,,,,,,,,,,,,,,,,,
+hossein.ahmadi0147@outlook.com,Hoah66@2024f,Hossein,Ahmadi,+98 950 489 7342,Mirdamad Blvd 290,Isfahan,92537-89140,Iran,2025-10-25T21:17:36,,,,,,,,,,,,,,,,,,
+noah.fischer0148@icloud.com,Nofi48@2024o,Noah,Fischer,+33 6 71 15 90 56,Kärntner Straße 218,Barcelona,63943,European Union,2025-12-12T16:31:05,,,,,,,,,,,,,,,,,,
+matti.laine0149@gmail.com,Mala81#2024f,Matti,Laine,+358 41 884 9381,Kalevantie 297,Oulu,91130,Finland,2025-11-10T11:12:45,Simba,Cat,Girl,Turkish Van,true,An Aged Cat,14.0,7.0,0.0,5.6,Ideal,Full of energy,"Dry,Home-Cooked,Wet",A foodie,Made with top-quality ingredients,Has lots,Nothing,No Health Issues
+umut.acar0150@icloud.com,Umac48@2024r,Umut,Acar,+90 5196 175 29 63,Bağdat Cd 208,Istanbul,12203,Turkey,2025-10-30T22:06:41,,,,,,,,,,,,,,,,,,
+emil.mattila0151@gmail.com,Emma93@2025u,Emil,Mattila,+358 45 655 6542,Kalevantie 129,Helsinki,42563,Finland,2025-09-21T16:13:30,,,,,,,,,,,,,,,,,,
+kaan.demir0152@icloud.com,Kade11$2025p,Kaan,Demir,+90 5542 705 47 14,İnönü Cd 147,Bursa,77813,Turkey,2025-10-24T13:40:21,,,,,,,,,,,,,,,,,,
+hanieh.shokri0153@yahoo.com,Hash54!2024t,Hanieh,Shokri,+98 968 927 2758,Niavaran St 49,Mashhad,21713-94174,Iran,2025-12-05T22:17:25,,,,,,,,,,,,,,,,,,
+reza.khodadadi0154@yahoo.com,Rekh71#2025q,Reza,Khodadadi,+98 992 922 3854,Sattarkhan St 20,Mashhad,70628-17957,Iran,2025-11-24T19:41:22,Koda,Dog,Boy,Dachshund,true,A Mature Dog,4.0,0.0,0.0,31.5,A bit chubby,Active,"Home-Cooked,Wet",Very fussy,Tasty and enjoyable,Has some,Nothing,No Health Issues
+furkan.yalcin0155@icloud.com,Fuya29@2025f,Furkan,Yalçın,+90 5010 433 51 50,Atatürk Blv 103,Üsküdar,66222,Turkey,2025-12-10T22:37:20,,,,,,,,,,,,,,,,,,
+yagmur.ozturk0156@outlook.com,Yazt64$2025i,Yağmur,Öztürk,+90 5499 692 28 66,Turan Güneş Blv 74,Antalya,36425,Turkey,2025-09-20T23:47:16,,,,,,,,,,,,,,,,,,
+setareh.sabet0157@outlook.com,Sesa28!2024n,Setareh,Sabet,+98 968 970 1347,Azadi St 19,Shiraz,23877-61850,Iran,2025-11-30T12:46:08,,,,,,,,,,,,,,,,,,
+lotte.vos0158@gmail.com,Lovo33!2024p,Lotte,Vos,+31 6 77019860,Vredenburg 36,The Hague,9545 MW,Netherlands,2025-11-12T21:57:47,,,,,,,,,,,,,,,,,,
+serkan.ozturk0159@icloud.com,Sezt32$2024e,Serkan,Öztürk,+90 5459 348 24 14,İnönü Cd 6,Bursa,74789,Turkey,2025-12-12T18:13:13,,,,,,,,,,,,,,,,,,
+irem.tas0160@gmail.com,İrta37@2024n,İrem,Taş,+90 5163 567 80 83,Cumhuriyet Cd 113,Antalya,24418,Turkey,2025-11-27T18:19:38,,,,,,,,,,,,,,,,,,
+roya.mahdavi0161@outlook.com,Roma74#2024u,Roya,Mahdavi,+98 981 361 2336,Sattarkhan St 282,Mashhad,85753-13277,Iran,2025-11-11T18:12:01,,,,,,,,,,,,,,,,,,
+parisa.shirazi0162@gmail.com,Pash59!2025y,Parisa,Shirazi,+98 934 710 7861,Sattarkhan St 222,Mashhad,27532-78264,Iran,2025-11-21T19:31:55,,,,,,,,,,,,,,,,,,
+jussi.makela0163@icloud.com,Jumk18@2024q,Jussi,Mäkelä,+358 49 989 4290,Mannerheimintie 199,Oulu,78049,Finland,2025-12-13T21:34:11,Kiki,Cat,Boy,Scottish Fold,true,An Aged Cat,14.0,6.0,0.0,6.1,A bit chubby,Full of energy,"Dry,Wet",A good eater,Tasty and enjoyable,Doesn't eat any,Nothing,"Epilepsy,Skin or Coat issues"
+elias.makela0164@icloud.com,Elmk73@2024t,Elias,Mäkelä,+358 48 160 8050,Eerikinkatu 196,Oulu,24973,Finland,2025-09-28T12:20:57,Nala,Cat,Girl,Oriental Shorthair,true,Kitten,0.0,3.0,0.0,1.1,A bit chubby,Active,"Dry,Raw,Wet",A good eater,Tasty and enjoyable,Doesn't eat any,Beef,No Health Issues
+oguz.dogan0165@icloud.com,Oğdo77!2025d,Oğuz,Doğan,+90 5466 955 93 64,Cumhuriyet Cd 204,Istanbul,55414,Turkey,2025-10-09T18:09:58,Buddy,Dog,Girl,Golden Retriever,false,Puppy,0.0,9.0,0.0,34.0,A little skinny,Somewhat active,Home-Cooked,A foodie,Made with top-quality ingredients,Has lots,"Chicken,Dairy",No Health Issues
+iida.hamalainen0166@gmail.com,Iihm33@2024p,Iida,Hämäläinen,+358 43 802 4477,Aleksanterinkatu 281,Tampere,74420,Finland,2025-11-01T13:37:41,,,,,,,,,,,,,,,,,,
+mohammad.kiani0167@yahoo.com,Moki23@2025h,Mohammad,Kiani,+98 939 299 3140,Sattarkhan St 217,Karaj,16278-45870,Iran,2025-10-21T11:52:43,,,,,,,,,,,,,,,,,,
+irene.martnez0168@outlook.com,Irma50$2024z,Irene,Martínez,+43 688 9281633,Karlova 249,Lyon,50345,European Union,2025-11-14T09:10:43,,,,,,,,,,,,,,,,,,
+ece.tekin0169@hotmail.com,Ecte98!2025k,Ece,Tekin,+90 5056 515 80 87,Turan Güneş Blv 50,Ankara,14164,Turkey,2025-11-18T22:13:08,,,,,,,,,,,,,,,,,,
+merve.sezer0170@hotmail.com,Mese77!2024z,Merve,Sezer,+90 5011 777 70 26,Atatürk Blv 48,Üsküdar,62775,Turkey,2025-11-21T17:00:53,,,,,,,,,,,,,,,,,,
+leo.lefebvre0171@outlook.com,Lele76!2024o,Leo,Lefebvre,+39 377 4292673,Hauptstraße 192,Berlin,84761,European Union,2025-09-16T19:25:01,,,,,,,,,,,,,,,,,,
+zahra.jafari0172@gmail.com,Zaja82@2025x,Zahra,Jafari,+98 979 241 1285,Valiasr St 51,Tehran,51818-16637,Iran,2025-12-06T13:03:52,,,,,,,,,,,,,,,,,,
+mert.yalcin0173@outlook.com,Meya73@2024x,Mert,Yalçın,+90 5361 125 16 39,İnönü Cd 129,Istanbul,73356,Turkey,2025-10-08T19:06:43,,,,,,,,,,,,,,,,,,
+derya.bozkurt0174@hotmail.com,Debo38#2025l,Derya,Bozkurt,+90 5198 815 59 26,Bağdat Cd 105,Istanbul,41166,Turkey,2025-09-28T08:14:49,,,,,,,,,,,,,,,,,,
+merve.ozdemir0175@hotmail.com,Mezd49#2024a,Merve,Özdemir,+90 5092 947 12 80,Turan Güneş Blv 240,Kadıköy,32936,Turkey,2025-12-02T20:23:17,,,,,,,,,,,,,,,,,,
+eero.hiltunen0176@gmail.com,Eehi13!2025l,Eero,Hiltunen,+358 49 453 2399,Mannerheimintie 100,Turku,88348,Finland,2025-10-11T15:24:02,,,,,,,,,,,,,,,,,,
+yagmur.korkmaz0177@gmail.com,Yako26!2025c,Yağmur,Korkmaz,+90 5599 242 90 36,İstiklal Cd 244,Ankara,58145,Turkey,2025-10-17T18:31:32,Bailey,Dog,Boy,Border Collie,false,Puppy,0.0,4.0,3.0,13.8,Ideal,Very active,Home-Cooked,Very fussy,Tasty and enjoyable,Doesn't eat any,Nothing,No Health Issues
+pouya.moradi0178@gmail.com,Pomo68$2025v,Pouya,Moradi,+98 947 373 8711,Niavaran St 156,Tabriz,29834-95502,Iran,2025-10-22T11:13:05,,,,,,,,,,,,,,,,,,
+kimia.mahdavi0179@yahoo.com,Kima34@2025v,Kimia,Mahdavi,+98 915 713 4493,Pasdaran Ave 54,Mashhad,18932-66917,Iran,2025-10-12T21:16:36,,,,,,,,,,,,,,,,,,
+milad.ansari0180@gmail.com,Mian92@2024i,Milad,Ansari,+98 924 944 8935,Azadi St 22,Qom,56484-48193,Iran,2025-11-22T09:11:35,Charlie,Dog,Boy,Shih Tzu,true,A Mature Dog,7.0,8.0,0.0,37.1,Just right,A serial snoozer,"Dry,Raw",A foodie,Great value,Has lots,Nothing,No Health Issues
+lotte.hendriks0181@outlook.com,Lohe10$2024u,Lotte,Hendriks,+31 6 93771544,Coolsingel 158,The Hague,7771 BB,Netherlands,2025-10-06T09:23:57,Cooper,Dog,Girl,Bulldog (English Bulldog),false,A Mature Dog,4.0,2.0,0.0,13.3,A bit chubby,Active,Wet,A good eater,Made with top-quality ingredients,Has lots,Nothing,"Renal issues / Kidney disease,Skin or Coat issues"
+zehra.sahin0182@icloud.com,Zeah30#2024r,Zehra,Şahin,+90 5093 947 98 92,İstiklal Cd 118,Üsküdar,92579,Turkey,2025-12-06T22:55:36,,,,,,,,,,,,,,,,,,
+oguz.sezer0183@outlook.com,Oğse52#2025h,Oğuz,Sezer,+90 5293 667 99 96,Turan Güneş Blv 140,Kadıköy,80423,Turkey,2025-11-13T20:24:35,,,,,,,,,,,,,,,,,,
+mohammad.shokri0184@gmail.com,Mosh62!2024x,Mohammad,Shokri,+98 915 668 2095,Niavaran St 216,Isfahan,12492-39273,Iran,2025-11-29T18:03:01,,,,,,,,,,,,,,,,,,
+liam.williams0185@hotmail.com,Liwi64@2024q,Liam,Williams,+1 (221) 736-4892,Oak St 28,Austin,75686,United States,2025-12-09T21:04:40,,,,,,,,,,,,,,,,,,
+milad.shirazi0186@gmail.com,Mish35#2024q,Milad,Shirazi,+98 910 977 6550,Mirdamad Blvd 187,Tabriz,93306-17540,Iran,2025-12-09T19:42:01,,,,,,,,,,,,,,,,,,
+melis.kaplan0187@icloud.com,Meka23#2025i,Melis,Kaplan,+90 5446 463 23 86,İstiklal Cd 257,Izmir,82071,Turkey,2025-11-19T16:50:43,,,,,,,,,,,,,,,,,,
+marta.moreau0188@gmail.com,Mamo14$2025e,Marta,Moreau,+34 611 644 908,Avenida de la Constitución 5,Berlin,24882,European Union,2025-11-23T11:22:59,,,,,,,,,,,,,,,,,,
+ece.aydin0189@gmail.com,Ecay26@2025h,Ece,Aydın,+90 5375 308 89 70,Cumhuriyet Cd 116,Üsküdar,74822,Turkey,2025-10-15T18:01:38,,,,,,,,,,,,,,,,,,
+marco.schmidt0190@outlook.com,Masc98#2024g,Marco,Schmidt,+34 686 773 236,Rue de Rivoli 205,Barcelona,26055,European Union,2025-10-24T21:59:48,,,,,,,,,,,,,,,,,,
+jonas.santos0191@icloud.com,Josa59!2024d,Jonas,Santos,+34 632 103 534,Kärntner Straße 260,Rome,66815,European Union,2025-11-09T11:10:46,Buddy,Dog,Girl,Shiba Inu,false,A Mature Dog,3.0,9.0,0.0,23.4,Ideal,Active,"Dry,Raw",A foodie,Tasty and enjoyable,Has lots,Nothing,No Health Issues
+zehra.kara0192@hotmail.com,Zeka23!2024g,Zehra,Kara,+90 5551 228 16 53,Bağdat Cd 19,Istanbul,11881,Turkey,2025-10-25T09:58:44,Zeus,Dog,Girl,Mixed,true,Puppy,0.0,11.0,3.0,10.3,Just right,Somewhat active,"Raw,Wet",A foodie,Made with top-quality ingredients,Doesn't eat any,Nothing,Epilepsy
+oskari.jarvinen0193@icloud.com,Osjr47$2024k,Oskari,Järvinen,+358 49 926 3227,Eerikinkatu 228,Helsinki,41072,Finland,2025-11-08T22:36:25,Mia,Cat,Boy,Sphynx (hairless cat),true,An Adult Cat,2.0,1.0,0.0,4.3,Just right,Very active,"Home-Cooked,Raw,Wet",A good eater,Supports full-body health,Has some,"Dairy,Goat",No Health Issues
+fatma.demir0194@icloud.com,Fade92!2025g,Fatma,Demir,+90 5089 898 91 16,Bağdat Cd 42,Antalya,94199,Turkey,2025-11-04T20:07:46,,,,,,,,,,,,,,,,,,
+leo.karjalainen0195@icloud.com,Leka32!2025g,Leo,Karjalainen,+358 47 213 9989,Kalevantie 260,Helsinki,59295,Finland,2025-11-07T12:42:23,,,,,,,,,,,,,,,,,,
+ece.sahin0196@icloud.com,Ecah14!2024t,Ece,Şahin,+90 5011 918 18 97,Bağdat Cd 198,Bursa,64456,Turkey,2025-10-31T16:08:05,,,,,,,,,,,,,,,,,,
+elham.ghasemi0197@gmail.com,Elgh26$2025l,Elham,Ghasemi,+98 964 615 2643,Enghelab Ave 225,Karaj,73385-26275,Iran,2025-10-09T22:50:36,,,,,,,,,,,,,,,,,,
+deniz.kaya0198@outlook.com,Deka11@2025r,Deniz,Kaya,+90 5160 891 25 27,Bağdat Cd 191,Izmir,57575,Turkey,2025-11-23T17:19:41,,,,,,,,,,,,,,,,,,
+berk.kurt0199@hotmail.com,Beku35!2024e,Berk,Kurt,+90 5527 324 99 53,İnönü Cd 198,Üsküdar,73893,Turkey,2025-10-12T22:09:20,Sushi,Cat,Boy,Savannah Cat,false,An Adult Cat,3.0,0.0,0.0,4.2,Just right,Active,Home-Cooked,Very fussy,Supports full-body health,Doesn't eat any,Nothing,No Health Issues
+zahra.moradi0200@gmail.com,Zamo24!2024t,Zahra,Moradi,+98 996 849 8250,Valiasr St 254,Mashhad,29448-23132,Iran,2025-10-06T20:40:46,,,,,,,,,,,,,,,,,,
+ehsan.karimi0201@outlook.com,Ehka83!2024k,Ehsan,Karimi,+98 997 673 4152,Valiasr St 140,Qom,28416-73441,Iran,2025-10-12T11:02:59,Charlie,Dog,Girl,Bulldog (English Bulldog),false,A Mature Dog,1.0,5.0,0.0,17.2,Just right,A serial snoozer,"Home-Cooked,Raw",A foodie,Supports full-body health,Doesn't eat any,Nothing,No Health Issues
+fatemeh.khosravi0202@yahoo.com,Fakh83#2024e,Fatemeh,Khosravi,+98 966 747 3732,Valiasr St 286,Tabriz,59236-28292,Iran,2025-11-13T15:03:18,,,,,,,,,,,,,,,,,,
+mina.mousavi0203@gmail.com,Mimo63!2025i,Mina,Mousavi,+98 919 122 5143,Valiasr St 62,Karaj,43577-73857,Iran,2025-09-20T18:37:34,,,,,,,,,,,,,,,,,,
+majid.mollaei0204@gmail.com,Mamo79@2024o,Majid,Mollaei,+98 992 672 5194,Valiasr St 273,Tehran,93173-53270,Iran,2025-11-21T13:48:35,,,,,,,,,,,,,,,,,,
+reza.karimi0205@outlook.com,Reka71$2024f,Reza,Karimi,+98 935 369 5204,Niavaran St 30,Isfahan,98593-31593,Iran,2025-10-21T22:09:15,,,,,,,,,,,,,,,,,,
+kimia.ranjbar0206@gmail.com,Kira33!2025b,Kimia,Ranjbar,+98 986 952 6616,Niavaran St 185,Tehran,25546-72353,Iran,2025-10-20T22:37:26,,,,,,,,,,,,,,,,,,
+hande.polat0207@hotmail.com,Hapo69@2024j,Hande,Polat,+90 5154 504 49 48,Bağdat Cd 67,Istanbul,11170,Turkey,2025-11-21T21:36:30,,,,,,,,,,,,,,,,,,
+kian.salar0208@yahoo.com,Kisa78@2025s,Kian,Salar,+98 911 288 2584,Mirdamad Blvd 94,Karaj,73641-39883,Iran,2025-11-29T23:54:21,,,,,,,,,,,,,,,,,,
+mia.lopez0209@hotmail.com,Milo71@2025q,Mia,Lopez,+1 (378) 326-5841,Cedar Rd 217,Seattle,15259,United States,2025-10-04T18:07:14,,,,,,,,,,,,,,,,,,
+yagmur.aslan0210@gmail.com,Yaas91$2025s,Yağmur,Aslan,+90 5294 619 91 41,Bağdat Cd 108,Üsküdar,52912,Turkey,2025-11-21T10:34:34,,,,,,,,,,,,,,,,,,
+anna.devries0211@outlook.com,Ande46!2025f,Anna,de Vries,+31 6 79508387,Coolsingel 263,Rotterdam,3478 PG,Netherlands,2025-09-17T22:45:01,Max,Dog,Boy,Border Collie,true,A Mature Dog,6.0,9.0,0.0,26.9,Just right,Full of energy,"Dry,Raw,Wet",Very fussy,Tasty and enjoyable,Doesn't eat any,Nothing,No Health Issues
+eero.heinonen0212@gmail.com,Eehe44@2025q,Eero,Heinonen,+358 42 549 9423,Hämeenkatu 54,Oulu,99770,Finland,2025-12-15T22:20:03,,,,,,,,,,,,,,,,,,
+abigail.hernandez0213@icloud.com,Abhe27@2025f,Abigail,Hernandez,+1 (251) 541-3281,Broadway 76,Austin,67587,United States,2025-10-10T16:50:54,,,,,,,,,,,,,,,,,,
+milad.mollaei0214@yahoo.com,Mimo64$2025o,Milad,Mollaei,+98 974 659 9825,Niavaran St 214,Tehran,16509-90485,Iran,2025-11-01T14:36:20,Bella,Cat,Girl,Norwegian Forest Cat,false,An Adult Cat,2.0,9.0,0.0,4.0,Just right,Very active,"Dry,Home-Cooked",Very fussy,Made with top-quality ingredients,Doesn't eat any,Pork,No Health Issues
+sina.soltani0215@outlook.com,Siso58@2025a,Sina,Soltani,+98 976 534 4244,Azadi St 244,Qom,92306-36118,Iran,2025-11-04T22:20:40,Cooper,Dog,Girl,Rottweiler,false,Puppy,0.0,9.0,3.0,10.9,Ideal,A serial snoozer,Dry,Can be fussy,Great value,Has some,Nothing,No Health Issues
+hossein.ghaffari0216@outlook.com,Hogh13#2025d,Hossein,Ghaffari,+98 970 947 8591,Mirdamad Blvd 141,Shiraz,57558-48291,Iran,2025-10-21T17:31:00,Molly,Dog,Girl,Beagle,true,Puppy,0.0,5.0,3.0,20.5,A little skinny,Active,"Dry,Raw",A good eater,Made with top-quality ingredients,Has some,"Lamb,Pearl barley",No Health Issues
+roya.mohammadi0217@gmail.com,Romo42#2025h,Roya,Mohammadi,+98 976 514 9593,Azadi St 152,Isfahan,45964-38436,Iran,2025-12-04T12:44:49,,,,,,,,,,,,,,,,,,
+kian.rahimi0218@gmail.com,Kira50!2024v,Kian,Rahimi,+98 996 550 3924,Mirdamad Blvd 158,Isfahan,96624-13073,Iran,2025-12-15T15:52:12,Rocky,Dog,Boy,Shih Tzu,false,A Senior Dog,8.0,9.0,0.0,24.1,Ideal,Very active,"Raw,Wet",Can be fussy,Supports full-body health,Doesn't eat any,"Fish,Lamb",No Health Issues
+jasper.jansen0219@outlook.com,Jaja66$2024m,Jasper,Jansen,+31 6 28083289,Damrak 21,Rotterdam,5760 MV,Netherlands,2025-10-06T21:12:46,Simba,Cat,Girl,Russian Blue,true,An Adult Cat,1.0,8.0,0.0,7.3,A little skinny,Active,Wet,Very fussy,Great value,Has some,Nothing,No Health Issues
+mert.ucar0220@outlook.com,Meua99!2024d,Mert,Uçar,+90 5182 170 30 51,İstiklal Cd 208,Bursa,71143,Turkey,2025-10-02T20:05:20,,,,,,,,,,,,,,,,,,
+zehra.yildiz0221@outlook.com,Zeyl63#2025k,Zehra,Yıldız,+90 5178 629 95 72,Bağdat Cd 279,Istanbul,16556,Turkey,2025-10-13T13:20:12,,,,,,,,,,,,,,,,,,
+omid.hosseini0222@yahoo.com,Omho31@2025e,Omid,Hosseini,+98 924 134 2617,Sattarkhan St 261,Isfahan,32544-23462,Iran,2025-10-27T12:17:39,Sushi,Cat,Boy,Maine Coon,true,An Adult Cat,4.0,2.0,0.0,3.4,Just right,Very active,"Dry,Home-Cooked,Wet",A good eater,Tasty and enjoyable,Has some,"Dairy,Lamb",No Health Issues
+zehra.avci0223@icloud.com,Zeav27@2024k,Zehra,Avcı,+90 5017 422 49 49,İnönü Cd 194,Bursa,84885,Turkey,2025-09-15T19:18:17,Loki,Dog,Girl,Siberian Husky,true,A Mature Dog,1.0,11.0,0.0,4.1,Ideal,Active,"Home-Cooked,Wet",Can be fussy,Great value,Has some,Nothing,No Health Issues
+jussi.korhonen0224@icloud.com,Juko37$2024z,Jussi,Korhonen,+358 48 838 5329,Eerikinkatu 79,Helsinki,26751,Finland,2025-10-27T18:26:53,Luna,Cat,Boy,Oriental Shorthair,false,Kitten,0.0,8.0,3.0,2.6,A bit chubby,Full of energy,"Dry,Home-Cooked",A good eater,Supports full-body health,Doesn't eat any,Nothing,No Health Issues
+golnaz.kiani0225@gmail.com,Goki46#2025b,Golnaz,Kiani,+98 979 342 7141,Niavaran St 64,Mashhad,87342-87011,Iran,2025-11-16T09:00:46,Leo,Cat,Boy,Labrador,true,An Aged Cat,8.0,0.0,0.0,3.6,Just right,Very active,"Dry,Raw,Wet",A foodie,Great value,Doesn't eat any,"Duck,Lamb",No Health Issues
+isabella.anderson0226@outlook.com,Isan76!2024p,Isabella,Anderson,+1 (759) 569-6700,Maple St 41,Chicago,25471,United States,2025-10-07T10:40:40,,,,,,,,,,,,,,,,,,
+zehra.kaya0227@icloud.com,Zeka95#2024y,Zehra,Kaya,+90 5151 995 65 24,Turan Güneş Blv 141,Üsküdar,58664,Turkey,2025-10-18T22:00:25,,,,,,,,,,,,,,,,,,
+sophia.rodriguez0228@hotmail.com,Soro60!2024g,Sophia,Rodriguez,+1 (215) 215-5899,Main St 47,Seattle,22726,United States,2025-11-02T19:49:41,,,,,,,,,,,,,,,,,,
+oskari.hiltunen0229@gmail.com,Oshi27!2024d,Oskari,Hiltunen,+358 48 763 4383,Aleksanterinkatu 73,Helsinki,54048,Finland,2025-11-04T08:56:53,,,,,,,,,,,,,,,,,,
+hamid.hajizadeh0230@outlook.com,Haha46!2025f,Hamid,Hajizadeh,+98 943 764 4159,Azadi St 97,Shiraz,62313-84517,Iran,2025-11-15T21:04:07,,,,,,,,,,,,,,,,,,
+atena.ghasemi0231@yahoo.com,Atgh77@2025g,Atena,Ghasemi,+98 934 500 1399,Valiasr St 123,Karaj,50430-93907,Iran,2025-10-04T20:43:55,,,,,,,,,,,,,,,,,,
+tess.bakker0232@gmail.com,Teba48#2024m,Tess,Bakker,+31 6 84922792,Witte de Withstraat 137,The Hague,7917 YI,Netherlands,2025-11-14T21:14:06,,,,,,,,,,,,,,,,,,
+mert.aslan0233@gmail.com,Meas70$2024k,Mert,Aslan,+90 5274 927 90 78,İstiklal Cd 18,Ankara,41869,Turkey,2025-11-22T21:51:18,Daisy,Dog,Girl,Cocker Spaniel,true,Puppy,0.0,8.0,2.0,13.8,A bit chubby,Active,"Dry,Raw",Can be fussy,Great value,Has some,Nothing,"Cushing's disease,Joint problems"
+reza.shokri0234@yahoo.com,Resh69@2025e,Reza,Shokri,+98 937 135 4384,Niavaran St 43,Mashhad,58771-69986,Iran,2025-12-15T11:50:12,,,,,,,,,,,,,,,,,,
+umut.sezer0235@gmail.com,Umse94$2024e,Umut,Sezer,+90 5184 577 77 56,Turan Güneş Blv 19,Bursa,56719,Turkey,2025-11-09T19:03:37,,,,,,,,,,,,,,,,,,
+yasaman.nouri0236@yahoo.com,Yano82#2024w,Yasaman,Nouri,+98 919 479 6155,Pasdaran Ave 227,Karaj,40586-89303,Iran,2025-12-13T14:06:43,Daisy,Dog,Boy,Border Collie,false,A Senior Dog,13.0,2.0,0.0,18.9,Ideal,Full of energy,"Home-Cooked,Wet",Can be fussy,Tasty and enjoyable,Has lots,Nothing,"Heart condition,Joint problems"
+ali.nouri0237@outlook.com,Alno71!2024v,Ali,Nouri,+98 929 578 9075,Sattarkhan St 48,Qom,94592-76849,Iran,2025-11-04T19:12:31,,,,,,,,,,,,,,,,,,
+derya.cetin0238@outlook.com,Deet20@2025x,Derya,Çetin,+90 5232 185 41 62,Cumhuriyet Cd 274,Kadıköy,13759,Turkey,2025-12-08T12:59:23,,,,,,,,,,,,,,,,,,
+farhad.mollaei0239@gmail.com,Famo75@2024v,Farhad,Mollaei,+98 932 422 4124,Pasdaran Ave 156,Qom,70157-22763,Iran,2025-11-25T22:20:31,,,,,,,,,,,,,,,,,,
+mehmet.simsek0240@gmail.com,Meim38!2025l,Mehmet,Şimşek,+90 5278 412 48 60,İnönü Cd 185,Izmir,85460,Turkey,2025-10-27T22:21:53,Rocky,Dog,Girl,Siberian Husky,true,A Mature Dog,4.0,7.0,0.0,29.7,A bit chubby,Active,Home-Cooked,Can be fussy,Tasty and enjoyable,Has lots,Nothing,No Health Issues
+sude.avci0241@icloud.com,Suav17!2025a,Sude,Avcı,+90 5454 369 65 55,İnönü Cd 218,Ankara,38498,Turkey,2025-09-23T20:31:26,,,,,,,,,,,,,,,,,,
+irene.silva0242@icloud.com,Irsi77#2024e,Irene,Silva,+33 6 74 45 56 60,Bahnhofstraße 143,Paris,86118,European Union,2025-10-20T20:30:55,,,,,,,,,,,,,,,,,,
+laura.rossi0243@gmail.com,Laro66@2024a,Laura,Rossi,+33 6 83 63 22 65,Bahnhofstraße 171,Barcelona,60361,European Union,2025-09-29T23:33:35,,,,,,,,,,,,,,,,,,
+antti.virtanen0244@icloud.com,Anvi41#2024k,Antti,Virtanen,+358 44 989 2529,Aleksanterinkatu 97,Turku,59967,Finland,2025-10-29T20:42:26,Bella,Cat,Girl,Maine Coon,true,An Aged Cat,14.0,9.0,0.0,3.4,A bit chubby,A serial snoozer,Home-Cooked,A good eater,Tasty and enjoyable,Doesn't eat any,Nothing,"Malabsorption,Struvite stones"
+ehsan.sadeghi0245@outlook.com,Ehsa38$2024h,Ehsan,Sadeghi,+98 956 930 3474,Azadi St 155,Mashhad,98935-92007,Iran,2025-11-27T18:40:44,,,,,,,,,,,,,,,,,,
+reza.mohammadi0246@outlook.com,Remo46@2024f,Reza,Mohammadi,+98 996 822 5930,Mirdamad Blvd 28,Tehran,35984-14786,Iran,2025-11-13T16:31:36,,,,,,,,,,,,,,,,,,
+kian.taheri0247@yahoo.com,Kita43$2025c,Kian,Taheri,+98 971 591 1946,Enghelab Ave 150,Tabriz,44685-89748,Iran,2025-11-13T20:01:17,Leo,Cat,Boy,Russian Blue,true,An Aged Cat,10.0,7.0,0.0,6.7,A little skinny,A serial snoozer,"Home-Cooked,Wet",A good eater,Great value,Has lots,Nothing,Sensitive stomach
+atena.azizi0248@gmail.com,Ataz19#2024y,Atena,Azizi,+98 999 287 9489,Pasdaran Ave 286,Qom,87586-17869,Iran,2025-11-30T21:43:33,,,,,,,,,,,,,,,,,,
+liam.anderson0249@outlook.com,Lian80@2024y,Liam,Anderson,+1 (936) 808-9351,Broadway 38,Boston,59758,United States,2025-12-02T22:19:35,Oliver,Cat,Girl,Scottish Fold,true,Kitten,0.0,3.0,0.0,2.3,Just right,Somewhat active,Dry,Very fussy,Made with top-quality ingredients,Has lots,Nothing,Diabetes

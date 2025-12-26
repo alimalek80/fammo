@@ -1,0 +1,269 @@
+{% extends 'userapp/dashboard_base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Account Deletion Policy - Fammo{% endblock %}
+
+{% block dashboard_content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h1 class="display-6 mb-4 text-primary">
+                        <i class="fas fa-user-slash me-2"></i>
+                        Account Deletion Policy
+                    </h1>
+                    
+                    <div class="alert alert-info mb-4">
+                        <strong>App Name:</strong> Fammo<br>
+                        <strong>Developer:</strong> Fammo AI<br>
+                        <strong>Last Updated:</strong> December 16, 2025
+                    </div>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3 text-secondary">
+                            <i class="fas fa-info-circle me-2"></i>
+                            How to Request Account Deletion
+                        </h2>
+                        <p class="lead">
+                            If you wish to delete your Fammo account, please follow these steps:
+                        </p>
+                        
+                        <div class="card bg-light border-0 mb-4">
+                            <div class="card-body">
+                                <ol class="mb-0">
+                                    <li class="mb-3">
+                                        <strong>Send an email to:</strong> 
+                                        <a href="mailto:support@fammo.ai?subject=Delete My Account" class="text-primary">
+                                            support@fammo.ai
+                                        </a>
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Subject line:</strong> "Delete My Account"
+                                    </li>
+                                    <li class="mb-3">
+                                        <strong>Include in your email:</strong>
+                                        <ul class="mt-2">
+                                            <li>Your registered email address</li>
+                                            <li>Confirmation that you want to permanently delete your account</li>
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <strong>Wait for confirmation:</strong> 
+                                        You will receive a confirmation email once your request is processed
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Important:</strong> Account deletion is permanent and cannot be undone. 
+                            Please make sure you want to proceed before submitting your request.
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3 text-secondary">
+                            <i class="fas fa-trash-alt me-2"></i>
+                            What Data Will Be Deleted
+                        </h2>
+                        <p>When you delete your Fammo account, the following data will be permanently removed:</p>
+                        
+                        <ul class="list-group mb-4">
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>User Account Information:</strong> Email address, password, and authentication tokens
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>Profile Data:</strong> Name, phone number, address, and location preferences
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>Pet Profiles:</strong> All pet information including names, breeds, health data, and dietary preferences
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>AI Recommendations:</strong> All AI-generated meal plans and health reports for your pets
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>Uploaded Media:</strong> Pet photos, profile images, and any other uploaded files
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>Clinic Information (if applicable):</strong> Clinic details, logos, and verification documents
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>Chat History:</strong> All conversations with veterinarians
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-check text-success me-2"></i>
+                                <strong>Subscription Information:</strong> Subscription preferences and usage history
+                            </li>
+                        </ul>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3 text-secondary">
+                            <i class="fas fa-archive me-2"></i>
+                            What Data May Be Retained
+                        </h2>
+                        <p>For legal, compliance, and security purposes, some data may be retained in anonymized or aggregated form:</p>
+                        
+                        <ul class="list-group mb-4">
+                            <li class="list-group-item">
+                                <i class="fas fa-clock text-warning me-2"></i>
+                                <strong>Transaction Records:</strong> Payment and billing records required by law for financial compliance (retained for 7 years as per legal requirements)
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-clock text-warning me-2"></i>
+                                <strong>Anonymized Analytics:</strong> Aggregated, non-identifiable usage statistics for platform improvement (retained for 2 years)
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-clock text-warning me-2"></i>
+                                <strong>Legal Records:</strong> Records required for dispute resolution or legal proceedings (retained as legally required)
+                            </li>
+                            <li class="list-group-item">
+                                <i class="fas fa-clock text-warning me-2"></i>
+                                <strong>Backup Systems:</strong> Data in automatic backups will be deleted within 90 days as part of our backup rotation cycle
+                            </li>
+                        </ul>
+
+                        <div class="alert alert-secondary">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            All retained data will be anonymized and cannot be linked back to your identity.
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3 text-secondary">
+                            <i class="fas fa-hourglass-half me-2"></i>
+                            Deletion Timeframe
+                        </h2>
+                        <div class="card bg-primary text-white mb-4">
+                            <div class="card-body">
+                                <p class="mb-2">
+                                    <i class="fas fa-calendar-check me-2"></i>
+                                    <strong>Your account and associated data will be permanently deleted within 30 days</strong> 
+                                    of receiving your deletion request.
+                                </p>
+                                <p class="mb-0 small">
+                                    You will receive an email confirmation once the deletion process is complete.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-5">
+                        <h2 class="h4 mb-3 text-secondary">
+                            <i class="fas fa-question-circle me-2"></i>
+                            Frequently Asked Questions
+                        </h2>
+                        
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        Can I recover my account after deletion?
+                                    </button>
+                                </h3>
+                                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        No, account deletion is permanent and irreversible. Once your data is deleted, 
+                                        it cannot be recovered. You would need to create a new account if you wish to use Fammo again.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        What happens to my active subscription?
+                                    </button>
+                                </h3>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Please cancel your subscription before requesting account deletion. 
+                                        If you have an active subscription, it will be cancelled upon account deletion, 
+                                        but no refunds will be provided for the remaining subscription period.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        Will my data be deleted from backup systems immediately?
+                                    </button>
+                                </h3>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Your data will be deleted from our active systems within 30 days. 
+                                        Data in automatic backup systems will be removed within 90 days as part of our 
+                                        standard backup rotation process.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="accordion-item">
+                                <h3 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                        Can I temporarily deactivate my account instead?
+                                    </button>
+                                </h3>
+                                <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Yes! If you're not sure about permanent deletion, you can temporarily deactivate your account 
+                                        from your profile settings in the app. This allows you to return at any time without losing your data.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-4">
+                        <h2 class="h4 mb-3 text-secondary">
+                            <i class="fas fa-envelope me-2"></i>
+                            Contact Us
+                        </h2>
+                        <p>If you have any questions about account deletion or data privacy, please contact us:</p>
+                        
+                        <div class="card bg-light border-0">
+                            <div class="card-body">
+                                <p class="mb-2">
+                                    <i class="fas fa-envelope text-primary me-2"></i>
+                                    <strong>Email:</strong> 
+                                    <a href="mailto:support@fammo.ai">support@fammo.ai</a>
+                                </p>
+                                <p class="mb-2">
+                                    <i class="fas fa-shield-alt text-primary me-2"></i>
+                                    <strong>Privacy:</strong> 
+                                    <a href="mailto:privacy@fammo.ai">privacy@fammo.ai</a>
+                                </p>
+                                <p class="mb-0">
+                                    <i class="fas fa-file-alt text-primary me-2"></i>
+                                    <strong>Privacy Policy:</strong> 
+                                    <a href="{% url 'privacy_policy_direct' %}">View Full Privacy Policy</a>
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="text-center mt-5 pt-4 border-top">
+                        <p class="text-muted mb-0">
+                            <small>
+                                This Account Deletion Policy is part of Fammo's commitment to user privacy and data protection. 
+                                Last updated: December 16, 2025
+                            </small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock dashboard_content %}

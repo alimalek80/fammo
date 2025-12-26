@@ -75,7 +75,7 @@
     <div class="divider divider-success">Rate it</div>
 
     {% if user.is_authenticated %}
-<form method="post" action="{% url 'rate_post' post.slug %}" class="mb-8 items-center gap-3">
+<form method="post" action="{% url 'blog:rate_post' post.slug %}" class="mb-8 items-center gap-3">
   {% csrf_token %}
   
 
@@ -244,7 +244,7 @@
 <div class="flex flex-col sm:flex-row justify-between items-stretch mt-12 mb-8 gap-4">
   {% if prev_post %}
     <div class="flex flex-col items-start w-full sm:w-1/3 max-w-xs">
-      <a href="{% url 'blog_detail' prev_post.slug %}" class="btn btn-outline btn-sm mb-1 w-full text-left">
+      <a href="{% url 'blog:blog_detail' prev_post.slug %}" class="btn btn-outline btn-sm mb-1 w-full text-left">
         &larr; {% trans "Previous" %}
       </a>
       <span class="text-xs text-gray-500 break-words truncate max-w-full">
@@ -256,7 +256,7 @@
   {% endif %}
   {% if next_post %}
     <div class="flex flex-col items-end w-full sm:w-1/3 max-w-xs ml-auto">
-      <a href="{% url 'blog_detail' next_post.slug %}" class="btn btn-outline btn-sm mb-1 w-full text-right">
+      <a href="{% url 'blog:blog_detail' next_post.slug %}" class="btn btn-outline btn-sm mb-1 w-full text-right">
         {% trans "Next" %} &rarr;
       </a>
       <span class="text-xs text-gray-500 break-words truncate max-w-full text-right">
@@ -271,7 +271,7 @@
         <h2 class="text-2xl font-bold text-gray-900 mb-4">{% trans "Comments" %}</h2>
 
         {% if user.is_authenticated %}
-        <form method="post" action="{% url 'comment_post' post.slug %}" class="mb-6">
+        <form method="post" action="{% url 'blog:comment_post' post.slug %}" class="mb-6">
             {% csrf_token %}
             <textarea name="content" rows="3"
                       class="w-full border border-gray-300 bg-white text-gray-900 rounded-md p-2 mb-2

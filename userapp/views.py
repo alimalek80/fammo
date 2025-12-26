@@ -66,6 +66,118 @@ def privacy_policy_view(request):
     return render(request, 'userapp/privacy_policy.html', {'document': document})
 
 
+def account_deletion_view(request):
+    """Display the Account Deletion Policy page."""
+    return render(request, 'userapp/account_deletion.html')
+
+
+@login_required
+def request_account_deletion(request):
+    """Handle account deletion request from user"""
+    from .models import AccountDeletionRequest
+    from pet.models import Pet
+    from vets.models import Clinic
+    from django.core.mail import send_mail
+    from datetime import timedelta
+    
+    # Check if user already has a pending request
+    existing_request = AccountDeletionRequest.objects.filter(
+        user=request.user,
+        status__in=['pending', 'approved']
+    ).first()
+    
+    if existing_request:
+        messages.warning(request, _("You already have a pending deletion request."))
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        reason = request.POST.get('reason', '')
+        
+        # Count user's data
+        pets_count = Pet.objects.filter(user=request.user).count()
+        has_clinic = Clinic.objects.filter(owner=request.user).exists()
+        
+        # Create deletion request
+        deletion_request = AccountDeletionRequest.objects.create(
+            user=request.user,
+            reason=reason,
+            status='pending',
+            pets_count=pets_count,
+            had_pets=pets_count > 0,
+            had_clinic=has_clinic
+        )
+        
+        # Send email to admins
+        admin_emails = get_user_model().objects.filter(
+            is_staff=True, is_active=True
+        ).values_list('email', flat=True)
+        
+        if admin_emails:
+            subject = f'Account Deletion Request - {request.user.email}'
+            message = f"""
+New account deletion request received:
+
+User: {request.user.email}
+Name: {request.user.profile.first_name} {request.user.profile.last_name}
+Requested: {deletion_request.requested_at.strftime('%Y-%m-%d %H:%M')}
+Pets: {pets_count}
+Has Clinic: {'Yes' if has_clinic else 'No'}
+Reason: {reason if reason else 'Not provided'}
+
+Please review this request in the admin panel:
+{request.build_absolute_uri('/admin/userapp/accountdeletionrequest/')}
+            """
+            
+            send_mail(
+                subject,
+                message,
+                settings.DEFAULT_FROM_EMAIL,
+                list(admin_emails),
+                fail_silently=True,
+            )
+        
+        messages.success(
+            request,
+            _("Your account deletion request has been submitted. You will receive an email confirmation. "
+              "You can cancel this request from your dashboard within 15 days.")
+        )
+        return redirect('dashboard')
+    
+    # GET request - show confirmation form
+    pets_count = Pet.objects.filter(user=request.user).count()
+    has_clinic = Clinic.objects.filter(owner=request.user).exists()
+    
+    return render(request, 'userapp/request_deletion.html', {
+        'pets_count': pets_count,
+        'has_clinic': has_clinic
+    })
+
+
+@login_required
+def cancel_deletion_request(request):
+    """Allow user to cancel their deletion request"""
+    from .models import AccountDeletionRequest
+    
+    try:
+        deletion_request = AccountDeletionRequest.objects.get(
+            user=request.user,
+            status__in=['pending', 'approved']
+        )
+        
+        if deletion_request.can_cancel():
+            deletion_request.status = 'cancelled'
+            deletion_request.save()
+            
+            messages.success(request, _("Your account deletion request has been cancelled."))
+        else:
+            messages.error(request, _("This deletion request cannot be cancelled."))
+            
+    except AccountDeletionRequest.DoesNotExist:
+        messages.error(request, _("No active deletion request found."))
+    
+    return redirect('dashboard')
+
+
 def register_view(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
@@ -213,6 +325,8 @@ def update_profile(request):
 
 @login_required
 def dashboard_view(request):
+    from .models import AccountDeletionRequest
+    
     user = request.user
     pets = getattr(user, 'pets', None)
     if pets is not None:
@@ -220,9 +334,21 @@ def dashboard_view(request):
     else:
         pets = []
     has_pets = pets.exists() if hasattr(pets, 'exists') else False
+    
+    # Check for deletion request
+    deletion_request = None
+    try:
+        deletion_request = AccountDeletionRequest.objects.get(
+            user=user,
+            status__in=['pending', 'approved']
+        )
+    except AccountDeletionRequest.DoesNotExist:
+        pass
+    
     messages.info(request, _("Welcome to your dashboard!"))
     return render(request, 'userapp/dashboard.html', {
         'has_pets': has_pets,
+        'deletion_request': deletion_request,
     })
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)

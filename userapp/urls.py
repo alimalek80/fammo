@@ -19,6 +19,9 @@ urlpatterns = [
     path('export/users/', export_users_csv, name='export_users_csv'),
     path('terms/', views.terms_and_conditions_view, name='terms_and_conditions'),
     path('privacy-policy/', views.privacy_policy_view, name='privacy_policy'),
+    path('delete-account/', views.account_deletion_view, name='account_deletion'),
+    path('request-deletion/', views.request_account_deletion, name='request_deletion'),
+    path('cancel-deletion/', views.cancel_deletion_request, name='cancel_deletion'),
     # Translation Management
     path('translations/', views.translation_dashboard, name='translation_dashboard'),
     path('translations/update/', views.update_translation_ajax, name='update_translation'),

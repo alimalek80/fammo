@@ -1,0 +1,419 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Request Details" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="flex h-screen overflow-hidden bg-slate-50">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0">
+        <div class="p-6 flex items-center gap-3 text-white font-bold text-xl border-b border-slate-800">
+            <div class="bg-indigo-500 p-2 rounded-lg">
+                <i class="fas fa-blog text-white"></i>
+            </div>
+            <span>Blog AI</span>
+        </div>
+        
+        <nav class="flex-1 px-4 py-6 space-y-1">
+            <a href="{% url 'blog:dashboard' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-layer-group"></i> {% trans "Pipeline" %}
+            </a>
+            <a href="{% url 'blog:manage_topics' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-lightbulb"></i> {% trans "Topics" %}
+            </a>
+            <a href="{% url 'blog:my_generation_requests' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-indigo-600 text-white">
+                <i class="fas fa-history"></i> {% trans "Requests" %}
+            </a>
+            <a href="{% url 'blog:my_blog_posts' %}" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-800 hover:text-white transition">
+                <i class="fas fa-file-alt"></i> {% trans "My Posts" %}
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-800">
+            <div class="flex items-center gap-3 px-2">
+                <div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-sm">
+                    {{ user.email|first|upper }}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-semibold text-white leading-none truncate">
+                        {% if user.profile.first_name %}{{ user.profile.first_name }}{% else %}{{ user.email }}{% endif %}
+                    </p>
+                    <p class="text-[10px] text-slate-500 truncate">{{ user.email }}</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="h-16 border-b bg-white flex items-center px-8 shrink-0">
+            <a href="{% url 'blog:my_generation_requests' %}" class="text-slate-400 hover:text-slate-700 transition mr-4">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="text-xl font-bold text-slate-800 uppercase tracking-wider">{% trans "Request Details" %}</h1>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8 max-w-7xl mx-auto w-full">
+        <!-- Request Info Card -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
+            <div class="flex items-start justify-between mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-2">{{ gen_request.topic.title }}</h2>
+                    <div class="flex items-center gap-4 text-sm text-slate-500">
+                        <span><i class="fas fa-language mr-1"></i>{{ gen_request.get_language_display }}</span>
+                        <span><i class="fas fa-palette mr-1"></i>{{ gen_request.tone|title }}</span>
+                        <span><i class="fas fa-calendar mr-1"></i>{{ gen_request.created_at|date:"M d, Y g:i A" }}</span>
+                    </div>
+                </div>
+                <div>
+                    {% if gen_request.status == 'GENERATED' %}
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-emerald-100 text-emerald-700">
+                            <i class="fas fa-check-circle mr-2"></i>{% trans "Generated" %}
+                        </span>
+                    {% elif gen_request.status == 'PENDING' %}
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-slate-100 text-slate-700">
+                            <i class="fas fa-clock mr-2"></i>{% trans "Pending" %}
+                        </span>
+                    {% elif gen_request.status == 'FAILED' %}
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-red-100 text-red-700">
+                            <i class="fas fa-exclamation-circle mr-2"></i>{% trans "Failed" %}
+                        </span>
+                    {% else %}
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-blue-100 text-blue-700">
+                            {{ gen_request.status }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+            
+            {% if gen_request.error_message %}
+                <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-exclamation-triangle text-red-500 mt-1 mr-3"></i>
+                        <div>
+                            <h3 class="text-sm font-semibold text-red-800 mb-1">{% trans "Error" %}</h3>
+                            <p class="text-sm text-red-700">{{ gen_request.error_message }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        {% if gen_request.blog_post %}
+            <!-- Editable Post Workspace with Preview + Social sidebar -->
+                <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-6 mb-6">
+                    <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-200">
+                        <div class="flex items-center gap-3">
+                            <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                                <i class="fas fa-file-alt text-indigo-500"></i>
+                                {% trans "Generated Blog Post" %}
+                            </h3>
+                            {% if gen_request.blog_post.is_published %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">
+                                    <i class="fas fa-globe mr-1"></i>{% trans "Published" %}
+                                </span>
+                            {% else %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700">
+                                    <i class="fas fa-file-alt mr-1"></i>{% trans "Draft" %}
+                                </span>
+                            {% endif %}
+                        </div>
+                        {% if gen_request.blog_post.is_published %}
+                            <a href="{% url 'blog:blog_detail' gen_request.blog_post.slug %}" target="_blank"
+                               class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 inline-flex items-center gap-1">
+                                <i class="fas fa-external-link-alt"></i> {% trans "View Live" %}
+                            </a>
+                        {% endif %}
+                    </div>
+
+                    <form id="post-edit-form" method="post" enctype="multipart/form-data" action="{% url 'blog:generation_request_detail' gen_request.id %}" class="space-y-5">
+                        {% csrf_token %}
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{% trans "Title" %}</label>
+                                <input type="text" name="title" value="{{ gen_request.blog_post.title }}"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{% trans "Excerpt" %}</label>
+                                <textarea name="excerpt" rows="2"
+                                          class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">{{ gen_request.blog_post.excerpt }}</textarea>
+                            </div>
+
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-slate-500 border-b border-slate-200 pb-3">
+                                    <button type="button" id="tab-write" class="tab-btn text-indigo-600 border-b-2 border-indigo-600 pb-2">{% trans "Write" %}</button>
+                                    <button type="button" id="tab-preview" class="tab-btn text-slate-400 pb-2 hover:text-slate-700">{% trans "Preview" %}</button>
+                                </div>
+
+                                <div id="pane-write" class="space-y-2">
+                                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">{% trans "Content (Markdown)" %}</label>
+                                    <textarea id="content-editor" name="content" rows="18"
+                                              class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent" required>{{ gen_request.blog_post.content }}</textarea>
+                                </div>
+
+                                <div id="pane-preview" class="hidden">
+                                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">{% trans "Markdown Preview" %}</label>
+                                    <div id="markdown-preview" class="prose prose-slate max-w-none bg-slate-50 border border-slate-200 rounded-lg p-4 min-h-[320px] overflow-y-auto"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{% trans "Meta Description" %}</label>
+                                <textarea name="meta_description" rows="2"
+                                          class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">{{ gen_request.blog_post.meta_description }}</textarea>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{% trans "Keywords (comma separated)" %}</label>
+                                <input type="text" name="meta_keywords" value="{{ gen_request.blog_post.meta_keywords }}"
+                                       class="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                            </div>
+
+                            <div class="space-y-2">
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-image text-indigo-500"></i>
+                                    <h4 class="text-sm font-bold text-slate-800">{% trans "Thumbnail" %}</h4>
+                                </div>
+                                {% if gen_request.blog_post.image %}
+                                    <img src="{{ gen_request.blog_post.image.url }}" alt="{% trans "Current thumbnail" %}" class="w-full rounded-lg border border-slate-200">
+                                {% else %}
+                                    <div class="w-full h-32 rounded-lg border border-dashed border-slate-200 flex items-center justify-center text-slate-400 text-sm">
+                                        {% trans "No thumbnail yet" %}
+                                    </div>
+                                {% endif %}
+                                <input type="file" name="thumbnail" accept="image/*"
+                                       form="post-edit-form" class="w-full text-sm text-slate-600">
+                                <p class="text-[11px] text-slate-400">{% trans "Upload to replace the current thumbnail" %}</p>
+                            </div>
+
+                            {% if image_suggestions %}
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-lightbulb text-amber-500"></i>
+                                        <h4 class="text-sm font-bold text-slate-800">{% trans "AI Image Suggestions" %}</h4>
+                                    </div>
+                                    <div class="space-y-3">
+                                        {% for suggestion in image_suggestions %}
+                                            <div class="border border-slate-200 rounded-lg p-3 hover:border-indigo-300 transition">
+                                                <div class="flex items-center justify-between mb-1">
+                                                    <p class="text-[11px] font-semibold text-slate-500 uppercase">{% trans "Position" %} {{ suggestion.position }}</p>
+                                                    {% if suggestion.position == 1 %}
+                                                        <span class="text-[11px] font-bold text-indigo-600 uppercase">{% trans "Thumbnail" %}</span>
+                                                    {% endif %}
+                                                </div>
+                                                <p class="text-sm text-slate-700 italic">{{ suggestion.prompt }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% with lj=gen_request.linkedin_draft lp=gen_request.generated_json.social.linkedin.text %}
+                            {% if lj or lp %}
+                                <div class="bg-[#e8f4ff] border border-[#c2def9] rounded-lg p-4 shadow-sm">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-2 text-[#0a66c2] font-semibold text-sm uppercase tracking-wide">
+                                            <i class="fab fa-linkedin text-lg"></i><span>LinkedIn</span>
+                                        </div>
+                                        <button type="button" onclick="copyToClipboard('linkedin')"
+                                                class="text-xs px-2 py-1 bg-white border border-[#c2def9] text-[#0a66c2] rounded hover:bg-[#d9eafe]"><i class="fas fa-copy mr-1"></i>{% trans "Copy" %}</button>
+                                    </div>
+                                    <div id="linkedin-content" class="text-sm text-slate-800 whitespace-pre-wrap bg-white border border-[#c2def9] rounded-lg p-3 leading-relaxed">{{ lj|default:lp }}</div>
+                                </div>
+                            {% endif %}
+                            {% endwith %}
+
+                            {% with xj=gen_request.x_draft xp=gen_request.generated_json.social.x.text %}
+                            {% if xj or xp %}
+                                <div class="bg-[#0f1419] border border-[#0f1419] rounded-lg p-4 shadow-sm">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <div class="flex items-center gap-2 text-white font-semibold text-sm uppercase tracking-wide">
+                                            <i class="fab fa-x-twitter text-lg"></i><span>X</span>
+                                        </div>
+                                        <button type="button" onclick="copyToClipboard('x')"
+                                                class="text-xs px-2 py-1 bg-white/10 border border-white/30 text-white rounded hover:bg-white/20"><i class="fas fa-copy mr-1"></i>{% trans "Copy" %}</button>
+                                    </div>
+                                    <div id="x-content" class="text-sm text-white whitespace-pre-wrap bg-[#0f1419] border border-white/20 rounded-lg p-3 leading-relaxed">{{ xj|default:xp }}</div>
+                                </div>
+                            {% endif %}
+                            {% endwith %}
+
+                            <div class="flex flex-wrap gap-3 pt-2">
+                                <button type="submit" name="action" value="save"
+                                        class="px-4 py-3 bg-slate-900 text-white font-semibold rounded-lg hover:bg-slate-800 transition">
+                                    <i class="fas fa-save mr-2"></i>{% trans "Save Draft" %}
+                                </button>
+                                {% if gen_request.blog_post.is_published %}
+                                    <button type="submit" name="action" value="unpublish"
+                                            class="px-4 py-3 bg-amber-500 text-white font-semibold rounded-lg hover:bg-amber-600 transition">
+                                        <i class="fas fa-eye-slash mr-2"></i>{% trans "Unpublish" %}
+                                    </button>
+                                {% else %}
+                                    <button type="submit" name="action" value="publish"
+                                            class="px-4 py-3 bg-emerald-600 text-white font-semibold rounded-lg hover:bg-emerald-700 transition">
+                                        <i class="fas fa-globe mr-2"></i>{% trans "Publish" %}
+                                    </button>
+                                {% endif %}
+                                <a href="/admin/blog/blogpost/{{ gen_request.blog_post.id }}/change/" class="px-4 py-3 bg-slate-100 text-slate-700 font-semibold rounded-lg hover:bg-slate-200 transition inline-flex items-center gap-2">
+                                    <i class="fas fa-shield-alt"></i>{% trans "Admin" %}
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+        {% else %}
+            <!-- No Blog Post Yet -->
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-12 text-center">
+                <div class="text-6xl mb-4">⏳</div>
+                <h3 class="text-lg font-semibold text-slate-800 mb-2">{% trans "Waiting for Generation" %}</h3>
+                <p class="text-slate-500">{% trans "This request is pending AI generation" %}</p>
+            </div>
+            </div>
+        {% endif %}
+        </div>
+    </main>
+</div>
+
+<script>
+function copyToClipboard(platform) {
+    const contentId = platform + '-content';
+    const content = document.getElementById(contentId).innerText;
+    
+    navigator.clipboard.writeText(content).then(() => {
+        // Show success feedback
+        const button = event.target.closest('button');
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+        button.dataset.originalClass = button.className;
+
+        button.classList.remove('bg-slate-100', 'text-slate-600', 'border', 'border-slate-200');
+        button.classList.remove('bg-white', 'text-[#0a66c2]', 'border-[#c2def9]', 'bg-white/10', 'text-white');
+        button.classList.add('bg-emerald-500', 'text-white', 'border', 'border-emerald-600');
+
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            if (button.dataset.originalClass) {
+                button.className = button.dataset.originalClass;
+            }
+        }, 1600);
+    });
+}
+
+// Markdown live preview
+document.addEventListener('DOMContentLoaded', () => {
+    const editor = document.getElementById('content-editor');
+    const preview = document.getElementById('markdown-preview');
+    const tabWrite = document.getElementById('tab-write');
+    const tabPreview = document.getElementById('tab-preview');
+    const paneWrite = document.getElementById('pane-write');
+    const panePreview = document.getElementById('pane-preview');
+    const uploadEndpoint = "{% url 'blog:upload_inline_image' %}";
+    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+    if (!editor || !preview) return;
+
+    const render = () => {
+        const raw = editor.value || '';
+        preview.innerHTML = marked.parse(raw);
+    };
+
+    editor.addEventListener('input', render);
+    render();
+
+    if (tabWrite && tabPreview && paneWrite && panePreview) {
+        const activate = (mode) => {
+            if (mode === 'write') {
+                paneWrite.classList.remove('hidden');
+                panePreview.classList.add('hidden');
+                tabWrite.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                tabPreview.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                tabPreview.classList.add('text-slate-400');
+            } else {
+                paneWrite.classList.add('hidden');
+                panePreview.classList.remove('hidden');
+                render();
+                tabPreview.classList.add('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                tabWrite.classList.remove('text-indigo-600', 'border-b-2', 'border-indigo-600');
+                tabWrite.classList.add('text-slate-400');
+            }
+        };
+        tabWrite.addEventListener('click', () => activate('write'));
+        tabPreview.addEventListener('click', () => activate('preview'));
+        activate('write');
+    }
+
+    const insertAtCursor = (text) => {
+        const start = editor.selectionStart || 0;
+        const end = editor.selectionEnd || 0;
+        const before = editor.value.slice(0, start);
+        const after = editor.value.slice(end);
+        editor.value = `${before}${text}${after}`;
+        const newPos = start + text.length;
+        editor.selectionStart = editor.selectionEnd = newPos;
+        editor.dispatchEvent(new Event('input'));
+    };
+
+    const uploadImageFile = async (file) => {
+        if (!file || !file.type.startsWith('image/')) return;
+        if (!csrfToken) return;
+
+        const formData = new FormData();
+        formData.append('image', file);
+
+        try {
+            const response = await fetch(uploadEndpoint, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                body: formData,
+            });
+
+            if (!response.ok) throw new Error('upload failed');
+            const data = await response.json();
+            if (data.url) {
+                insertAtCursor(`![${file.name}](${data.url})`);
+            }
+        } catch (err) {
+            console.error('Image upload failed', err);
+            alert('Image upload failed. Please try again.');
+        }
+    };
+
+    const handleFiles = (fileList) => {
+        const files = Array.from(fileList || []);
+        if (!files.length) return;
+        files.forEach(uploadImageFile);
+    };
+
+    editor.addEventListener('paste', (event) => {
+        const files = event.clipboardData ? event.clipboardData.files : null;
+        if (files && files.length) {
+            event.preventDefault();
+            handleFiles(files);
+        }
+    });
+
+    editor.addEventListener('dragover', (event) => {
+        if (event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length) {
+            event.preventDefault();
+        }
+    });
+
+    editor.addEventListener('drop', (event) => {
+        const files = event.dataTransfer ? event.dataTransfer.files : null;
+        if (files && files.length) {
+            event.preventDefault();
+            handleFiles(files);
+            editor.focus();
+        }
+    });
+});
+</script>
+{% endblock %}
