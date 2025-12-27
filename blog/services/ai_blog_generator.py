@@ -10,6 +10,7 @@ This service:
 """
 import json
 import logging
+import re
 from django.conf import settings
 from django.utils import timezone
 from django.utils.text import slugify
@@ -21,6 +22,52 @@ from .blog_index_generator import generate_blog_index
 from .vector_store_manager import get_vector_store_id
 
 logger = logging.getLogger(__name__)
+
+
+def _reconcile_internal_links(markdown, internal_links, language):
+    """Ensure internal links point to existing published posts and fix markdown boxes."""
+    published_posts = list(
+        BlogPost.objects.filter(is_published=True, language=language).order_by('-published_at')
+    )
+    if not published_posts:
+        return markdown, []
+
+    published_by_slug = {post.slug: post for post in published_posts}
+    used_slugs = set()
+    replacements = []
+    validated_links = []
+
+    for link in internal_links:
+        slug = link.get('target_slug')
+        if slug in published_by_slug and slug not in used_slugs:
+            used_slugs.add(slug)
+            validated_links.append(link)
+            continue
+
+        fallback_post = next((p for p in published_posts if p.slug not in used_slugs), None)
+        if fallback_post:
+            used_slugs.add(fallback_post.slug)
+            validated_links.append({
+                "anchor": fallback_post.title,
+                "target_slug": fallback_post.slug,
+                "placement_hint": link.get('placement_hint', '')
+            })
+            replacements.append((slug, fallback_post.slug, fallback_post.title))
+
+    updated_markdown = markdown
+    for old_slug, new_slug, new_title in replacements:
+        if old_slug:
+            updated_markdown = updated_markdown.replace(
+                f"https://fammo.ai/blog/{old_slug}", f"https://fammo.ai/blog/{new_slug}", 1
+            )
+        updated_markdown = re.sub(
+            rf"\[[^\]]+\]\(https://fammo\.ai/blog/{re.escape(new_slug)}\)",
+            f"[{new_title}](https://fammo.ai/blog/{new_slug})",
+            updated_markdown,
+            count=1
+        )
+
+    return updated_markdown, validated_links
 
 
 # OpenAI client wrapper for mockability
@@ -65,15 +112,15 @@ IMPORTANT: You have access to a file_search tool containing our published blog p
 REQUIREMENTS:
 
 1. BLOG POST CONTENT:
-   - Title: Compelling, SEO-friendly (50-60 chars) - refine the provided title if needed
-   - Slug: URL-friendly (lowercase, hyphens)
-   - Meta description: Engaging, under 160 characters, with call-to-action
-   - Keywords: {keyword_guidance}
-   - Target audience: {target_audience}
-   - Content length: 1200-1800 words
-   - Tone: {tone}
-   - Format: Markdown with proper headings (##, ###), bullet points, and bold/italic emphasis
-   - Structure: Introduction → Main sections with subheadings → Conclusion with CTA
+    - Title: Compelling, SEO-friendly (50-60 chars) - refine the provided title if needed
+    - Slug: URL-friendly (lowercase, hyphens)
+    - Meta description: Engaging, under 160 characters, with call-to-action
+    - Keywords: {keyword_guidance}
+    - Target audience: {target_audience}
+    - Content length: minimum 1600 words (target 1600-2000) — non-negotiable for SEO
+    - Tone: {tone}
+    - Format: Markdown with proper headings (##, ###), bullet points, and bold/italic emphasis
+    - Structure: Introduction → Main sections with subheadings → Conclusion with CTA
    
 2. INTERNAL LINK BOXES (CRITICAL - USE file_search TOOL):
    - FIRST: Use the file_search tool to find published blogs related to this topic
@@ -449,8 +496,19 @@ def generate_for_next_topic(language, tone='professional', created_by=None):
         if not is_valid:
             raise ValueError(f"Invalid response structure: {error_msg}")
         
-        # Step 7: Create BlogPost draft
+        # Step 7: Enforce minimum length and fix internal links to ensure they map to real published posts
         blog_data = response_data['blog']
+        word_count = len(blog_data.get('markdown', '').split())
+        if word_count < 1600:
+            raise ValueError(f"Generated content too short for SEO: {word_count} words (need >= 1600)")
+
+        markdown_fixed, validated_links = _reconcile_internal_links(
+            blog_data.get('markdown', ''),
+            response_data.get('internal_links', []),
+            language,
+        )
+        blog_data['markdown'] = markdown_fixed
+        response_data['internal_links'] = validated_links
         
         # Ensure slug is unique
         base_slug = slugify(blog_data['slug'])

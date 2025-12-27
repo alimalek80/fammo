@@ -17,10 +17,10 @@ def generate_blog_index():
         Path to the generated JSON file
     """
     # Get all published blog posts
-    published_posts = BlogPost.objects.filter(
-        is_published=True
-    ).order_by('-published_at').values(
-        'title', 'slug', 'language', 'meta_description', 'published_at'
+    published_posts = (
+        BlogPost.objects.filter(is_published=True)
+        .order_by('-published_at')
+        .prefetch_related('category')
     )
     
     # Structure the data for AI consumption
@@ -34,13 +34,16 @@ def generate_blog_index():
     }
     
     for post in published_posts:
+        categories = list(post.category.values('name', 'slug')) if post.id else []
         blog_index["posts"].append({
-            "title": post['title'],
-            "slug": post['slug'],
-            "language": post['language'],
-            "description": post['meta_description'] or "",
-            "url": f"https://fammo.ai/blog/{post['slug']}",
-            "published_date": post['published_at'].isoformat() if post['published_at'] else None
+            "title": post.title,
+            "slug": post.slug,
+            "language": post.language,
+            "description": post.meta_description or "",
+            "url": f"https://fammo.ai/blog/{post.slug}",
+            "published_date": post.published_at.isoformat() if post.published_at else None,
+            "categories": [c["name"] for c in categories],
+            "category_slugs": [c["slug"] for c in categories],
         })
     
     # Save to media directory
