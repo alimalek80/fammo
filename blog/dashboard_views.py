@@ -13,7 +13,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.files.storage import default_storage
-from django.db.models import Q, Count, Avg
+from django.db.models import Q, Count, Avg, Case, When, IntegerField
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -231,7 +231,16 @@ def generation_request_detail(request, request_id):
     # Get related data
     image_suggestions = None
     if gen_request.blog_post:
-        image_suggestions = BlogPostImageSuggestion.objects.filter(post=gen_request.blog_post)
+        image_suggestions = (
+            BlogPostImageSuggestion.objects
+            .filter(post=gen_request.blog_post)
+            .annotate(is_thumbnail=Case(
+                When(image_type='THUMBNAIL', then=0),
+                default=1,
+                output_field=IntegerField()
+            ))
+            .order_by('is_thumbnail', 'created_at')
+        )
     
     context = {
         'gen_request': gen_request,

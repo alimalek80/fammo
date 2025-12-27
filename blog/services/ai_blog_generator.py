@@ -479,21 +479,25 @@ def generate_for_next_topic(language, tone='professional', created_by=None):
         # Thumbnail
         thumbnail = images_data.get('thumbnail', {})
         if thumbnail:
+            prompt = thumbnail.get('prompt', '')
+            prompt_with_aspect = f"{prompt} (Aspect ratio: 16:9)" if prompt else "Aspect ratio: 16:9"
             BlogPostImageSuggestion.objects.create(
                 post=blog_post,
                 image_type='THUMBNAIL',
                 alt_text=thumbnail.get('alt', '')[:200],
-                prompt=thumbnail.get('prompt', ''),
+                prompt=prompt_with_aspect,
                 placement_hint='Featured image'
             )
         
         # Inline images
         for inline_img in images_data.get('inline', []):
+            prompt = inline_img.get('prompt', '')
+            prompt_with_aspect = f"{prompt} (Aspect ratio: 16:9)" if prompt else "Aspect ratio: 16:9"
             BlogPostImageSuggestion.objects.create(
                 post=blog_post,
                 image_type='INLINE',
                 alt_text=inline_img.get('alt', '')[:200],
-                prompt=inline_img.get('prompt', ''),
+                prompt=prompt_with_aspect,
                 placement_hint=inline_img.get('placement_hint', '')[:200]
             )
         
@@ -754,21 +758,25 @@ def generate_blog_from_topic(topic, language, tone, created_by):
         # Thumbnail
         thumbnail = images_data.get('thumbnail', {})
         if thumbnail:
+            prompt = thumbnail.get('prompt', '')
+            prompt_with_aspect = f"{prompt} (Aspect ratio: 16:9)" if prompt else "Aspect ratio: 16:9"
             BlogPostImageSuggestion.objects.create(
                 post=blog_post,
                 image_type='THUMBNAIL',
                 alt_text=thumbnail.get('alt', '')[:200],
-                prompt=thumbnail.get('prompt', ''),
+                prompt=prompt_with_aspect,
                 placement_hint='Featured image'
             )
         
         # Inline images
         for inline_img in images_data.get('inline', []):
+            prompt = inline_img.get('prompt', '')
+            prompt_with_aspect = f"{prompt} (Aspect ratio: 16:9)" if prompt else "Aspect ratio: 16:9"
             BlogPostImageSuggestion.objects.create(
                 post=blog_post,
                 image_type='INLINE',
                 alt_text=inline_img.get('alt', '')[:200],
-                prompt=inline_img.get('prompt', ''),
+                prompt=prompt_with_aspect,
                 placement_hint=inline_img.get('placement_hint', '')[:200]
             )
         

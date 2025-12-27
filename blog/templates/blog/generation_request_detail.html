@@ -204,11 +204,23 @@
                                     <div class="space-y-3">
                                         {% for suggestion in image_suggestions %}
                                             <div class="border border-slate-200 rounded-lg p-3 hover:border-indigo-300 transition">
-                                                <div class="flex items-center justify-between mb-1">
-                                                    <p class="text-[11px] font-semibold text-slate-500 uppercase">{% trans "Position" %} {{ suggestion.position }}</p>
-                                                    {% if suggestion.position == 1 %}
-                                                        <span class="text-[11px] font-bold text-indigo-600 uppercase">{% trans "Thumbnail" %}</span>
-                                                    {% endif %}
+                                                <div class="flex items-start justify-between mb-2 gap-2">
+                                                    <div class="flex flex-col gap-1">
+                                                        <div class="flex items-center gap-2 text-[11px] font-semibold text-slate-500 uppercase">
+                                                            <span>{% trans "Type" %}: {{ suggestion.get_image_type_display }}</span>
+                                                            {% if suggestion.image_type == 'THUMBNAIL' %}
+                                                                <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200">{% trans "Cover Image" %}</span>
+                                                            {% endif %}
+                                                        </div>
+                                                        {% if suggestion.placement_hint %}
+                                                            <span class="text-[11px] text-slate-400">{{ suggestion.placement_hint }}</span>
+                                                        {% endif %}
+                                                    </div>
+                                                    <button type="button"
+                                                            class="text-xs px-2 py-1 rounded border border-slate-200 text-slate-600 hover:bg-slate-50"
+                                                            onclick="copyImagePrompt('{{ suggestion.prompt|escapejs }}', event)">
+                                                        <i class="fas fa-copy mr-1"></i>{% trans "Copy" %}
+                                                    </button>
                                                 </div>
                                                 <p class="text-sm text-slate-700 italic">{{ suggestion.prompt }}</p>
                                             </div>
@@ -304,6 +316,21 @@ function copyToClipboard(platform) {
             if (button.dataset.originalClass) {
                 button.className = button.dataset.originalClass;
             }
+        }, 1600);
+    });
+}
+
+function copyImagePrompt(promptText, event) {
+    navigator.clipboard.writeText(promptText).then(() => {
+        const button = event.target.closest('button');
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check mr-1"></i>Copied!';
+        button.classList.remove('border-slate-200', 'text-slate-600', 'hover:bg-slate-50');
+        button.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.classList.remove('bg-emerald-500', 'text-white', 'border-emerald-600');
+            button.classList.add('border-slate-200', 'text-slate-600');
         }, 1600);
     });
 }

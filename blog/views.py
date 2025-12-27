@@ -79,7 +79,7 @@ def rate_post(request, slug):
     value = int(request.POST.get('rating', 0))
     if 1 <= value <= 5:
         BlogRating.objects.update_or_create(post=post, user=request.user, defaults={'value': value})
-    return redirect('blog_detail', slug=slug)
+    return redirect('blog:blog_detail', slug=slug)
 
 @login_required
 def comment_post(request, slug):
@@ -87,4 +87,4 @@ def comment_post(request, slug):
     content = request.POST.get('content', '').strip()
     if content:
         BlogComment.objects.create(post=post, user=request.user, content=content)
-    return redirect('blog_detail', slug=slug)
+    return redirect('blog:blog_detail', slug=slug)
