@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
-from django.views.decorators.http import require_http_methods
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_http_methods, require_POST
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.core.files.base import ContentFile
+from django.http import JsonResponse
 from .ai_service import pet_answer
 from .models import ChatSession, ChatMessage
 from pet.models import Pet
@@ -47,24 +48,34 @@ def save_image_from_base64(message, image_data):
 
 
 @require_http_methods(["GET", "POST"])
-def chat(request):
+def chat(request, session_id=None):
     # Personalization context
     user_first = None
     pet_profiles = None
     primary_pet = None
     session = None
+    all_sessions = []
     history = []
 
     if request.user.is_authenticated:
-        # Get or create active chat session
-        session = get_or_create_active_session(request.user)
+        # Get all user sessions for sidebar
+        all_sessions = ChatSession.objects.filter(user=request.user).order_by('-updated_at')[:50]
         
-        # reset chat if ?new=1
+        # If session_id provided, load that session
+        if session_id:
+            session = get_object_or_404(ChatSession, id=session_id, user=request.user)
+        else:
+            # Get or create active chat session
+            session = get_or_create_active_session(request.user)
+        
+        # reset chat if ?new=1 - create new session
         if request.GET.get("new") == "1":
-            # Mark current session as inactive and create new one
-            session.is_active = False
-            session.save()
-            session = ChatSession.objects.create(user=request.user)
+            # Mark current session as inactive
+            if session:
+                session.is_active = False
+                session.save()
+            # Create new session
+            session = ChatSession.objects.create(user=request.user, is_active=True)
             return redirect("chat")
         
         # Load history from database
@@ -114,6 +125,8 @@ def chat(request):
                 "error": "Please type a question or upload an image.",
                 "user_first": user_first,
                 "primary_pet": primary_pet,
+                "all_sessions": all_sessions,
+                "current_session": session,
             })
 
         # Check if this is the first user message
@@ -223,6 +236,9 @@ def chat(request):
         # Update session timestamp
         session.save()  # triggers updated_at
 
+        # Redirect to the session URL
+        if session_id:
+            return redirect("chat_session", session_id=session.id)
         return redirect("chat")
     
     # Personalized greeting (client shows this when no history exists)
@@ -240,4 +256,20 @@ def chat(request):
         "user_first": user_first,
         "primary_pet": primary_pet,
         "greeting": greeting,
+        "all_sessions": all_sessions,
+        "current_session": session,
     })
+
+
+@login_required
+@require_POST
+def delete_session(request, session_id):
+    """Delete a chat session."""
+    session = get_object_or_404(ChatSession, id=session_id, user=request.user)
+    session.delete()
+    
+    # If AJAX request, return JSON
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'success': True})
+    
+    return redirect("chat")
