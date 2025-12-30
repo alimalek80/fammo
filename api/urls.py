@@ -22,6 +22,7 @@ from .views import (
     SetUserLanguageView,
     OnboardingSlideListView,
     SignupView,
+    GoogleAuthView,
     ForgotPasswordView,
     ResetPasswordView,
     ChangePasswordView,
@@ -69,6 +70,7 @@ urlpatterns = [
 
     # JWT auth
     path('auth/signup/', SignupView.as_view(), name='api-signup'),
+    path('auth/google/', GoogleAuthView.as_view(), name='api-google-auth'),
     path('auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/forgot-password/', ForgotPasswordView.as_view(), name='api-forgot-password'),

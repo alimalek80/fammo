@@ -13,6 +13,10 @@ from django.utils.timezone import now
 from django.shortcuts import get_object_or_404
 import secrets
 import string
+import requests
+from rest_framework_simplejwt.tokens import RefreshToken
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
 
 from userapp.models import Profile, CustomUser
 from userapp.serializers import ProfileSerializer, SignupSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
@@ -354,6 +358,122 @@ The Fammo Team
         except Exception as e:
             return Response({
                 "error": f"Registration failed: {str(e)}"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class GoogleAuthView(APIView):
+    """
+    POST /api/v1/auth/google/
+    Authenticate with Google ID token from mobile app (Flutter)
+    
+    Request body: {"id_token": "google_id_token_from_flutter"}
+    
+    Returns JWT tokens for authenticated user (creates user if doesn't exist)
+    """
+    permission_classes = []
+    
+    # Google OAuth Client IDs - add your mobile app client IDs here
+    GOOGLE_CLIENT_IDS = [
+        '957466041070-qla7sp3ipeqrr6rh0p6fp9irj5o95mdl.apps.googleusercontent.com',  # Web client
+        # Add your Android client ID here if different
+        # Add your iOS client ID here if different
+    ]
+    
+    def post(self, request):
+        token = request.data.get('id_token')
+        
+        if not token:
+            return Response({
+                "error": "id_token is required"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            # Verify the Google ID token
+            idinfo = id_token.verify_oauth2_token(
+                token,
+                google_requests.Request(),
+                clock_skew_in_seconds=10
+            )
+            
+            # Verify the issuer
+            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                return Response({
+                    "error": "Invalid token issuer"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Verify the audience (client ID)
+            if idinfo.get('aud') not in self.GOOGLE_CLIENT_IDS:
+                return Response({
+                    "error": f"Invalid token audience. Token aud: {idinfo.get('aud')}"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Get user info from token
+            email = idinfo.get('email')
+            email_verified = idinfo.get('email_verified', False)
+            first_name = idinfo.get('given_name', '')
+            last_name = idinfo.get('family_name', '')
+            google_user_id = idinfo.get('sub')  # Unique Google user ID
+            picture = idinfo.get('picture', '')
+            
+            if not email:
+                return Response({
+                    "error": "Email not provided by Google"
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Get or create user
+            user, created = CustomUser.objects.get_or_create(
+                email=email,
+                defaults={
+                    'is_active': True,
+                }
+            )
+            
+            # If user exists but was inactive, activate them
+            if not user.is_active:
+                user.is_active = True
+                user.save()
+            
+            # Ensure profile exists and update it
+            profile, _ = Profile.objects.get_or_create(user=user)
+            
+            if created or not profile.first_name:
+                profile.first_name = first_name
+            if created or not profile.last_name:
+                profile.last_name = last_name
+            
+            # Store Google user ID for future reference
+            if not hasattr(profile, 'google_user_id'):
+                # If you want to track Google ID, you can add this field to Profile model
+                pass
+            
+            profile.save()
+            
+            # Generate JWT tokens
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                "success": True,
+                "created": created,
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "first_name": profile.first_name,
+                    "last_name": profile.last_name,
+                },
+                "tokens": {
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                }
+            }, status=status.HTTP_200_OK)
+            
+        except ValueError as e:
+            # Invalid token
+            return Response({
+                "error": f"Invalid Google token: {str(e)}"
+            }, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as e:
+            return Response({
+                "error": f"Authentication failed: {str(e)}"
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
