@@ -1,8 +1,9 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Confirm Your Clinic Email - FAMMO</title>
+    <title>{% trans "Confirm Your Clinic Email" %} - FAMMO</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,51 +55,51 @@
 </head>
 <body>
     <div class="header">
-        <h1>🏥 Welcome to FAMMO Partner Network!</h1>
-        <p>Thank you for registering your clinic</p>
+        <h1>🏥 {% trans "Welcome to FAMMO Partner Network!" %}</h1>
+        <p>{% trans "Thank you for registering your clinic" %}</p>
     </div>
     
     <div class="content">
-        <h2>Hello {{ clinic.name }}!</h2>
+        <h2>{% blocktrans with clinic_name=clinic.name %}Hello {{ clinic_name }}!{% endblocktrans %}</h2>
         
-        <p>Thank you for registering your veterinary clinic with FAMMO. To complete your registration, please confirm your email address by clicking the button below:</p>
+        <p>{% trans "Thank you for registering your veterinary clinic with FAMMO. To complete your registration, please confirm your email address by clicking the button below:" %}</p>
         
         <div style="text-align: center;">
             <a href="{{ confirmation_url }}" class="button">
-                ✅ Confirm Email Address
+                ✅ {% trans "Confirm Email Address" %}
             </a>
         </div>
         
         <div class="clinic-info">
-            <h3>Your Clinic Information:</h3>
-            <p><strong>Clinic Name:</strong> {{ clinic.name }}</p>
-            <p><strong>Email:</strong> {{ clinic.email }}</p>
-            <p><strong>City:</strong> {{ clinic.city }}</p>
+            <h3>{% trans "Your Clinic Information:" %}</h3>
+            <p><strong>{% trans "Clinic Name:" %}</strong> {{ clinic.name }}</p>
+            <p><strong>{% trans "Email:" %}</strong> {{ clinic.email }}</p>
+            <p><strong>{% trans "City:" %}</strong> {{ clinic.city }}</p>
             {% if clinic.phone %}
-            <p><strong>Phone:</strong> {{ clinic.phone }}</p>
+            <p><strong>{% trans "Phone:" %}</strong> {{ clinic.phone }}</p>
             {% endif %}
         </div>
         
-        <h3>What happens next?</h3>
+        <h3>{% trans "What happens next?" %}</h3>
         <ol>
-            <li><strong>Email Confirmation:</strong> Click the button above to confirm your email</li>
-            <li><strong>Admin Review:</strong> Our team will review your clinic information</li>
-            <li><strong>Approval:</strong> Once approved, your clinic will be listed in our partner network</li>
-            <li><strong>Dashboard Access:</strong> You'll get full access to your clinic dashboard</li>
+            <li><strong>{% trans "Email Confirmation:" %}</strong> {% trans "Click the button above to confirm your email" %}</li>
+            <li><strong>{% trans "Admin Review:" %}</strong> {% trans "Our team will review your clinic information" %}</li>
+            <li><strong>{% trans "Approval:" %}</strong> {% trans "Once approved, your clinic will be listed in our partner network" %}</li>
+            <li><strong>{% trans "Dashboard Access:" %}</strong> {% trans "You'll get full access to your clinic dashboard" %}</li>
         </ol>
         
-        <p><strong>Important:</strong> This confirmation link will expire in 24 hours. If you need a new link, please contact our support team.</p>
+        <p><strong>{% trans "Important:" %}</strong> {% trans "This confirmation link will expire in 24 hours. If you need a new link, please contact our support team." %}</p>
         
-        <p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+        <p>{% trans "If the button doesn't work, you can copy and paste this link into your browser:" %}</p>
         <p style="word-break: break-all; background: #eee; padding: 10px; border-radius: 3px;">
             {{ confirmation_url }}
         </p>
     </div>
     
     <div class="footer">
-        <p>This email was sent to {{ clinic.email }} because you registered a clinic with FAMMO.</p>
-        <p>If you didn't register for this account, please ignore this email.</p>
-        <p>© 2024 FAMMO - Connecting Pet Owners with Trusted Veterinarians</p>
+        <p>{% blocktrans with email=clinic.email %}This email was sent to {{ email }} because you registered a clinic with FAMMO.{% endblocktrans %}</p>
+        <p>{% trans "If you didn't register for this account, please ignore this email." %}</p>
+        <p>© 2024 FAMMO - {% trans "Connecting Pet Owners with Trusted Veterinarians" %}</p>
     </div>
 </body>
 </html>

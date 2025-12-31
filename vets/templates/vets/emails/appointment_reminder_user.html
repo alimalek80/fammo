@@ -1,8 +1,9 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Appointment Reminder - FAMMO</title>
+    <title>{% trans "Appointment Reminder" %} - FAMMO</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -91,33 +92,33 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>⏰ Appointment Reminder</h1>
-            <p>Don't forget, {{ user_name }}!</p>
+            <h1>⏰ {% trans "Appointment Reminder" %}</h1>
+            <p>{% blocktrans with name=user_name %}Don't forget, {{ name }}!{% endblocktrans %}</p>
         </div>
         
         <div class="content">
             <div class="reminder-icon">🐾</div>
             
             <p style="text-align: center; font-size: 18px;">
-                Your appointment for <strong>{{ pet.name }}</strong> is <strong>tomorrow</strong>!
+                {% blocktrans with pet_name=pet.name %}Your appointment for <strong>{{ pet_name }}</strong> is <strong>tomorrow</strong>!{% endblocktrans %}
             </p>
             
             <div class="appointment-card">
-                <h3>📆 Appointment Details</h3>
+                <h3>📆 {% trans "Appointment Details" %}</h3>
                 <div class="detail-row">
-                    <span class="detail-label">Date:</span>
+                    <span class="detail-label">{% trans "Date:" %}</span>
                     <span class="detail-value">{{ appointment.appointment_date|date:"l, F j, Y" }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Time:</span>
+                    <span class="detail-label">{% trans "Time:" %}</span>
                     <span class="detail-value">{{ appointment.appointment_time|time:"H:i" }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Pet:</span>
+                    <span class="detail-label">{% trans "Pet:" %}</span>
                     <span class="detail-value">{{ pet.name }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Reference:</span>
+                    <span class="detail-label">{% trans "Reference:" %}</span>
                     <span class="detail-value">{{ appointment.reference_code }}</span>
                 </div>
             </div>
@@ -126,34 +127,34 @@
                 <h3 style="margin-top: 0;">🏥 {{ clinic.name }}</h3>
                 {% if clinic.address %}
                 <p style="margin: 5px 0;">
-                    <strong>Address:</strong> {{ clinic.address }}{% if clinic.city %}, {{ clinic.city }}{% endif %}
+                    <strong>{% trans "Address:" %}</strong> {{ clinic.address }}{% if clinic.city %}, {{ clinic.city }}{% endif %}
                 </p>
                 {% endif %}
                 {% if clinic.phone %}
                 <p style="margin: 5px 0;">
-                    <strong>Phone:</strong> {{ clinic.phone }}
+                    <strong>{% trans "Phone:" %}</strong> {{ clinic.phone }}
                 </p>
                 {% endif %}
             </div>
             
             <div class="checklist">
-                <h3 style="margin-top: 0;">📋 Before Your Visit</h3>
+                <h3 style="margin-top: 0;">📋 {% trans "Before Your Visit" %}</h3>
                 <ul>
-                    <li>Arrive 5-10 minutes early</li>
-                    <li>Bring your pet's health records if needed</li>
-                    <li>Have your reference code ready: <strong>{{ appointment.reference_code }}</strong></li>
-                    <li>Prepare any questions for the vet</li>
+                    <li>{% trans "Arrive 5-10 minutes early" %}</li>
+                    <li>{% trans "Bring your pet's health records if needed" %}</li>
+                    <li>{% blocktrans with ref_code=appointment.reference_code %}Have your reference code ready: <strong>{{ ref_code }}</strong>{% endblocktrans %}</li>
+                    <li>{% trans "Prepare any questions for the vet" %}</li>
                 </ul>
             </div>
             
             <p style="text-align: center; color: #666;">
-                Need to cancel? Please do so at least 24 hours before your appointment.
+                {% trans "Need to cancel? Please do so at least 24 hours before your appointment." %}
             </p>
         </div>
         
         <div class="footer">
-            <p>This reminder was sent by {{ site_name }}</p>
-            <p>© {{ site_name }} - Your Pet Care Partner</p>
+            <p>{% blocktrans with site=site_name %}This reminder was sent by {{ site }}{% endblocktrans %}</p>
+            <p>© {{ site_name }} - {% trans "Your Pet Care Partner" %}</p>
         </div>
     </div>
 </body>

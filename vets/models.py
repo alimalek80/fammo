@@ -7,6 +7,7 @@ from django.conf import settings
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 # ---------- helpers ----------
 def _rand_suffix(n: int = 5) -> str:
@@ -283,20 +284,20 @@ class WorkingHours(models.Model):
     Structured working hours for each day of the week
     """
     DAYS_OF_WEEK = [
-        (0, 'Monday'),
-        (1, 'Tuesday'),
-        (2, 'Wednesday'),
-        (3, 'Thursday'),
-        (4, 'Friday'),
-        (5, 'Saturday'),
-        (6, 'Sunday'),
+        (0, _('Monday')),
+        (1, _('Tuesday')),
+        (2, _('Wednesday')),
+        (3, _('Thursday')),
+        (4, _('Friday')),
+        (5, _('Saturday')),
+        (6, _('Sunday')),
     ]
     
     clinic = models.ForeignKey(Clinic, on_delete=models.CASCADE, related_name="working_hours_schedule")
     day_of_week = models.IntegerField(choices=DAYS_OF_WEEK)
-    is_closed = models.BooleanField(default=False, help_text="Clinic is closed on this day")
-    open_time = models.TimeField(null=True, blank=True, help_text="Opening time")
-    close_time = models.TimeField(null=True, blank=True, help_text="Closing time")
+    is_closed = models.BooleanField(default=False, help_text=_("Clinic is closed on this day"))
+    open_time = models.TimeField(null=True, blank=True, help_text=_("Opening time"))
+    close_time = models.TimeField(null=True, blank=True, help_text=_("Closing time"))
     
     class Meta:
         ordering = ['day_of_week']
@@ -313,9 +314,9 @@ class WorkingHours(models.Model):
 
 
 class ReferralStatus(models.TextChoices):
-    NEW = "NEW", "New"
-    ACTIVE = "ACTIVE", "Active"
-    INACTIVE = "INACTIVE", "Inactive"
+    NEW = "NEW", _("New")
+    ACTIVE = "ACTIVE", _("Active")
+    INACTIVE = "INACTIVE", _("Inactive")
 
 
 class ReferredUser(TimeStampedModel):
@@ -353,25 +354,25 @@ class AppointmentReason(models.Model):
     """
     name = models.CharField(max_length=100, unique=True)
     description = models.TextField(blank=True)
-    order = models.PositiveIntegerField(default=0, help_text="Controls display order")
+    order = models.PositiveIntegerField(default=0, help_text=_("Controls display order"))
     is_active = models.BooleanField(default=True)
     
     class Meta:
         ordering = ['order', 'name']
-        verbose_name = "Appointment Reason"
-        verbose_name_plural = "Appointment Reasons"
+        verbose_name = _("Appointment Reason")
+        verbose_name_plural = _("Appointment Reasons")
     
     def __str__(self):
         return self.name
 
 
 class AppointmentStatus(models.TextChoices):
-    PENDING = "PENDING", "Pending"
-    CONFIRMED = "CONFIRMED", "Confirmed"
-    CANCELLED_BY_USER = "CANCELLED_USER", "Cancelled by User"
-    CANCELLED_BY_CLINIC = "CANCELLED_CLINIC", "Cancelled by Clinic"
-    COMPLETED = "COMPLETED", "Completed"
-    NO_SHOW = "NO_SHOW", "No Show"
+    PENDING = "PENDING", _("Pending")
+    CONFIRMED = "CONFIRMED", _("Confirmed")
+    CANCELLED_BY_USER = "CANCELLED_USER", _("Cancelled by User")
+    CANCELLED_BY_CLINIC = "CANCELLED_CLINIC", _("Cancelled by Clinic")
+    COMPLETED = "COMPLETED", _("Completed")
+    NO_SHOW = "NO_SHOW", _("No Show")
 
 
 class Appointment(TimeStampedModel):
@@ -525,11 +526,11 @@ class ClinicNotification(TimeStampedModel):
     Notifications for clinic owners/managers
     """
     NOTIFICATION_TYPES = [
-        ('NEW_APPOINTMENT', 'New Appointment'),
-        ('CANCELLED_APPOINTMENT', 'Cancelled Appointment'),
-        ('APPOINTMENT_REMINDER', 'Appointment Reminder'),
-        ('REFERRAL', 'New Referral'),
-        ('SYSTEM', 'System Notification'),
+        ('NEW_APPOINTMENT', _('New Appointment')),
+        ('CANCELLED_APPOINTMENT', _('Cancelled Appointment')),
+        ('APPOINTMENT_REMINDER', _('Appointment Reminder')),
+        ('REFERRAL', _('New Referral')),
+        ('SYSTEM', _('System Notification')),
     ]
     
     clinic = models.ForeignKey(
@@ -559,8 +560,8 @@ class ClinicNotification(TimeStampedModel):
     
     class Meta:
         ordering = ['-created_at']
-        verbose_name = "Clinic Notification"
-        verbose_name_plural = "Clinic Notifications"
+        verbose_name = _("Clinic Notification")
+        verbose_name_plural = _("Clinic Notifications")
     
     def __str__(self):
         return f"{self.title} - {self.clinic.name}"

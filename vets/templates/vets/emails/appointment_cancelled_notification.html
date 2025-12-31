@@ -1,8 +1,9 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Appointment Cancelled - FAMMO</title>
+    <title>{% trans "Appointment Cancelled" %} - FAMMO</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -86,51 +87,51 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>❌ Appointment Cancelled</h1>
-            <p>A customer has cancelled their appointment</p>
+            <h1>❌ {% trans "Appointment Cancelled" %}</h1>
+            <p>{% trans "A customer has cancelled their appointment" %}</p>
         </div>
         
         <div class="content">
             <div class="reference-code">
-                <p style="margin: 0 0 5px 0;">Reference Code</p>
+                <p style="margin: 0 0 5px 0;">{% trans "Reference Code" %}</p>
                 <div class="code">{{ appointment.reference_code }}</div>
             </div>
             
             <div class="appointment-card">
-                <h3>📆 Cancelled Appointment Details</h3>
+                <h3>📆 {% trans "Cancelled Appointment Details" %}</h3>
                 <div class="detail-row">
-                    <span class="detail-label">Pet Name:</span>
+                    <span class="detail-label">{% trans "Pet Name:" %}</span>
                     <span class="detail-value">{{ pet.name }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Customer:</span>
+                    <span class="detail-label">{% trans "Customer:" %}</span>
                     <span class="detail-value">{{ user_name }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Date:</span>
+                    <span class="detail-label">{% trans "Date:" %}</span>
                     <span class="detail-value">{{ appointment.appointment_date|date:"l, F j, Y" }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Time:</span>
+                    <span class="detail-label">{% trans "Time:" %}</span>
                     <span class="detail-value">{{ appointment.appointment_time|time:"H:i" }}</span>
                 </div>
             </div>
             
             {% if cancellation_reason %}
             <div class="cancellation-reason">
-                <h3 style="margin-top: 0;">📝 Reason for Cancellation</h3>
+                <h3 style="margin-top: 0;">📝 {% trans "Reason for Cancellation" %}</h3>
                 <p style="margin-bottom: 0;">{{ cancellation_reason }}</p>
             </div>
             {% endif %}
             
             <p style="text-align: center; color: #666;">
-                This time slot is now available for other bookings.
+                {% trans "This time slot is now available for other bookings." %}
             </p>
         </div>
         
         <div class="footer">
-            <p>This notification was sent by {{ site_name }}</p>
-            <p>© {{ site_name }} - Your Pet Care Partner</p>
+            <p>{% blocktrans with site=site_name %}This notification was sent by {{ site }}{% endblocktrans %}</p>
+            <p>© {{ site_name }} - {% trans "Your Pet Care Partner" %}</p>
         </div>
     </div>
 </body>

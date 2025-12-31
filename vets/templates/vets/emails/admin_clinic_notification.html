@@ -1,8 +1,9 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
-    <title>New Clinic Pending Approval - FAMMO Admin</title>
+    <title>{% trans "New Clinic Pending Approval" %} - FAMMO Admin</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -58,72 +59,72 @@
 </head>
 <body>
     <div class="header">
-        <h1>🏥 New Clinic Registration</h1>
-        <p>Pending Admin Approval</p>
+        <h1>🏥 {% trans "New Clinic Registration" %}</h1>
+        <p>{% trans "Pending Admin Approval" %}</p>
     </div>
     
     <div class="content">
         <div class="status-pending">
-            <strong>⏳ Action Required:</strong> A new clinic has confirmed their email and is awaiting admin approval for public listing.
+            <strong>⏳ {% trans "Action Required:" %}</strong> {% trans "A new clinic has confirmed their email and is awaiting admin approval for public listing." %}
         </div>
         
         <div class="clinic-details">
-            <h3>Clinic Information</h3>
-            <p><strong>Clinic Name:</strong> {{ clinic.name }}</p>
-            <p><strong>Owner Email:</strong> {{ clinic.owner.email }}</p>
-            <p><strong>Clinic Email:</strong> {{ clinic.email }}</p>
-            <p><strong>City:</strong> {{ clinic.city }}</p>
+            <h3>{% trans "Clinic Information" %}</h3>
+            <p><strong>{% trans "Clinic Name:" %}</strong> {{ clinic.name }}</p>
+            <p><strong>{% trans "Owner Email:" %}</strong> {{ clinic.owner.email }}</p>
+            <p><strong>{% trans "Clinic Email:" %}</strong> {{ clinic.email }}</p>
+            <p><strong>{% trans "City:" %}</strong> {{ clinic.city }}</p>
             {% if clinic.address %}
-            <p><strong>Address:</strong> {{ clinic.address }}</p>
+            <p><strong>{% trans "Address:" %}</strong> {{ clinic.address }}</p>
             {% endif %}
             {% if clinic.phone %}
-            <p><strong>Phone:</strong> {{ clinic.phone }}</p>
+            <p><strong>{% trans "Phone:" %}</strong> {{ clinic.phone }}</p>
             {% endif %}
             {% if clinic.website %}
-            <p><strong>Website:</strong> <a href="{{ clinic.website }}">{{ clinic.website }}</a></p>
+            <p><strong>{% trans "Website:" %}</strong> <a href="{{ clinic.website }}">{{ clinic.website }}</a></p>
             {% endif %}
             {% if clinic.specializations %}
-            <p><strong>Specializations:</strong> {{ clinic.specializations }}</p>
+            <p><strong>{% trans "Specializations:" %}</strong> {{ clinic.specializations }}</p>
             {% endif %}
             {% if clinic.working_hours %}
-            <p><strong>Working Hours:</strong> {{ clinic.working_hours }}</p>
+            <p><strong>{% trans "Working Hours:" %}</strong> {{ clinic.working_hours }}</p>
             {% endif %}
             {% if clinic.bio %}
-            <p><strong>Bio:</strong> {{ clinic.bio|truncatewords:50 }}</p>
+            <p><strong>{% trans "Bio:" %}</strong> {{ clinic.bio|truncatewords:50 }}</p>
             {% endif %}
-            <p><strong>Registration Date:</strong> {{ clinic.created_at|date:"F d, Y H:i" }}</p>
-            <p><strong>Email Confirmed:</strong> {{ clinic.email_confirmed|yesno:"Yes,No" }}</p>
+            <p><strong>{% trans "Registration Date:" %}</strong> {{ clinic.created_at|date:"F d, Y H:i" }}</p>
+            <p><strong>{% trans "Email Confirmed:" %}</strong> {{ clinic.email_confirmed|yesno:"Yes,No" }}</p>
         </div>
         
-        <h3>Admin Actions</h3>
-        <p>Review the clinic information and take appropriate action:</p>
+        <h3>{% trans "Admin Actions" %}</h3>
+        <p>{% trans "Review the clinic information and take appropriate action:" %}</p>
         
         <div style="text-align: center; margin: 30px 0;">
             <a href="{{ admin_url }}" class="button review-btn">
-                📋 Review in Admin Panel
+                📋 {% trans "Review in Admin Panel" %}
             </a>
         </div>
         
-        <h4>Next Steps:</h4>
+        <h4>{% trans "Next Steps:" %}</h4>
         <ol>
-            <li>Review the clinic information for accuracy</li>
-            <li>Verify the clinic's legitimacy (website, phone, etc.)</li>
-            <li>Check for any duplicate registrations</li>
-            <li>Approve or reject the clinic in the admin panel</li>
+            <li>{% trans "Review the clinic information for accuracy" %}</li>
+            <li>{% trans "Verify the clinic's legitimacy (website, phone, etc.)" %}</li>
+            <li>{% trans "Check for any duplicate registrations" %}</li>
+            <li>{% trans "Approve or reject the clinic in the admin panel" %}</li>
         </ol>
         
-        <p><strong>Note:</strong> Once approved, the clinic will:</p>
+        <p><strong>{% trans "Note:" %}</strong> {% trans "Once approved, the clinic will:" %}</p>
         <ul>
-            <li>Appear in the public "Trusted Clinics" directory</li>
-            <li>Get access to their full dashboard features</li>
-            <li>Be able to generate referral codes</li>
-            <li>Receive analytics about their referrals</li>
+            <li>{% trans "Appear in the public \"Trusted Clinics\" directory" %}</li>
+            <li>{% trans "Get access to their full dashboard features" %}</li>
+            <li>{% trans "Be able to generate referral codes" %}</li>
+            <li>{% trans "Receive analytics about their referrals" %}</li>
         </ul>
     </div>
     
     <div style="text-align: center; margin-top: 30px; color: #666; font-size: 14px;">
-        <p>FAMMO Admin Notification System</p>
-        <p>Clinic ID: {{ clinic.id }} | Slug: {{ clinic.slug }}</p>
+        <p>{% trans "FAMMO Admin Notification System" %}</p>
+        <p>{% trans "Clinic ID:" %} {{ clinic.id }} | {% trans "Slug:" %} {{ clinic.slug }}</p>
     </div>
 </body>
 </html>

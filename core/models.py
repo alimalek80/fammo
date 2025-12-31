@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.crypto import get_random_string
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
 # Import legal document models
 from .legal_models import (
@@ -128,24 +129,24 @@ class OnboardingSlide(models.Model):
 class NotificationType(models.TextChoices):
     """Types of notifications that can be sent to users"""
     # Appointment related
-    APPOINTMENT_CONFIRMED = 'APPOINTMENT_CONFIRMED', 'Appointment Confirmed'
-    APPOINTMENT_CANCELLED = 'APPOINTMENT_CANCELLED', 'Appointment Cancelled'
-    APPOINTMENT_REMINDER = 'APPOINTMENT_REMINDER', 'Appointment Reminder'
-    NEW_APPOINTMENT = 'NEW_APPOINTMENT', 'New Appointment'
+    APPOINTMENT_CONFIRMED = 'APPOINTMENT_CONFIRMED', _('Appointment Confirmed')
+    APPOINTMENT_CANCELLED = 'APPOINTMENT_CANCELLED', _('Appointment Cancelled')
+    APPOINTMENT_REMINDER = 'APPOINTMENT_REMINDER', _('Appointment Reminder')
+    NEW_APPOINTMENT = 'NEW_APPOINTMENT', _('New Appointment')
     
     # Account related
-    EMAIL_CONFIRMATION = 'EMAIL_CONFIRMATION', 'Email Confirmation Needed'
-    ACCOUNT_VERIFIED = 'ACCOUNT_VERIFIED', 'Account Verified'
+    EMAIL_CONFIRMATION = 'EMAIL_CONFIRMATION', _('Email Confirmation Needed')
+    ACCOUNT_VERIFIED = 'ACCOUNT_VERIFIED', _('Account Verified')
     
     # System messages
-    ADMIN_MESSAGE = 'ADMIN_MESSAGE', 'Message from Admin'
-    SYSTEM = 'SYSTEM', 'System Notification'
+    ADMIN_MESSAGE = 'ADMIN_MESSAGE', _('Message from Admin')
+    SYSTEM = 'SYSTEM', _('System Notification')
     
     # Pet related
-    PET_REMINDER = 'PET_REMINDER', 'Pet Care Reminder'
+    PET_REMINDER = 'PET_REMINDER', _('Pet Care Reminder')
     
     # Referral related
-    NEW_REFERRAL = 'NEW_REFERRAL', 'New Referral'
+    NEW_REFERRAL = 'NEW_REFERRAL', _('New Referral')
 
 
 class UserNotification(models.Model):
