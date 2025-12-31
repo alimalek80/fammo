@@ -38,6 +38,21 @@ from .views import (
     ClinicVetProfileView,
     SearchClinicsView,
     CombinedClinicUserClinicRegistrationView,
+    # Appointment views
+    AppointmentReasonListView,
+    MyAppointmentsListView,
+    AppointmentCreateView,
+    AppointmentDetailView,
+    AppointmentCancelView,
+    ClinicAvailableSlotsView,
+    ClinicAvailableDatesView,
+    ClinicAppointmentsListView,
+    ClinicAppointmentDetailView,
+    ClinicAppointmentUpdateView,
+    ClinicNotificationsListView,
+    ClinicNotificationMarkReadView,
+    ClinicNotificationsMarkAllReadView,
+    ClinicUnreadNotificationsCountView,
     # AI Hub views
     AIRecommendationViewSet,
     AIHealthReportViewSet,
@@ -114,6 +129,28 @@ urlpatterns = [
     path("clinics/<int:clinic_id>/working-hours/", ClinicWorkingHoursView.as_view(), name="api-clinic-working-hours"),
     path("clinics/<int:clinic_id>/vet-profile/", ClinicVetProfileView.as_view(), name="api-clinic-vet-profile"),
     path("clinics/register/", CombinedClinicUserClinicRegistrationView.as_view(), name="api-clinic-user-register"),
+    
+    # Clinic Available Slots & Dates for Appointments
+    path("clinics/<int:clinic_id>/available-slots/", ClinicAvailableSlotsView.as_view(), name="api-clinic-available-slots"),
+    path("clinics/<int:clinic_id>/available-dates/", ClinicAvailableDatesView.as_view(), name="api-clinic-available-dates"),
+    
+    # Clinic Dashboard - Appointments Management
+    path("clinics/my/appointments/", ClinicAppointmentsListView.as_view(), name="api-clinic-appointments"),
+    path("clinics/my/appointments/<int:pk>/", ClinicAppointmentDetailView.as_view(), name="api-clinic-appointment-detail"),
+    path("clinics/my/appointments/<int:pk>/update/", ClinicAppointmentUpdateView.as_view(), name="api-clinic-appointment-update"),
+    
+    # Clinic Dashboard - Notifications
+    path("clinics/my/notifications/", ClinicNotificationsListView.as_view(), name="api-clinic-notifications"),
+    path("clinics/my/notifications/unread-count/", ClinicUnreadNotificationsCountView.as_view(), name="api-clinic-notifications-unread-count"),
+    path("clinics/my/notifications/mark-all-read/", ClinicNotificationsMarkAllReadView.as_view(), name="api-clinic-notifications-mark-all-read"),
+    path("clinics/my/notifications/<int:pk>/read/", ClinicNotificationMarkReadView.as_view(), name="api-clinic-notification-mark-read"),
+    
+    # User Appointments
+    path("appointments/", MyAppointmentsListView.as_view(), name="api-my-appointments"),
+    path("appointments/create/", AppointmentCreateView.as_view(), name="api-appointment-create"),
+    path("appointments/reasons/", AppointmentReasonListView.as_view(), name="api-appointment-reasons"),
+    path("appointments/<int:pk>/", AppointmentDetailView.as_view(), name="api-appointment-detail"),
+    path("appointments/<int:pk>/cancel/", AppointmentCancelView.as_view(), name="api-appointment-cancel"),
     
     # AI Hub endpoints (meal recommendations and health reports)
     path("", include(router.urls)),

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.crypto import get_random_string
+from django.conf import settings
 
 # Import legal document models
 from .legal_models import (
@@ -122,3 +123,124 @@ class OnboardingSlide(models.Model):
 
     def __str__(self):
         return f"{self.order}. {self.title}"
+
+
+class NotificationType(models.TextChoices):
+    """Types of notifications that can be sent to users"""
+    # Appointment related
+    APPOINTMENT_CONFIRMED = 'APPOINTMENT_CONFIRMED', 'Appointment Confirmed'
+    APPOINTMENT_CANCELLED = 'APPOINTMENT_CANCELLED', 'Appointment Cancelled'
+    APPOINTMENT_REMINDER = 'APPOINTMENT_REMINDER', 'Appointment Reminder'
+    NEW_APPOINTMENT = 'NEW_APPOINTMENT', 'New Appointment'
+    
+    # Account related
+    EMAIL_CONFIRMATION = 'EMAIL_CONFIRMATION', 'Email Confirmation Needed'
+    ACCOUNT_VERIFIED = 'ACCOUNT_VERIFIED', 'Account Verified'
+    
+    # System messages
+    ADMIN_MESSAGE = 'ADMIN_MESSAGE', 'Message from Admin'
+    SYSTEM = 'SYSTEM', 'System Notification'
+    
+    # Pet related
+    PET_REMINDER = 'PET_REMINDER', 'Pet Care Reminder'
+    
+    # Referral related
+    NEW_REFERRAL = 'NEW_REFERRAL', 'New Referral'
+
+
+class UserNotification(models.Model):
+    """
+    Universal notifications for all users (both regular users and clinic owners).
+    This is the central notification system for the platform.
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='notifications'
+    )
+    
+    notification_type = models.CharField(
+        max_length=30,
+        choices=NotificationType.choices,
+        default=NotificationType.SYSTEM
+    )
+    
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    
+    # Optional link to related objects
+    link = models.CharField(
+        max_length=500,
+        blank=True,
+        help_text="URL to redirect when notification is clicked"
+    )
+    
+    # For admin messages, track who sent it
+    sent_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='sent_notifications',
+        help_text="Admin who sent this notification (for admin messages)"
+    )
+    
+    # Read status
+    is_read = models.BooleanField(default=False)
+    read_at = models.DateTimeField(null=True, blank=True)
+    
+    # Priority for sorting
+    is_important = models.BooleanField(
+        default=False,
+        help_text="Important notifications appear at the top"
+    )
+    
+    # Action required flag
+    action_required = models.BooleanField(
+        default=False,
+        help_text="Notification requires user action"
+    )
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-is_important', '-created_at']
+        verbose_name = "User Notification"
+        verbose_name_plural = "User Notifications"
+        indexes = [
+            models.Index(fields=['user', 'is_read']),
+            models.Index(fields=['user', 'created_at']),
+            models.Index(fields=['notification_type']),
+        ]
+    
+    def __str__(self):
+        return f"{self.title} - {self.user.email}"
+    
+    def mark_as_read(self):
+        from django.utils import timezone
+        if not self.is_read:
+            self.is_read = True
+            self.read_at = timezone.now()
+            self.save(update_fields=['is_read', 'read_at'])
+    
+    @classmethod
+    def create_notification(cls, user, notification_type, title, message, 
+                          link='', is_important=False, action_required=False,
+                          sent_by=None):
+        """Helper method to create notifications"""
+        return cls.objects.create(
+            user=user,
+            notification_type=notification_type,
+            title=title,
+            message=message,
+            link=link,
+            is_important=is_important,
+            action_required=action_required,
+            sent_by=sent_by
+        )
+    
+    @classmethod
+    def get_unread_count(cls, user):
+        """Get count of unread notifications for a user"""
+        return cls.objects.filter(user=user, is_read=False).count()

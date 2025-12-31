@@ -39,11 +39,14 @@ from pet.serializers import (
 from core.models import OnboardingSlide
 from core.serializers import OnboardingSlideSerializer
 
-from vets.models import Clinic, WorkingHours, VetProfile
+from vets.models import Clinic, WorkingHours, VetProfile, Appointment, AppointmentReason, AppointmentStatus, ClinicNotification
 from vets.serializers import (
     ClinicListSerializer, ClinicDetailSerializer, ClinicRegistrationSerializer,
     ClinicUpdateSerializer, WorkingHoursSerializer, WorkingHoursUpdateSerializer,
-    VetProfileSerializer, VetProfileUpdateSerializer
+    VetProfileSerializer, VetProfileUpdateSerializer,
+    AppointmentListSerializer, AppointmentDetailSerializer, AppointmentCreateSerializer,
+    AppointmentCancelSerializer, AppointmentReasonSerializer, AvailableSlotsSerializer,
+    ClinicNotificationSerializer, ClinicAppointmentListSerializer, ClinicAppointmentUpdateSerializer
 )
 
 class PingView(APIView):
@@ -1631,3 +1634,537 @@ class AIHealthReportViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
+
+# ============================================================================
+# APPOINTMENT API ENDPOINTS
+# ============================================================================
+
+class AppointmentReasonListView(APIView):
+    """
+    GET /api/v1/appointments/reasons/
+    List all active appointment reasons
+    """
+    permission_classes = [permissions.AllowAny]
+    
+    def get(self, request):
+        reasons = AppointmentReason.objects.filter(is_active=True)
+        serializer = AppointmentReasonSerializer(reasons, many=True)
+        return Response(serializer.data)
+
+
+class MyAppointmentsListView(generics.ListAPIView):
+    """
+    GET /api/v1/appointments/
+    List user's appointments
+    
+    Query parameters:
+    - ?status=PENDING : Filter by status
+    - ?upcoming=true : Show only upcoming appointments
+    - ?pet=1 : Filter by pet ID
+    """
+    serializer_class = AppointmentListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        queryset = Appointment.objects.filter(user=self.request.user)
+        
+        # Filter by status
+        status_filter = self.request.query_params.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        
+        # Filter by upcoming
+        upcoming = self.request.query_params.get('upcoming', '').lower() == 'true'
+        if upcoming:
+            from django.utils import timezone
+            queryset = queryset.filter(
+                appointment_date__gte=timezone.now().date()
+            ).exclude(
+                status__in=[
+                    AppointmentStatus.CANCELLED_BY_USER,
+                    AppointmentStatus.CANCELLED_BY_CLINIC,
+                    AppointmentStatus.COMPLETED,
+                    AppointmentStatus.NO_SHOW
+                ]
+            )
+        
+        # Filter by pet
+        pet_id = self.request.query_params.get('pet')
+        if pet_id:
+            queryset = queryset.filter(pet_id=pet_id)
+        
+        return queryset.select_related('clinic', 'pet', 'reason')
+
+
+class AppointmentCreateView(generics.CreateAPIView):
+    """
+    POST /api/v1/appointments/
+    Create a new appointment
+    """
+    serializer_class = AppointmentCreateSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def perform_create(self, serializer):
+        from vets.utils import send_appointment_notification_to_clinic, create_clinic_notification
+        from django.utils import timezone
+        
+        appointment = serializer.save(user=self.request.user)
+        
+        # Create in-app notification for clinic
+        create_clinic_notification(
+            clinic=appointment.clinic,
+            notification_type='NEW_APPOINTMENT',
+            title=f'New Appointment: {appointment.pet.name}',
+            message=f'New appointment booked for {appointment.pet.name} on {appointment.appointment_date} at {appointment.appointment_time.strftime("%H:%M")}. Reference: {appointment.reference_code}',
+            appointment=appointment
+        )
+        
+        # Mark clinic as notified
+        appointment.clinic_notified_at = timezone.now()
+        appointment.save(update_fields=['clinic_notified_at'])
+        
+        # Send email notification to clinic
+        send_appointment_notification_to_clinic(appointment)
+
+
+class AppointmentDetailView(generics.RetrieveAPIView):
+    """
+    GET /api/v1/appointments/<id>/
+    Get appointment details
+    """
+    serializer_class = AppointmentDetailSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        return Appointment.objects.filter(
+            user=self.request.user
+        ).select_related('clinic', 'pet', 'user', 'reason')
+
+
+class AppointmentCancelView(APIView):
+    """
+    POST /api/v1/appointments/<id>/cancel/
+    Cancel an appointment
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, pk):
+        from django.utils import timezone
+        from vets.utils import send_appointment_cancellation_to_clinic, create_clinic_notification
+        
+        appointment = get_object_or_404(
+            Appointment, 
+            pk=pk, 
+            user=request.user
+        )
+        
+        if not appointment.can_cancel:
+            return Response(
+                {'error': 'This appointment cannot be cancelled. Cancellations must be made at least 24 hours before the appointment.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        serializer = AppointmentCancelSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        appointment.status = AppointmentStatus.CANCELLED_BY_USER
+        appointment.cancelled_at = timezone.now()
+        appointment.cancellation_reason = serializer.validated_data.get('cancellation_reason', '')
+        appointment.save()
+        
+        # Create notification for clinic
+        create_clinic_notification(
+            clinic=appointment.clinic,
+            notification_type='CANCELLED_APPOINTMENT',
+            title=f'Appointment Cancelled: {appointment.pet.name}',
+            message=f'The appointment for {appointment.pet.name} on {appointment.appointment_date} at {appointment.appointment_time.strftime("%H:%M")} has been cancelled by the user.',
+            appointment=appointment
+        )
+        
+        # Send email to clinic
+        send_appointment_cancellation_to_clinic(appointment)
+        
+        return Response({'message': 'Appointment cancelled successfully.'})
+
+
+class ClinicAvailableSlotsView(APIView):
+    """
+    GET /api/v1/clinics/<clinic_id>/available-slots/
+    Get available time slots for a clinic on a specific date
+    
+    Query parameters:
+    - date: YYYY-MM-DD (required)
+    - duration: Duration in minutes (default: 30)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, clinic_id):
+        from datetime import datetime, timedelta
+        from django.utils import timezone
+        
+        clinic = get_object_or_404(Clinic, pk=clinic_id, email_confirmed=True)
+        
+        date_str = request.query_params.get('date')
+        if not date_str:
+            return Response(
+                {'error': 'Date parameter is required (YYYY-MM-DD)'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        try:
+            target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return Response(
+                {'error': 'Invalid date format. Use YYYY-MM-DD'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Check if date is in the past
+        if target_date < timezone.now().date():
+            return Response(
+                {'error': 'Cannot book appointments in the past'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        duration = int(request.query_params.get('duration', 30))
+        
+        # Get working hours for this day
+        day_of_week = target_date.weekday()
+        try:
+            working_hours = clinic.working_hours_schedule.get(day_of_week=day_of_week)
+        except WorkingHours.DoesNotExist:
+            return Response({
+                'date': target_date,
+                'is_open': False,
+                'slots': [],
+                'message': 'Clinic working hours not set for this day'
+            })
+        
+        if working_hours.is_closed or not working_hours.open_time or not working_hours.close_time:
+            return Response({
+                'date': target_date,
+                'is_open': False,
+                'slots': [],
+                'working_hours': {
+                    'is_closed': True
+                }
+            })
+        
+        # Generate time slots
+        slots = []
+        current_time = datetime.combine(target_date, working_hours.open_time)
+        end_time = datetime.combine(target_date, working_hours.close_time)
+        
+        # If today, start from current time + 1 hour (minimum buffer)
+        if target_date == timezone.now().date():
+            min_time = timezone.now() + timedelta(hours=1)
+            if current_time < min_time:
+                # Round up to next slot
+                minutes = (min_time.minute // duration + 1) * duration
+                current_time = min_time.replace(minute=0, second=0, microsecond=0) + timedelta(minutes=minutes)
+        
+        # Get already booked slots
+        booked_slots = Appointment.objects.filter(
+            clinic=clinic,
+            appointment_date=target_date,
+            status__in=[AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED]
+        ).values_list('appointment_time', flat=True)
+        
+        booked_times = set(booked_slots)
+        
+        while current_time + timedelta(minutes=duration) <= end_time:
+            slot_time = current_time.time()
+            if slot_time not in booked_times:
+                slots.append(slot_time.strftime('%H:%M'))
+            current_time += timedelta(minutes=duration)
+        
+        return Response({
+            'date': target_date,
+            'is_open': True,
+            'slots': slots,
+            'working_hours': {
+                'open_time': working_hours.open_time.strftime('%H:%M'),
+                'close_time': working_hours.close_time.strftime('%H:%M')
+            }
+        })
+
+
+class ClinicAvailableDatesView(APIView):
+    """
+    GET /api/v1/clinics/<clinic_id>/available-dates/
+    Get available dates for a clinic in a date range
+    
+    Query parameters:
+    - start_date: YYYY-MM-DD (default: today)
+    - days: Number of days to check (default: 14, max: 60)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request, clinic_id):
+        from datetime import datetime, timedelta
+        from django.utils import timezone
+        
+        clinic = get_object_or_404(Clinic, pk=clinic_id, email_confirmed=True)
+        
+        start_date_str = request.query_params.get('start_date')
+        if start_date_str:
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+            except ValueError:
+                start_date = timezone.now().date()
+        else:
+            start_date = timezone.now().date()
+        
+        # Ensure start date is not in the past
+        if start_date < timezone.now().date():
+            start_date = timezone.now().date()
+        
+        days = min(int(request.query_params.get('days', 14)), 60)
+        
+        # Get all working hours for the clinic
+        working_hours_map = {
+            wh.day_of_week: wh 
+            for wh in clinic.working_hours_schedule.all()
+        }
+        
+        available_dates = []
+        for i in range(days):
+            check_date = start_date + timedelta(days=i)
+            day_of_week = check_date.weekday()
+            
+            working_hours = working_hours_map.get(day_of_week)
+            
+            if working_hours and not working_hours.is_closed and working_hours.open_time and working_hours.close_time:
+                available_dates.append({
+                    'date': check_date.strftime('%Y-%m-%d'),
+                    'day_name': check_date.strftime('%A'),
+                    'open_time': working_hours.open_time.strftime('%H:%M'),
+                    'close_time': working_hours.close_time.strftime('%H:%M')
+                })
+        
+        return Response({
+            'clinic_id': clinic_id,
+            'clinic_name': clinic.name,
+            'available_dates': available_dates
+        })
+
+
+# ============================================================================
+# CLINIC DASHBOARD - APPOINTMENT MANAGEMENT
+# ============================================================================
+
+class ClinicAppointmentsListView(generics.ListAPIView):
+    """
+    GET /api/v1/clinics/my/appointments/
+    List appointments for clinic owner
+    
+    Query parameters:
+    - ?status=PENDING : Filter by status
+    - ?date=2024-01-15 : Filter by date
+    - ?upcoming=true : Show only upcoming appointments
+    """
+    serializer_class = ClinicAppointmentListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        # Get user's clinic
+        try:
+            clinic = Clinic.objects.get(owner=self.request.user)
+        except Clinic.DoesNotExist:
+            return Appointment.objects.none()
+        
+        queryset = Appointment.objects.filter(clinic=clinic)
+        
+        # Filter by status
+        status_filter = self.request.query_params.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        
+        # Filter by date
+        date_filter = self.request.query_params.get('date')
+        if date_filter:
+            try:
+                from datetime import datetime
+                filter_date = datetime.strptime(date_filter, '%Y-%m-%d').date()
+                queryset = queryset.filter(appointment_date=filter_date)
+            except ValueError:
+                pass
+        
+        # Filter by upcoming
+        upcoming = self.request.query_params.get('upcoming', '').lower() == 'true'
+        if upcoming:
+            from django.utils import timezone
+            queryset = queryset.filter(
+                appointment_date__gte=timezone.now().date()
+            ).exclude(
+                status__in=[
+                    AppointmentStatus.CANCELLED_BY_USER,
+                    AppointmentStatus.CANCELLED_BY_CLINIC,
+                    AppointmentStatus.COMPLETED,
+                    AppointmentStatus.NO_SHOW
+                ]
+            )
+        
+        return queryset.select_related('pet', 'user', 'reason').order_by('appointment_date', 'appointment_time')
+
+
+class ClinicAppointmentDetailView(generics.RetrieveAPIView):
+    """
+    GET /api/v1/clinics/my/appointments/<id>/
+    Get appointment details for clinic
+    """
+    serializer_class = ClinicAppointmentListSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        try:
+            clinic = Clinic.objects.get(owner=self.request.user)
+        except Clinic.DoesNotExist:
+            return Appointment.objects.none()
+        
+        return Appointment.objects.filter(clinic=clinic).select_related('pet', 'user', 'reason')
+
+
+class ClinicAppointmentUpdateView(APIView):
+    """
+    PATCH /api/v1/clinics/my/appointments/<id>/
+    Update appointment status (confirm, cancel, complete, no-show)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def patch(self, request, pk):
+        from django.utils import timezone
+        from vets.utils import send_appointment_status_update_to_user
+        
+        try:
+            clinic = Clinic.objects.get(owner=request.user)
+        except Clinic.DoesNotExist:
+            return Response(
+                {'error': 'You do not own a clinic'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        appointment = get_object_or_404(Appointment, pk=pk, clinic=clinic)
+        
+        serializer = ClinicAppointmentUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        
+        new_status = serializer.validated_data['status']
+        
+        # Update appointment
+        appointment.status = new_status
+        
+        if new_status == AppointmentStatus.CONFIRMED:
+            appointment.confirmed_at = timezone.now()
+        elif new_status == AppointmentStatus.CANCELLED_BY_CLINIC:
+            appointment.cancelled_at = timezone.now()
+            appointment.cancellation_reason = serializer.validated_data.get('cancellation_reason', '')
+        
+        appointment.save()
+        
+        # Send notification to user (email)
+        send_appointment_status_update_to_user(appointment)
+        
+        return Response({
+            'message': f'Appointment status updated to {appointment.get_status_display()}',
+            'appointment': ClinicAppointmentListSerializer(appointment).data
+        })
+
+
+# ============================================================================
+# CLINIC NOTIFICATIONS
+# ============================================================================
+
+class ClinicNotificationsListView(generics.ListAPIView):
+    """
+    GET /api/v1/clinics/my/notifications/
+    List notifications for clinic owner
+    
+    Query parameters:
+    - ?unread=true : Show only unread notifications
+    """
+    serializer_class = ClinicNotificationSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get_queryset(self):
+        try:
+            clinic = Clinic.objects.get(owner=self.request.user)
+        except Clinic.DoesNotExist:
+            return ClinicNotification.objects.none()
+        
+        queryset = ClinicNotification.objects.filter(clinic=clinic)
+        
+        unread = self.request.query_params.get('unread', '').lower() == 'true'
+        if unread:
+            queryset = queryset.filter(is_read=False)
+        
+        return queryset.select_related('appointment')
+
+
+class ClinicNotificationMarkReadView(APIView):
+    """
+    POST /api/v1/clinics/my/notifications/<id>/read/
+    Mark a notification as read
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, pk):
+        try:
+            clinic = Clinic.objects.get(owner=request.user)
+        except Clinic.DoesNotExist:
+            return Response(
+                {'error': 'You do not own a clinic'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        notification = get_object_or_404(ClinicNotification, pk=pk, clinic=clinic)
+        notification.mark_as_read()
+        
+        return Response({'message': 'Notification marked as read'})
+
+
+class ClinicNotificationsMarkAllReadView(APIView):
+    """
+    POST /api/v1/clinics/my/notifications/mark-all-read/
+    Mark all notifications as read
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        from django.utils import timezone
+        
+        try:
+            clinic = Clinic.objects.get(owner=request.user)
+        except Clinic.DoesNotExist:
+            return Response(
+                {'error': 'You do not own a clinic'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        count = ClinicNotification.objects.filter(
+            clinic=clinic,
+            is_read=False
+        ).update(is_read=True, read_at=timezone.now())
+        
+        return Response({'message': f'{count} notifications marked as read'})
+
+
+class ClinicUnreadNotificationsCountView(APIView):
+    """
+    GET /api/v1/clinics/my/notifications/unread-count/
+    Get count of unread notifications
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        try:
+            clinic = Clinic.objects.get(owner=request.user)
+        except Clinic.DoesNotExist:
+            return Response({'count': 0})
+        
+        count = ClinicNotification.objects.filter(
+            clinic=clinic,
+            is_read=False
+        ).count()
+        
+        return Response({'count': count})

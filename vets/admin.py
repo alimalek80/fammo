@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Clinic, VetProfile, ReferralCode, ReferredUser, ReferralStatus, WorkingHours
+from .models import (
+    Clinic, VetProfile, ReferralCode, ReferredUser, ReferralStatus, WorkingHours,
+    Appointment, AppointmentReason, AppointmentStatus, ClinicNotification
+)
 
 
 class WorkingHoursInline(admin.TabularInline):
@@ -186,3 +189,143 @@ class ReferredUserAdmin(admin.ModelAdmin):
     def mark_inactive(self, request, queryset):
         updated = queryset.update(status=ReferralStatus.INACTIVE)
         self.message_user(request, f"{updated} referral(s) set to INACTIVE.")
+
+
+# ============================================================================
+# APPOINTMENT ADMIN
+# ============================================================================
+
+@admin.register(AppointmentReason)
+class AppointmentReasonAdmin(admin.ModelAdmin):
+    list_display = ("name", "order", "is_active")
+    list_filter = ("is_active",)
+    search_fields = ("name", "description")
+    ordering = ("order", "name")
+    list_editable = ("order", "is_active")
+
+
+@admin.register(Appointment)
+class AppointmentAdmin(admin.ModelAdmin):
+    list_display = (
+        "reference_code", "pet_name", "clinic", "appointment_date", 
+        "appointment_time", "status_badge", "user_email", "created_at"
+    )
+    list_filter = ("status", "appointment_date", "clinic", "created_at")
+    search_fields = (
+        "reference_code", "pet__name", "user__email", 
+        "clinic__name", "reason_text"
+    )
+    readonly_fields = (
+        "reference_code", "created_at", "updated_at", 
+        "clinic_notified_at", "confirmed_at", "cancelled_at"
+    )
+    raw_id_fields = ("clinic", "user", "pet", "reason")
+    date_hierarchy = "appointment_date"
+    ordering = ("-appointment_date", "-appointment_time")
+    
+    fieldsets = (
+        ('Appointment Info', {
+            'fields': ('reference_code', 'clinic', 'user', 'pet', 'appointment_date', 'appointment_time', 'duration_minutes')
+        }),
+        ('Reason & Notes', {
+            'fields': ('reason', 'reason_text', 'notes')
+        }),
+        ('Status', {
+            'fields': ('status', 'confirmed_at', 'cancelled_at', 'cancellation_reason')
+        }),
+        ('Notifications', {
+            'fields': ('clinic_notified_at',),
+            'classes': ('collapse',)
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
+    
+    actions = ["confirm_appointments", "cancel_appointments", "mark_completed", "mark_no_show"]
+    
+    def pet_name(self, obj):
+        return obj.pet.name
+    pet_name.short_description = "Pet"
+    pet_name.admin_order_field = "pet__name"
+    
+    def user_email(self, obj):
+        return obj.user.email
+    user_email.short_description = "User"
+    user_email.admin_order_field = "user__email"
+    
+    def status_badge(self, obj):
+        status_icons = {
+            AppointmentStatus.PENDING: "⏳ Pending",
+            AppointmentStatus.CONFIRMED: "✅ Confirmed",
+            AppointmentStatus.CANCELLED_BY_USER: "❌ Cancelled (User)",
+            AppointmentStatus.CANCELLED_BY_CLINIC: "❌ Cancelled (Clinic)",
+            AppointmentStatus.COMPLETED: "✔️ Completed",
+            AppointmentStatus.NO_SHOW: "🚫 No Show",
+        }
+        return status_icons.get(obj.status, obj.status)
+    status_badge.short_description = "Status"
+    
+    @admin.action(description="Confirm selected appointments")
+    def confirm_appointments(self, request, queryset):
+        from django.utils import timezone
+        updated = 0
+        for appointment in queryset.filter(status=AppointmentStatus.PENDING):
+            appointment.status = AppointmentStatus.CONFIRMED
+            appointment.confirmed_at = timezone.now()
+            appointment.save()
+            updated += 1
+        self.message_user(request, f"{updated} appointment(s) confirmed.")
+    
+    @admin.action(description="Cancel selected appointments")
+    def cancel_appointments(self, request, queryset):
+        from django.utils import timezone
+        updated = 0
+        for appointment in queryset.exclude(status__in=[
+            AppointmentStatus.CANCELLED_BY_USER,
+            AppointmentStatus.CANCELLED_BY_CLINIC,
+            AppointmentStatus.COMPLETED
+        ]):
+            appointment.status = AppointmentStatus.CANCELLED_BY_CLINIC
+            appointment.cancelled_at = timezone.now()
+            appointment.cancellation_reason = "Cancelled by admin"
+            appointment.save()
+            updated += 1
+        self.message_user(request, f"{updated} appointment(s) cancelled.")
+    
+    @admin.action(description="Mark selected as completed")
+    def mark_completed(self, request, queryset):
+        updated = queryset.filter(status=AppointmentStatus.CONFIRMED).update(
+            status=AppointmentStatus.COMPLETED
+        )
+        self.message_user(request, f"{updated} appointment(s) marked as completed.")
+    
+    @admin.action(description="Mark selected as no-show")
+    def mark_no_show(self, request, queryset):
+        updated = queryset.filter(status=AppointmentStatus.CONFIRMED).update(
+            status=AppointmentStatus.NO_SHOW
+        )
+        self.message_user(request, f"{updated} appointment(s) marked as no-show.")
+
+
+@admin.register(ClinicNotification)
+class ClinicNotificationAdmin(admin.ModelAdmin):
+    list_display = ("title", "clinic", "notification_type", "is_read", "created_at")
+    list_filter = ("notification_type", "is_read", "clinic", "created_at")
+    search_fields = ("title", "message", "clinic__name")
+    readonly_fields = ("created_at", "read_at")
+    ordering = ("-created_at",)
+    
+    actions = ["mark_as_read", "mark_as_unread"]
+    
+    @admin.action(description="Mark selected as read")
+    def mark_as_read(self, request, queryset):
+        from django.utils import timezone
+        updated = queryset.update(is_read=True, read_at=timezone.now())
+        self.message_user(request, f"{updated} notification(s) marked as read.")
+    
+    @admin.action(description="Mark selected as unread")
+    def mark_as_unread(self, request, queryset):
+        updated = queryset.update(is_read=False, read_at=None)
+        self.message_user(request, f"{updated} notification(s) marked as unread.")

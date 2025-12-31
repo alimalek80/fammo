@@ -345,3 +345,228 @@ class ReferredUser(TimeStampedModel):
     def __str__(self) -> str:
         who = getattr(self.user, "email", None) if self.user_id else (self.email_capture or "anonymous")
         return f"{who} via {self.clinic.name} ({self.status})"
+
+
+class AppointmentReason(models.Model):
+    """
+    Predefined appointment reasons/types for better categorization
+    """
+    name = models.CharField(max_length=100, unique=True)
+    description = models.TextField(blank=True)
+    order = models.PositiveIntegerField(default=0, help_text="Controls display order")
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ['order', 'name']
+        verbose_name = "Appointment Reason"
+        verbose_name_plural = "Appointment Reasons"
+    
+    def __str__(self):
+        return self.name
+
+
+class AppointmentStatus(models.TextChoices):
+    PENDING = "PENDING", "Pending"
+    CONFIRMED = "CONFIRMED", "Confirmed"
+    CANCELLED_BY_USER = "CANCELLED_USER", "Cancelled by User"
+    CANCELLED_BY_CLINIC = "CANCELLED_CLINIC", "Cancelled by Clinic"
+    COMPLETED = "COMPLETED", "Completed"
+    NO_SHOW = "NO_SHOW", "No Show"
+
+
+class Appointment(TimeStampedModel):
+    """
+    Appointment booking for a user's pet at a clinic
+    """
+    clinic = models.ForeignKey(
+        Clinic,
+        on_delete=models.CASCADE,
+        related_name="appointments",
+        help_text="The clinic where the appointment is booked"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="appointments",
+        help_text="The user who booked the appointment"
+    )
+    pet = models.ForeignKey(
+        'pet.Pet',
+        on_delete=models.CASCADE,
+        related_name="appointments",
+        help_text="The pet for this appointment"
+    )
+    
+    # Date and time
+    appointment_date = models.DateField(
+        db_index=True,
+        help_text="The date of the appointment"
+    )
+    appointment_time = models.TimeField(
+        help_text="The time of the appointment"
+    )
+    duration_minutes = models.PositiveIntegerField(
+        default=30,
+        help_text="Expected duration in minutes"
+    )
+    
+    # Appointment details
+    reason = models.ForeignKey(
+        AppointmentReason,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="appointments",
+        help_text="Predefined reason for the appointment"
+    )
+    reason_text = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Custom reason or additional details"
+    )
+    notes = models.TextField(
+        blank=True,
+        help_text="Additional notes from the user"
+    )
+    
+    # Status tracking
+    status = models.CharField(
+        max_length=20,
+        choices=AppointmentStatus.choices,
+        default=AppointmentStatus.PENDING,
+        db_index=True
+    )
+    
+    # Confirmation and notification tracking
+    clinic_notified_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="When the clinic was notified"
+    )
+    confirmed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="When the clinic confirmed the appointment"
+    )
+    cancelled_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        help_text="When the appointment was cancelled"
+    )
+    cancellation_reason = models.TextField(
+        blank=True,
+        help_text="Reason for cancellation"
+    )
+    
+    # Reference code for easy lookup
+    reference_code = models.CharField(
+        max_length=20,
+        unique=True,
+        blank=True,
+        help_text="Unique reference code for the appointment"
+    )
+    
+    class Meta:
+        ordering = ['-appointment_date', '-appointment_time']
+        indexes = [
+            models.Index(fields=['clinic', 'appointment_date']),
+            models.Index(fields=['user', 'appointment_date']),
+            models.Index(fields=['status', 'appointment_date']),
+        ]
+        verbose_name = "Appointment"
+        verbose_name_plural = "Appointments"
+    
+    def __str__(self):
+        return f"{self.pet.name} @ {self.clinic.name} on {self.appointment_date} at {self.appointment_time}"
+    
+    def save(self, *args, **kwargs):
+        # Generate reference code if not set
+        if not self.reference_code:
+            self.reference_code = self._generate_reference_code()
+        super().save(*args, **kwargs)
+    
+    def _generate_reference_code(self):
+        """Generate a unique reference code"""
+        import secrets
+        import string
+        prefix = "APT"
+        suffix = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+        code = f"{prefix}-{suffix}"
+        # Ensure uniqueness
+        while Appointment.objects.filter(reference_code=code).exists():
+            suffix = ''.join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
+            code = f"{prefix}-{suffix}"
+        return code
+    
+    @property
+    def is_upcoming(self):
+        """Check if appointment is in the future"""
+        from django.utils import timezone
+        from datetime import datetime
+        appointment_datetime = datetime.combine(self.appointment_date, self.appointment_time)
+        return timezone.make_aware(appointment_datetime) > timezone.now()
+    
+    @property
+    def can_cancel(self):
+        """Check if appointment can be cancelled (at least 24 hours before)"""
+        from django.utils import timezone
+        from datetime import datetime, timedelta
+        if self.status in [AppointmentStatus.CANCELLED_BY_USER, 
+                          AppointmentStatus.CANCELLED_BY_CLINIC,
+                          AppointmentStatus.COMPLETED,
+                          AppointmentStatus.NO_SHOW]:
+            return False
+        appointment_datetime = datetime.combine(self.appointment_date, self.appointment_time)
+        return timezone.make_aware(appointment_datetime) > timezone.now() + timedelta(hours=24)
+
+
+class ClinicNotification(TimeStampedModel):
+    """
+    Notifications for clinic owners/managers
+    """
+    NOTIFICATION_TYPES = [
+        ('NEW_APPOINTMENT', 'New Appointment'),
+        ('CANCELLED_APPOINTMENT', 'Cancelled Appointment'),
+        ('APPOINTMENT_REMINDER', 'Appointment Reminder'),
+        ('REFERRAL', 'New Referral'),
+        ('SYSTEM', 'System Notification'),
+    ]
+    
+    clinic = models.ForeignKey(
+        Clinic,
+        on_delete=models.CASCADE,
+        related_name="notifications"
+    )
+    notification_type = models.CharField(
+        max_length=30,
+        choices=NOTIFICATION_TYPES
+    )
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    
+    # Optional link to related appointment
+    appointment = models.ForeignKey(
+        Appointment,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="notifications"
+    )
+    
+    # Read status
+    is_read = models.BooleanField(default=False)
+    read_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Clinic Notification"
+        verbose_name_plural = "Clinic Notifications"
+    
+    def __str__(self):
+        return f"{self.title} - {self.clinic.name}"
+    
+    def mark_as_read(self):
+        from django.utils import timezone
+        self.is_read = True
+        self.read_at = timezone.now()
+        self.save(update_fields=['is_read', 'read_at'])

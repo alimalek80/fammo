@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Appointments" %} - {% trans "Clinic Dashboard" %} - FAMMO{% endblock %}
+
+{% block content %}
+<div class="container mx-auto max-w-6xl px-4 py-8">
+    <!-- Dashboard Navigation -->
+    <div class="mb-6 flex flex-wrap gap-2">
+        <a href="{% url 'vets:clinic_dashboard' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Overview" %}</a>
+        <a href="{% url 'vets:clinic_appointments' %}" class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg font-medium">{% trans "Appointments" %}</a>
+        <a href="{% url 'vets:clinic_referrals' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Referrals" %}</a>
+        <a href="{% url 'vets:clinic_notifications' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Notifications" %}</a>
+        <a href="{% url 'vets:clinic_profile_update' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Settings" %}</a>
+    </div>
+
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">{% trans "Appointments" %}</h1>
+        <div class="flex items-center gap-4">
+            <span class="text-sm text-gray-500">
+                {% trans "Today" %}: <span class="font-medium text-gray-900">{{ today_count }}</span>
+            </span>
+            <span class="text-sm text-gray-500">
+                {% trans "Pending" %}: <span class="font-medium text-amber-600">{{ pending_count }}</span>
+            </span>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow p-4 mb-6">
+        <form method="get" class="flex flex-wrap gap-4 items-end">
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">{% trans "Status" %}</label>
+                <select name="status" class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+                    <option value="">{% trans "All" %}</option>
+                    {% for value, label in status_choices %}
+                    <option value="{{ value }}" {% if current_status == value %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">{% trans "Date" %}</label>
+                <input type="date" name="date" value="{{ current_date }}" 
+                       class="px-3 py-2 border border-gray-300 rounded-lg text-sm">
+            </div>
+            <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700">
+                {% trans "Filter" %}
+            </button>
+            {% if current_status or current_date %}
+            <a href="{% url 'vets:clinic_appointments' %}" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg text-sm hover:bg-gray-50">
+                {% trans "Clear" %}
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Appointments Table -->
+    {% if appointments %}
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "Date & Time" %}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "Pet" %}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "Owner" %}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "Reason" %}</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "Status" %}</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">{% trans "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for appointment in appointments %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">{{ appointment.appointment_date|date:"M d, Y" }}</div>
+                        <div class="text-sm text-gray-500">{{ appointment.appointment_time|time:"H:i" }}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center">
+                            {% if appointment.pet.image %}
+                            <img src="{{ appointment.pet.image.url }}" class="w-8 h-8 rounded-full object-cover mr-2">
+                            {% endif %}
+                            <div>
+                                <div class="text-sm font-medium text-gray-900">{{ appointment.pet.name }}</div>
+                                <div class="text-xs text-gray-500">{{ appointment.pet.pet_type.name }}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">
+                            {% if appointment.user.profile %}
+                            {{ appointment.user.profile.first_name }} {{ appointment.user.profile.last_name }}
+                            {% else %}
+                            {{ appointment.user.email }}
+                            {% endif %}
+                        </div>
+                        <div class="text-xs text-gray-500">{{ appointment.user.email }}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900 truncate max-w-xs">
+                            {% if appointment.reason %}{{ appointment.reason.name }}{% endif %}
+                            {% if appointment.reason_text %}{{ appointment.reason_text }}{% endif %}
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                            {% if appointment.status == 'PENDING' %}bg-yellow-100 text-yellow-800
+                            {% elif appointment.status == 'CONFIRMED' %}bg-green-100 text-green-800
+                            {% elif appointment.status == 'CANCELLED_USER' or appointment.status == 'CANCELLED_CLINIC' %}bg-red-100 text-red-800
+                            {% elif appointment.status == 'COMPLETED' %}bg-blue-100 text-blue-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ appointment.get_status_display }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="{% url 'vets:clinic_appointment_detail' pk=appointment.pk %}" class="text-indigo-600 hover:text-indigo-900">
+                            {% trans "View" %}
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-6 flex justify-center">
+        <nav class="flex items-center gap-2">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_date %}&date={{ current_date }}{% endif %}" 
+               class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">{% trans "Previous" %}</a>
+            {% endif %}
+            <span class="px-3 py-2 text-gray-600">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if current_status %}&status={{ current_status }}{% endif %}{% if current_date %}&date={{ current_date }}{% endif %}" 
+               class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">{% trans "Next" %}</a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-8 text-center">
+        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">{% trans "No Appointments" %}</h3>
+        <p class="text-gray-500">{% trans "You don't have any appointments yet." %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

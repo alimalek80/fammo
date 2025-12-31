@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import (
     HeroSection, SocialLinks, FAQ, ContactMessage, Lead, OnboardingSlide,
-    LegalDocument, UserConsent, ClinicConsent, ConsentLog
+    LegalDocument, UserConsent, ClinicConsent, ConsentLog, UserNotification
 )
 from modeltranslation.admin import TranslationAdmin
 
@@ -140,3 +140,45 @@ class ConsentLogAdmin(admin.ModelAdmin):
     can_delete = False
     ordering = ('-timestamp',)
 
+
+# ============================================
+# User Notifications Admin
+# ============================================
+
+@admin.register(UserNotification)
+class UserNotificationAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'notification_type', 'is_read', 'is_important', 'action_required', 'created_at')
+    list_filter = ('notification_type', 'is_read', 'is_important', 'action_required', 'created_at')
+    search_fields = ('title', 'message', 'user__email')
+    raw_id_fields = ('user', 'sent_by')
+    readonly_fields = ('created_at', 'updated_at', 'read_at')
+    ordering = ('-created_at',)
+    
+    fieldsets = (
+        (None, {
+            'fields': ('user', 'notification_type', 'title', 'message')
+        }),
+        ('Link & Actions', {
+            'fields': ('link', 'is_important', 'action_required')
+        }),
+        ('Status', {
+            'fields': ('is_read', 'read_at')
+        }),
+        ('Admin', {
+            'fields': ('sent_by', 'created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    actions = ['mark_as_read', 'mark_as_unread', 'send_admin_message']
+    
+    @admin.action(description='Mark selected notifications as read')
+    def mark_as_read(self, request, queryset):
+        from django.utils import timezone
+        queryset.update(is_read=True, read_at=timezone.now())
+        self.message_user(request, f'{queryset.count()} notifications marked as read.')
+    
+    @admin.action(description='Mark selected notifications as unread')
+    def mark_as_unread(self, request, queryset):
+        queryset.update(is_read=False, read_at=None)
+        self.message_user(request, f'{queryset.count()} notifications marked as unread.')

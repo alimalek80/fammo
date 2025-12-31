@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Notifications" %} - FAMMO{% endblock %}
+
+{% block content %}
+<div class="container mx-auto max-w-4xl px-4 py-8">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">{% trans "Notifications" %}</h1>
+            <p class="text-sm text-gray-500 mt-1">
+                {% if unread_count > 0 %}
+                    {% blocktrans count counter=unread_count %}{{ counter }} unread notification{% plural %}{{ counter }} unread notifications{% endblocktrans %}
+                {% else %}
+                    {% trans "All caught up!" %}
+                {% endif %}
+            </p>
+        </div>
+        {% if unread_count > 0 %}
+        <form method="post" action="{% url 'core:mark_all_notifications_read' %}">
+            {% csrf_token %}
+            <button type="submit" class="px-4 py-2 text-sm text-indigo-600 hover:text-indigo-800 font-medium">
+                {% trans "Mark all as read" %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="flex gap-2 mb-6">
+        <a href="{% url 'core:user_notifications' %}" 
+           class="px-4 py-2 rounded-lg text-sm font-medium {% if current_filter == 'all' %}bg-indigo-100 text-indigo-700{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+            {% trans "All" %}
+        </a>
+        <a href="{% url 'core:user_notifications' %}?filter=unread" 
+           class="px-4 py-2 rounded-lg text-sm font-medium flex items-center {% if current_filter == 'unread' %}bg-indigo-100 text-indigo-700{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+            {% trans "Unread" %}
+            {% if unread_count > 0 %}
+            <span class="ml-2 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                {{ unread_count }}
+            </span>
+            {% endif %}
+        </a>
+        <a href="{% url 'core:user_notifications' %}?filter=action" 
+           class="px-4 py-2 rounded-lg text-sm font-medium flex items-center {% if current_filter == 'action' %}bg-indigo-100 text-indigo-700{% else %}text-gray-600 hover:bg-gray-100{% endif %}">
+            {% trans "Action Required" %}
+            {% if action_count > 0 %}
+            <span class="ml-2 bg-orange-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                {{ action_count }}
+            </span>
+            {% endif %}
+        </a>
+    </div>
+
+    <!-- Clinic Notifications Section (for clinic owners) -->
+    {% if clinic %}
+    <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900 flex items-center">
+                <i class="fas fa-hospital text-teal-600 mr-2"></i>
+                {% trans "Clinic Notifications" %}
+                {% if clinic_unread_count > 0 %}
+                <span class="ml-2 bg-teal-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                    {{ clinic_unread_count }}
+                </span>
+                {% endif %}
+            </h2>
+            <a href="{% url 'vets:clinic_notifications' %}" class="text-sm text-indigo-600 hover:text-indigo-800">
+                {% trans "View all" %} →
+            </a>
+        </div>
+        
+        {% if clinic_notifications %}
+        <div class="space-y-2">
+            {% for notification in clinic_notifications %}
+            <a href="{% url 'vets:clinic_notifications' %}" 
+               class="block bg-white rounded-lg shadow-sm border p-4 hover:bg-gray-50 transition-colors {% if not notification.is_read %}border-l-4 border-l-teal-500{% endif %}">
+                <div class="flex items-start gap-3">
+                    <div class="flex-shrink-0">
+                        {% if notification.notification_type == 'NEW_APPOINTMENT' %}
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                            <i class="fas fa-calendar-plus text-green-600 text-sm"></i>
+                        </div>
+                        {% elif notification.notification_type == 'CANCELLED_APPOINTMENT' %}
+                        <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                            <i class="fas fa-calendar-xmark text-red-600 text-sm"></i>
+                        </div>
+                        {% else %}
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                            <i class="fas fa-bell text-blue-600 text-sm"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium text-gray-900 {% if not notification.is_read %}font-semibold{% endif %}">
+                            {{ notification.title }}
+                        </p>
+                        <p class="text-sm text-gray-500 truncate">{{ notification.message|truncatewords:15 }}</p>
+                        <p class="text-xs text-gray-400 mt-1">{{ notification.created_at|timesince }} {% trans "ago" %}</p>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-gray-500 text-sm">{% trans "No clinic notifications yet." %}</p>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- User Notifications Section -->
+    <div>
+        <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+            <i class="fas fa-user text-indigo-600 mr-2"></i>
+            {% trans "Your Notifications" %}
+        </h2>
+        
+        {% if notifications %}
+        <div class="space-y-2">
+            {% for notification in notifications %}
+            <div class="bg-white rounded-lg shadow-sm border overflow-hidden {% if not notification.is_read %}border-l-4 border-l-indigo-500{% endif %} {% if notification.is_important %}ring-2 ring-yellow-400{% endif %}">
+                <div class="p-4">
+                    <div class="flex items-start gap-3">
+                        <!-- Icon based on type -->
+                        <div class="flex-shrink-0">
+                            {% if notification.notification_type == 'APPOINTMENT_CONFIRMED' %}
+                            <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                                <i class="fas fa-calendar-check text-green-600"></i>
+                            </div>
+                            {% elif notification.notification_type == 'APPOINTMENT_CANCELLED' %}
+                            <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
+                                <i class="fas fa-calendar-xmark text-red-600"></i>
+                            </div>
+                            {% elif notification.notification_type == 'APPOINTMENT_REMINDER' %}
+                            <div class="w-10 h-10 rounded-full bg-yellow-100 flex items-center justify-center">
+                                <i class="fas fa-clock text-yellow-600"></i>
+                            </div>
+                            {% elif notification.notification_type == 'EMAIL_CONFIRMATION' %}
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i class="fas fa-envelope text-blue-600"></i>
+                            </div>
+                            {% elif notification.notification_type == 'ADMIN_MESSAGE' %}
+                            <div class="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center">
+                                <i class="fas fa-bullhorn text-purple-600"></i>
+                            </div>
+                            {% elif notification.notification_type == 'NEW_REFERRAL' %}
+                            <div class="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+                                <i class="fas fa-user-plus text-teal-600"></i>
+                            </div>
+                            {% else %}
+                            <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                                <i class="fas fa-bell text-gray-600"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <p class="font-medium text-gray-900 {% if not notification.is_read %}font-semibold{% endif %}">
+                                        {{ notification.title }}
+                                        {% if notification.action_required %}
+                                        <span class="ml-2 px-2 py-0.5 bg-orange-100 text-orange-800 text-xs rounded-full">
+                                            {% trans "Action Required" %}
+                                        </span>
+                                        {% endif %}
+                                        {% if notification.is_important %}
+                                        <span class="ml-1 text-yellow-500"><i class="fas fa-star"></i></span>
+                                        {% endif %}
+                                    </p>
+                                    <p class="text-sm text-gray-600 mt-1">{{ notification.message }}</p>
+                                    <p class="text-xs text-gray-400 mt-2">{{ notification.created_at|timesince }} {% trans "ago" %}</p>
+                                </div>
+                                
+                                <!-- Actions -->
+                                <div class="flex items-center gap-2 ml-4">
+                                    {% if notification.link %}
+                                    <form method="post" action="{% url 'core:mark_notification_read' pk=notification.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+                                            {% trans "View" %}
+                                        </button>
+                                    </form>
+                                    {% elif not notification.is_read %}
+                                    <form method="post" action="{% url 'core:mark_notification_read' pk=notification.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 text-sm text-gray-600 hover:text-gray-800">
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                    <form method="post" action="{% url 'core:delete_notification' pk=notification.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="px-3 py-1.5 text-sm text-gray-400 hover:text-red-600">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if page_obj.has_other_pages %}
+        <div class="mt-6 flex justify-center gap-2">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}{% if current_filter != 'all' %}&filter={{ current_filter }}{% endif %}" 
+               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                {% trans "Previous" %}
+            </a>
+            {% endif %}
+            
+            <span class="px-4 py-2 text-gray-600">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}{% if current_filter != 'all' %}&filter={{ current_filter }}{% endif %}" 
+               class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                {% trans "Next" %}
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% else %}
+        <div class="bg-white rounded-lg shadow-sm border p-8 text-center">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                <i class="fas fa-bell-slash text-gray-400 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">{% trans "No notifications" %}</h3>
+            <p class="text-gray-500">
+                {% if current_filter == 'unread' %}
+                    {% trans "You're all caught up! No unread notifications." %}
+                {% elif current_filter == 'action' %}
+                    {% trans "No notifications requiring action." %}
+                {% else %}
+                    {% trans "You don't have any notifications yet." %}
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -3,7 +3,10 @@ from . import views
 from django.views.generic import TemplateView
 
 # Import specific views
-from .views import home, manage_hero_section, manage_social_links, manage_faqs, edit_faq, delete_faq, contact
+from .views import (
+    home, manage_hero_section, manage_social_links, manage_faqs, edit_faq, delete_faq, contact,
+    UserNotificationsView, MarkNotificationReadView, MarkAllNotificationsReadView, DeleteNotificationView
+)
 
 urlpatterns = [
     path('', home, name='home'),
@@ -22,4 +25,10 @@ urlpatterns = [
     ), name="how_fammo_works"),
     path('collect-lead/', views.collect_lead, name='collect_lead'),
     path('start/lead/<str:uuid>/', views.start_from_lead, name='start_from_lead'),
+    
+    # User Notifications
+    path('notifications/', UserNotificationsView.as_view(), name='user_notifications'),
+    path('notifications/<int:pk>/read/', MarkNotificationReadView.as_view(), name='mark_notification_read'),
+    path('notifications/mark-all-read/', MarkAllNotificationsReadView.as_view(), name='mark_all_notifications_read'),
+    path('notifications/<int:pk>/delete/', DeleteNotificationView.as_view(), name='delete_notification'),
 ]

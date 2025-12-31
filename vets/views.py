@@ -270,6 +270,9 @@ class ClinicDashboardView(ClinicOwnerRequiredMixin, TemplateView):
     template_name = 'vets/dashboard/dashboard.html'
     
     def get_context_data(self, **kwargs):
+        from django.utils import timezone
+        from .models import Appointment, AppointmentStatus, ClinicNotification
+        
         context = super().get_context_data(**kwargs)
         clinic = self.clinic
         
@@ -282,6 +285,34 @@ class ClinicDashboardView(ClinicOwnerRequiredMixin, TemplateView):
         context['new_referrals'] = clinic.referred_users.filter(
             status=ReferralStatus.NEW
         ).count()
+        
+        # Appointment stats
+        today = timezone.now().date()
+        context['today_appointments'] = Appointment.objects.filter(
+            clinic=clinic,
+            appointment_date=today,
+            status__in=[AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED]
+        ).count()
+        context['pending_appointments'] = Appointment.objects.filter(
+            clinic=clinic,
+            status=AppointmentStatus.PENDING
+        ).count()
+        context['upcoming_appointments'] = Appointment.objects.filter(
+            clinic=clinic,
+            appointment_date__gte=today,
+            status__in=[AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED]
+        ).count()
+        
+        # Unread notifications
+        context['unread_notifications'] = ClinicNotification.objects.filter(
+            clinic=clinic,
+            is_read=False
+        ).count()
+        
+        # Recent appointments
+        context['recent_appointments'] = Appointment.objects.filter(
+            clinic=clinic
+        ).select_related('pet', 'user', 'reason').order_by('-created_at')[:5]
         
         # Verification status
         context['verification_status'] = {
@@ -887,3 +918,473 @@ class ClinicNearbyUsersReportView(TemplateView):
         })
         return context
 
+
+# ============================================================================
+# APPOINTMENT VIEWS (Web Interface)
+# ============================================================================
+
+from .models import Appointment, AppointmentReason, AppointmentStatus, ClinicNotification, WorkingHours
+from .utils import (
+    send_appointment_notification_to_clinic, 
+    send_appointment_cancellation_to_clinic,
+    create_clinic_notification
+)
+from pet.models import Pet
+
+
+class AppointmentBookingView(LoginRequiredMixin, View):
+    """Book an appointment at a clinic"""
+    template_name = 'vets/appointments/book_appointment.html'
+    
+    def get(self, request, slug):
+        clinic = get_object_or_404(Clinic, slug=slug, email_confirmed=True)
+        
+        # Get user's pets
+        pets = Pet.objects.filter(user=request.user)
+        if not pets.exists():
+            messages.warning(request, "Please add a pet first before booking an appointment.")
+            return redirect('pet:pet_add')
+        
+        # Get appointment reasons
+        reasons = AppointmentReason.objects.filter(is_active=True)
+        
+        # Get working hours
+        working_hours = clinic.working_hours_schedule.all().order_by('day_of_week')
+        
+        context = {
+            'clinic': clinic,
+            'pets': pets,
+            'reasons': reasons,
+            'working_hours': working_hours,
+        }
+        return render(request, self.template_name, context)
+    
+    def post(self, request, slug):
+        from django.utils import timezone
+        
+        clinic = get_object_or_404(Clinic, slug=slug, email_confirmed=True)
+        
+        # Get form data
+        pet_id = request.POST.get('pet')
+        date_str = request.POST.get('appointment_date')
+        time_str = request.POST.get('appointment_time')
+        reason_id = request.POST.get('reason')
+        reason_text = request.POST.get('reason_text', '')
+        notes = request.POST.get('notes', '')
+        
+        # Validate
+        errors = []
+        
+        # Validate pet
+        try:
+            pet = Pet.objects.get(pk=pet_id, user=request.user)
+        except Pet.DoesNotExist:
+            errors.append("Invalid pet selected.")
+            pet = None
+        
+        # Validate date
+        try:
+            appointment_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            if appointment_date < timezone.now().date():
+                errors.append("Appointment date must be in the future.")
+        except (ValueError, TypeError):
+            errors.append("Invalid date format.")
+            appointment_date = None
+        
+        # Validate time
+        try:
+            appointment_time = datetime.strptime(time_str, '%H:%M').time()
+        except (ValueError, TypeError):
+            errors.append("Invalid time format.")
+            appointment_time = None
+        
+        # Validate reason
+        reason = None
+        if reason_id:
+            try:
+                reason = AppointmentReason.objects.get(pk=reason_id, is_active=True)
+            except AppointmentReason.DoesNotExist:
+                pass
+        
+        if not reason and not reason_text:
+            errors.append("Please select a reason or provide a description.")
+        
+        # Check working hours
+        if appointment_date and appointment_time:
+            day_of_week = appointment_date.weekday()
+            try:
+                working_hours = clinic.working_hours_schedule.get(day_of_week=day_of_week)
+                if working_hours.is_closed:
+                    errors.append(f"The clinic is closed on {working_hours.get_day_of_week_display()}.")
+                elif working_hours.open_time and working_hours.close_time:
+                    if appointment_time < working_hours.open_time:
+                        errors.append(f"Clinic opens at {working_hours.open_time.strftime('%H:%M')}.")
+                    if appointment_time >= working_hours.close_time:
+                        errors.append(f"Clinic closes at {working_hours.close_time.strftime('%H:%M')}.")
+            except WorkingHours.DoesNotExist:
+                pass
+            
+            # Check for conflicting appointments
+            existing = Appointment.objects.filter(
+                clinic=clinic,
+                appointment_date=appointment_date,
+                appointment_time=appointment_time,
+                status__in=[AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED]
+            ).exists()
+            if existing:
+                errors.append("This time slot is already booked. Please choose another time.")
+        
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return redirect('vets:book_appointment', slug=slug)
+        
+        # Create appointment
+        appointment = Appointment.objects.create(
+            clinic=clinic,
+            user=request.user,
+            pet=pet,
+            appointment_date=appointment_date,
+            appointment_time=appointment_time,
+            reason=reason,
+            reason_text=reason_text,
+            notes=notes,
+            status=AppointmentStatus.PENDING,
+            clinic_notified_at=timezone.now()
+        )
+        
+        # Create notification for clinic
+        create_clinic_notification(
+            clinic=clinic,
+            notification_type='NEW_APPOINTMENT',
+            title=f'New Appointment: {pet.name}',
+            message=f'New appointment booked for {pet.name} on {appointment_date} at {appointment_time.strftime("%H:%M")}. Reference: {appointment.reference_code}',
+            appointment=appointment
+        )
+        
+        # Create notification for user (confirmation of booking)
+        from core.models import UserNotification, NotificationType
+        UserNotification.create_notification(
+            user=request.user,
+            notification_type=NotificationType.NEW_APPOINTMENT,
+            title=f"Appointment Requested",
+            message=f"Your appointment request for {pet.name} at {clinic.name} on {appointment_date.strftime('%B %d, %Y')} at {appointment_time.strftime('%H:%M')} has been submitted. The clinic will confirm shortly.",
+            link=f"/en/vets/appointment/{appointment.pk}/",
+            action_required=False
+        )
+        
+        # Send email notification
+        send_appointment_notification_to_clinic(appointment)
+        
+        messages.success(request, f"Appointment booked successfully! Reference: {appointment.reference_code}")
+        return redirect('vets:my_appointments')
+
+
+class MyAppointmentsView(LoginRequiredMixin, ListView):
+    """User's appointments list"""
+    template_name = 'vets/appointments/my_appointments.html'
+    context_object_name = 'appointments'
+    paginate_by = 10
+    
+    def get_queryset(self):
+        queryset = Appointment.objects.filter(
+            user=self.request.user
+        ).select_related('clinic', 'pet', 'reason').order_by('-appointment_date', '-appointment_time')
+        
+        # Filter by status
+        status_filter = self.request.GET.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_choices'] = AppointmentStatus.choices
+        context['current_status'] = self.request.GET.get('status', '')
+        return context
+
+
+class AppointmentDetailUserView(LoginRequiredMixin, DetailView):
+    """User view of appointment details"""
+    template_name = 'vets/appointments/appointment_detail.html'
+    context_object_name = 'appointment'
+    
+    def get_queryset(self):
+        return Appointment.objects.filter(
+            user=self.request.user
+        ).select_related('clinic', 'pet', 'reason')
+
+
+class CancelAppointmentView(LoginRequiredMixin, View):
+    """Cancel an appointment"""
+    
+    def post(self, request, pk):
+        from django.utils import timezone
+        
+        appointment = get_object_or_404(Appointment, pk=pk, user=request.user)
+        
+        if not appointment.can_cancel:
+            messages.error(request, "This appointment cannot be cancelled. Cancellations must be made at least 24 hours before the appointment.")
+            return redirect('vets:appointment_detail', pk=pk)
+        
+        cancellation_reason = request.POST.get('cancellation_reason', '')
+        
+        appointment.status = AppointmentStatus.CANCELLED_BY_USER
+        appointment.cancelled_at = timezone.now()
+        appointment.cancellation_reason = cancellation_reason
+        appointment.save()
+        
+        # Create notification for clinic
+        create_clinic_notification(
+            clinic=appointment.clinic,
+            notification_type='CANCELLED_APPOINTMENT',
+            title=f'Appointment Cancelled: {appointment.pet.name}',
+            message=f'The appointment for {appointment.pet.name} on {appointment.appointment_date} has been cancelled.',
+            appointment=appointment
+        )
+        
+        # Send email
+        send_appointment_cancellation_to_clinic(appointment)
+        
+        messages.success(request, "Appointment cancelled successfully.")
+        return redirect('vets:my_appointments')
+
+
+class ClinicAvailableSlotsAPIView(LoginRequiredMixin, View):
+    """AJAX endpoint to get available slots for a date"""
+    
+    def get(self, request, slug):
+        from django.utils import timezone
+        
+        clinic = get_object_or_404(Clinic, slug=slug, email_confirmed=True)
+        date_str = request.GET.get('date')
+        
+        if not date_str:
+            return JsonResponse({'error': 'Date required'}, status=400)
+        
+        try:
+            target_date = datetime.strptime(date_str, '%Y-%m-%d').date()
+        except ValueError:
+            return JsonResponse({'error': 'Invalid date format'}, status=400)
+        
+        if target_date < timezone.now().date():
+            return JsonResponse({'error': 'Cannot book in the past'}, status=400)
+        
+        # Get working hours
+        day_of_week = target_date.weekday()
+        try:
+            working_hours = clinic.working_hours_schedule.get(day_of_week=day_of_week)
+        except WorkingHours.DoesNotExist:
+            return JsonResponse({
+                'is_open': False,
+                'slots': [],
+                'message': 'Working hours not set'
+            })
+        
+        if working_hours.is_closed or not working_hours.open_time or not working_hours.close_time:
+            return JsonResponse({
+                'is_open': False,
+                'slots': [],
+                'message': 'Clinic closed on this day'
+            })
+        
+        # Generate slots
+        slots = []
+        duration = 30  # minutes
+        current_time = datetime.combine(target_date, working_hours.open_time)
+        end_time = datetime.combine(target_date, working_hours.close_time)
+        
+        # If today, start from now + 1 hour
+        if target_date == timezone.now().date():
+            min_time = timezone.now() + timedelta(hours=1)
+            if current_time < min_time:
+                minutes = (min_time.minute // duration + 1) * duration
+                current_time = min_time.replace(minute=0, second=0, microsecond=0) + timedelta(minutes=minutes)
+        
+        # Get booked slots
+        booked = set(Appointment.objects.filter(
+            clinic=clinic,
+            appointment_date=target_date,
+            status__in=[AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED]
+        ).values_list('appointment_time', flat=True))
+        
+        while current_time + timedelta(minutes=duration) <= end_time:
+            slot_time = current_time.time()
+            if slot_time not in booked:
+                slots.append(slot_time.strftime('%H:%M'))
+            current_time += timedelta(minutes=duration)
+        
+        return JsonResponse({
+            'is_open': True,
+            'slots': slots,
+            'open_time': working_hours.open_time.strftime('%H:%M'),
+            'close_time': working_hours.close_time.strftime('%H:%M')
+        })
+
+
+# ============================================================================
+# CLINIC DASHBOARD - APPOINTMENTS MANAGEMENT
+# ============================================================================
+
+class ClinicAppointmentsDashboardView(ClinicOwnerRequiredMixin, ListView):
+    """Clinic dashboard appointments list"""
+    template_name = 'vets/dashboard/appointments.html'
+    context_object_name = 'appointments'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        queryset = Appointment.objects.filter(
+            clinic=self.clinic
+        ).select_related('pet', 'user', 'reason')
+        
+        # Filter by status
+        status_filter = self.request.GET.get('status')
+        if status_filter:
+            queryset = queryset.filter(status=status_filter)
+        
+        # Filter by date
+        date_filter = self.request.GET.get('date')
+        if date_filter:
+            try:
+                filter_date = datetime.strptime(date_filter, '%Y-%m-%d').date()
+                queryset = queryset.filter(appointment_date=filter_date)
+            except ValueError:
+                pass
+        
+        # Default ordering
+        return queryset.order_by('appointment_date', 'appointment_time')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['clinic'] = self.clinic
+        context['status_choices'] = AppointmentStatus.choices
+        context['current_status'] = self.request.GET.get('status', '')
+        context['current_date'] = self.request.GET.get('date', '')
+        
+        # Get today's and upcoming counts
+        from django.utils import timezone
+        today = timezone.now().date()
+        
+        context['today_count'] = Appointment.objects.filter(
+            clinic=self.clinic,
+            appointment_date=today,
+            status__in=[AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED]
+        ).count()
+        
+        context['pending_count'] = Appointment.objects.filter(
+            clinic=self.clinic,
+            status=AppointmentStatus.PENDING
+        ).count()
+        
+        return context
+
+
+class ClinicAppointmentDetailView(ClinicOwnerRequiredMixin, DetailView):
+    """Clinic view of appointment details"""
+    template_name = 'vets/dashboard/appointment_detail.html'
+    context_object_name = 'appointment'
+    
+    def get_queryset(self):
+        return Appointment.objects.filter(
+            clinic=self.clinic
+        ).select_related('pet', 'user', 'reason')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['clinic'] = self.clinic
+        
+        # Get user profile info
+        appointment = self.object
+        if hasattr(appointment.user, 'profile'):
+            context['user_profile'] = appointment.user.profile
+        
+        return context
+
+
+class ClinicUpdateAppointmentView(ClinicOwnerRequiredMixin, View):
+    """Update appointment status from clinic dashboard"""
+    
+    def post(self, request, pk):
+        from django.utils import timezone
+        from .utils import send_appointment_status_update_to_user
+        
+        appointment = get_object_or_404(Appointment, pk=pk, clinic=self.clinic)
+        
+        new_status = request.POST.get('status')
+        cancellation_reason = request.POST.get('cancellation_reason', '')
+        
+        if new_status not in [s[0] for s in AppointmentStatus.choices]:
+            messages.error(request, "Invalid status.")
+            return redirect('vets:clinic_appointment_detail', pk=pk)
+        
+        appointment.status = new_status
+        
+        if new_status == AppointmentStatus.CONFIRMED:
+            appointment.confirmed_at = timezone.now()
+            messages.success(request, "Appointment confirmed.")
+        elif new_status == AppointmentStatus.CANCELLED_BY_CLINIC:
+            appointment.cancelled_at = timezone.now()
+            appointment.cancellation_reason = cancellation_reason
+            messages.success(request, "Appointment cancelled.")
+        elif new_status == AppointmentStatus.COMPLETED:
+            messages.success(request, "Appointment marked as completed.")
+        elif new_status == AppointmentStatus.NO_SHOW:
+            messages.success(request, "Appointment marked as no-show.")
+        
+        appointment.save()
+        
+        # Send notification to user
+        send_appointment_status_update_to_user(appointment)
+        
+        return redirect('vets:clinic_appointments')
+
+
+class ClinicNotificationsView(ClinicOwnerRequiredMixin, ListView):
+    """Clinic notifications list"""
+    template_name = 'vets/dashboard/notifications.html'
+    context_object_name = 'notifications'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        return ClinicNotification.objects.filter(
+            clinic=self.clinic
+        ).select_related('appointment').order_by('-created_at')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['clinic'] = self.clinic
+        context['unread_count'] = ClinicNotification.objects.filter(
+            clinic=self.clinic,
+            is_read=False
+        ).count()
+        return context
+
+
+class MarkNotificationReadView(ClinicOwnerRequiredMixin, View):
+    """Mark a notification as read"""
+    
+    def post(self, request, pk):
+        notification = get_object_or_404(ClinicNotification, pk=pk, clinic=self.clinic)
+        notification.mark_as_read()
+        
+        # If AJAX request
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({'success': True})
+        
+        return redirect('vets:clinic_notifications')
+
+
+class MarkAllNotificationsReadView(ClinicOwnerRequiredMixin, View):
+    """Mark all notifications as read"""
+    
+    def post(self, request):
+        from django.utils import timezone
+        
+        ClinicNotification.objects.filter(
+            clinic=self.clinic,
+            is_read=False
+        ).update(is_read=True, read_at=timezone.now())
+        
+        messages.success(request, "All notifications marked as read.")
+        return redirect('vets:clinic_notifications')

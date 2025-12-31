@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Appointment Confirmed - FAMMO</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .success-icon {
+            text-align: center;
+            font-size: 60px;
+            margin: 20px 0;
+        }
+        .appointment-card {
+            background: #e8f5e9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .appointment-card h3 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            width: 140px;
+            color: #666;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .reference-code {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .reference-code .code {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ff9800;
+            letter-spacing: 2px;
+        }
+        .clinic-info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✅ Appointment Confirmed!</h1>
+            <p>Great news, {{ user_name }}!</p>
+        </div>
+        
+        <div class="content">
+            <div class="success-icon">🎉</div>
+            
+            <p style="text-align: center; font-size: 18px;">
+                Your appointment for <strong>{{ pet.name }}</strong> has been confirmed by 
+                <strong>{{ clinic.name }}</strong>.
+            </p>
+            
+            <div class="reference-code">
+                <p style="margin: 0 0 5px 0;">Reference Code</p>
+                <div class="code">{{ appointment.reference_code }}</div>
+            </div>
+            
+            <div class="appointment-card">
+                <h3>📆 Appointment Details</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Date:</span>
+                    <span class="detail-value">{{ appointment.appointment_date|date:"l, F j, Y" }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Time:</span>
+                    <span class="detail-value">{{ appointment.appointment_time|time:"H:i" }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Pet:</span>
+                    <span class="detail-value">{{ pet.name }}</span>
+                </div>
+            </div>
+            
+            <div class="clinic-info">
+                <h3 style="margin-top: 0;">🏥 Clinic Information</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Clinic:</span>
+                    <span class="detail-value">{{ clinic.name }}</span>
+                </div>
+                {% if clinic.address %}
+                <div class="detail-row">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">{{ clinic.address }}{% if clinic.city %}, {{ clinic.city }}{% endif %}</span>
+                </div>
+                {% endif %}
+                {% if clinic.phone %}
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">{{ clinic.phone }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <p style="text-align: center; color: #666;">
+                Please arrive 5-10 minutes before your scheduled time.<br>
+                If you need to cancel, please do so at least 24 hours in advance.
+            </p>
+        </div>
+        
+        <div class="footer">
+            <p>This notification was sent by {{ site_name }}</p>
+            <p>© {{ site_name }} - Your Pet Care Partner</p>
+        </div>
+    </div>
+</body>
+</html>

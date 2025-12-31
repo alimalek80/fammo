@@ -180,6 +180,16 @@
                         {% trans "Trusted Partners" %}
                     </a>
 
+                    <!-- Notifications Bell -->
+                    <a href="{% url 'core:user_notifications' %}" class="relative p-2 text-gray-600 hover:text-indigo-600 transition duration-300 ease-in-out" title="{% trans 'Notifications' %}">
+                        <i class="fas fa-bell text-xl"></i>
+                        {% if total_notification_count > 0 %}
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                            {{ total_notification_count }}
+                        </span>
+                        {% endif %}
+                    </a>
+
                     <!-- User Dropdown -->
                     <div class="relative">
                         <button id="user-dropdown-toggle" class="flex items-center space-x-2 focus:outline-none">
@@ -197,6 +207,15 @@
                             <a href="{% url 'dashboard' %}" class="user-dropdown-item">
                                 <i class="fas fa-gauge-high"></i>
                                 <span>{% trans "User Dashboard" %}</span>
+                            </a>
+                            <a href="{% url 'core:user_notifications' %}" class="user-dropdown-item">
+                                <i class="fas fa-bell"></i>
+                                <span class="flex-1">{% trans "Notifications" %}</span>
+                                {% if total_notification_count > 0 %}
+                                <span class="bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                                    {{ total_notification_count }}
+                                </span>
+                                {% endif %}
                             </a>
                             {% if user.owned_clinics.exists %}
                                 <a href="{% url 'vets:clinic_dashboard' %}" class="user-dropdown-item">
@@ -276,6 +295,14 @@
             <div class="border-t border-gray-200 pt-2 mt-2">
                 <a href="{% url 'dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
                     <i class="fas fa-gauge-high mr-1"></i>{% trans "User Dashboard" %}
+                </a>
+                <a href="{% url 'core:user_notifications' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center flex items-center justify-center">
+                    <i class="fas fa-bell mr-1"></i>{% trans "Notifications" %}
+                    {% if total_notification_count > 0 %}
+                    <span class="ml-2 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
+                        {{ total_notification_count }}
+                    </span>
+                    {% endif %}
                 </a>
                 {% if user.owned_clinics.exists %}
                     <a href="{% url 'vets:clinic_dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">

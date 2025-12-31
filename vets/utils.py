@@ -302,3 +302,211 @@ def get_client_ip(request) -> str:
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+# ========== Appointment Notification Utilities ==========
+
+def create_clinic_notification(clinic, notification_type, title, message, appointment=None):
+    """Create an in-app notification for a clinic"""
+    from .models import ClinicNotification
+    
+    return ClinicNotification.objects.create(
+        clinic=clinic,
+        notification_type=notification_type,
+        title=title,
+        message=message,
+        appointment=appointment
+    )
+
+
+def send_appointment_notification_to_clinic(appointment):
+    """Send email notification to clinic about new appointment"""
+    try:
+        # Get user profile info
+        user_name = "Unknown User"
+        user_phone = ""
+        if hasattr(appointment.user, 'profile'):
+            profile = appointment.user.profile
+            user_name = f"{profile.first_name} {profile.last_name}".strip() or appointment.user.email
+            user_phone = profile.phone or ""
+        
+        # Prepare email context
+        context = {
+            'clinic': appointment.clinic,
+            'appointment': appointment,
+            'pet': appointment.pet,
+            'user_name': user_name,
+            'user_email': appointment.user.email,
+            'user_phone': user_phone,
+            'reason': appointment.reason.name if appointment.reason else appointment.reason_text,
+            'site_name': 'FAMMO',
+        }
+        
+        # Render email content
+        subject = f'New Appointment Booking - {appointment.pet.name} ({appointment.reference_code})'
+        html_message = render_to_string('vets/emails/appointment_new_notification.html', context)
+        
+        # Send email to clinic
+        recipient_email = appointment.clinic.email or (appointment.clinic.owner.email if appointment.clinic.owner else None)
+        if not recipient_email:
+            print(f"No email address for clinic {appointment.clinic.name}")
+            return False
+        
+        send_mail(
+            subject=subject,
+            message='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[recipient_email],
+            html_message=html_message,
+            fail_silently=False
+        )
+        return True
+    except Exception as e:
+        print(f"Error sending appointment notification to clinic: {e}")
+        return False
+
+
+def send_appointment_cancellation_to_clinic(appointment):
+    """Send email notification to clinic about cancelled appointment"""
+    try:
+        # Get user profile info
+        user_name = "Unknown User"
+        if hasattr(appointment.user, 'profile'):
+            profile = appointment.user.profile
+            user_name = f"{profile.first_name} {profile.last_name}".strip() or appointment.user.email
+        
+        # Prepare email context
+        context = {
+            'clinic': appointment.clinic,
+            'appointment': appointment,
+            'pet': appointment.pet,
+            'user_name': user_name,
+            'cancellation_reason': appointment.cancellation_reason,
+            'site_name': 'FAMMO',
+        }
+        
+        # Render email content
+        subject = f'Appointment Cancelled - {appointment.pet.name} ({appointment.reference_code})'
+        html_message = render_to_string('vets/emails/appointment_cancelled_notification.html', context)
+        
+        # Send email to clinic
+        recipient_email = appointment.clinic.email or (appointment.clinic.owner.email if appointment.clinic.owner else None)
+        if not recipient_email:
+            return False
+        
+        send_mail(
+            subject=subject,
+            message='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[recipient_email],
+            html_message=html_message,
+            fail_silently=False
+        )
+        return True
+    except Exception as e:
+        print(f"Error sending cancellation notification to clinic: {e}")
+        return False
+
+
+def send_appointment_status_update_to_user(appointment):
+    """Send email notification to user about appointment status change and create UserNotification"""
+    try:
+        # Get user profile info
+        user_name = "User"
+        if hasattr(appointment.user, 'profile'):
+            user_name = appointment.user.profile.first_name or "User"
+        
+        # Prepare email context
+        context = {
+            'clinic': appointment.clinic,
+            'appointment': appointment,
+            'pet': appointment.pet,
+            'user_name': user_name,
+            'status_display': appointment.get_status_display(),
+            'site_name': 'FAMMO',
+        }
+        
+        # Determine subject based on status
+        from .models import AppointmentStatus
+        from core.models import UserNotification, NotificationType
+        
+        if appointment.status == AppointmentStatus.CONFIRMED:
+            subject = f'Appointment Confirmed - {appointment.pet.name} at {appointment.clinic.name}'
+            template = 'vets/emails/appointment_confirmed_user.html'
+            notification_type = NotificationType.APPOINTMENT_CONFIRMED
+            notification_title = f"Appointment Confirmed"
+            notification_message = f"Your appointment for {appointment.pet.name} at {appointment.clinic.name} on {appointment.appointment_date.strftime('%B %d, %Y')} at {appointment.appointment_time.strftime('%H:%M')} has been confirmed."
+        elif appointment.status == AppointmentStatus.CANCELLED_BY_CLINIC:
+            subject = f'Appointment Cancelled by Clinic - {appointment.pet.name}'
+            template = 'vets/emails/appointment_cancelled_by_clinic_user.html'
+            notification_type = NotificationType.APPOINTMENT_CANCELLED
+            notification_title = f"Appointment Cancelled"
+            notification_message = f"Your appointment for {appointment.pet.name} at {appointment.clinic.name} on {appointment.appointment_date.strftime('%B %d, %Y')} has been cancelled by the clinic."
+            if appointment.cancellation_reason:
+                notification_message += f" Reason: {appointment.cancellation_reason}"
+        else:
+            subject = f'Appointment Update - {appointment.pet.name}'
+            template = 'vets/emails/appointment_status_update_user.html'
+            notification_type = NotificationType.SYSTEM
+            notification_title = f"Appointment Update"
+            notification_message = f"Your appointment for {appointment.pet.name} has been updated. Status: {appointment.get_status_display()}"
+        
+        # Create UserNotification
+        UserNotification.create_notification(
+            user=appointment.user,
+            notification_type=notification_type,
+            title=notification_title,
+            message=notification_message,
+            link=f"/en/vets/appointments/{appointment.pk}/",
+            is_important=(appointment.status == AppointmentStatus.CANCELLED_BY_CLINIC),
+            action_required=False
+        )
+        
+        html_message = render_to_string(template, context)
+        
+        send_mail(
+            subject=subject,
+            message='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[appointment.user.email],
+            html_message=html_message,
+            fail_silently=False
+        )
+        return True
+    except Exception as e:
+        print(f"Error sending appointment status update to user: {e}")
+        return False
+
+
+def send_appointment_reminder(appointment):
+    """Send appointment reminder to user (typically 24 hours before)"""
+    try:
+        # Get user profile info
+        user_name = "User"
+        if hasattr(appointment.user, 'profile'):
+            user_name = appointment.user.profile.first_name or "User"
+        
+        # Prepare email context
+        context = {
+            'clinic': appointment.clinic,
+            'appointment': appointment,
+            'pet': appointment.pet,
+            'user_name': user_name,
+            'site_name': 'FAMMO',
+        }
+        
+        subject = f'Reminder: Appointment Tomorrow - {appointment.pet.name} at {appointment.clinic.name}'
+        html_message = render_to_string('vets/emails/appointment_reminder_user.html', context)
+        
+        send_mail(
+            subject=subject,
+            message='',
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[appointment.user.email],
+            html_message=html_message,
+            fail_silently=False
+        )
+        return True
+    except Exception as e:
+        print(f"Error sending appointment reminder: {e}")
+        return False

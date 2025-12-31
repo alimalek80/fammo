@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Appointment" %} {{ appointment.reference_code }} - {% trans "Clinic Dashboard" %}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto max-w-3xl px-4 py-8">
+    <nav class="mb-6 text-sm">
+        <a href="{% url 'vets:clinic_dashboard' %}" class="text-indigo-600 hover:underline">{% trans "Dashboard" %}</a>
+        <span class="mx-2 text-gray-400">/</span>
+        <a href="{% url 'vets:clinic_appointments' %}" class="text-indigo-600 hover:underline">{% trans "Appointments" %}</a>
+        <span class="mx-2 text-gray-400">/</span>
+        <span class="text-gray-600">{{ appointment.reference_code }}</span>
+    </nav>
+
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm opacity-80">{% trans "Appointment" %}</p>
+                    <p class="text-xl font-bold">{{ appointment.reference_code }}</p>
+                </div>
+                <span class="px-4 py-2 rounded-full text-sm font-medium
+                    {% if appointment.status == 'PENDING' %}bg-yellow-400 text-yellow-900
+                    {% elif appointment.status == 'CONFIRMED' %}bg-green-400 text-green-900
+                    {% elif appointment.status == 'CANCELLED_USER' or appointment.status == 'CANCELLED_CLINIC' %}bg-red-400 text-red-900
+                    {% elif appointment.status == 'COMPLETED' %}bg-blue-400 text-blue-900
+                    {% else %}bg-gray-400 text-gray-900{% endif %}">
+                    {{ appointment.get_status_display }}
+                </span>
+            </div>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <!-- Date & Time -->
+            <div class="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+                <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-lg font-semibold text-gray-900">
+                        {{ appointment.appointment_date|date:"l, F d, Y" }}
+                    </p>
+                    <p class="text-gray-600">{{ appointment.appointment_time|time:"H:i" }}</p>
+                </div>
+            </div>
+
+            <!-- Pet Info -->
+            <div>
+                <h3 class="text-sm font-medium text-gray-500 mb-2">{% trans "Pet" %}</h3>
+                <div class="flex items-center gap-3">
+                    {% if appointment.pet.image %}
+                    <img src="{{ appointment.pet.image.url }}" alt="{{ appointment.pet.name }}" class="w-12 h-12 rounded-full object-cover">
+                    {% else %}
+                    <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                        <span class="text-indigo-600 font-bold text-lg">{{ appointment.pet.name|slice:":1" }}</span>
+                    </div>
+                    {% endif %}
+                    <div>
+                        <p class="font-medium text-gray-900">{{ appointment.pet.name }}</p>
+                        <p class="text-sm text-gray-500">
+                            {{ appointment.pet.pet_type.name }}
+                            {% if appointment.pet.breed %} • {{ appointment.pet.breed.name }}{% endif %}
+                            {% if appointment.pet.weight %} • {{ appointment.pet.weight }} kg{% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Owner Info -->
+            <div>
+                <h3 class="text-sm font-medium text-gray-500 mb-2">{% trans "Pet Owner" %}</h3>
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <p class="font-medium text-gray-900">
+                        {% if user_profile %}
+                            {{ user_profile.first_name }} {{ user_profile.last_name }}
+                        {% else %}
+                            {{ appointment.user.email }}
+                        {% endif %}
+                    </p>
+                    <p class="text-sm text-gray-600 mt-1">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        <a href="mailto:{{ appointment.user.email }}" class="text-indigo-600 hover:underline">{{ appointment.user.email }}</a>
+                    </p>
+                    {% if user_profile.phone %}
+                    <p class="text-sm text-gray-600 mt-1">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                        </svg>
+                        <a href="tel:{{ user_profile.phone }}" class="text-indigo-600 hover:underline">{{ user_profile.phone }}</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Reason -->
+            {% if appointment.reason or appointment.reason_text %}
+            <div>
+                <h3 class="text-sm font-medium text-gray-500 mb-2">{% trans "Reason for Visit" %}</h3>
+                <p class="text-gray-900">
+                    {% if appointment.reason %}<span class="font-medium">{{ appointment.reason.name }}</span>{% endif %}
+                    {% if appointment.reason and appointment.reason_text %}<br>{% endif %}
+                    {% if appointment.reason_text %}{{ appointment.reason_text }}{% endif %}
+                </p>
+            </div>
+            {% endif %}
+
+            <!-- Notes -->
+            {% if appointment.notes %}
+            <div>
+                <h3 class="text-sm font-medium text-gray-500 mb-2">{% trans "Notes from Owner" %}</h3>
+                <p class="text-gray-900 bg-gray-50 p-3 rounded-lg">{{ appointment.notes }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Cancellation Info -->
+            {% if appointment.cancellation_reason %}
+            <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                <h3 class="text-sm font-medium text-red-800 mb-1">{% trans "Cancellation Reason" %}</h3>
+                <p class="text-red-700">{{ appointment.cancellation_reason }}</p>
+            </div>
+            {% endif %}
+
+            <!-- Actions -->
+            {% if appointment.status == 'PENDING' or appointment.status == 'CONFIRMED' %}
+            <div class="border-t pt-6">
+                <h3 class="text-sm font-medium text-gray-700 mb-4">{% trans "Update Status" %}</h3>
+                <div class="flex flex-wrap gap-3">
+                    {% if appointment.status == 'PENDING' %}
+                    <form method="post" action="{% url 'vets:clinic_update_appointment' pk=appointment.pk %}" class="inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="CONFIRMED">
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                            ✓ {% trans "Confirm Appointment" %}
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+                    {% if appointment.status == 'CONFIRMED' %}
+                    <form method="post" action="{% url 'vets:clinic_update_appointment' pk=appointment.pk %}" class="inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="COMPLETED">
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                            ✓ {% trans "Mark Completed" %}
+                        </button>
+                    </form>
+                    
+                    <form method="post" action="{% url 'vets:clinic_update_appointment' pk=appointment.pk %}" class="inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="status" value="NO_SHOW">
+                        <button type="submit" class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors">
+                            {% trans "No Show" %}
+                        </button>
+                    </form>
+                    {% endif %}
+                    
+                    <button onclick="document.getElementById('cancelModal').classList.remove('hidden')" 
+                            class="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors">
+                        ✕ {% trans "Cancel Appointment" %}
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="mt-4">
+        <a href="{% url 'vets:clinic_appointments' %}" class="text-indigo-600 hover:underline">
+            ← {% trans "Back to Appointments" %}
+        </a>
+    </div>
+</div>
+
+<!-- Cancel Modal -->
+<div id="cancelModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+        <h3 class="text-lg font-bold text-gray-900 mb-4">{% trans "Cancel Appointment" %}</h3>
+        <p class="text-gray-600 mb-4">{% trans "Are you sure you want to cancel this appointment? The pet owner will be notified." %}</p>
+        
+        <form method="post" action="{% url 'vets:clinic_update_appointment' pk=appointment.pk %}">
+            {% csrf_token %}
+            <input type="hidden" name="status" value="CANCELLED_CLINIC">
+            <div class="mb-4">
+                <label for="cancellation_reason" class="block text-sm font-medium text-gray-700 mb-2">
+                    {% trans "Reason for cancellation" %}
+                </label>
+                <textarea name="cancellation_reason" id="cancellation_reason" rows="2"
+                          class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"
+                          placeholder="{% trans 'Explain why you are cancelling...' %}"></textarea>
+            </div>
+            
+            <div class="flex gap-3">
+                <button type="button" 
+                        onclick="document.getElementById('cancelModal').classList.add('hidden')"
+                        class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                    {% trans "Go Back" %}
+                </button>
+                <button type="submit" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    {% trans "Cancel Appointment" %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

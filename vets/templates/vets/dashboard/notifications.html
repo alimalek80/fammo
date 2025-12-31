@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{% trans "Notifications" %} - {% trans "Clinic Dashboard" %} - FAMMO{% endblock %}
+
+{% block content %}
+<div class="container mx-auto max-w-4xl px-4 py-8">
+    <!-- Dashboard Navigation -->
+    <div class="mb-6 flex flex-wrap gap-2">
+        <a href="{% url 'vets:clinic_dashboard' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Overview" %}</a>
+        <a href="{% url 'vets:clinic_appointments' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Appointments" %}</a>
+        <a href="{% url 'vets:clinic_referrals' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Referrals" %}</a>
+        <a href="{% url 'vets:clinic_notifications' %}" class="px-4 py-2 bg-indigo-100 text-indigo-700 rounded-lg font-medium">
+            {% trans "Notifications" %}
+            {% if unread_count %}
+            <span class="ml-1 px-2 py-0.5 bg-red-500 text-white text-xs rounded-full">{{ unread_count }}</span>
+            {% endif %}
+        </a>
+        <a href="{% url 'vets:clinic_profile_update' %}" class="px-4 py-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg">{% trans "Settings" %}</a>
+    </div>
+
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">{% trans "Notifications" %}</h1>
+        {% if unread_count > 0 %}
+        <form method="post" action="{% url 'vets:mark_all_notifications_read' %}">
+            {% csrf_token %}
+            <button type="submit" class="text-sm text-indigo-600 hover:text-indigo-800">
+                {% trans "Mark all as read" %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+
+    {% if notifications %}
+    <div class="space-y-3">
+        {% for notification in notifications %}
+        <div class="bg-white rounded-lg shadow p-4 {% if not notification.is_read %}border-l-4 border-indigo-500{% endif %}">
+            <div class="flex items-start justify-between">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                        {% if notification.notification_type == 'NEW_APPOINTMENT' %}
+                        <span class="w-2 h-2 bg-green-500 rounded-full"></span>
+                        {% elif notification.notification_type == 'CANCELLED_APPOINTMENT' %}
+                        <span class="w-2 h-2 bg-red-500 rounded-full"></span>
+                        {% else %}
+                        <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                        {% endif %}
+                        <h3 class="font-medium text-gray-900 {% if not notification.is_read %}font-semibold{% endif %}">
+                            {{ notification.title }}
+                        </h3>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-2">{{ notification.message }}</p>
+                    <div class="flex items-center gap-4 text-xs text-gray-500">
+                        <span>{{ notification.created_at|timesince }} {% trans "ago" %}</span>
+                        {% if notification.appointment %}
+                        <a href="{% url 'vets:clinic_appointment_detail' pk=notification.appointment.pk %}" 
+                           class="text-indigo-600 hover:underline">
+                            {% trans "View Appointment" %} →
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if not notification.is_read %}
+                <form method="post" action="{% url 'vets:mark_notification_read' pk=notification.pk %}" class="ml-4">
+                    {% csrf_token %}
+                    <button type="submit" class="text-xs text-gray-400 hover:text-gray-600" title="{% trans 'Mark as read' %}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <div class="mt-6 flex justify-center">
+        <nav class="flex items-center gap-2">
+            {% if page_obj.has_previous %}
+            <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">{% trans "Previous" %}</a>
+            {% endif %}
+            <span class="px-3 py-2 text-gray-600">
+                {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+            </span>
+            {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">{% trans "Next" %}</a>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+
+    {% else %}
+    <div class="bg-white rounded-lg shadow p-8 text-center">
+        <svg class="w-16 h-16 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">{% trans "No Notifications" %}</h3>
+        <p class="text-gray-500">{% trans "You're all caught up!" %}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

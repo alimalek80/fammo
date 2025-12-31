@@ -1,12 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth import get_user_model, login
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.urls import reverse
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
-from .models import HeroSection, SocialLinks, FAQ, ContactMessage, Lead
+from django.views.generic import ListView, View
+from .models import HeroSection, SocialLinks, FAQ, ContactMessage, Lead, UserNotification
 from .forms import HeroSectionForm, SocialLinksForm, FAQForm, ContactForm
 from pet.models import PetType
 from django.contrib.auth.hashers import make_password
@@ -287,3 +289,96 @@ def start_from_lead(request, uuid):
         signup_url = reverse("account_signup")
         messages.info(request, "Please create an account to continue setting up your pet's profile.")
         return HttpResponseRedirect(f"{signup_url}?next={next_url}")
+
+
+# ============================================
+# User Notifications Views
+# ============================================
+
+class UserNotificationsView(LoginRequiredMixin, ListView):
+    """View all notifications for the current user"""
+    template_name = 'core/notifications/list.html'
+    context_object_name = 'notifications'
+    paginate_by = 20
+    
+    def get_queryset(self):
+        queryset = UserNotification.objects.filter(user=self.request.user)
+        
+        # Filter by read status
+        filter_type = self.request.GET.get('filter', 'all')
+        if filter_type == 'unread':
+            queryset = queryset.filter(is_read=False)
+        elif filter_type == 'action':
+            queryset = queryset.filter(action_required=True, is_read=False)
+        
+        return queryset.order_by('-is_important', '-created_at')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['unread_count'] = UserNotification.objects.filter(
+            user=self.request.user, is_read=False
+        ).count()
+        context['action_count'] = UserNotification.objects.filter(
+            user=self.request.user, is_read=False, action_required=True
+        ).count()
+        context['current_filter'] = self.request.GET.get('filter', 'all')
+        
+        # Get clinic notifications if user owns a clinic
+        if hasattr(self.request.user, 'owned_clinics') and self.request.user.owned_clinics.exists():
+            from vets.models import ClinicNotification
+            clinic = self.request.user.owned_clinics.first()
+            context['clinic_notifications'] = ClinicNotification.objects.filter(
+                clinic=clinic
+            ).order_by('-created_at')[:10]
+            context['clinic_unread_count'] = ClinicNotification.objects.filter(
+                clinic=clinic, is_read=False
+            ).count()
+            context['clinic'] = clinic
+        
+        return context
+
+
+class MarkNotificationReadView(LoginRequiredMixin, View):
+    """Mark a single notification as read"""
+    
+    def post(self, request, pk):
+        notification = get_object_or_404(
+            UserNotification, 
+            pk=pk, 
+            user=request.user
+        )
+        notification.mark_as_read()
+        
+        # If there's a link, redirect to it
+        if notification.link:
+            return redirect(notification.link)
+        
+        return redirect('core:user_notifications')
+
+
+class MarkAllNotificationsReadView(LoginRequiredMixin, View):
+    """Mark all notifications as read"""
+    
+    def post(self, request):
+        from django.utils import timezone
+        UserNotification.objects.filter(
+            user=request.user, 
+            is_read=False
+        ).update(is_read=True, read_at=timezone.now())
+        
+        messages.success(request, "All notifications marked as read.")
+        return redirect('core:user_notifications')
+
+
+class DeleteNotificationView(LoginRequiredMixin, View):
+    """Delete a notification"""
+    
+    def post(self, request, pk):
+        notification = get_object_or_404(
+            UserNotification, 
+            pk=pk, 
+            user=request.user
+        )
+        notification.delete()
+        messages.success(request, "Notification deleted.")
+        return redirect('core:user_notifications')
