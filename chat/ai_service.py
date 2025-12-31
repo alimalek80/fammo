@@ -1,10 +1,15 @@
 import os
 from openai import OpenAI
 from dotenv import load_dotenv
+import httpx
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# Configure client with timeout
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    timeout=httpx.Timeout(60.0, connect=10.0)  # 60 second timeout
+)
 
 BASE_SYSTEM_PROMPT = (
     "You are a helpful veterinary-style assistant that ONLY answers questions about PETS: dogs and cats.\n"
@@ -23,7 +28,9 @@ BASE_SYSTEM_PROMPT = (
     "    Check against their pet's profile (breed, age, weight, allergies, health issues) and provide recommendations.\n"
     "  • If it's a PET PHOTO: help identify the breed, estimate age/size, note visible characteristics, and answer any questions about the pet.\n"
     "  • Be specific and helpful with image analysis, referencing details you can see in the image.\n"
+    "- Keep responses concise (under 300 words) unless more detail is specifically requested.\n"
 )
+
 
 def pet_answer(user_text: str, user_name: str | None = None, pet_profiles: str | None = None, is_first_message: bool = False, image_base64: str | None = None) -> str:
     """Answer a user question with optional personalization and image analysis.
@@ -36,69 +43,71 @@ def pet_answer(user_text: str, user_name: str | None = None, pet_profiles: str |
     is_first_message: True if this is the first message in the conversation (allows greeting)
     image_base64: base64-encoded image data (e.g., "image/jpeg;base64,/9j/4AAQ...") for vision analysis (optional)
     """
-    system_parts = [BASE_SYSTEM_PROMPT]
-    if user_name:
-        greeting_note = " (This is the first message, so you may greet them with 'Hi [name]!')" if is_first_message else " (Use their name naturally in responses, not as a greeting)"
-        system_parts.append(f"User first name: {user_name}{greeting_note}\n")
-    else:
-        system_parts.append("No user name available. Address as 'Dear user' and suggest profile completion.\n")
+    try:
+        system_parts = [BASE_SYSTEM_PROMPT]
+        if user_name:
+            greeting_note = " (This is the first message, so you may greet them with 'Hi [name]!')" if is_first_message else " (Use their name naturally in responses, not as a greeting)"
+            system_parts.append(f"User first name: {user_name}{greeting_note}\n")
+        else:
+            system_parts.append("No user name available. Address as 'Dear user' and suggest profile completion.\n")
+        
+        if pet_profiles:
+            system_parts.append(
+                "Use the following pet profile data to tailor your answers. If information is missing, "
+                "ask a brief clarifying question before giving detailed guidance.\n" + pet_profiles
+            )
+
+        system_prompt = "\n".join(system_parts)
+
+        # Check if we have an image - use vision model
+        if image_base64:
+            return _answer_with_vision(user_text, system_prompt, image_base64)
+        else:
+            return _answer_text_only(user_text, system_prompt)
+            
+    except Exception as e:
+        print(f"OpenAI API error: {e}")
+        return "Sorry, I'm having trouble connecting right now. Please try again in a moment."
+
+
+def _answer_text_only(user_text: str, system_prompt: str) -> str:
+    """Handle text-only messages using chat completions (faster)."""
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # Fast and cheap
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_text or "Hello"}
+        ],
+        max_tokens=500,
+        temperature=0.7,
+    )
+    return response.choices[0].message.content.strip()
+
+
+def _answer_with_vision(user_text: str, system_prompt: str, image_base64: str) -> str:
+    """Handle messages with images using vision model."""
+    # Format image URL
+    image_url = f"data:{image_base64}" if not image_base64.startswith("data:") else image_base64
     
-    if pet_profiles:
-        system_parts.append(
-            "Use the following pet profile data to tailor your answers. If information is missing, "
-            "ask a brief clarifying question before giving detailed guidance.\n" + pet_profiles
-        )
-
-    system_prompt = "\n".join(system_parts)
-
-    # Build user message content for Responses API
-    user_content = []
+    # Build content array for vision
+    content = []
     if user_text:
-        user_content.append({"type": "input_text", "text": user_text})
+        content.append({"type": "text", "text": user_text})
+    content.append({
+        "type": "image_url",
+        "image_url": {
+            "url": image_url,
+            "detail": "low"  # Use low detail for faster processing
+        }
+    })
     
-    if image_base64:
-        # OpenAI Responses API expects format: data:image/jpeg;base64,XXXX
-        image_url = f"data:{image_base64}" if not image_base64.startswith("data:") else image_base64
-        user_content.append({
-            "type": "input_image",
-            "image_url": image_url,
-            "detail": "high"
-        })
-
-    # If no content at all, add placeholder
-    if not user_content:
-        user_content.append({"type": "input_text", "text": "Hello"})
-
-    resp = client.responses.create(
-        model="gpt-5",
-        input=[
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # Supports vision and is fast
+        messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_content},
-        ]
+            {"role": "user", "content": content}
+        ],
+        max_tokens=500,
+        temperature=0.7,
     )
-    # Safe read
-    return resp.output_text.strip() if getattr(resp, "output_text", None) else "Sorry, I couldn't generate a reply."
-    system_parts = [BASE_SYSTEM_PROMPT]
-    if user_name:
-        greeting_note = " (This is the first message, so you may greet them with 'Hi [name]!')" if is_first_message else " (Use their name naturally in responses, not as a greeting)"
-        system_parts.append(f"User first name: {user_name}{greeting_note}\n")
-    else:
-        system_parts.append("No user name available. Address as 'Dear user' and suggest profile completion.\n")
-    
-    if pet_profiles:
-        system_parts.append(
-            "Use the following pet profile data to tailor your answers. If information is missing, "
-            "ask a brief clarifying question before giving detailed guidance.\n" + pet_profiles
-        )
-
-    system_prompt = "\n".join(system_parts)
-
-    resp = client.responses.create(
-        model="gpt-5",
-        input=[
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_text},
-        ]
-    )
-    # Safe read
-    return resp.output_text.strip() if getattr(resp, "output_text", None) else "Sorry, I couldn’t generate a reply."
+    return response.choices[0].message.content.strip()

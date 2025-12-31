@@ -120,4 +120,7 @@ urlpatterns = [
     
     # AI Core endpoints (nutrition predictions, etc.)
     path("", include('ai_core.urls')),
+    
+    # Chat API endpoints
+    path("chat/", include('chat.api_urls')),
 ]
