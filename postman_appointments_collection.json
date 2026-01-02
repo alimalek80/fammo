@@ -1,0 +1,599 @@
+{
+  "info": {
+    "name": "FAMMO Appointments API",
+    "_postman_id": "fammo-appointments-2026",
+    "description": "API endpoints for clinic appointment booking in FAMMO Flutter app",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Get JWT Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access) {",
+                  "    pm.collectionVariables.set('access_token', jsonData.access);",
+                  "    console.log('Access token saved!');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"your-email@example.com\",\n    \"password\": \"your-password\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/token/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "token", ""]
+            }
+          }
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refresh\": \"your-refresh-token-here\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/token/refresh/",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "token", "refresh", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Clinics",
+      "item": [
+        {
+          "name": "List All Clinics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clinics/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", ""]
+            }
+          }
+        },
+        {
+          "name": "Search Clinics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clinics/search/?q=cairo",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "search", ""],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "cairo"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Clinic Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/clinics/1/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Available Dates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/1/available-dates/?days=14",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "1", "available-dates", ""],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "14"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Available Time Slots",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/1/available-slots/?date=2026-01-02",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "1", "available-slots", ""],
+              "query": [
+                {
+                  "key": "date",
+                  "value": "2026-01-02"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Appointments",
+      "item": [
+        {
+          "name": "Get Appointment Reasons",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/appointments/reasons/",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "reasons", ""]
+            }
+          }
+        },
+        {
+          "name": "Create Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"clinic\": 1,\n    \"pet\": 1,\n    \"appointment_date\": \"2026-01-05\",\n    \"appointment_time\": \"10:00\",\n    \"reason\": 1,\n    \"reason_text\": \"Annual checkup for my pet\",\n    \"notes\": \"Please be gentle, my pet is nervous\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments/create/",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "create", ""]
+            }
+          }
+        },
+        {
+          "name": "List My Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/appointments/",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", ""]
+            }
+          }
+        },
+        {
+          "name": "List My Appointments (Upcoming Only)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/appointments/?upcoming=true",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", ""],
+              "query": [
+                {
+                  "key": "upcoming",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List My Appointments (Filter by Status)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/appointments/?status=PENDING",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", ""],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "PENDING"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List My Appointments (Filter by Pet)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/appointments/?pet=1",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", ""],
+              "query": [
+                {
+                  "key": "pet",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Appointment Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/appointments/1/",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Cancel Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"cancellation_reason\": \"Change of plans\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/appointments/1/cancel/",
+              "host": ["{{base_url}}"],
+              "path": ["appointments", "1", "cancel", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. My Pets (for appointment)",
+      "item": [
+        {
+          "name": "List My Pets",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/pets/",
+              "host": ["{{base_url}}"],
+              "path": ["pets", ""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Clinic Dashboard (Clinic Owner)",
+      "item": [
+        {
+          "name": "List Clinic Appointments",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/my/appointments/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "appointments", ""]
+            }
+          }
+        },
+        {
+          "name": "List Clinic Appointments (Upcoming)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/my/appointments/?upcoming=true",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "appointments", ""],
+              "query": [
+                {
+                  "key": "upcoming",
+                  "value": "true"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Clinic Appointment Detail",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/my/appointments/1/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "appointments", "1", ""]
+            }
+          }
+        },
+        {
+          "name": "Confirm Appointment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"CONFIRMED\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clinics/my/appointments/1/update/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "appointments", "1", "update", ""]
+            }
+          }
+        },
+        {
+          "name": "Cancel Appointment (by Clinic)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"CANCELLED_CLINIC\",\n    \"cancellation_reason\": \"Vet is unavailable on this day\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clinics/my/appointments/1/update/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "appointments", "1", "update", ""]
+            }
+          }
+        },
+        {
+          "name": "Mark Appointment Completed",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"COMPLETED\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clinics/my/appointments/1/update/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "appointments", "1", "update", ""]
+            }
+          }
+        },
+        {
+          "name": "Mark Appointment No-Show",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": \"NO_SHOW\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/clinics/my/appointments/1/update/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "appointments", "1", "update", ""]
+            }
+          }
+        },
+        {
+          "name": "List Clinic Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/my/notifications/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "notifications", ""]
+            }
+          }
+        },
+        {
+          "name": "Get Unread Notifications Count",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/my/notifications/unread-count/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "notifications", "unread-count", ""]
+            }
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/my/notifications/1/read/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "notifications", "1", "read", ""]
+            }
+          }
+        },
+        {
+          "name": "Mark All Notifications as Read",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{access_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/clinics/my/notifications/mark-all-read/",
+              "host": ["{{base_url}}"],
+              "path": ["clinics", "my", "notifications", "mark-all-read", ""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

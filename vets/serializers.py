@@ -255,8 +255,8 @@ class AppointmentCreateSerializer(serializers.ModelSerializer):
         return value
     
     def validate_clinic(self, value):
-        """Ensure the clinic is active"""
-        if not value.is_active_clinic:
+        """Ensure the clinic has verified their email (only requirement for accepting appointments)"""
+        if not value.email_confirmed:
             raise serializers.ValidationError("This clinic is not currently accepting appointments.")
         return value
     
