@@ -2168,3 +2168,196 @@ class ClinicUnreadNotificationsCountView(APIView):
         ).count()
         
         return Response({'count': count})
+
+
+# ============================================
+# FCM Device Token Registration
+# ============================================
+
+class RegisterDeviceTokenView(APIView):
+    """
+    POST /api/v1/notifications/device/register/
+    Register FCM device token for push notifications
+    
+    Request body:
+    {
+        "token": "fcm_device_token",
+        "platform": "android" or "ios",  # Flutter app sends 'platform'
+        "device_name": "Samsung A55"     # Optional
+    }
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        from core.models import DeviceToken
+        
+        token = request.data.get('token')
+        # Flutter app sends 'platform', but accept 'device_type' too for flexibility
+        device_type = request.data.get('platform') or request.data.get('device_type', 'android')
+        device_name = request.data.get('device_name', '')
+        
+        if not token:
+            return Response(
+                {'error': 'Token is required'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        # Create or update the token
+        device, created = DeviceToken.objects.update_or_create(
+            token=token,
+            defaults={
+                'user': request.user,
+                'device_type': device_type,
+                'device_name': device_name,
+                'is_active': True,
+            }
+        )
+        
+        return Response({
+            'message': 'Device registered successfully',
+            'device_id': device.id,
+            'created': created,
+        })
+
+
+class UnregisterDeviceTokenView(APIView):
+    """
+    POST /api/v1/notifications/device/unregister/
+    Remove FCM device token (on logout)
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        from core.models import DeviceToken
+        
+        token = request.data.get('token')
+        
+        if token:
+            # Deactivate specific token
+            DeviceToken.objects.filter(token=token).update(is_active=False)
+        else:
+            # Deactivate all tokens for this user
+            DeviceToken.objects.filter(user=request.user).update(is_active=False)
+        
+        return Response({'message': 'Device unregistered successfully'})
+
+
+# ============================================
+# User Notification API Endpoints
+# ============================================
+
+class UserNotificationsListView(APIView):
+    """
+    GET /api/v1/notifications/
+    List all notifications for the authenticated user
+    
+    Query params:
+    - unread=true: Only show unread notifications
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        from core.models import UserNotification
+        
+        queryset = UserNotification.objects.filter(user=request.user)
+        
+        unread = request.query_params.get('unread', '').lower() == 'true'
+        if unread:
+            queryset = queryset.filter(is_read=False)
+        
+        queryset = queryset.order_by('-is_important', '-created_at')
+        
+        notifications = []
+        for notif in queryset[:50]:  # Limit to 50 most recent
+            notifications.append({
+                'id': notif.id,
+                'type': notif.notification_type,
+                'title': notif.title,
+                'message': notif.message,
+                'link': notif.link,
+                'is_read': notif.is_read,
+                'is_important': notif.is_important,
+                'created_at': notif.created_at.isoformat(),
+            })
+        
+        return Response({
+            'notifications': notifications,
+            'unread_count': queryset.filter(is_read=False).count(),
+        })
+
+
+class UserNotificationMarkReadView(APIView):
+    """
+    POST /api/v1/notifications/{id}/read/
+    Mark a notification as read
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request, pk):
+        from core.models import UserNotification
+        
+        notification = get_object_or_404(
+            UserNotification,
+            pk=pk,
+            user=request.user
+        )
+        notification.mark_as_read()
+        return Response({'message': 'Notification marked as read'})
+
+
+class UserNotificationsMarkAllReadView(APIView):
+    """
+    POST /api/v1/notifications/mark-all-read/
+    Mark all notifications as read
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def post(self, request):
+        from django.utils import timezone
+        from core.models import UserNotification
+        
+        updated = UserNotification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).update(is_read=True, read_at=timezone.now())
+        
+        return Response({
+            'message': f'{updated} notifications marked as read',
+            'count': updated,
+        })
+
+
+class UserUnreadNotificationsCountView(APIView):
+    """
+    GET /api/v1/notifications/unread-count/
+    Get count of unread notifications
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def get(self, request):
+        from core.models import UserNotification
+        
+        count = UserNotification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).count()
+        return Response({'count': count})
+
+
+class DeleteUserNotificationView(APIView):
+    """
+    DELETE /api/v1/notifications/{id}/
+    Delete a notification
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    
+    def delete(self, request, pk):
+        from core.models import UserNotification
+        
+        notification = get_object_or_404(
+            UserNotification,
+            pk=pk,
+            user=request.user
+        )
+        notification.delete()
+        return Response({'message': 'Notification deleted'})

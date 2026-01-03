@@ -245,3 +245,40 @@ class UserNotification(models.Model):
     def get_unread_count(cls, user):
         """Get count of unread notifications for a user"""
         return cls.objects.filter(user=user, is_read=False).count()
+
+
+class DeviceToken(models.Model):
+    """
+    Stores FCM device tokens for push notifications.
+    Each user can have multiple devices (phone, tablet, etc.)
+    """
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='device_tokens'
+    )
+    token = models.CharField(max_length=500, unique=True)
+    device_type = models.CharField(
+        max_length=20,
+        choices=[
+            ('android', 'Android'),
+            ('ios', 'iOS'),
+            ('web', 'Web'),
+        ],
+        default='android'
+    )
+    device_name = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "Device Token"
+        verbose_name_plural = "Device Tokens"
+        indexes = [
+            models.Index(fields=['user', 'is_active']),
+            models.Index(fields=['token']),
+        ]
+    
+    def __str__(self):
+        return f"{self.user.email} - {self.device_type} ({self.device_name or 'Unknown'})"

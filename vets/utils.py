@@ -10,6 +10,13 @@ from django.utils import timezone
 from django.conf import settings
 from .models import Clinic
 
+# Import FCM service functions
+from core.fcm_service import (
+    send_appointment_push_to_clinic,
+    send_appointment_status_push_to_user,
+    send_appointment_cancelled_push_to_clinic,
+)
+
 
 def generate_email_confirmation_token():
     """Generate a secure random token for email confirmation"""
@@ -307,16 +314,25 @@ def get_client_ip(request) -> str:
 # ========== Appointment Notification Utilities ==========
 
 def create_clinic_notification(clinic, notification_type, title, message, appointment=None):
-    """Create an in-app notification for a clinic"""
+    """Create an in-app notification for a clinic AND send push notification"""
     from .models import ClinicNotification
     
-    return ClinicNotification.objects.create(
+    notification = ClinicNotification.objects.create(
         clinic=clinic,
         notification_type=notification_type,
         title=title,
         message=message,
         appointment=appointment
     )
+    
+    # Send push notification to clinic owner
+    if appointment:
+        try:
+            send_appointment_push_to_clinic(appointment)
+        except Exception as e:
+            print(f"Error sending push notification to clinic: {e}")
+    
+    return notification
 
 
 def send_appointment_notification_to_clinic(appointment):
@@ -402,6 +418,13 @@ def send_appointment_cancellation_to_clinic(appointment):
             html_message=html_message,
             fail_silently=False
         )
+        
+        # Send push notification to clinic owner
+        try:
+            send_appointment_cancelled_push_to_clinic(appointment)
+        except Exception as e:
+            print(f"Error sending push notification to clinic: {e}")
+        
         return True
     except Exception as e:
         print(f"Error sending cancellation notification to clinic: {e}")
@@ -461,6 +484,12 @@ def send_appointment_status_update_to_user(appointment):
             is_important=(appointment.status == AppointmentStatus.CANCELLED_BY_CLINIC),
             action_required=False
         )
+        
+        # Send push notification to user's mobile devices
+        try:
+            send_appointment_status_push_to_user(appointment)
+        except Exception as e:
+            print(f"Error sending push notification to user: {e}")
         
         html_message = render_to_string(template, context)
         

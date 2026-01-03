@@ -1,7 +1,8 @@
 from django.contrib import admin
 from .models import (
     HeroSection, SocialLinks, FAQ, ContactMessage, Lead, OnboardingSlide,
-    LegalDocument, UserConsent, ClinicConsent, ConsentLog, UserNotification
+    LegalDocument, UserConsent, ClinicConsent, ConsentLog, UserNotification,
+    DeviceToken
 )
 from modeltranslation.admin import TranslationAdmin
 
@@ -182,3 +183,25 @@ class UserNotificationAdmin(admin.ModelAdmin):
     def mark_as_unread(self, request, queryset):
         queryset.update(is_read=False, read_at=None)
         self.message_user(request, f'{queryset.count()} notifications marked as unread.')
+
+
+@admin.register(DeviceToken)
+class DeviceTokenAdmin(admin.ModelAdmin):
+    list_display = ('user', 'device_type', 'device_name', 'is_active', 'created_at', 'updated_at')
+    list_filter = ('device_type', 'is_active', 'created_at')
+    search_fields = ('user__email', 'device_name', 'token')
+    readonly_fields = ('created_at', 'updated_at')
+    raw_id_fields = ('user',)
+    ordering = ('-created_at',)
+    
+    actions = ['activate_tokens', 'deactivate_tokens']
+    
+    @admin.action(description='Activate selected tokens')
+    def activate_tokens(self, request, queryset):
+        queryset.update(is_active=True)
+        self.message_user(request, f'{queryset.count()} tokens activated.')
+    
+    @admin.action(description='Deactivate selected tokens')
+    def deactivate_tokens(self, request, queryset):
+        queryset.update(is_active=False)
+        self.message_user(request, f'{queryset.count()} tokens deactivated.')

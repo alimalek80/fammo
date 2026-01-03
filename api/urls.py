@@ -56,6 +56,14 @@ from .views import (
     # AI Hub views
     AIRecommendationViewSet,
     AIHealthReportViewSet,
+    # User Notification & FCM views
+    RegisterDeviceTokenView,
+    UnregisterDeviceTokenView,
+    UserNotificationsListView,
+    UserNotificationMarkReadView,
+    UserNotificationsMarkAllReadView,
+    UserUnreadNotificationsCountView,
+    DeleteUserNotificationView,
 )
 from core.legal_viewsets import (
     LegalDocumentViewSet,
@@ -160,4 +168,15 @@ urlpatterns = [
     
     # Chat API endpoints
     path("chat/", include('chat.api_urls')),
+    
+    # Device Token Registration (FCM Push Notifications)
+    path("notifications/device/register/", RegisterDeviceTokenView.as_view(), name="api-register-device"),
+    path("notifications/device/unregister/", UnregisterDeviceTokenView.as_view(), name="api-unregister-device"),
+    
+    # User Notifications
+    path("notifications/", UserNotificationsListView.as_view(), name="api-user-notifications"),
+    path("notifications/unread-count/", UserUnreadNotificationsCountView.as_view(), name="api-user-notifications-unread-count"),
+    path("notifications/mark-all-read/", UserNotificationsMarkAllReadView.as_view(), name="api-user-notifications-mark-all-read"),
+    path("notifications/<int:pk>/read/", UserNotificationMarkReadView.as_view(), name="api-user-notification-mark-read"),
+    path("notifications/<int:pk>/", DeleteUserNotificationView.as_view(), name="api-user-notification-delete"),
 ]

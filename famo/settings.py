@@ -298,3 +298,11 @@ CONTACT_EMAIL = "info@fammo.ai"
 # Screenshot Generation
 # Set to False on cPanel if Playwright system dependencies are not available
 ENABLE_PLAYWRIGHT_SCREENSHOTS = config('ENABLE_PLAYWRIGHT_SCREENSHOTS', default=True, cast=bool)
+
+# Firebase Cloud Messaging Configuration
+# Path to your Firebase service account JSON file (download from Firebase Console)
+# Set FIREBASE_CREDENTIALS_PATH in .env for custom path, or use default filename in project root
+FIREBASE_CREDENTIALS_PATH = config(
+    'FIREBASE_CREDENTIALS_PATH', 
+    default=os.path.join(BASE_DIR, 'firebase-service-account.json')
+)
