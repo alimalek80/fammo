@@ -2256,6 +2256,40 @@ class UserNotificationsListView(APIView):
     """
     permission_classes = [permissions.IsAuthenticated]
     
+    def _extract_entity_info(self, notif):
+        """
+        Extract entity_id and entity_type from notification link.
+        Links are in format: /en/vets/appointments/123/
+        """
+        import re
+        
+        entity_id = None
+        entity_type = 'unknown'
+        
+        if notif.link:
+            # Extract appointment ID from link like /en/vets/appointments/123/
+            appointment_match = re.search(r'/appointments/(\d+)', notif.link)
+            if appointment_match:
+                entity_id = int(appointment_match.group(1))
+                entity_type = 'appointment'
+                return entity_id, entity_type
+            
+            # Extract pet ID from link like /en/pets/456/
+            pet_match = re.search(r'/pets/(\d+)', notif.link)
+            if pet_match:
+                entity_id = int(pet_match.group(1))
+                entity_type = 'pet'
+                return entity_id, entity_type
+            
+            # Extract clinic ID from link like /en/vets/clinics/789/
+            clinic_match = re.search(r'/clinics/(\d+)', notif.link)
+            if clinic_match:
+                entity_id = int(clinic_match.group(1))
+                entity_type = 'clinic'
+                return entity_id, entity_type
+        
+        return entity_id, entity_type
+    
     def get(self, request):
         from core.models import UserNotification
         
@@ -2269,12 +2303,18 @@ class UserNotificationsListView(APIView):
         
         notifications = []
         for notif in queryset[:50]:  # Limit to 50 most recent
+            entity_id, entity_type = self._extract_entity_info(notif)
+            
             notifications.append({
                 'id': notif.id,
                 'type': notif.notification_type,
                 'title': notif.title,
-                'message': notif.message,
+                'body': notif.message,  # Flutter expects 'body'
+                'message': notif.message,  # Keep for backwards compatibility
                 'link': notif.link,
+                'entity_id': entity_id,  # Extracted from link
+                'entity_type': entity_type,  # 'appointment', 'pet', 'clinic', or 'unknown'
+                'receiver_role': 'user',  # For UserNotifications, always 'user'
                 'is_read': notif.is_read,
                 'is_important': notif.is_important,
                 'created_at': notif.created_at.isoformat(),

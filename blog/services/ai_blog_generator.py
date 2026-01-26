@@ -103,11 +103,83 @@ def build_generation_prompt(topic, tone='professional'):
     target_audience = topic.target_audience or "General audience interested in pet care and veterinary services"
     notes = topic.notes or ""
     
-    prompt = f"""You are an expert SEO content writer for FAMMO (https://fammo.ai), a platform revolutionizing pet healthcare with AI-driven solutions connecting pet owners with veterinary services.
+    prompt = f"""You are an expert pet content writer for FAMMO (https://fammo.ai), a platform revolutionizing pet healthcare with AI-driven solutions connecting pet owners with veterinary services.
 
-TASK: Write a comprehensive, SEO-optimized blog post about "{topic.title}" in {topic.language}.
+Your writing style is:
+- WARM and FRIENDLY: Write like a caring friend who genuinely loves pets and wants to help other pet parents
+- SIMPLE and CLEAR: Use everyday language that anyone can understand, not veterinary textbook language
+- COMPREHENSIVE: Cover topics thoroughly with lots of helpful details, practical examples, and real-life scenarios
+- EMPATHETIC: Acknowledge pet owners' concerns and worries, and provide reassuring, supportive guidance
+- ENGAGING: Use questions, relatable stories, and conversational elements to keep readers interested
+
+TASK: Write a comprehensive, SEO-optimized, and pet-owner-friendly blog post about "{topic.title}" in {topic.language}.
 
 IMPORTANT: You have access to a file_search tool containing our published blog posts. Use it to find REAL blog posts related to the topic you're writing about.
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 TARGET: 1800-2200 WORDS - QUALITY OVER QUANTITY
+═══════════════════════════════════════════════════════════════════════════════
+
+Write a comprehensive yet SCANNABLE blog post (1800-2200 words).
+Focus on READABILITY and SEO - not just word count.
+
+🎯 SEO & READABILITY PRIORITIES:
+- Short paragraphs (2-4 sentences max)
+- Use bullet points and numbered lists frequently
+- Include the primary keyword in title, first paragraph, and headings
+- Use subheadings (##, ###) every 150-200 words for easy scanning
+- Write at a 6th-8th grade reading level (simple, clear language)
+- Front-load important information in each section
+- Use transition words for flow (First, Next, However, Additionally...)
+
+📋 BLOG STRUCTURE (7 sections):
+
+1. INTRODUCTION (150-200 words)
+   - Hook with a question or relatable scenario
+   - Why this matters for pet owners (include primary keyword)
+   - Brief preview of what they'll learn
+   📷 → PLACE IMAGE 1 HERE (after introduction)
+
+2. SECTION 1: UNDERSTANDING THE BASICS (200-300 words)
+   - ## Heading with keyword
+   - ### What It Is - clear, simple explanation
+   - ### Why It Matters - benefits for pets
+   - Use bullet points for key facts
+
+3. SECTION 2: KEY FACTORS & CONSIDERATIONS (200-300 words)
+   - ## Heading diving deeper
+   - ### Important factors (use bullet list)
+   - ### How it affects your pet
+   - Include 1-2 statistics or expert citations
+   📷 → PLACE IMAGE 2 HERE (after this section)
+
+4. SECTION 3: PRACTICAL OPTIONS/SOLUTIONS (250-350 words)
+   - ## Heading with actionable focus
+   - ### Option 1 - brief pros/cons
+   - ### Option 2 - brief pros/cons
+   - ### Option 3 - brief pros/cons
+   - Use comparison format for easy scanning
+
+5. SECTION 4: STEP-BY-STEP GUIDE (200-250 words)
+   - ## "How to..." heading
+   - Numbered list format (Step 1, Step 2, Step 3...)
+   - One tip per step, keep it concise
+   📷 → PLACE IMAGE 3 HERE (after step-by-step)
+
+6. SECTION 5: WHAT TO WATCH FOR (200-250 words)
+   - ## Warning Signs heading
+   - Bullet list of symptoms/red flags
+   - ### When to See a Vet - brief, clear guidance
+   - Reassuring tone
+
+7. CONCLUSION (150-200 words)
+   - 3-4 key takeaways as bullet points
+   - Encouraging closing message
+   - Clear call-to-action (FAMMO, consult vet)
+
+TOTAL: Following this structure = 1800-2200 words ✓
+
+═══════════════════════════════════════════════════════════════════════════════
 
 REQUIREMENTS:
 
@@ -117,10 +189,17 @@ REQUIREMENTS:
     - Meta description: Engaging, under 160 characters, with call-to-action
     - Keywords: {keyword_guidance}
     - Target audience: {target_audience}
-    - Content length: minimum 1600 words (target 1600-2000) — non-negotiable for SEO
-    - Tone: {tone}
-    - Format: Markdown with proper headings (##, ###), bullet points, and bold/italic emphasis
-    - Structure: Introduction → Main sections with subheadings → Conclusion with CTA
+    - Tone: {tone}, but always warm, friendly, and approachable for everyday pet owners
+    - Writing style: Use simple, clear language that any pet owner can understand. Avoid complex veterinary jargon — when technical terms are necessary, explain them in plain language. Write as if you're a caring friend who happens to be a pet expert, helping another pet parent understand their furry companion better.
+    - Format: Markdown with proper headings (##, ###), bullet points, numbered lists, and bold/italic emphasis
+    
+    📝 WRITING STYLE TIPS:
+    - Write multiple paragraphs per subsection, not just 1-2 sentences
+    - Use transitional phrases between paragraphs
+    - Include "For example..." and "Imagine if..." scenarios
+    - Add "Did you know?" interesting facts
+    - Use bullet points for lists, but include explanations for each item
+    - Be thorough - if you mention something, explain it fully
    
 2. INTERNAL LINK BOXES (CRITICAL - USE file_search TOOL):
    - FIRST: Use the file_search tool to find published blogs related to this topic
@@ -145,30 +224,47 @@ REQUIREMENTS:
    - Place links naturally where they provide citations or additional value
    - Return the same links in external_links array with placement_hint for reference
 
-4. IMAGE PROMPTS (EMBED IN MARKDOWN):
-   - EMBED 2-3 image placeholders throughout the content using this format:
+4. IMAGE PROMPTS (EMBED THROUGHOUT THE CONTENT - NOT AT THE END):
+   ⚠️ CRITICAL: Images must be DISTRIBUTED throughout the blog, NOT grouped at the end!
+   
+   - EMBED 3-4 image placeholders THROUGHOUT the content using this format:
    
 📷 **[Image: Alt text here]**
-*AI Prompt: Detailed image generation prompt here*
+*AI Prompt: Detailed image generation prompt here. Aspect ratio: 16:9*
    
-   - Place image prompts at natural breaks between paragraphs or sections
+   ⚠️ IMPORTANT: Always end each AI Prompt with "Aspect ratio: 16:9"
+   
+   📍 MANDATORY IMAGE PLACEMENT (follow this exactly):
+   - Image 1: Place after the INTRODUCTION section (before Section 1)
+   - Image 2: Place after Section 2 or Section 3 (middle of the article)
+   - Image 3: Place after Section 5 or Section 6 (later in the article)
+   - Image 4 (optional): Place in the Conclusion or after Special Considerations
+   
+   ❌ DO NOT place all images at the end of the blog
+   ❌ DO NOT group multiple images together
+   ✅ Spread images evenly throughout the content
+   ✅ Each image should relate to the section it follows
+   
    - Make prompts detailed and professional for AI image generators
+   - ALWAYS end each prompt with "Aspect ratio: 16:9"
    - Also return thumbnail and inline image data in the images object
 
-5. EXAMPLE WITH INTERNAL LINK BOX:
+5. EXAMPLE WITH INTERNAL LINK BOX (notice the warm, friendly tone):
 
-## Understanding Pet Nutrition
+## Understanding Pet Nutrition: What Your Furry Friend Really Needs
 
-Proper nutrition is essential for your pet's health and longevity. Different pets require different nutritional approaches based on their species, age, and health conditions.
+Have you ever stood in the pet food aisle feeling completely overwhelmed by all the options? You're not alone! Choosing the right food for your beloved companion can feel like solving a puzzle, but don't worry — we're here to help you understand exactly what your pet needs to thrive.
+
+Proper nutrition isn't just about filling your pet's bowl — it's about giving them the building blocks for a long, happy, and healthy life by your side. Every pet is unique, and factors like their age, breed, activity level, and even their personality can influence what they need to eat.
 
 > **📖 Related Read: [Understanding Pet Allergies](https://fammo.ai/blog/understanding-pet-allergies)**
 >
-> Discover how food choices affect pet allergies and how tailored diets can reduce symptoms and improve wellbeing.
+> Is your pet scratching more than usual or having tummy troubles? Food allergies might be the culprit! Learn how the right diet choices can help your furry friend feel their best again.
 
 📷 **[Image: Happy dog eating from a stainless steel bowl]**
-*AI Prompt: Professional photograph of a healthy golden retriever eating nutritious kibble from a clean stainless steel bowl in a modern kitchen, natural lighting, high quality*
+*AI Prompt: Professional photograph of a healthy golden retriever happily eating nutritious kibble from a clean stainless steel bowl in a bright, cozy modern kitchen with warm natural lighting, pet owner smiling in the soft background, high quality lifestyle photography. Aspect ratio: 16:9*
 
-Research from the [American Veterinary Medical Association](https://avma.org) shows that...
+Research from the [American Veterinary Medical Association](https://avma.org) confirms what many pet parents already feel in their hearts — the food we choose for our pets directly impacts their energy, coat health, and overall wellbeing...
 
 6. SOCIAL MEDIA DRAFTS:
    
@@ -224,15 +320,44 @@ RESPONSE FORMAT (STRICT JSON):
   }}
 }}
 
-CRITICAL: 
-- USE file_search tool to find real published blogs
-- Create EXACTLY 2 internal link boxes using ONLY real blogs from file_search
-- Use the > blockquote format with 📖 emoji for link boxes
-- Write compelling descriptions that highlight the value to the reader
-- Place boxes after complete paragraphs, not mid-paragraph
-- Embed external links naturally in text
-- Use 📷 emoji for image prompts
-- Return ONLY valid JSON, no markdown code blocks or explanations
+═══════════════════════════════════════════════════════════════════════════════
+FINAL CHECKLIST - VERIFY BEFORE RESPONDING:
+═══════════════════════════════════════════════════════════════════════════════
+
+📏 WORD COUNT: Target 1800-2200 words (quality over quantity)
+
+📋 STRUCTURE CHECK (7 sections):
+   - Introduction (150-200 words) ✓
+   - Section 1: Understanding the Basics (200-300 words) ✓
+   - Section 2: Key Factors (200-300 words) ✓
+   - Section 3: Practical Options (250-350 words) ✓
+   - Section 4: Step-by-Step Guide (200-250 words) ✓
+   - Section 5: What to Watch For (200-250 words) ✓
+   - Conclusion (150-200 words) ✓
+
+🎯 SEO CHECK:
+   - Primary keyword in title, first paragraph, and 2+ headings ✓
+   - Short paragraphs (2-4 sentences) ✓
+   - Bullet points and numbered lists used ✓
+   - Subheadings every 150-200 words ✓
+
+📷 IMAGE PLACEMENT:
+   - Image 1: After Introduction ✓
+   - Image 2: After Section 2 ✓
+   - Image 3: After Section 4 ✓
+   - ❌ DO NOT group images at the end!
+
+📝 OTHER REQUIREMENTS:
+   - USE file_search tool to find real published blogs
+   - Create EXACTLY 2 internal link boxes using ONLY real blogs from file_search
+   - Embed 3-5 external links naturally in text
+   - Return ONLY valid JSON, no markdown code blocks
+
+⚠️ REJECTION CRITERIA:
+   - Under 1500 words = REJECTED
+   - Long paragraphs (5+ sentences) = REJECTED
+   - No bullet points or lists = REJECTED
+   - All images at the end = REJECTED
 """
     return prompt
 
@@ -499,8 +624,8 @@ def generate_for_next_topic(language, tone='professional', created_by=None):
         # Step 7: Enforce minimum length and fix internal links to ensure they map to real published posts
         blog_data = response_data['blog']
         word_count = len(blog_data.get('markdown', '').split())
-        if word_count < 1600:
-            raise ValueError(f"Generated content too short for SEO: {word_count} words (need >= 1600)")
+        if word_count < 1500:
+            raise ValueError(f"Generated content too short for SEO: {word_count} words (need >= 1500)")
 
         markdown_fixed, validated_links = _reconcile_internal_links(
             blog_data.get('markdown', ''),
