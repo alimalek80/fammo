@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY
 SECRET_KEY = config("SECRET_KEY")
-DEBUG = True
+DEBUG = config("DEBUG", default=True, cast=bool)
 ALLOWED_HOSTS = ['fammo.ai', 'localhost', '127.0.0.1']
 
 # Site URL for email links
@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
     'django.contrib.sites',  # Required by allauth
 
     # Allauth apps
@@ -54,8 +54,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
 
-
     'userapp',
+    'chat',
     'core',
     'pet',
     'aihub',
@@ -66,13 +66,11 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'markdownx',
     'formtools',
-    'chat',
     'vets.apps.VetsConfig',
     'evidence',
-
-    'corsheaders',
     'rest_framework',
     'api',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
@@ -110,6 +108,17 @@ SIMPLE_JWT = {
 
 MODELTRANSLATION_FALLBACK_LANGUAGES = ('en',)
 
+# Tailwind configuration
+TAILWIND_APP_NAME = 'theme'
+NPM_BIN_PATH = config("NPM_BIN_PATH", default="npm")
+NODE_BIN_PATH = config("NODE_BIN_PATH", default="node")
+
+# Detect if we're on cPanel by checking for specific cPanel paths
+IS_CPANEL = os.path.exists('/home/fammkoqw/nodevenv') or config("IS_CPANEL", default=False, cast=bool)
+
+if DEBUG and not IS_CPANEL:
+    INSTALLED_APPS += ['django_browser_reload']
+
 # MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -124,19 +133,39 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+CORS_ALLOW_ALL_ORIGINS = True
+
+if DEBUG and not IS_CPANEL:
+    MIDDLEWARE += ['django_browser_reload.middleware.BrowserReloadMiddleware']
+
 ROOT_URLCONF = 'famo.urls'
 WSGI_APPLICATION = 'famo.wsgi.application'
 
-CORS_ALLOW_ALL_ORIGINS = True
-
 # DATABASE
-# Use SQLite for local development
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+# Environment-aware database configuration
+if IS_CPANEL or config("USE_MYSQL", default=False, cast=bool):
+    # Use MySQL for cPanel production
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': config('DB_NAME'),
+            'USER': config('DB_USER'),
+            'PASSWORD': config('DB_PASSWORD'),
+            'HOST': config('DB_HOST_LOCAL'),
+            'PORT': '3306',
+            'OPTIONS': {
+                'charset': 'utf8mb4',
+            },
+        }
     }
-}
+else:
+    # Use SQLite for local development
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Use SQLite for tests to avoid permission issues (especially on cPanel)
 if 'test' in sys.argv:
@@ -146,18 +175,6 @@ if 'test' in sys.argv:
             'NAME': BASE_DIR / 'test_db.sqlite3',
         }
     }
-
-# DATABASE ON CPANEL HOST
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': config('DB_NAME'),
-#         'USER': config('DB_USER'),
-#         'PASSWORD': config('DB_PASSWORD'),
-#         'HOST': config('DB_HOST_LOCAL'),
-#         'PORT': '3306',
-#     }
-# }
 
 # AUTH
 AUTH_USER_MODEL = 'userapp.CustomUser'
@@ -207,16 +224,16 @@ LOCALE_PATHS = [
 ]
 
 # STATIC FILES
-STATIC_URL = '/static/'
-# For Cpanel
-# STATIC_URL = 'fammo/static/'
+# Environment-aware static/media URLs
+if IS_CPANEL:
+    STATIC_URL = 'fammo/static/'
+    MEDIA_URL = '/fammo/media/'
+else:
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
+
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-
-# MEDIA FILES
-MEDIA_URL = '/media/'
-# For Cpanel
-# MEDIA_URL = 'fammo/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # MARKDOWNIFY
@@ -284,8 +301,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
-LOGIN_REDIRECT_URL = 'pet:pet_wizard'  # Keep the pet wizard as redirect
-LOGOUT_REDIRECT_URL = 'core:home'
+LOGIN_REDIRECT_URL = 'dashboard'  # Changed to match cPanel version
+LOGOUT_REDIRECT_URL = 'login'
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_QUERY_EMAIL = True
 SOCIALACCOUNT_AUTO_SIGNUP = True
