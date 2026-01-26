@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('pet', '0022_migrate_translations'),
-        ('vets', '0005_clinic_clinic_eoi'),
+        ('vets', '0007_add_translation_fields'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

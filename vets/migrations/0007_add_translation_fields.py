@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('vets', '0006_add_appointments'),
+        ('vets', '0006_appointmentreason_appointment_clinicnotification_and_more'),
     ]
 
     operations = [
