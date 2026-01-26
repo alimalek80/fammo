@@ -27,28 +27,31 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     min-width: 240px;
     z-index: 1000;
+    border: 1px solid #e5e7eb;
 }
 
 .user-dropdown.show {
     display: block;
 }
 
-/* How it Works dropdown styles */
-.how-it-works-dropdown {
-    display: none;
-    position: absolute;
-    left: 0;
-    top: 100%;
-    margin-top: 0.5rem;
-    background: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    min-width: 200px;
-    z-index: 1000;
+/* User Avatar Styles */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #f97316;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.how-it-works-dropdown.show {
-    display: block;
+.user-avatar:hover {
+    background-color: #ea580c;
 }
 
 .user-dropdown-header {
@@ -56,31 +59,88 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
+.user-dropdown-header .user-name {
+    font-weight: 600;
+    color: #111827;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.4;
+}
+
+.user-dropdown-header .user-email {
+    font-size: 13px;
+    color: #6B7280;
+    margin-top: 2px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.3;
+}
+
 .user-dropdown-item {
     padding: 0.75rem 1rem;
     display: flex;
     align-items: center;
     color: #374151;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
     text-decoration: none;
+    font-size: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-weight: 500;
 }
 
 .user-dropdown-item:hover {
-    background-color: #f3f4f6;
+    background-color: #F3F4F6;
+    color: #111827;
 }
 
 .user-dropdown-item i {
     width: 1.25rem;
     margin-right: 0.75rem;
+    font-size: 14px;
+    color: #6B7280;
 }
 
 .user-dropdown-item.logout {
-    color: #ef4444;
-    border-top: 1px solid #e5e7eb;
+    color: #EF4444;
+    border-top: 1px solid #E5E7EB;
+    font-weight: 500;
 }
 
 .user-dropdown-item.logout:hover {
-    background-color: #fef2f2;
+    background-color: #FEF2F2;
+    color: #DC2626;
+}
+
+.user-dropdown-item.logout i {
+    color: #EF4444;
+}
+
+/* Responsive Design */
+@media (max-width: 1023px) {
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+}
+
+/* Navigation link hover effects */
+.nav-link {
+    color: #6B7280;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.nav-link:hover {
+    color: #4338CA;
+}
+
+.nav-link.active {
+    color: #4338CA;
+    font-weight: 600;
 }
 </style>
 
@@ -100,54 +160,32 @@
 
         <!-- Desktop Menu Items -->
         <div id="navbar-menu" class="hidden lg:flex flex-grow items-center justify-between">
-            <!-- Center Aligned Menu Items -->
-            <div class="flex items-center space-x-6 mx-auto">
+            <!-- Left Aligned Menu Items -->
+            <div class="flex items-center space-x-8 ml-8">
                 {% if user.is_authenticated %}
-                    <a href="{% url 'pet:create_pet' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    <a href="{% url 'pet:create_pet' %}" class="nav-link">
                         {% trans "Make Your Plan" %}
                     </a>
-                    <a href="{% url 'pet:my_pets' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    <a href="{% url 'pet:my_pets' %}" class="nav-link">
                         {% trans "My Pets" %}
                     </a>
-                    <a href="{% url 'ai_history' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    <a href="{% url 'ai_history' %}" class="nav-link">
                         {% trans "AI History" %}
                     </a>
-                    <a href="{% url 'blog:blog_list' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    <a href="{% url 'blog:blog_list' %}" class="nav-link">
                         {% trans "Blog" %}
                     </a>
-                    {% if user.is_staff %}
-                    <a href="{% url 'blog:dashboard' %}" class="text-orange-600 hover:text-orange-700 font-semibold transition duration-300 ease-in-out">
-                        🚀 {% trans "Blog Dashboard" %}
-                    </a>
-                    {% endif %}
                 {% else %}
-                    <a href="{% url 'core:about' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    <a href="{% url 'core:about' %}" class="nav-link">
                         {% trans "About Us" %}
                     </a>
-                    
-                    <!-- How it Works Dropdown -->
-                    <div class="relative">
-                        <button id="how-it-works-toggle" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out flex items-center focus:outline-none">
-                            {% trans "How it Works" %}
-                            <i class="fas fa-chevron-down text-sm ml-1"></i>
-                        </button>
-                        
-                        <div id="how-it-works-menu" class="how-it-works-dropdown">
-                            <a href="{% url 'core:how_it_works' %}" class="user-dropdown-item">
-                                <i class="fas fa-book-open"></i>
-                                <span>{% trans "User Guide" %}</span>
-                            </a>
-                            <a href="{% url 'core:how_fammo_works' %}" class="user-dropdown-item">
-                                <i class="fas fa-brain"></i>
-                                <span>{% trans "AI Engine" %}</span>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <a href="{% url 'blog:blog_list' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    <a href="{% url 'core:how_it_works' %}" class="nav-link">
+                        {% trans "How it Works" %}
+                    </a>
+                    <a href="{% url 'blog:blog_list' %}" class="nav-link">
                         {% trans "Blog" %}
                     </a>
-                    <a href="{% url 'core:contact' %}" class="text-gray-800 hover:text-indigo-600 font-medium transition duration-300 ease-in-out">
+                    <a href="{% url 'core:contact' %}" class="nav-link">
                         {% trans "Contact Us" %}
                     </a>
                 {% endif %}
@@ -159,7 +197,7 @@
                 <div class="flex items-center">
                     <form action="{% url 'set_language' %}" method="post">
                         {% csrf_token %}
-                        <select name="language" onchange="this.form.submit()" class="border border-gray-300 text-sm rounded p-1.5 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer">
+                        <select name="language" onchange="this.form.submit()" class="border border-gray-300 text-sm rounded p-1.5 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer bg-white text-gray-600" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500; font-size: 13px;">
                             {% get_current_language as LANGUAGE_CODE %}
                             {% get_available_languages as LANGUAGES %}
                             {% for lang in LANGUAGES %}
@@ -169,20 +207,20 @@
                     </form>
                 </div>
 
-                {% if user.is_authenticated %}
-                    <!-- Chat Button -->
-                    <a href="{% url 'chat' %}" class="bg-orange-500 text-white hover:bg-orange-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg">
-                        {% trans "Chat" %}
-                    </a>
-                    
-                    <!-- Trusted Partners Button -->
-                    <a href="{% url 'vets:partner_clinics' %}" class="bg-green-500 text-white hover:bg-green-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg">
-                        {% trans "Trusted Partners" %}
-                    </a>
+                <!-- Chat Button -->
+                <a href="{% url 'chat' %}" class="bg-orange-500 text-white hover:bg-orange-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg text-sm font-medium" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+                    {% trans "Chat" %}
+                </a>
+                
+                <!-- Trusted Partners Button -->
+                <a href="{% url 'vets:partner_clinics' %}" class="bg-green-500 text-white hover:bg-green-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg text-sm font-medium" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+                    {% trans "Trusted Partners" %}
+                </a>
 
+                {% if user.is_authenticated %}
                     <!-- Notifications Bell -->
                     <a href="{% url 'core:user_notifications' %}" class="relative p-2 text-gray-600 hover:text-indigo-600 transition duration-300 ease-in-out" title="{% trans 'Notifications' %}">
-                        <i class="fas fa-bell text-xl"></i>
+                        <i class="fas fa-bell text-lg"></i>
                         {% if total_notification_count > 0 %}
                         <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center px-1">
                             {{ total_notification_count }}
@@ -190,24 +228,29 @@
                         {% endif %}
                     </a>
 
-                    <!-- User Dropdown -->
+                    <!-- User Avatar Dropdown -->
                     <div class="relative">
-                        <button id="user-dropdown-toggle" class="flex items-center space-x-2 focus:outline-none">
-                            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center text-gray-600">
-                                <i class="fas fa-user text-lg"></i>
+                        <button id="user-dropdown-toggle" class="focus:outline-none">
+                            <div class="user-avatar">
+                                {{ user.first_name|first|default:user.email|first|upper }}
                             </div>
-                            <i class="fas fa-chevron-down text-gray-600 text-sm"></i>
                         </button>
                         
                         <div id="user-dropdown-menu" class="user-dropdown">
                             <div class="user-dropdown-header">
-                                <div class="font-semibold text-gray-800">{% if user.profile.first_name %}{{ user.profile.first_name }} {{ user.profile.last_name }}{% else %}{{ user.email }}{% endif %}</div>
-                                <div class="text-sm text-gray-500">{{ user.email }}</div>
+                                <div class="user-name">{% if user.profile.first_name %}{{ user.profile.first_name }} {{ user.profile.last_name }}{% else %}{{ user.email|truncatechars:25 }}{% endif %}</div>
+                                <div class="user-email">{{ user.email }}</div>
                             </div>
                             <a href="{% url 'dashboard' %}" class="user-dropdown-item">
                                 <i class="fas fa-gauge-high"></i>
-                                <span>{% trans "User Dashboard" %}</span>
+                                <span>{% trans "Dashboard" %}</span>
                             </a>
+                            {% if user.is_staff %}
+                            <a href="{% url 'blog:dashboard' %}" class="user-dropdown-item">
+                                <i class="fas fa-blog"></i>
+                                <span>{% trans "Blogger Dashboard" %}</span>
+                            </a>
+                            {% endif %}
                             <a href="{% url 'core:user_notifications' %}" class="user-dropdown-item">
                                 <i class="fas fa-bell"></i>
                                 <span class="flex-1">{% trans "Notifications" %}</span>
@@ -217,16 +260,6 @@
                                 </span>
                                 {% endif %}
                             </a>
-                            {% if user.owned_clinics.exists %}
-                                <a href="{% url 'vets:clinic_dashboard' %}" class="user-dropdown-item">
-                                    <i class="fas fa-hospital"></i>
-                                    <span>{% trans "Clinic Dashboard" %}</span>
-                                </a>
-                            {% endif %}
-                            <a href="{% url 'dashboard' %}#settings" class="user-dropdown-item">
-                                <i class="fas fa-cog"></i>
-                                <span>{% trans "Settings" %}</span>
-                            </a>
                             <a href="{% url 'logout' %}" class="user-dropdown-item logout">
                                 <i class="fas fa-right-from-bracket"></i>
                                 <span>{% trans "Logout" %}</span>
@@ -234,25 +267,13 @@
                         </div>
                     </div>
                 {% else %}
-                    <!-- Chat Button -->
-                    <a href="{% url 'chat' %}" class="bg-orange-500 text-white hover:bg-orange-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg">
-                        {% trans "Chat" %}
-                    </a>
-                    
-                    <!-- Trusted Partners Button -->
-                    <a href="{% url 'vets:partner_clinics' %}" class="bg-green-500 text-white hover:bg-green-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg">
-                        {% trans "Trusted Partners" %}
-                    </a>
-                    
                     <!-- Login Button -->
-                    <a href="{% url 'login' %}" class="text-gray-800 hover:text-indigo-600 font-medium px-4 py-2 transition duration-300 ease-in-out flex items-center">
-                        <i class="fas fa-right-to-bracket mr-2"></i>
+                    <a href="{% url 'login' %}" class="text-gray-600 hover:text-indigo-600 font-medium px-3 py-2 transition duration-300 ease-in-out text-sm" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">
                         {% trans "Login" %}
                     </a>
                     
                     <!-- Sign Up Button -->
-                    <a href="{% url 'register' %}" class="bg-indigo-600 text-white hover:bg-indigo-700 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg flex items-center">
-                        <i class="fas fa-user-plus mr-2"></i>
+                    <a href="{% url 'register' %}" class="bg-orange-500 text-white hover:bg-orange-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg text-sm" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">
                         {% trans "Sign Up" %}
                     </a>
                 {% endif %}
@@ -266,24 +287,21 @@
             <!-- User Info Section -->
             <div class="border-b border-gray-200 pb-3 mb-2 pt-2">
                 <div class="flex items-center space-x-3 mb-3">
-                    <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600">
-                        <i class="fas fa-user text-xl"></i>
+                    <div class="user-avatar">
+                        {{ user.first_name|first|default:user.email|first|upper }}
                     </div>
                     <div>
-                        <div class="font-semibold text-gray-800">{% if user.profile.first_name %}{{ user.profile.first_name }} {{ user.profile.last_name }}{% else %}{{ user.email }}{% endif %}</div>
-                        <div class="text-sm text-gray-500">{{ user.email }}</div>
+                        <div class="font-semibold text-gray-800" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 600; font-size: 14px;">{% if user.profile.first_name %}{{ user.profile.first_name }} {{ user.profile.last_name }}{% else %}{{ user.email|truncatechars:25 }}{% endif %}</div>
+                        <div class="text-sm text-gray-500" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-size: 13px; color: #6B7280;">{{ user.email }}</div>
                     </div>
                 </div>
             </div>
             
             <!-- Navigation Links -->
-            <a href="{% url 'pet:create_pet' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Make Your Plan" %}</a>
-            <a href="{% url 'pet:my_pets' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "My Pets" %}</a>
-            <a href="{% url 'ai_history' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "AI History" %}</a>
-            <a href="{% url 'blog:blog_list' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Blog" %}</a>
-            {% if user.is_staff %}
-            <a href="{% url 'blog:dashboard' %}" class="block text-orange-600 hover:text-orange-700 font-semibold py-2 text-center">🚀 {% trans "Blog Dashboard" %}</a>
-            {% endif %}
+            <a href="{% url 'pet:create_pet' %}" class="block text-gray-600 hover:text-indigo-600 font-medium py-2 text-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">{% trans "Make Your Plan" %}</a>
+            <a href="{% url 'pet:my_pets' %}" class="block text-gray-600 hover:text-indigo-600 font-medium py-2 text-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">{% trans "My Pets" %}</a>
+            <a href="{% url 'ai_history' %}" class="block text-gray-600 hover:text-indigo-600 font-medium py-2 text-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">{% trans "AI History" %}</a>
+            <a href="{% url 'blog:blog_list' %}" class="block text-gray-600 hover:text-indigo-600 font-medium py-2 text-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">{% trans "Blog" %}</a>
             
             <!-- Action Buttons -->
             <div class="py-2 space-y-2">
@@ -294,8 +312,13 @@
             <!-- Account Section -->
             <div class="border-t border-gray-200 pt-2 mt-2">
                 <a href="{% url 'dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
-                    <i class="fas fa-gauge-high mr-1"></i>{% trans "User Dashboard" %}
+                    <i class="fas fa-gauge-high mr-1"></i>{% trans "Dashboard" %}
                 </a>
+                {% if user.is_staff %}
+                <a href="{% url 'blog:dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
+                    <i class="fas fa-blog mr-1"></i>{% trans "Blogger Dashboard" %}
+                </a>
+                {% endif %}
                 <a href="{% url 'core:user_notifications' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center flex items-center justify-center">
                     <i class="fas fa-bell mr-1"></i>{% trans "Notifications" %}
                     {% if total_notification_count > 0 %}
@@ -304,14 +327,6 @@
                     </span>
                     {% endif %}
                 </a>
-                {% if user.owned_clinics.exists %}
-                    <a href="{% url 'vets:clinic_dashboard' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
-                        <i class="fas fa-hospital mr-1"></i>{% trans "Clinic Dashboard" %}
-                    </a>
-                {% endif %}
-                <a href="{% url 'dashboard' %}#settings" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
-                    <i class="fas fa-cog mr-1"></i>{% trans "Settings" %}
-                </a>
                 <a href="{% url 'logout' %}" class="block text-red-500 hover:text-red-700 font-medium py-2 text-sm text-center">
                     <i class="fas fa-right-from-bracket mr-1"></i>{% trans "Logout" %}
                 </a>
@@ -319,18 +334,7 @@
         {% else %}
             <!-- Public Navigation -->
             <a href="{% url 'core:about' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "About Us" %}</a>
-            
-            <!-- How it Works Submenu -->
-            <div class="border-t border-b border-gray-200 py-2">
-                <div class="text-gray-600 font-semibold text-sm uppercase px-2 mb-1">{% trans "How it Works" %}</div>
-                <a href="{% url 'core:how_it_works' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 pl-4 text-center">
-                    <i class="fas fa-book-open mr-2"></i>{% trans "User Guide" %}
-                </a>
-                <a href="{% url 'core:how_fammo_works' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 pl-4 text-center">
-                    <i class="fas fa-brain mr-2"></i>{% trans "AI Engine" %}
-                </a>
-            </div>
-            
+            <a href="{% url 'core:how_it_works' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "How it Works" %}</a>
             <a href="{% url 'blog:blog_list' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Blog" %}</a>
             <a href="{% url 'core:contact' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Contact Us" %}</a>
             
@@ -342,10 +346,10 @@
             
             <div class="border-t border-gray-200 pt-2 mt-2">
                 <a href="{% url 'login' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-sm text-center">
-                    <i class="fas fa-right-to-bracket mr-1"></i>{% trans "Login" %}
+                    {% trans "Login" %}
                 </a>
-                <a href="{% url 'register' %}" class="block bg-green-500 text-white hover:bg-green-600 font-medium py-2 rounded-full text-center mx-4 shadow-md hover:shadow-lg transition duration-300 ease-in-out">
-                    <i class="fas fa-user-plus mr-1"></i>{% trans "Sign Up" %}
+                <a href="{% url 'register' %}" class="block bg-orange-500 text-white hover:bg-orange-600 font-medium py-2 rounded-full text-center mx-4 shadow-md hover:shadow-lg transition duration-300 ease-in-out">
+                    {% trans "Sign Up" %}
                 </a>
             </div>
         {% endif %}
