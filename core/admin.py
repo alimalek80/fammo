@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import (
-    HeroSection, SocialLinks, FAQ, ContactMessage, Lead, OnboardingSlide,
+    HeroSection, VeterinarySectionAsset, SocialLinks, FAQ, ContactMessage, Lead, OnboardingSlide,
     LegalDocument, UserConsent, ClinicConsent, ConsentLog, UserNotification,
     DeviceToken
 )
@@ -18,6 +18,14 @@ class HeroSectionAdmin(TranslationAdmin):
     list_display = ("heading", "is_active")
     list_editable = ("is_active",)
     search_fields = ("heading", "subheading")
+
+
+@admin.register(VeterinarySectionAsset)
+class VeterinarySectionAssetAdmin(admin.ModelAdmin):
+    list_display = ("title", "is_active")
+    list_editable = ("is_active",)
+    search_fields = ("title", "alt_text")
+
 
 @admin.register(SocialLinks)
 class SocialLinksAdmin(admin.ModelAdmin):

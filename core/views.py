@@ -8,9 +8,10 @@ from django.urls import reverse
 from django.core.mail import send_mail, BadHeaderError
 from django.conf import settings
 from django.views.generic import ListView, View
-from .models import HeroSection, SocialLinks, FAQ, ContactMessage, Lead, UserNotification
+from .models import HeroSection, VeterinarySectionAsset, SocialLinks, FAQ, ContactMessage, Lead, UserNotification
 from .forms import HeroSectionForm, SocialLinksForm, FAQForm, ContactForm
 from pet.models import PetType
+from vets.models import Clinic
 from django.contrib.auth.hashers import make_password
 import string
 import random
@@ -18,7 +19,15 @@ import random
 def home(request):
     # Get the currently active hero section
     hero_section = HeroSection.objects.filter(is_active=True).first()
+    vet_section_asset = VeterinarySectionAsset.objects.filter(is_active=True).first()
     faqs = FAQ.objects.filter(is_published=True).order_by("sort_order", "-updated_at")
+    
+    # Get featured partner clinics (verified and approved, limit to 3 for cards)
+    featured_clinics = Clinic.objects.filter(
+        email_confirmed=True,
+        admin_approved=True,
+        is_verified=True
+    ).select_related('vet_profile').prefetch_related('working_hours_schedule')[:3]
     
     # Dynamic placeholder for chat input
     chat_placeholder = "Hey, Need help with your cat or dog? Type here…"
@@ -32,7 +41,9 @@ def home(request):
     return render(request, 'core/home.html', {
         'hero': hero_section, 
         "faqs": faqs,
-        "chat_placeholder": chat_placeholder
+        "chat_placeholder": chat_placeholder,
+        "featured_clinics": featured_clinics,
+        "vet_section_asset": vet_section_asset,
     })
 
 @login_required

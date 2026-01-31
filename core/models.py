@@ -37,6 +37,42 @@ class HeroSection(models.Model):
         verbose_name = "Homepage Hero Section"
         verbose_name_plural = "Homepage Hero Sections"
 
+
+class VeterinarySectionAsset(models.Model):
+    """Single image and copy for the Veterinary Professional section."""
+
+    title = models.CharField(
+        max_length=150,
+        default="Veterinary Professional",
+        help_text="Label used in the admin list.",
+    )
+    image = models.ImageField(
+        upload_to="vet_section/",
+        help_text="Image shown on the Veterinary Professional section. Recommended 800x800px.",
+    )
+    alt_text = models.CharField(
+        max_length=200,
+        blank=True,
+        help_text="Alt text for the image.",
+    )
+    is_active = models.BooleanField(
+        default=True,
+        help_text="Only one asset will be used on the homepage at a time.",
+    )
+
+    def save(self, *args, **kwargs):
+        if self.is_active:
+            VeterinarySectionAsset.objects.filter(is_active=True).exclude(pk=self.pk).update(is_active=False)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Veterinary Section - {self.title}"
+
+    class Meta:
+        verbose_name = "Veterinary Section Asset"
+        verbose_name_plural = "Veterinary Section Assets"
+
+
 class Lead(models.Model):
     PET_TYPES = (("cat","Cat"),("dog","Dog"))
     uuid = models.CharField(max_length=22, unique=True)

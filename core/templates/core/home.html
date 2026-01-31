@@ -10,6 +10,7 @@
 /* =====================================================================
    0) PAGE SCOPE & GLOBAL HELPERS (only affect the home page)
    ===================================================================== */
+.famo-home { background-color: #f2f3f5 !important; }
 .famo-home header,
 .famo-home section { position: relative; }
 
@@ -47,6 +48,8 @@
 .faq-answer { max-height: 0; overflow: hidden; transition: max-height .4s ease; }
 .faq-toggle svg { transition: transform .3s ease; }
 .faq-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+
+
 
 
 /* =====================================================================
@@ -389,16 +392,79 @@
   .famo-home .chat-body.open{ max-height:420px; }
   .famo-home .chat-messages{ max-height:310px; }
 }
+
+/* Hide scrollbar for clinic cards horizontal scroll */
+.famo-home .hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+.famo-home .hide-scroll {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Veterinary Professional Section */
+.famo-home .vet-section {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
 </style>
 
 {% endblock %}
 
 {% block content %}
+</div> <!-- Close the base container -->
+</main> <!-- Close the base main -->
+
+<main class="flex-grow">
 <div class="famo-home">
+
+<!-- AI Chat Section (Full Width) -->
+<section class="py-6">
+    <div class="max-w-5xl mx-auto px-4">
+        <form id="homeChatForm" method="GET" action="{% url 'chat' %}" autocomplete="off">
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-2 flex flex-col md:flex-row items-center gap-3">
+                <div class="flex items-center gap-3 px-4 w-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="sparkles" aria-hidden="true" class="lucide lucide-sparkles text-orange-500 w-5 h-5"><path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"></path><path d="M20 2v4"></path><path d="M22 4h-4"></path><circle cx="4" cy="20" r="2"></circle></svg>
+                    <label for="homeChatInput" class="sr-only">Ask FAMO AI about your pet's health, diet, or behavior</label>
+                    <input 
+                        id="homeChatInput"
+                        type="text" 
+                        name="q"
+                        placeholder="Ask FAMO AI about your pet's health, diet, or behavior..." 
+                        class="w-full py-3 bg-transparent border-0 outline-none text-sm font-medium focus:ring-0"
+                        style="border: none !important; box-shadow: none !important;"
+                        aria-label="Ask FAMO AI about your pet's health, diet, or behavior"
+                        required
+                    >
+                </div>
+                <button type="submit" class="w-full md:w-auto bg-black text-white px-8 py-3 rounded-xl font-bold text-sm hover:bg-slate-800 transition-all flex items-center justify-center gap-2 whitespace-nowrap">
+                    Ask AI 
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                        <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
+                    </svg>
+                </button>
+            </div>
+        </form>
+        <div class="flex flex-wrap gap-2 mt-4 justify-center">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2 py-1">Quick Ask:</span>
+            <button type="button" class="bg-white border border-slate-200 hover:border-yellow-500 px-3 py-1 rounded-full text-xs font-medium transition-colors" onclick="fillChatInput('Why is my cat sleeping more?')">
+                "Why is my cat sleeping more?"
+            </button>
+            <button type="button" class="bg-white border border-slate-200 hover:border-yellow-500 px-3 py-1 rounded-full text-xs font-medium transition-colors" onclick="fillChatInput('Safe human foods for dogs')">
+                "Safe human foods for dogs"
+            </button>
+            <button type="button" class="bg-white border border-slate-200 hover:border-yellow-500 px-3 py-1 rounded-full text-xs font-medium transition-colors" onclick="fillChatInput('Weight loss diet plan')">
+                "Weight loss diet plan"
+            </button>
+            <button type="button" class="bg-white border border-slate-200 hover:border-yellow-500 px-3 py-1 rounded-full text-xs font-medium transition-colors" onclick="fillChatInput('Puppy vaccination schedule')">
+                "Puppy vaccination schedule"
+            </button>
+        </div>
+    </div>
+</section>
 
 <!-- HERO (full-bleed background) -->
 <section
-  class="hero-section full-bleed relative overflow-hidden force-py-lg"
+  class="hero-section full-bleed relative overflow-hidden"
   {% if hero and hero.background_image %}
     style="background-image:url('{{ hero.background_image.url }}');background-size:cover;background-position:center;"
   {% else %}
@@ -407,113 +473,123 @@
 >
   <div class="absolute inset-0 bg-black/50"></div>
 
-  <div class="relative z-10 max-w-7xl mx-auto force-px py-20 md:py-24">
-    <!-- Top-of-hero Chat Widget (simple inline) -->
-    <div class="chat-widget chat-widget--inline" role="region" aria-label="Quick chat">
-      <form id="homeChatForm" class="chat-input" method="GET" action="{% url 'chat' %}" autocomplete="off">
-        <span class="chat-badge" aria-hidden="true">💬</span>
-        <label for="homeChatInput" class="sr-only">Ask a question</label>
-        <input id="homeChatInput" type="text" name="q" placeholder="{{ chat_placeholder }}" aria-label="Ask a question" required>
-        <button type="submit">Chat</button>
-      </form>
-    </div>
-    <!-- TEXT & FORM CONTAINER -->
-    <div class="hero-grid {% if user.is_authenticated %}authenticated-user{% endif %}"> <!-- Apply class conditionally -->
-        {% if user.is_authenticated %}
-            <!-- Centered Text Column for Authenticated Users -->
-            <div class="hero-col">
-                <div class="hero-blur fill">
-                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-                        {% if hero %}{{ hero.heading }}{% else %}{% trans "Personalized Pet Nutrition" %}{% endif %}
-                    </h1>
-
-                    <p class="text-lg md:text-xl mb-6 max-w-3xl mx-auto"> <!-- Increased max-width and centered -->
-                        {% blocktrans trimmed %}
-                        Get <span class="highlight-orange">personalized meal plans</span> and 
-                        <span class="highlight-orange">preventive health reports</span> for your furry friends. 
-                        Our AI analyzes your pet's unique needs to keep them healthy and happy.
-                        {% endblocktrans %}
-                    </p>
-
-                    <span class="hero-badge inline-block px-6 py-3 rounded-xl font-extrabold text-white text-lg md:text-2xl mb-8"> <!-- Added margin bottom -->
-                        {% if hero and hero.subheading_secondary %}{{ hero.subheading_secondary }}{% else %}{% trans "Powered by the FAMMO Diet Engine" %}{% endif %}
-                    </span>
-
-                    <div class="flex flex-wrap gap-4 justify-center mt-auto"> <!-- Centered buttons -->
-                        <a href="{% url 'account_signup' %}" class="primary-btn px-6 py-3 rounded-full font-semibold">
-                            {% trans "Try for Free" %}
-                        </a>
-                        <a href="{% url 'account_login' %}" class="secondary-btn px-6 py-3 rounded-full font-semibold">
-                            {% trans "Login / Sign Up" %}
-                        </a>
-                    </div>
-                </div>
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <!-- Hero Content -->
+    <div class="grid lg:grid-cols-2 gap-12 items-center min-h-[500px] py-8">
+        
+        <!-- Hero Left Text -->
+        <div class="text-white space-y-6">
+            <div class="inline-flex items-center gap-2 bg-yellow-400/20 border border-yellow-400/30 text-yellow-400 px-4 py-2 rounded-full text-sm font-bold uppercase tracking-wider">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4">
+                    <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z"/>
+                </svg>
+                {% trans "Powered by FAMO Diet Engine" %}
             </div>
-            <!-- Empty placeholder to maintain grid structure if needed -->
-            <div class="hidden md:block"></div>
-        {% else %}
-            <!-- Original Layout for Non-Authenticated Users -->
-            <!-- TEXT (second on mobile, left on desktop) -->
-            <div class=" hero-col mt-8 md:mt-0">
-                <div class="hero-blur fill">
-                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
-                        {% if hero %}{{ hero.heading }}{% else %}{% trans "Personalized Pet Nutrition" %}{% endif %}
-                    </h1>
-
-                    <p class="text-lg md:text-xl mb-6 max-w-xl">
-                        {% blocktrans trimmed %}
-                        Get <span class="highlight-orange">personalized meal plans</span> and 
-                        <span class="highlight-orange">preventive health reports</span> for your furry friends. 
-                        Our AI analyzes your pet's unique needs to keep them healthy and happy.
-                        {% endblocktrans %}
-                    </p>
-
-                    <span class="hero-badge inline-block px-6 py-3 rounded-xl font-extrabold text-white text-lg md:text-2xl">
-                        {% if hero and hero.subheading_secondary %}{{ hero.subheading_secondary }}{% else %}{% trans "Powered by the FAMMO Diet Engine" %}{% endif %}
-                    </span>
-
-                    <div class="flex gap-4 mt-auto">
-                        <a href="{% url 'account_signup' %}" class="primary-btn px-6 py-3 rounded-full font-semibold">
-                            {% trans "Try for Free" %}
-                        </a>
-                        <a href="{% url 'account_login' %}" class="secondary-btn px-6 py-3 rounded-full font-semibold">
-                            {% trans "Login / Sign Up" %}
-                        </a>
-                    </div>
-                </div>
+            <h1 class="text-5xl md:text-7xl font-extrabold leading-tight text-white">
+                {% trans "Personalized" %} <br> <span class="text-yellow-400 !text-yellow-400 !bg-transparent" style="background: none !important; padding: 0 !important;">{% trans "Pet Nutrition" %}</span>
+            </h1>
+            <p class="text-lg text-slate-300 max-w-lg leading-relaxed">
+                {% trans "Get personalized meal plans and preventative health reports for your pets. Ensure your furry family members live longer and happier lives." %}
+            </p>
+            <div class="flex flex-wrap gap-4 pt-4">
+                <a href="{% url 'account_signup' %}" class="bg-orange-500 hover:bg-orange-600 px-8 py-4 rounded-full font-bold shadow-xl transition-all scale-100 hover:scale-105 text-white no-underline">
+                    {% trans "Try for Free" %}
+                </a>
+                <a href="#why" class="bg-white/10 backdrop-blur-md hover:bg-white/20 border border-white/30 px-8 py-4 rounded-full font-bold transition-all text-white no-underline">
+                    {% trans "How it Works" %}
+                </a>
             </div>
+        </div>
 
-            <!-- FORM (first on mobile, right on desktop) -->
-            <div class="hero-col">
-                <div class="form-card fill">
-                    <h2 class="text-2xl font-bold text-center text-[#4F46E5] mb-6">
-                        {% trans "Get Your Pet's Nutrition & AI Health Report" %}
-                        <span class="inline-block ml-2 px-2 py-0.5 text-xs rounded-full text-white bg-[#10B981]">
-                            {% trans "Free & Easy" %}
-                        </span>
-                    </h2>
-                    <form id="leadForm" method="POST" action="{% url 'core:collect_lead' %}">
+        <!-- Hero Right Component (Changes based on Auth) -->
+        <div class="flex justify-center lg:justify-end">
+            {% if not user.is_authenticated %}
+                <!-- Unauthorized: Form Card -->
+                <div class="bg-white rounded-[2.5rem] shadow-2xl p-8 max-w-md w-full border-4 border-yellow-400/20">
+                    <h3 class="text-2xl font-black mb-1 text-gray-900">{% trans "Get Your Report" %}</h3>
+                    <p class="text-gray-600 text-sm mb-6" style="color: #4b5563 !important;">{% trans "Start your pet's health journey today." %}</p>
+                    
+                    <form id="leadForm" method="POST" action="{% url 'core:collect_lead' %}" class="space-y-4">
                         {% csrf_token %}
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Pet type" %}</label>
-                        <select name="pet_type" required class="mt-1 mb-4 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30">
-                            <option value="">{% trans "Choose..." %}</option>
-                            <option value="cat">{% trans "Cat" %}</option>
-                            <option value="dog">{% trans "Dog" %}</option>
-                        </select>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Pet weight (kg)" %}</label>
-                        <input type="number" name="weight" min="0.5" step="0.1" required class="mt-1 mb-4 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30"/>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Email" %}</label>
-                        <input type="email" name="email" required class="mt-1 mb-6 block w-full p-3 border border-gray-300 rounded-xl focus:border-[#4F46E5] focus:ring focus:ring-[#4F46E5]/30"/>
-                        <button type="submit" class="w-full btn-reset btn-green">
-                            {% trans "Send Info & Get Report" %}
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1 ml-1">{% trans "Pet Type" %}</label>
+                            <select name="pet_type" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-orange-500">
+                                <option value="">{% trans "Choose..." %}</option>
+                                <option value="dog">{% trans "Dog" %}</option>
+                                <option value="cat">{% trans "Cat" %}</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1 ml-1">{% trans "Pet Weight (kg)" %}</label>
+                            <input type="number" name="weight" min="0.5" step="0.1" required placeholder="{% trans 'e.g. 15.5' %}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-orange-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1 ml-1">{% trans "Your Email" %}</label>
+                            <input type="email" name="email" required placeholder="email@example.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 outline-none focus:border-orange-500">
+                        </div>
+                        <button type="submit" class="w-full bg-black text-white font-bold py-4 rounded-xl hover:bg-slate-800 transition-all shadow-lg mt-4">
+                            {% trans "Generate Report" %}
                         </button>
-                        <p id="leadSuccess" class="hidden text-sm text-center text-[#10B981] mt-4">
+                        <p id="leadSuccess" class="hidden text-sm text-center text-green-600 mt-4">
                             {% trans "Thank you! Your free personalized report is on its way." %}
                         </p>
                     </form>
                 </div>
-            </div>
-        {% endif %}
+            {% else %}
+                <!-- Authorized: Profile Dashboard -->
+                <div class="bg-white/10 backdrop-blur-xl rounded-[2.5rem] shadow-2xl p-8 max-w-md w-full border border-white/20">
+                    <div class="flex items-center justify-between mb-8">
+                        <h3 class="text-white text-xl font-bold">{% trans "My Pets" %}</h3>
+                        <a href="{% url 'pet:pet_wizard' %}" class="bg-yellow-400 text-black p-2 rounded-full hover:bg-yellow-500 transition-all">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M5 12h14m-7-7v14"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="space-y-4">
+                        {% if user.pets.all %}
+                            {% for pet in user.pets.all|slice:":2" %}
+                                <!-- Pet Card -->
+                                <div class="bg-white/10 rounded-2xl p-4 flex items-center gap-4 border border-white/10 hover:bg-white/20 transition-all cursor-pointer">
+                                    <div class="flex items-center gap-4">
+                                        {% if pet.image %}
+                                            <img src="{{ pet.image.url }}" class="w-16 h-16 rounded-xl object-cover" alt="{{ pet.name }}">
+                                        {% else %}
+                                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white text-2xl">
+                                                {% if pet.pet_type.name == 'Dog' %}🐕{% else %}🐱{% endif %}
+                                            </div>
+                                        {% endif %}
+                                        <div class="flex-1">
+                                            <h4 class="text-white font-bold">{{ pet.name }}</h4>
+                                            <p class="text-slate-300 text-xs">
+                                                {% if pet.breed %}{{ pet.breed.name }}{% endif %}{% if pet.breed and pet.age_years %} • {% endif %}{% if pet.age_years %}{{ pet.age_years }} {% trans "yrs" %}{% elif pet.age_months %}{{ pet.age_months }} {% trans "mos" %}{% endif %}
+                                            </p>
+                                            <!-- Health Progress Bar -->
+                                            <div class="w-full bg-white/10 h-1.5 rounded-full mt-2">
+                                                <div class="{% if pet.pet_type.name == 'Dog' %}bg-yellow-400{% else %}bg-green-400{% endif %} h-full rounded-full" style="width: 85%"></div>
+                                            </div>
+                                        </div>
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/50 w-5 h-5">
+                                            <path d="m9 18 6-6-6-6"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <!-- No Pets Message -->
+                            <div class="bg-white/5 rounded-2xl p-6 text-center border border-white/10">
+                                <div class="text-4xl mb-4">🐾</div>
+                                <p class="text-white/70 text-sm">{% trans "No pets added yet. Add your first pet to get started!" %}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    <a href="{% url 'dashboard' %}" class="block w-full mt-8 bg-yellow-400 text-black font-bold py-4 rounded-2xl hover:bg-yellow-500 transition-all text-center no-underline">
+                        {% trans "View Health Dashboard" %}
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
     </div>
   </div>
 </section>
@@ -521,155 +597,168 @@
 
 
 
-  <!-- WHY FAMO (inside base container) !-->
-   
-<section id="why" class="py-16 bg-[#EEF2FF] force-py-lg">
-  <div class="max-w-7xl mx-auto px-4">
-    <h2 class="text-4xl font-extrabold text-center mb-12 text-[#4F46E5]">{% trans "Why FAMO?" %}</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Why FAMO Section -->
+<section id="why" class="py-24 bg-white w-full">
+    <div class="w-full">
+        <div class="text-center mb-16 px-4 sm:px-6 lg:px-8">
+            <h2 class="text-4xl font-black text-slate-900 mb-4">{% trans "Why Choose FAMO?" %}</h2>
+            <div class="w-24 h-1.5 bg-yellow-400 mx-auto rounded-full"></div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Feature 1 -->
+            <div class="p-8 rounded-[2rem] border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div class="w-14 h-14 bg-yellow-100 rounded-2xl flex items-center justify-center text-yellow-600 mb-6">
+                    <i data-lucide="utensils" class="w-8 h-8"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-3">{% trans "Personalized Meal Plans" %}</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">{% trans "AI-driven nutrition tailored to your pet's breed, age, and activity level." %}</p>
+            </div>
+            <!-- Feature 2 -->
+            <div class="p-8 rounded-[2rem] border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-orange-600 mb-6">
+                    <i data-lucide="heart-pulse" class="w-8 h-8"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-3">{% trans "Health Risk Alerts" %}</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">{% trans "Stay ahead of potential health issues with our advanced predictive analytics." %}</p>
+            </div>
+            <!-- Feature 3 -->
+            <div class="p-8 rounded-[2rem] border border-slate-100 bg-slate-50 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                <div class="w-14 h-14 bg-slate-200 rounded-2xl flex items-center justify-center text-slate-900 mb-6">
+                    <i data-lucide="file-text" class="w-8 h-8"></i>
+                </div>
+                <h4 class="text-xl font-bold mb-3">{% trans "Smart Pet Profiles" %}</h4>
+                <p class="text-slate-500 text-sm leading-relaxed">{% trans "Digital medical records and history accessible anytime, anywhere for your vets." %}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Partner Clinics Section -->
+<section class="py-20 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div>
+                {% if featured_clinics %}
+                    <h2 class="text-3xl font-black mb-2">{% trans "Partner Clinics Near You" %}</h2>
+                    <p class="text-slate-500 font-medium">{% trans "Top-rated veterinary professionals in your area." %}</p>
+                {% else %}
+                    <h2 class="text-3xl font-black mb-2">{% trans "Partner Clinics" %}</h2>
+                    <p class="text-slate-500 font-medium">{% trans "Trusted veterinary professionals will be available soon." %}</p>
+                {% endif %}
+            </div>
+            <a href="{% url 'vets:partner_clinics' %}" class="text-orange-500 font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                {% if featured_clinics %}{% trans "View All Clinics" %}{% else %}{% trans "Register Your Clinic" %}{% endif %} <i data-lucide="arrow-right" class="w-5 h-5"></i>
+            </a>
+        </div>
         
-        <!-- Card 1 -->
-        <div class="why-card accent-green">
-            <div class="why-icon">
-            <i class="fa-solid fa-bowl-food" aria-hidden="true"></i>
-              {#  <span class="material-symbols-outlined">restaurant</span> #}
-            </div>
-            <h3 class="why-title">{% trans "Personalized Meal Plans" %}</h3>
-            <p class="why-text">
-            {% trans "Tailored recommendations based on your pet's unique needs." %}
-            </p>
+        <div class="flex overflow-x-auto gap-6 pb-8 hide-scroll justify-center">
+            {% if featured_clinics %}
+                {% for clinic in featured_clinics %}
+                    <!-- Clinic Card {{ forloop.counter }} -->
+                    <div class="min-w-[320px] bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col items-center text-center">
+                        <div class="w-20 h-20 bg-slate-100 rounded-2xl mb-4 overflow-hidden">
+                            {% if clinic.logo %}
+                                <img src="{{ clinic.logo.url }}" alt="{{ clinic.name }}" class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center">
+                                    <i data-lucide="building-2" class="w-8 h-8 text-slate-600"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <h4 class="font-bold text-lg">{{ clinic.name }}</h4>
+                        {% if clinic.city %}
+                            <p class="text-xs text-slate-400 mb-4">{{ clinic.city }}{% if clinic.admin_approved %} • {% trans "Verified Partner" %}{% endif %}</p>
+                        {% else %}
+                            <p class="text-xs text-slate-400 mb-4">{% if clinic.admin_approved %}{% trans "Verified Partner" %}{% endif %}</p>
+                        {% endif %}
+                        <div class="flex items-center gap-1 text-yellow-500 mb-6">
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            <span class="text-slate-400 text-xs ml-1">{% trans "Trusted Partner" %}</span>
+                        </div>
+                        <a href="{{ clinic.get_absolute_url }}" class="w-full py-3 bg-black text-white rounded-xl font-bold text-sm hover:bg-yellow-400 hover:text-black transition-colors no-underline">
+                            {% trans "View Profile" %}
+                        </a>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- No Clinics Placeholder -->
+                <div class="min-w-[320px] bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col items-center text-center">
+                    <div class="w-20 h-20 bg-slate-100 rounded-2xl mb-4 flex items-center justify-center">
+                        <i data-lucide="building-2" class="w-8 h-8 text-slate-400"></i>
+                    </div>
+                    <h4 class="font-bold text-lg text-slate-600">{% trans "Coming Soon" %}</h4>
+                    <p class="text-xs text-slate-400 mb-4">{% trans "Partner clinics will be available soon" %}</p>
+                    <div class="flex items-center gap-1 text-slate-300 mb-6">
+                        <i data-lucide="star" class="w-4 h-4"></i>
+                        <i data-lucide="star" class="w-4 h-4"></i>
+                        <i data-lucide="star" class="w-4 h-4"></i>
+                        <i data-lucide="star" class="w-4 h-4"></i>
+                        <i data-lucide="star" class="w-4 h-4"></i>
+                        <span class="text-slate-400 text-xs ml-1">{% trans "Quality Partners" %}</span>
+                    </div>
+                    <a href="{% url 'vets:clinic_register' %}" class="w-full py-3 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200 transition-colors no-underline">
+                        {% trans "Register Clinic" %}
+                    </a>
+                </div>
+            {% endif %}
         </div>
-
-        <!-- Card 2 -->
-        <div class="why-card accent-amber">
-            <div class="why-icon">
-            <i class="fa-solid fa-heart-pulse" aria-hidden="true"></i>
-            {# <span class="material-symbols-outlined">monitor_heart</span> #}
-            </div>
-            <h3 class="why-title">{% trans "Health Risk Alerts" %}</h3>
-            <p class="why-text">
-            {% trans "Proactive insights to keep your pet healthy and happy." %}
-            </p>
-        </div>
-
-        <!-- Card 3 -->
-        <div class="why-card accent-indigo">
-            <div class="why-icon">
-            <i class="fa-solid fa-id-card-clip" aria-hidden="true"></i>
-            {# <span class="material-symbols-outlined">badge</span> #}
-            </div>
-            <h3 class="why-title">{% trans "Smart Pet Profiles" %}</h3>
-            <p class="why-text">
-            {% trans "Comprehensive profiles for precise AI analysis." %}
-            </p>
-        </div>
-
     </div>
-  </div>
 </section>
 
 
-<!-- VETERINARY CALL TO ACTION -->
-<section class="py-20 bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 relative overflow-hidden">
-  <!-- Background Pattern -->
-  <div class="absolute inset-0 opacity-10">
-    <div class="absolute transform rotate-45 -right-20 -top-20 w-96 h-96 bg-white rounded-full"></div>
-    <div class="absolute transform -rotate-12 -left-32 -bottom-32 w-80 h-80 bg-white rounded-full"></div>
-  </div>
-  
-  <div class="max-w-6xl mx-auto px-4 relative z-10">
-    <div class="text-center mb-12">
-      <!-- Icon Badge -->
-      <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full shadow-2xl mb-6 animate-bounce">
-        <i class="fas fa-hospital text-4xl text-emerald-600"></i>
-      </div>
-      
-      <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">
-        {% trans "Are You a Veterinary Professional?" %}
-      </h2>
-      <p class="text-xl md:text-2xl text-emerald-50 mb-2 font-medium">
-        {% trans "Join FAMMO's Trusted Partner Network" %}
-      </p>
-      <p class="text-lg text-emerald-100 max-w-3xl mx-auto">
-        {% trans "Connect with pet owners, grow your practice, and be part of Finland's leading AI-powered pet health platform" %}
-      </p>
-    </div>
-
-    <!-- Benefits Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-        <div class="flex items-start space-x-4">
-          <div class="flex-shrink-0">
-            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-              <i class="fas fa-users text-2xl text-emerald-600"></i>
+<!-- Veterinary Professional Section -->
+<section class="py-24 vet-section text-white overflow-hidden relative full-bleed">
+    <div class="absolute top-0 right-0 w-96 h-96 bg-yellow-400/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
+        <div class="grid lg:grid-cols-2 gap-16 items-center">
+            <div>
+                <div class="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-8 border border-white/20">
+                    <i data-lucide="stethoscope" class="text-yellow-400 w-10 h-10"></i>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black mb-6 leading-tight">{% trans "Are You a Veterinary Professional?" %}</h2>
+                <p class="text-slate-300 text-lg mb-10 leading-relaxed">
+                    {% trans "Join FAMO's Trusted Partner Network. Connect with pet owners, grow your practice, and be part of the world's leading AI-driven pet health platform." %}
+                </p>
+                <div class="grid sm:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <h5 class="font-bold mb-1">{% trans "New Clients" %}</h5>
+                        <p class="text-xs text-slate-400">{% trans "Reach thousands of active pet parents." %}</p>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <h5 class="font-bold mb-1">{% trans "Data Insights" %}</h5>
+                        <p class="text-xs text-slate-400">{% trans "Access comprehensive pet health history." %}</p>
+                    </div>
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                        <h5 class="font-bold mb-1">{% trans "Easy Bookings" %}</h5>
+                        <p class="text-xs text-slate-400">{% trans "Integrated appointment management." %}</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-4">
+                    <a href="{% url 'vets:clinic_register' %}" class="bg-yellow-400 text-black font-bold px-8 py-4 rounded-full hover:bg-yellow-500 transition-all no-underline">
+                        {% trans "Register Your Clinic" %}
+                    </a>
+                    <a href="{% url 'vets:partner_clinics' %}" class="bg-transparent border border-white/30 hover:border-white px-8 py-4 rounded-full font-bold transition-all text-white no-underline">
+                        {% trans "View Partner Benefits" %}
+                    </a>
+                </div>
             </div>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold text-white mb-2">{% trans "Reach New Clients" %}</h3>
-            <p class="text-emerald-50 text-sm">{% trans "Connect with pet owners actively seeking trusted veterinary care" %}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-        <div class="flex items-start space-x-4">
-          <div class="flex-shrink-0">
-            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-              <i class="fas fa-chart-line text-2xl text-emerald-600"></i>
+            <div>
+                <div class="relative">
+                    <div class="absolute inset-0 bg-yellow-400 blur-[80px] opacity-20"></div>
+                    {% if vet_section_asset and vet_section_asset.image %}
+                        <img src="{{ vet_section_asset.image.url }}" class="rounded-[3rem] relative z-10 border border-white/10 shadow-2xl" alt="{{ vet_section_asset.alt_text|default:_('Veterinary Professional') }}">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800" class="rounded-[3rem] relative z-10 border border-white/10 shadow-2xl" alt="{% trans 'Veterinary Professional' %}">
+                    {% endif %}
+                </div>
             </div>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold text-white mb-2">{% trans "Grow Your Practice" %}</h3>
-            <p class="text-emerald-50 text-sm">{% trans "Increase visibility and attract clients through our AI-powered platform" %}</p>
-          </div>
         </div>
-      </div>
-
-      <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300">
-        <div class="flex items-start space-x-4">
-          <div class="flex-shrink-0">
-            <div class="w-12 h-12 bg-white rounded-lg flex items-center justify-center">
-              <i class="fas fa-handshake text-2xl text-emerald-600"></i>
-            </div>
-          </div>
-          <div>
-            <h3 class="text-lg font-bold text-white mb-2">{% trans "Early Access Program" %}</h3>
-            <p class="text-emerald-50 text-sm">{% trans "Be among the first clinics in our exclusive pilot program" %}</p>
-          </div>
-        </div>
-      </div>
     </div>
-
-    <!-- CTA Buttons -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-      <a href="{% url 'vets:clinic_register' %}" 
-         class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-emerald-600 bg-white rounded-full shadow-2xl hover:shadow-emerald-500/50 transform hover:scale-105 transition-all duration-300">
-        <i class="fas fa-user-plus mr-3 text-xl group-hover:rotate-12 transition-transform"></i>
-        {% trans "Register Your Clinic" %}
-        <i class="fas fa-arrow-right ml-3 group-hover:translate-x-1 transition-transform"></i>
-      </a>
-      
-      <a href="{% url 'vets:partner_clinics' %}" 
-         class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-white/10 backdrop-blur-sm border-2 border-white rounded-full hover:bg-white/20 transition-all duration-300">
-        <i class="fas fa-hospital-user mr-3 text-xl"></i>
-        {% trans "View Partner Clinics" %}
-      </a>
-    </div>
-
-    <!-- Trust Badge -->
-    <div class="mt-10 text-center">
-      <p class="text-emerald-100 text-sm mb-3">
-        <i class="fas fa-shield-halved mr-2"></i>
-        {% trans "Trusted by veterinary professionals across Finland" %}
-      </p>
-      <div class="flex items-center justify-center space-x-6 text-white/80 text-xs">
-        <span><i class="fas fa-check-circle mr-1"></i> {% trans "Free Registration" %}</span>
-        <span><i class="fas fa-check-circle mr-1"></i> {% trans "Easy Setup" %}</span>
-        <span><i class="fas fa-check-circle mr-1"></i> {% trans "No Hidden Fees" %}</span>
-      </div>
-    </div>
-  </div>
 </section>
 
 
@@ -825,28 +914,24 @@
     });
   }
 
-  // Home Chat UI (no backend)
+  // Quick Tips Function
+  window.fillChatInput = function(text) {
+    const input = document.getElementById('homeChatInput');
+    if (input) {
+      input.value = text;
+      input.focus();
+    }
+  };
+
+  // Home Chat UI (simplified for new design)
   (function(){
-    const chatBody   = document.getElementById('homeChatBody');
-    const chatToggle = document.querySelector('.chat-toggle');
-    const form       = document.getElementById('homeChatForm');
-    const input      = document.getElementById('homeChatInput');
+    const form  = document.getElementById('homeChatForm');
+    const input = document.getElementById('homeChatInput');
 
-    if (!chatBody || !chatToggle || !form || !input) return;
+    if (!form || !input) return;
 
-    // Toggle open/closed
-    chatToggle.addEventListener('click', () => {
-      const isOpen = chatBody.classList.contains('open');
-      chatBody.classList.toggle('open');
-      chatToggle.setAttribute('aria-expanded', (!isOpen).toString());
-      // rotate chevron and label
-      const svg = chatToggle.querySelector('svg');
-      const label = chatToggle.querySelector('span:not(.sr-only)');
-      if (svg) svg.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
-      if (label) label.textContent = isOpen ? 'Show' : 'Hide';
-    });
-
-    // No JS interception: allow normal POST submit to /chat/
+    // Allow normal form submission to /chat/
+    // Form will handle the redirect properly
   })();
 
   // Animated placeholder marquee for long text (mobile-friendly)
@@ -892,4 +977,10 @@
     window.addEventListener('resize', startIfMobile);
   })();
 </script>
+</div> <!-- Close famo-home div -->
+</main> <!-- Close custom main -->
+
+<!-- Restore base structure for potential other content -->
+<main class="flex-grow pt-20" style="display: none;">
+    <div class="container mx-auto px-4">
 {% endblock %}
