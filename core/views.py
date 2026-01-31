@@ -12,6 +12,7 @@ from .models import HeroSection, VeterinarySectionAsset, SocialLinks, FAQ, Conta
 from .forms import HeroSectionForm, SocialLinksForm, FAQForm, ContactForm
 from pet.models import PetType
 from vets.models import Clinic
+from blog.models import BlogPost
 from django.contrib.auth.hashers import make_password
 import string
 import random
@@ -29,6 +30,11 @@ def home(request):
         is_verified=True
     ).select_related('vet_profile').prefetch_related('working_hours_schedule')[:3]
     
+    # Get latest blog posts (3 latest published posts)
+    latest_blog_posts = BlogPost.objects.filter(
+        is_published=True
+    ).prefetch_related('category').order_by('-published_at', '-created_at')[:3]
+    
     # Dynamic placeholder for chat input
     chat_placeholder = "Hey, Need help with your cat or dog? Type here…"
     if request.user.is_authenticated:
@@ -44,6 +50,7 @@ def home(request):
         "chat_placeholder": chat_placeholder,
         "featured_clinics": featured_clinics,
         "vet_section_asset": vet_section_asset,
+        "latest_blog_posts": latest_blog_posts,
     })
 
 @login_required
