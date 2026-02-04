@@ -158,6 +158,12 @@ def contact(request):
 
     return render(request, "core/contact.html", {"form": form, "links": links})
 
+def faq_page(request):
+    faqs = FAQ.objects.filter(is_published=True).order_by("sort_order", "-updated_at")
+    return render(request, "core/faq.html", {
+        "faqs": faqs
+    })
+
 import string
 import random
 from django.contrib.auth import get_user_model, login
@@ -400,3 +406,4 @@ class DeleteNotificationView(LoginRequiredMixin, View):
         notification.delete()
         messages.success(request, "Notification deleted.")
         return redirect('core:user_notifications')
+

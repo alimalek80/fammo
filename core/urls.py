@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from django.views.generic import TemplateView
+from .views import faq_page
 
 # Import specific views
 from .views import (
@@ -31,4 +32,5 @@ urlpatterns = [
     path('notifications/<int:pk>/read/', MarkNotificationReadView.as_view(), name='mark_notification_read'),
     path('notifications/mark-all-read/', MarkAllNotificationsReadView.as_view(), name='mark_all_notifications_read'),
     path('notifications/<int:pk>/delete/', DeleteNotificationView.as_view(), name='delete_notification'),
+    path("faq/", faq_page, name="faq"),
 ]

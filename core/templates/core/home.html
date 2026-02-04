@@ -883,43 +883,70 @@
 
    <!-- FAQ !-->
    
-<section id="faqs" class="py-16 bg-white force-py-lg">
-  <div class="max-w-4xl mx-auto px-4">
-    <h2 class="text-4xl font-extrabold text-center mb-12 text-[#4F46E5]">{% trans "Frequently Asked Questions" %}</h2>
-
-    {% if faqs %}
-      <div class="space-y-4">
-        {% for f in faqs %}
-          <div class="bg-gray-50 rounded-xl shadow-md border border-gray-200">
-            <button class="faq-toggle w-full flex justify-between items-center p-5 text-xl font-semibold text-left text-[#4F46E5] hover:bg-gray-100 transition rounded-xl" aria-expanded="false">
-              {{ f.question }}
-              <svg class="w-6 h-6 rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div class="faq-answer">
-              <p class="p-5 pt-0 text-gray-700">{{ f.answer|linebreaksbr }}</p>
+<section id="faqs" class="py-24 bg-slate-50">
+    <div class="max-w-3xl mx-auto px-4">
+        <div class="flex justify-between items-end mb-16">
+            <div class="text-center flex-1">
+                <h2 class="text-3xl font-black mb-4">{% trans "Frequently Asked Questions" %}</h2>
+                <div class="w-16 h-1 bg-yellow-400 mx-auto"></div>
             </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="text-center text-gray-500">{% trans "No FAQs have been published yet." %}</p>
-    {% endif %}
-  </div>
+            <a href="{% url 'core:faq' %}" class="text-black font-bold underline underline-offset-4 hover:text-orange-500 transition-colors">{% trans "View All FAQs" %}</a>
+        </div>
+
+        {% if faqs %}
+            <div class="space-y-4">
+                {% for f in faqs|slice:":4" %}
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+                        <button class="w-full p-5 text-left font-bold flex justify-between items-center hover:bg-slate-50" onclick="toggleFaq(this)">
+                            {{ f.question }}
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform"></i>
+                        </button>
+                        <div class="px-5 pb-5 text-slate-500 text-sm hidden">
+                            {{ f.answer|linebreaks }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            {% if faqs|length > 4 %}
+                <div class="text-center mt-12">
+                    <a href="{% url 'core:faq' %}" class="inline-flex items-center gap-2 bg-white text-slate-700 font-bold px-8 py-3 rounded-full border border-slate-200 hover:border-yellow-400 hover:bg-yellow-50 transition-all">
+                        {% trans "View All Questions" %}
+                        <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                    </a>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="text-center py-12">
+                <div class="w-20 h-20 bg-white rounded-2xl mx-auto mb-4 flex items-center justify-center border border-slate-200">
+                    <i data-lucide="help-circle" class="w-8 h-8 text-slate-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-slate-600 mb-2">{% trans "Coming Soon" %}</h3>
+                <p class="text-slate-500">{% trans "Frequently asked questions will be available soon." %}</p>
+            </div>
+        {% endif %}
+    </div>
 </section>
 
 
    <!-- CTA !-->
    
-<section class="force-py-lg bg-reset force-bg-indigo">
-  <div class="max-w-7xl mx-auto px-4 text-center">
-    <h2 class="text-4xl font-bold text-white mb-4">{% trans "Ready to Transform Your Pet's Life?" %}</h2>
-    <p class="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
-      {% trans "Join thousands of satisfied pet owners who trust FAMO for their pets' nutrition and health." %}
-    </p>
-    <a href="{% url 'account_signup' %}" class="btn-reset btn-green">
-      {% trans "Get Started Today" %} &rarr;
-    </a>
-  </div>
+<!-- CTA Section -->
+<section class="py-12">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="bg-black rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-64 h-64 bg-orange-500/20 rounded-full blur-[80px]"></div>
+            <div class="absolute bottom-0 right-0 w-64 h-64 bg-yellow-400/20 rounded-full blur-[80px]"></div>
+            
+            <div class="relative z-10">
+                <h2 class="text-4xl md:text-6xl font-black text-white mb-6">{% trans "Ready to Transform Your Pet's Life?" %}</h2>
+                <p class="text-slate-400 text-lg mb-10 max-w-2xl mx-auto font-medium">{% trans "Join thousands of satisfied pet owners who trust FAMO for their pet's nutrition and health." %}</p>
+                <a href="{% url 'account_signup' %}" class="bg-yellow-400 hover:bg-yellow-500 text-black font-black px-12 py-5 rounded-full text-lg shadow-2xl transition-all scale-100 hover:scale-105 inline-block no-underline">
+                    {% trans "Get Started Today" %}
+                </a>
+            </div>
+        </div>
+    </div>
 </section>
 </div>
 
@@ -927,7 +954,7 @@
 
 {% block extra_js %}
 <script>
-  // FAQ accordion
+  // FAQ accordion - support both old and new styles
   document.querySelectorAll('.faq-toggle').forEach(button => {
     button.addEventListener('click', () => {
       const content = button.nextElementSibling;
@@ -948,6 +975,15 @@
       button.querySelector('svg').style.transform = isExpanded ? 'rotate(0deg)' : 'rotate(180deg)';
     });
   });
+
+  // New FAQ toggle function for home page styling
+  window.toggleFaq = function(button) {
+    const body = button.nextElementSibling;
+    const icon = button.querySelector("[data-lucide]");
+
+    body.classList.toggle("hidden");
+    icon.classList.toggle("rotate-180");
+  };
 
   // Lead Form AJAX (unchanged)
   const leadForm = document.getElementById('leadForm');
