@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'corsheaders',
+    'django_celery_beat',
 ]
 
 REST_FRAMEWORK = {
@@ -323,3 +324,27 @@ FIREBASE_CREDENTIALS_PATH = config(
     'FIREBASE_CREDENTIALS_PATH', 
     default=os.path.join(BASE_DIR, 'firebase-service-account.json')
 )
+
+# Celery Configuration
+CELERY_BROKER_URL = config('CELERY_BROKER_URL', default='redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND', default='redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+# Celery Beat Schedule for automatic pet age updates
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'update-pet-age-categories': {
+        'task': 'pet.tasks.update_pet_age_categories',
+        'schedule': crontab(hour=2, minute=0),  # Daily at 2 AM
+    },
+    'weekly-condition-snapshots': {
+        'task': 'pet.tasks.create_weekly_condition_snapshots', 
+        'schedule': crontab(hour=3, minute=0, day_of_week=1),  # Weekly Monday 3 AM
+    },
+}
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

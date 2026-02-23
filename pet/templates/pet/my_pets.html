@@ -55,7 +55,7 @@
                             </h3>
                             <p class="text-gray-600">
                                 {% if pet.pet_type %}
-                                    {{ pet.pet_type.name }}
+                                    {{ pet.pet_type.name }} • {{ pet.get_age_display }}
                                 {% else %}
                                     {% trans "No type selected" %}
                                 {% endif %}
