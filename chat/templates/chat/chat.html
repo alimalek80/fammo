@@ -1,4 +1,5 @@
 {% load i18n static %}
+{% load markdownify %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -268,7 +269,7 @@
                                     {% if msg.image_url %}
                                         <img src="{{ msg.image_url }}" alt="User image" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">
                                     {% endif %}
-                                    <p class="message-text text-sm md:text-base whitespace-pre-wrap">{{ msg.text }}</p>
+                                    <div class="message-text text-sm md:text-base prose prose-invert prose-sm max-w-none">{{ msg.text|markdownify }}</div>
                                     {% if msg.suggestion_html %}
                                         <div class="message-suggestion text-sm mt-2">{{ msg.suggestion_html|safe }}</div>
                                     {% endif %}
@@ -373,18 +374,51 @@
     
     function deleteSession(sessionId) {
         if (!confirm('Delete this chat?')) return;
-        fetch('/chat/session/' + sessionId + '/delete/', {
+        
+        // Debug: Check CSRF token
+        if (!csrfToken) {
+            console.error('CSRF token not found');
+            return;
+        }
+        
+        // Use Django URL pattern instead of hardcoded URL
+        const deleteUrl = '{% url "delete_chat_session" 0 %}'.replace('0', sessionId);
+        console.log('Deleting session:', sessionId, 'URL:', deleteUrl);
+        
+        fetch(deleteUrl, {
             method: 'POST',
             headers: {
                 'X-CSRFToken': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
             }
-        }).then(r => r.json()).then(data => {
+        }).then(response => {
+            console.log('Delete response status:', response.status);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        }).then(data => {
+            console.log('Delete response data:', data);
             if (data.success) {
                 const item = document.querySelector('[data-session-id="' + sessionId + '"]');
-                if (item) item.remove();
+                if (item) {
+                    item.remove();
+                    console.log('Session deleted and removed from UI');
+                    
+                    // If we're currently viewing the deleted session, redirect to new chat
+                    if (window.location.pathname.includes('/session/' + sessionId + '/')) {
+                        window.location.href = '{% url "chat" %}';
+                    }
+                } else {
+                    console.error('Could not find session item to remove');
+                }
+            } else {
+                console.error('Server reported failure:', data);
             }
-        }).catch(console.error);
+        }).catch(error => {
+            console.error('Delete request failed:', error);
+        });
     }
 
     const checkSendButtonState = () => {
@@ -423,7 +457,7 @@
         const isUser = role === 'user';
         const el = document.createElement('div');
         el.className = 'flex ' + (isUser ? 'justify-end' : 'justify-start');
-        const content = isHtml ? text : '<p class="message-text text-sm md:text-base whitespace-pre-wrap">' + text + '</p>';
+        const content = isHtml ? text : '<div class="message-text text-sm md:text-base prose prose-invert prose-sm max-w-none">' + text + '</div>';
         const img = image_url ? '<img src="' + image_url + '" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">' : '';
         el.innerHTML = '<div class="flex items-start max-w-xl group"><div class="flex-shrink-0 w-8 h-8 rounded-full ' + (isUser ? 'bg-indigo-500 order-2 ml-3' : 'bg-blue-500 mr-3') + ' flex items-center justify-center text-white font-bold text-sm">' + (isUser ? 'You' : 'AI') + '</div><div class="message-content-wrapper flex items-end"><div class="message-bubble-content ' + (isUser ? 'bg-indigo-600 order-2' : 'bg-gray-800 order-1') + ' p-4 rounded-xl shadow-lg text-white">' + img + content + '</div></div></div>';
         chatWindow.appendChild(el);
@@ -535,6 +569,22 @@
         adjustTextareaHeight(userInput);
         checkSendButtonState();
         scrollToBottom();
+
+        // Check for pending question from home page quick ask
+        const pendingQuestion = sessionStorage.getItem('pendingQuestion');
+        const shouldCreateNewChat = sessionStorage.getItem('shouldCreateNewChat');
+        
+        if (pendingQuestion && shouldCreateNewChat) {
+            // Clear the stored values
+            sessionStorage.removeItem('pendingQuestion');
+            sessionStorage.removeItem('shouldCreateNewChat');
+            
+            // Auto-send the question after a brief delay to ensure page is fully loaded
+            setTimeout(function() {
+                userInput.value = pendingQuestion;
+                sendChatMessage(pendingQuestion, null);
+            }, 500);
+        }
 
         // Delete session button handlers
         document.querySelectorAll('[data-delete-session]').forEach(function(btn) {

@@ -1017,15 +1017,27 @@
     }
   };
 
-  // Home Chat UI (simplified for new design)
+  // Home Chat UI (ensuring new conversation creation and immediate processing)
   (function(){
     const form  = document.getElementById('homeChatForm');
     const input = document.getElementById('homeChatInput');
 
     if (!form || !input) return;
 
-    // Allow normal form submission to /chat/
-    // Form will handle the redirect properly
+    // Handle form submission to ensure new chat creation and immediate response
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const query = input.value.trim();
+      if (!query) return;
+      
+      // Store the question for immediate processing
+      sessionStorage.setItem('pendingQuestion', query);
+      sessionStorage.setItem('shouldCreateNewChat', 'true');
+      
+      // Redirect to chat page with the question as a fragment
+      window.location.href = form.action + '#ask=' + encodeURIComponent(query);
+    });
   })();
 
   // Animated placeholder marquee for long text (mobile-friendly)
