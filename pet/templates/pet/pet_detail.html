@@ -158,10 +158,10 @@
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             {% for record in weight_records %}
-                                <tr class="hover:bg-gray-50 {% if record.is_initial %}bg-blue-50{% endif %}">
+                                <tr class="hover:bg-gray-50 {% if 'Initial weight' in record.note|default:'' %}bg-blue-50{% endif %}">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {{ record.recorded_at|date:"M d, Y" }}
-                                        {% if record.is_initial %}
+                                        {% if 'Initial weight' in record.note|default:'' %}
                                             <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                                 Initial
                                             </span>

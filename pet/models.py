@@ -544,7 +544,33 @@ class PetWeightRecord(models.Model):
         return f"{self.pet.name}: {self.weight_kg}kg on {self.recorded_at}"
     
     def save(self, *args, **kwargs):
-        """Override save to update the pet's current weight field with the latest weight"""
+        """Override save to preserve original weight and update the pet's current weight field"""
+        # Check if this is the first weight record being added for this pet
+        is_first_record = not PetWeightRecord.objects.filter(pet=self.pet).exists()
+        
+        # If this is the first weight record AND the pet has an existing weight (from registration),
+        # create an initial weight record to preserve the registration weight
+        if is_first_record and self.pet.weight and self.pet.weight > 0:
+            # Don't create an initial record if the new record has the same weight and recent date
+            # (to avoid duplicates when the registration weight is being added as the first record)
+            from django.utils import timezone
+            recent_date_threshold = timezone.now().date() - timedelta(days=7)
+            
+            if not (self.weight_kg == self.pet.weight and self.recorded_at >= recent_date_threshold):
+                # Create initial weight record using registration date or a date before this record
+                initial_date = self.pet.registration_date.date() if self.pet.registration_date else (self.recorded_at - timedelta(days=1))
+                
+                # Create the initial record without triggering another save cascade
+                initial_record = PetWeightRecord(
+                    pet=self.pet,
+                    weight_kg=self.pet.weight,
+                    recorded_at=initial_date,
+                    note='Initial weight at registration'
+                )
+                # Save without calling our custom save method to avoid recursion
+                super(PetWeightRecord, initial_record).save()
+        
+        # Now save the current record
         super().save(*args, **kwargs)
         
         # Update the pet's weight field with the most recent weight record

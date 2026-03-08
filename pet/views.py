@@ -99,84 +99,25 @@ def pet_detail_view(request, pk):
     # Calculate weight tracking data
     context = {'pet': pet}
     
-    # Check if we have an initial weight (from Pet model) to include
-    initial_weight_data = None
-    if pet.weight and pet.weight > 0:
-        # Use registration date as the initial weight date, or earliest record date minus 1 day
-        if pet.registration_date:
-            initial_weight_date = pet.registration_date.date()
-        elif weight_records.exists():
-            earliest_record = weight_records.order_by('recorded_at', 'created_at').first()
-            initial_weight_date = earliest_record.recorded_at - timedelta(days=1)
-        else:
-            initial_weight_date = timezone.now().date() - timedelta(days=30)  # Default fallback
-        
-        # Create initial weight entry data
-        initial_weight_data = {
-            'weight_kg': pet.weight,
-            'recorded_at': initial_weight_date,
-            'note': 'Initial weight at registration',
-            'is_initial': True
-        }
-    
     # Current Weight Info
     latest_record = weight_records.first()
     if latest_record:
         context['current_weight'] = latest_record.weight_kg
         context['last_weight_date'] = latest_record.recorded_at
-    elif initial_weight_data:
-        context['current_weight'] = initial_weight_data['weight_kg']
-        context['last_weight_date'] = initial_weight_data['recorded_at']
     else:
-        context['current_weight'] = None
+        context['current_weight'] = pet.weight  # Fallback to pet model weight
         context['last_weight_date'] = None
     
-    # Prepare combined weight history (initial weight + records)
-    combined_weight_history = []
-    if initial_weight_data:
-        combined_weight_history.append(initial_weight_data)
+    # Weight History (show latest 10 records)
+    context['weight_records'] = weight_records[:10]
+    context['total_weight_records'] = weight_records.count()
     
-    # Add weight records to combined history
-    for record in weight_records[:9]:  # Show 9 records + 1 initial = 10 total
-        combined_weight_history.append({
-            'weight_kg': record.weight_kg,
-            'recorded_at': record.recorded_at,
-            'note': record.note or '',
-            'is_initial': False
-        })
-    
-    context['weight_records'] = combined_weight_history
-    context['total_weight_records'] = weight_records.count() + (1 if initial_weight_data else 0)
-    
-    # Enhanced Chart Data Preparation
-    chart_labels = []
-    chart_values = []
-    
-    # Collect all weight data points for chart (initial + records)
-    all_weight_points = []
-    
-    # Add initial weight if exists
-    if initial_weight_data:
-        all_weight_points.append({
-            'date': initial_weight_date,
-            'weight': float(initial_weight_data['weight_kg']),
-            'is_initial': True
-        })
-    
-    # Add weight records
-    for record in weight_records.order_by('recorded_at', 'created_at')[:19]:  # Room for initial + 19 records
-        all_weight_points.append({
-            'date': record.recorded_at,
-            'weight': float(record.weight_kg),
-            'is_initial': False
-        })
-    
-    # Sort all points by date
-    all_weight_points.sort(key=lambda x: x['date'])
-    
-    if all_weight_points:
-        chart_labels = [point['date'].strftime('%Y-%m-%d') for point in all_weight_points]
-        chart_values = [point['weight'] for point in all_weight_points]
+    # Chart Data Preparation
+    if weight_records.exists():
+        # Get records for chart (latest 20 for better visualization) - ordered chronologically
+        chart_records = list(weight_records.order_by('recorded_at', 'created_at')[:20])
+        chart_labels = [record.recorded_at.strftime('%Y-%m-%d') for record in chart_records]
+        chart_values = [float(record.weight_kg) for record in chart_records]
         
         context['chart_data'] = {
             'labels': json.dumps(chart_labels),
@@ -187,7 +128,7 @@ def pet_detail_view(request, pk):
     
     # Reminder Logic
     context['weight_reminder'] = None
-    if not weight_records.exists() and not initial_weight_data:
+    if not weight_records.exists():
         context['weight_reminder'] = {
             'type': 'first_weight',
             'message': f"No weight records yet for {pet.name}. Adding the first weight measurement will help track their health over time."
@@ -199,20 +140,13 @@ def pet_detail_view(request, pk):
                 'type': 'outdated',
                 'message': f"It's been {days_since_last} days since {pet.name}'s last weight record. Consider adding a new measurement."
             }
-    elif initial_weight_data and not weight_records.exists():
-        context['weight_reminder'] = {
-            'type': 'needs_tracking',
-            'message': f"Start tracking {pet.name}'s weight progress by adding regular weight measurements."
-        }
     
-    # Enhanced Sudden Weight Change Alert
+    # Sudden Weight Change Alert
     context['weight_alert'] = None
-    if len(all_weight_points) >= 2:
-        latest_point = all_weight_points[-1]
-        previous_point = all_weight_points[-2]
-        
-        latest_weight = latest_point['weight']
-        previous_weight = previous_point['weight']
+    if weight_records.count() >= 2:
+        latest_weight = latest_record.weight_kg
+        previous_record = weight_records[1]  # Second latest
+        previous_weight = previous_record.weight_kg
         
         if previous_weight > 0:
             weight_change = latest_weight - previous_weight
