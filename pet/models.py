@@ -215,6 +215,160 @@ class Pet(models.Model):
         
         return ' '.join(parts) if parts else '0'
     
+    def get_weight_reminder_info(self):
+        """Get weight reminder information based on species and age"""
+        if not self.pet_type or not self.birth_date:
+            return None
+            
+        from django.utils import timezone
+        
+        # Get latest weight record
+        latest_record = self.weight_records.order_by('-recorded_at', '-created_at').first()
+        
+        # Get current age info
+        current_age = self.get_current_age()
+        current_age_months = (current_age['years'] * 12) + current_age['months']
+        
+        # Define reminder intervals based on species and age
+        pet_type_name = self.pet_type.name.lower()
+        
+        if pet_type_name == 'dog':
+            if current_age_months < 6:  # Less than 6 months
+                reminder_days = 14
+            elif current_age_months < 84:  # 6 months to less than 7 years (7*12=84)
+                reminder_days = 30 
+            else:  # 7 years or older
+                reminder_days = 21
+        elif pet_type_name == 'cat':
+            if current_age_months < 2:  # Less than 2 months  
+                reminder_days = 7
+            elif current_age_months < 120:  # 2 months to less than 10 years (10*12=120)
+                reminder_days = 30
+            else:  # 10 years or older
+                reminder_days = 21
+        else:
+            # Default for other pet types
+            reminder_days = 30
+            
+        # Check if reminder is needed
+        if not latest_record:
+            return {
+                'type': 'first_weight',
+                'message': f"No weight records yet for {self.name}. Adding the first weight measurement will help track their health over time.",
+                'reminder_days': reminder_days
+            }
+            
+        days_since_last = (timezone.now().date() - latest_record.recorded_at).days
+        
+        if days_since_last >= reminder_days:
+            return {
+                'type': 'overdue',
+                'message': f"It's been {days_since_last} days since {self.name}'s last weight record. For a {current_age['years']}y {current_age['months']}m old {pet_type_name}, we recommend weighing every {reminder_days} days.",
+                'days_overdue': days_since_last - reminder_days, 
+                'reminder_days': reminder_days
+            }
+            
+        return None  # No reminder needed
+    
+    def track_field_changes(self, old_instance, changed_by=None, change_reason='user_update'):
+        """Track changes to important fields and create change logs"""
+        import json
+        from django.core.serializers.json import DjangoJSONEncoder
+        
+        # Define important fields to track
+        important_fields = {
+            'weight': 'weight',
+            'activity_level': 'activity_level_id', 
+            'food_feeling': 'food_feeling_id',
+            'food_importance': 'food_importance_id',
+            'body_type': 'body_type_id',
+            'treat_frequency': 'treat_frequency_id',
+            'neutered': 'neutered',
+            'food_allergy_other': 'food_allergy_other',
+        }
+        
+        # Track simple field changes
+        for display_name, field_name in important_fields.items():
+            old_value = getattr(old_instance, field_name) if old_instance else None
+            new_value = getattr(self, field_name)
+            
+            if old_value != new_value:
+                # Special handling for foreign key fields (store readable names)
+                if field_name.endswith('_id'):
+                    old_display = getattr(old_instance, display_name).name if old_value and hasattr(old_instance, display_name) else None
+                    new_display = getattr(self, display_name).name if new_value and hasattr(self, display_name) else None
+                    
+                    PetDataChangeLog.objects.create(
+                        pet=self,
+                        field_name=display_name,
+                        old_value=old_display,
+                        new_value=new_display,
+                        changed_by=changed_by,
+                        change_reason=change_reason
+                    )
+                else:
+                    # Handle simple fields
+                    PetDataChangeLog.objects.create(
+                        pet=self,
+                        field_name=field_name,
+                        old_value=str(old_value) if old_value is not None else None,
+                        new_value=str(new_value) if new_value is not None else None,
+                        changed_by=changed_by,
+                        change_reason=change_reason
+                    )
+    
+    def track_m2m_changes(self, old_instance, changed_by=None, change_reason='user_update'):
+        """Track changes to many-to-many fields after save"""
+        if not old_instance:
+            return  # Skip for new instances
+            
+        import json
+        
+        # Define M2M fields to track  
+        m2m_fields = ['food_types', 'food_allergies', 'health_issues']
+        
+        for field_name in m2m_fields:
+            old_values = set(obj.name for obj in getattr(old_instance, field_name).all()) if old_instance else set()
+            new_values = set(obj.name for obj in getattr(self, field_name).all())
+            
+            if old_values != new_values:
+                PetDataChangeLog.objects.create(
+                    pet=self,
+                    field_name=field_name,
+                    old_value=json.dumps(list(old_values)) if old_values else None,
+                    new_value=json.dumps(list(new_values)) if new_values else None,
+                    changed_by=changed_by,
+                    change_reason=change_reason
+                )
+    
+    def should_create_condition_snapshot(self, old_instance=None):
+        """Determine if a condition snapshot should be created"""
+        if not old_instance:
+            return True  # Always create snapshot for new pets
+            
+        # Define significant changes that warrant a snapshot
+        significant_changes = [
+            'weight', 'activity_level', 'body_type', 
+            'food_feeling', 'food_importance', 'treat_frequency'
+        ]
+        
+        for field in significant_changes:
+            old_value = getattr(old_instance, field) if old_instance else None
+            new_value = getattr(self, field)
+            if old_value != new_value:
+                return True
+                
+        # Check M2M changes
+        if old_instance:
+            m2m_fields = ['food_types', 'food_allergies', 'health_issues']
+            for field_name in m2m_fields:
+                old_values = set(obj.id for obj in getattr(old_instance, field_name).all())
+                new_values = set(obj.id for obj in getattr(self, field_name).all())
+                if old_values != new_values:
+                    return True
+                    
+        return False
+
     def get_age_display(self):
         """Get a formatted string for displaying current age"""
         age = self.get_current_age()
@@ -374,8 +528,26 @@ class Pet(models.Model):
         return timeline
 
     def save(self, *args, **kwargs):
-        """Override save to automatically calculate birth_date and current age from registration age"""
-        # Sync registration age fields with main age fields (for historical tracking)
+        """Override save to handle change tracking, snapshots, and age calculations"""
+        # Get old instance for change tracking
+        old_instance = None
+        if self.pk:
+            try:
+                old_instance = Pet.objects.select_related(
+                    'activity_level', 'food_feeling', 'food_importance', 
+                    'body_type', 'treat_frequency'
+                ).prefetch_related(
+                    'food_types', 'food_allergies', 'health_issues'
+                ).get(pk=self.pk)
+            except Pet.DoesNotExist:
+                pass
+        
+        # Extract change tracking info from kwargs
+        changed_by = kwargs.pop('changed_by', None)
+        change_reason = kwargs.pop('change_reason', 'user_update')
+        skip_tracking = kwargs.pop('skip_tracking', False)
+        
+        # Sync registration age fields with main age fields (for historical tracking) 
         if any([self.age_years, self.age_months, self.age_weeks]):
             self.age_at_registration_years = self.age_years
             self.age_at_registration_months = self.age_months
@@ -388,7 +560,24 @@ class Pet(models.Model):
         # Update current age fields automatically
         self.update_current_age_fields()
         
+        # Check if snapshot is needed before saving
+        should_snapshot = not skip_tracking and self.should_create_condition_snapshot(old_instance)
+        
+        # Save the instance
         super().save(*args, **kwargs)
+        
+        # Track changes after save (but before M2M tracking)
+        if not skip_tracking and old_instance:
+            self.track_field_changes(old_instance, changed_by, change_reason)
+        
+        # Track M2M changes after save
+        if not skip_tracking:
+            self.track_m2m_changes(old_instance, changed_by, change_reason) 
+        
+        # Create condition snapshot if warranted
+        if should_snapshot:
+            snapshot_reason = change_reason if change_reason != 'user_update' else 'profile_update'
+            self._save_condition_snapshot(snapshot_reason)
     
     def _birth_date_needs_recalculation(self):
         """Check if birth_date needs to be recalculated due to changed registration age"""
@@ -526,6 +715,59 @@ class PetConditionSnapshotHealthIssues(models.Model):
         unique_together = ['snapshot', 'health_issue']
 
 
+class PetDataChangeLog(models.Model):
+    """Tracks granular changes to important pet data fields"""
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='data_changes')
+    field_name = models.CharField(max_length=100, help_text="Name of the field that changed")
+    old_value = models.TextField(null=True, blank=True, help_text="Previous value (JSON for complex fields)")
+    new_value = models.TextField(null=True, blank=True, help_text="New value (JSON for complex fields)")
+    changed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        help_text="User who made the change"
+    )
+    change_reason = models.CharField(
+        max_length=100, 
+        default='user_update',
+        choices=[
+            ('user_update', 'User Update'),
+            ('age_transition', 'Age Category Transition'),
+            ('weight_entry', 'Weight Record Entry'),
+            ('system_recalculation', 'System Recalculation'),
+            ('admin_update', 'Admin Update'),
+        ],
+        help_text="Reason for the change"
+    )
+    changed_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-changed_at']
+        verbose_name = "Pet Data Change Log"
+        verbose_name_plural = "Pet Data Change Logs"
+        
+    def __str__(self):
+        return f"{self.pet.name}: {self.field_name} changed on {self.changed_at.date()}"
+    
+    @property
+    def change_summary(self):
+        """Get a human-readable summary of the change"""
+        if self.field_name == 'weight':
+            try:
+                old_kg = float(self.old_value) if self.old_value else 0
+                new_kg = float(self.new_value) if self.new_value else 0
+                change_kg = new_kg - old_kg
+                if change_kg > 0:
+                    return f"Weight increased by {change_kg:.1f}kg ({old_kg:.1f}kg → {new_kg:.1f}kg)"
+                else:
+                    return f"Weight decreased by {abs(change_kg):.1f}kg ({old_kg:.1f}kg → {new_kg:.1f}kg)"
+            except (ValueError, TypeError):
+                pass
+        
+        return f"{self.field_name}: {self.old_value or 'None'} → {self.new_value or 'None'}"
+
+
 class PetWeightRecord(models.Model):
     """Stores historical weight records for each pet"""
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='weight_records')
@@ -576,8 +818,10 @@ class PetWeightRecord(models.Model):
         # Update the pet's weight field with the most recent weight record
         latest_record = PetWeightRecord.objects.filter(pet=self.pet).order_by('-recorded_at', '-created_at').first()
         if latest_record and latest_record.weight_kg != self.pet.weight:
+            old_weight = self.pet.weight
             self.pet.weight = latest_record.weight_kg
-            self.pet.save(update_fields=['weight'])
+            # Save with change tracking for weight updates
+            self.pet.save(changed_by=getattr(self, '_changed_by', None), change_reason='weight_entry', skip_tracking=False)
     
     @property
     def age_at_recording(self):

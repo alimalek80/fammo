@@ -88,7 +88,7 @@ class PetForm(forms.ModelForm):
         
         # Calculate and save birth_date from age inputs
         if any([instance.age_years, instance.age_months, instance.age_weeks]):
-            instance.birth_date = instance.calculate_birth_date_from_age()
+            instance.birth_date = instance.calculate_birth_date_from_registration()
         
         if commit:
             instance.save()
@@ -298,7 +298,7 @@ class Step3AgeForm(forms.ModelForm):
         
         # Calculate and save birth_date from age inputs
         if any([instance.age_years, instance.age_months, instance.age_weeks]):
-            instance.birth_date = instance.calculate_birth_date_from_age()
+            instance.birth_date = instance.calculate_birth_date_from_registration()
         
         if commit:
             instance.save()

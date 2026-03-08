@@ -188,6 +188,45 @@
         </div>
     </div>
 
+    <!-- Recent Changes History Section -->
+    {% if recent_changes %}
+    <div class="mt-8 bg-gray-50 p-6 rounded-lg">
+        <h3 class="text-lg font-semibold mb-4 text-gray-700 flex items-center">
+            <i class="fa-solid fa-history text-gray-500 mr-2"></i>
+            {% trans "Recent Changes" %}
+        </h3>
+        <div class="space-y-3 max-h-64 overflow-y-auto">
+            {% for change in recent_changes %}
+            <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm border-l-4 
+                {% if change.change_reason == 'age_transition' %}border-purple-400
+                {% elif change.change_reason == 'weight_entry' %}border-green-400  
+                {% else %}border-blue-400{% endif %}">
+                <div class="flex-1">
+                    <p class="font-medium text-gray-800">{{ change.change_summary }}</p>
+                    <p class="text-sm text-gray-600">
+                        {% if change.changed_by %}
+                            by {{ change.changed_by.first_name|default:change.changed_by.email }}
+                        {% endif %}
+                        · {{ change.changed_at|date:"M d, Y g:i A" }}
+                    </p>
+                </div>
+                <span class="text-xs px-2 py-1 rounded-full 
+                    {% if change.change_reason == 'age_transition' %}bg-purple-100 text-purple-600
+                    {% elif change.change_reason == 'weight_entry' %}bg-green-100 text-green-600
+                    {% else %}bg-blue-100 text-blue-600{% endif %}">
+                    {{ change.get_change_reason_display }}
+                </span>
+            </div>
+            {% endfor %}
+        </div>
+        {% if total_changes > 10 %}
+        <p class="text-sm text-gray-500 mt-3 text-center">
+            Showing 10 most recent changes · {{ total_changes }} total changes recorded
+        </p>
+        {% endif %}
+    </div>
+    {% endif %}
+
     <!-- Action Buttons -->
     <div class="flex flex-wrap justify-center gap-4 pt-6 border-t">
         <a href="{% url 'pet:edit_pet' pet_id=pet.id %}" 

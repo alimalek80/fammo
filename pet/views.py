@@ -40,7 +40,8 @@ def pet_form_view(request, pk=None):
         if form.is_valid():
             new_pet = form.save(commit=False)
             new_pet.user = request.user
-            new_pet.save()
+            # Save with change tracking
+            new_pet.save(changed_by=request.user, change_reason='user_update')
             form.save_m2m()
             return redirect('pet:my_pets')  # Replace with your pets list view name
     else:
@@ -126,20 +127,8 @@ def pet_detail_view(request, pk):
     else:
         context['chart_data'] = None
     
-    # Reminder Logic
-    context['weight_reminder'] = None
-    if not weight_records.exists():
-        context['weight_reminder'] = {
-            'type': 'first_weight',
-            'message': f"No weight records yet for {pet.name}. Adding the first weight measurement will help track their health over time."
-        }
-    elif latest_record:
-        days_since_last = (timezone.now().date() - latest_record.recorded_at).days
-        if days_since_last > 30:
-            context['weight_reminder'] = {
-                'type': 'outdated',
-                'message': f"It's been {days_since_last} days since {pet.name}'s last weight record. Consider adding a new measurement."
-            }
+    # Enhanced Weight Reminder Logic (species and age specific)
+    context['weight_reminder'] = pet.get_weight_reminder_info()
     
     # Sudden Weight Change Alert
     context['weight_alert'] = None
@@ -160,6 +149,11 @@ def pet_detail_view(request, pk):
                     'change': weight_change,
                     'percent_change': percent_change
                 }
+    
+    # Recent change history (last 10 changes)
+    recent_changes = pet.data_changes.select_related('changed_by')[:10]
+    context['recent_changes'] = recent_changes
+    context['total_changes'] = pet.data_changes.count()
     
     return render(request, 'pet/pet_detail.html', context)
 
@@ -409,7 +403,8 @@ class PetWizard(SessionWizardView):
             if image:
                 pet.image = image
             
-            pet.save()
+            # Save pet with change tracking
+            pet.save(changed_by=self.request.user, change_reason='user_update')
             
             # Handle many-to-many fields after saving the pet
             food_types = form_data.get('food_types')
@@ -634,7 +629,8 @@ class PetWizard(SessionWizardView):
         if image:
             pet.image = image
         
-        pet.save()
+        # Save pet with change tracking
+        pet.save(changed_by=user, change_reason='user_update')
         
         # Handle many-to-many fields after saving the pet
         food_types = form_data.get('food_types')
@@ -849,9 +845,10 @@ class PetEditWizard(SessionWizardView):
         
         # Calculate birth_date from age if provided
         if any([self.pet.age_years, self.pet.age_months, self.pet.age_weeks]):
-            self.pet.birth_date = self.pet.calculate_birth_date_from_age()
+            self.pet.birth_date = self.pet.calculate_birth_date_from_registration()
         
-        self.pet.save()
+        # Save pet with change tracking
+        self.pet.save(changed_by=self.request.user, change_reason='user_update')
         
         # Handle many-to-many fields
         food_types = form_data.get('food_types')
@@ -887,6 +884,8 @@ def add_weight_record_view(request, pet_id):
         if form.is_valid():
             weight_record = form.save(commit=False)
             weight_record.pet = pet
+            # Store user information for change tracking
+            weight_record._changed_by = request.user
             weight_record.save()
             
             messages.success(request, f"✅ Weight record for {pet.name} has been added successfully!")
