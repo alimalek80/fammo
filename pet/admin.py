@@ -4,7 +4,7 @@ from .models import (Pet, PetType, Gender, AgeCategory, Breed, FoodType, FoodFee
                      FoodImportance, BodyType, ActivityLevel, FoodAllergy, HealthIssue, 
                      TreatFrequency, AgeTransitionRule, PetAgeHistory, PetConditionSnapshot,
                      PetConditionSnapshotFoodTypes, PetConditionSnapshotFoodAllergies,
-                     PetConditionSnapshotHealthIssues)
+                     PetConditionSnapshotHealthIssues, PetWeightRecord)
 
 class ActivityLevelAdmin(TranslationAdmin):
     list_display = ('name', 'order')
@@ -52,13 +52,30 @@ class TreatFrequencyAdmin(TranslationAdmin):
     list_display = ('name', 'description')
 
 
+# Add weight records inline to Pet admin
+class PetWeightRecordInline(admin.TabularInline):
+    model = PetWeightRecord
+    extra = 1
+    readonly_fields = ('created_at', 'age_at_recording_display')
+    fields = ('weight_kg', 'recorded_at', 'note', 'age_at_recording_display', 'created_at')
+    ordering = ['-recorded_at']
+    
+    def age_at_recording_display(self, obj):
+        age_info = obj.age_at_recording
+        if not age_info:
+            return "Unknown"
+        return f"{age_info['years']}y {age_info['months']}m"
+    age_at_recording_display.short_description = 'Age'
+
+
 @admin.register(Pet)
 class PetAdmin(admin.ModelAdmin):
-    list_display = ('name', 'user', 'pet_type', 'breed', 'age_at_registration_display', 'current_age_display', 'age_category', 'weight', 'registration_date')
+    list_display = ('name', 'user', 'pet_type', 'breed', 'age_at_registration_display', 'current_age_display', 'age_category', 'weight', 'weight_records_count', 'registration_date')
     list_filter = ('pet_type', 'age_category', 'gender', 'neutered', 'registration_date')
     search_fields = ('name', 'user__email', 'user__first_name', 'user__last_name')
     readonly_fields = ('registration_date', 'birth_date', 'current_age_years', 'current_age_months', 'current_age_weeks')
     ordering = ('-registration_date',)
+    inlines = [PetWeightRecordInline]
     
     fieldsets = (
         ('Basic Information', {
@@ -75,7 +92,8 @@ class PetAdmin(admin.ModelAdmin):
             'description': 'Age fields (years/months/weeks) represent age at registration. Current age is automatically calculated.'
         }),
         ('Physical Details', {
-            'fields': ('weight', 'body_type', 'activity_level')
+            'fields': ('weight', 'body_type', 'activity_level'),
+            'description': 'Current weight is automatically updated from the latest weight record below.'
         }),
         ('Food & Health', {
             'fields': ('food_types', 'food_feeling', 'food_importance', 'food_allergies', 'food_allergy_other', 'health_issues', 'treat_frequency')
@@ -89,6 +107,13 @@ class PetAdmin(admin.ModelAdmin):
     def current_age_display(self, obj):
         return obj.get_age_display()
     current_age_display.short_description = 'Current Age'
+    
+    def weight_records_count(self, obj):
+        return obj.weight_records.count()
+    weight_records_count.short_description = 'Weight Records'
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user', 'pet_type', 'breed').prefetch_related('weight_records')
 
 
 admin.site.register(PetType, PetTypeAdmin)
@@ -175,6 +200,38 @@ class PetConditionSnapshotAdmin(admin.ModelAdmin):
     def health_issues_count(self, obj):
         return obj.health_issue_snapshots.count()
     health_issues_count.short_description = 'Health Issues'
+
+
+@admin.register(PetWeightRecord)
+class PetWeightRecordAdmin(admin.ModelAdmin):
+    list_display = ('pet', 'weight_kg', 'recorded_at', 'note', 'age_at_recording_display', 'created_at')
+    list_filter = ('recorded_at', 'created_at', 'pet__pet_type')
+    search_fields = ('pet__name', 'pet__user__email', 'note')
+    ordering = ('-recorded_at', '-created_at')
+    readonly_fields = ('created_at', 'updated_at', 'age_at_recording_display')
+    autocomplete_fields = ['pet']
+    date_hierarchy = 'recorded_at'
+    
+    fieldsets = (
+        ('Weight Information', {
+            'fields': ('pet', 'weight_kg', 'recorded_at', 'note')
+        }),
+        ('Metadata', {
+            'fields': ('created_at', 'updated_at', 'age_at_recording_display'),
+            'classes': ('collapse',),
+        }),
+    )
+    
+    def age_at_recording_display(self, obj):
+        """Display pet's age when this weight was recorded"""
+        age_info = obj.age_at_recording
+        if not age_info:
+            return "Unknown"
+        return f"{age_info['years']}y {age_info['months']}m {age_info['days']}d"
+    age_at_recording_display.short_description = 'Age at Recording'
+    
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('pet', 'pet__user')
 
 
 

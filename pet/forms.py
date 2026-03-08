@@ -1,5 +1,5 @@
 from django import forms
-from .models import Pet, AgeCategory, Breed, HealthIssue
+from .models import Pet, AgeCategory, Breed, HealthIssue, PetWeightRecord
 
 BOOLEAN_CHOICES = [(True, 'Yes'), (False, 'No')]
 
@@ -962,3 +962,83 @@ class Step15AccountChoiceForm(forms.Form):
         # Personalize labels if pet name is available
         if pet_name:
             self.fields['account_choice'].label = f"What would you like to do with {pet_name}'s report?"
+
+
+# ============================================================================
+# WEIGHT TRACKING FORMS
+# ============================================================================
+
+class PetWeightRecordForm(forms.ModelForm):
+    """Form for adding a new weight record for a pet"""
+    
+    class Meta:
+        model = PetWeightRecord
+        fields = ['weight_kg', 'recorded_at', 'note']
+        widgets = {
+            'weight_kg': forms.NumberInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'placeholder': 'e.g., 12.5',
+                'step': '0.01',
+                'min': '0.1',
+                'max': '200'
+            }),
+            'recorded_at': forms.DateInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'type': 'date'
+            }),
+            'note': forms.TextInput(attrs={
+                'class': 'w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                'placeholder': 'Optional: Note about this weight measurement'
+            })
+        }
+        labels = {
+            'weight_kg': 'Weight (kg)',
+            'recorded_at': 'Date Recorded',
+            'note': 'Note (Optional)'
+        }
+        help_texts = {
+            'weight_kg': 'Enter the weight in kilograms (e.g., 12.5)',
+            'recorded_at': 'The date when this weight was measured',
+            'note': 'Optional note about this measurement (e.g., "After vet visit", "Post-exercise")'
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Set today as default date
+        from django.utils import timezone
+        if not self.initial.get('recorded_at'):
+            self.initial['recorded_at'] = timezone.now().date()
+        
+        # Make note field optional
+        self.fields['note'].required = False
+        
+        # Validation messages
+        self.fields['weight_kg'].error_messages = {
+            'required': 'Please enter the weight measurement.',
+            'invalid': 'Please enter a valid weight (e.g., 12.5).',
+            'min_value': 'Weight must be at least 0.1 kg.',
+            'max_value': 'Weight seems too high. Please check your input.'
+        }
+        
+        self.fields['recorded_at'].error_messages = {
+            'required': 'Please select the date when this weight was recorded.',
+            'invalid': 'Please enter a valid date.'
+        }
+
+    def clean_weight_kg(self):
+        weight = self.cleaned_data.get('weight_kg')
+        if weight is not None:
+            if weight <= 0:
+                raise forms.ValidationError("Weight must be greater than 0.")
+            if weight > 200:
+                raise forms.ValidationError("Weight seems unusually high. Please check your input.")
+        return weight
+
+    def clean_recorded_at(self):
+        recorded_at = self.cleaned_data.get('recorded_at')
+        if recorded_at:
+            from django.utils import timezone
+            if recorded_at > timezone.now().date():
+                raise forms.ValidationError("Weight recording date cannot be in the future.")
+        return recorded_at

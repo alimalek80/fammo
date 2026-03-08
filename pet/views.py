@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import PetForm, Step1NameForm, Step2GenderForm, Step3AgeForm, Step4BreedForm, Step5FoodForm, Step6FoodFeelingForm, Step7FoodImportanceForm, Step8BodyTypeForm, Step9WeightForm, Step10ActivityLevelForm, Step11FoodAllergiesForm, Step12HealthIssuesForm, Step13TreatFrequencyForm, Step14EmailForm, Step15AccountChoiceForm
-from .models import Pet
+from .forms import PetForm, Step1NameForm, Step2GenderForm, Step3AgeForm, Step4BreedForm, Step5FoodForm, Step6FoodFeelingForm, Step7FoodImportanceForm, Step8BodyTypeForm, Step9WeightForm, Step10ActivityLevelForm, Step11FoodAllergiesForm, Step12HealthIssuesForm, Step13TreatFrequencyForm, Step14EmailForm, Step15AccountChoiceForm, PetWeightRecordForm
+from .models import Pet, Breed, PetType, AgeCategory, PetWeightRecord
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.http import JsonResponse
 from .models import Breed, PetType, AgeCategory
@@ -85,8 +85,150 @@ def delete_pet_view(request, pk):
 
 @login_required
 def pet_detail_view(request, pk):
+    """Enhanced pet detail view with weight tracking functionality"""
+    from django.utils import timezone
+    from datetime import datetime, timedelta
+    from decimal import Decimal
+    import json
+    
     pet = get_object_or_404(Pet, pk=pk, user=request.user)
-    return render(request, 'pet/pet_detail.html', {'pet': pet})
+    
+    # Get all weight records for this pet, ordered by date
+    weight_records = PetWeightRecord.objects.filter(pet=pet).order_by('-recorded_at', '-created_at')
+    
+    # Calculate weight tracking data
+    context = {'pet': pet}
+    
+    # Check if we have an initial weight (from Pet model) to include
+    initial_weight_data = None
+    if pet.weight and pet.weight > 0:
+        # Use registration date as the initial weight date, or earliest record date minus 1 day
+        if pet.registration_date:
+            initial_weight_date = pet.registration_date.date()
+        elif weight_records.exists():
+            earliest_record = weight_records.order_by('recorded_at', 'created_at').first()
+            initial_weight_date = earliest_record.recorded_at - timedelta(days=1)
+        else:
+            initial_weight_date = timezone.now().date() - timedelta(days=30)  # Default fallback
+        
+        # Create initial weight entry data
+        initial_weight_data = {
+            'weight_kg': pet.weight,
+            'recorded_at': initial_weight_date,
+            'note': 'Initial weight at registration',
+            'is_initial': True
+        }
+    
+    # Current Weight Info
+    latest_record = weight_records.first()
+    if latest_record:
+        context['current_weight'] = latest_record.weight_kg
+        context['last_weight_date'] = latest_record.recorded_at
+    elif initial_weight_data:
+        context['current_weight'] = initial_weight_data['weight_kg']
+        context['last_weight_date'] = initial_weight_data['recorded_at']
+    else:
+        context['current_weight'] = None
+        context['last_weight_date'] = None
+    
+    # Prepare combined weight history (initial weight + records)
+    combined_weight_history = []
+    if initial_weight_data:
+        combined_weight_history.append(initial_weight_data)
+    
+    # Add weight records to combined history
+    for record in weight_records[:9]:  # Show 9 records + 1 initial = 10 total
+        combined_weight_history.append({
+            'weight_kg': record.weight_kg,
+            'recorded_at': record.recorded_at,
+            'note': record.note or '',
+            'is_initial': False
+        })
+    
+    context['weight_records'] = combined_weight_history
+    context['total_weight_records'] = weight_records.count() + (1 if initial_weight_data else 0)
+    
+    # Enhanced Chart Data Preparation
+    chart_labels = []
+    chart_values = []
+    
+    # Collect all weight data points for chart (initial + records)
+    all_weight_points = []
+    
+    # Add initial weight if exists
+    if initial_weight_data:
+        all_weight_points.append({
+            'date': initial_weight_date,
+            'weight': float(initial_weight_data['weight_kg']),
+            'is_initial': True
+        })
+    
+    # Add weight records
+    for record in weight_records.order_by('recorded_at', 'created_at')[:19]:  # Room for initial + 19 records
+        all_weight_points.append({
+            'date': record.recorded_at,
+            'weight': float(record.weight_kg),
+            'is_initial': False
+        })
+    
+    # Sort all points by date
+    all_weight_points.sort(key=lambda x: x['date'])
+    
+    if all_weight_points:
+        chart_labels = [point['date'].strftime('%Y-%m-%d') for point in all_weight_points]
+        chart_values = [point['weight'] for point in all_weight_points]
+        
+        context['chart_data'] = {
+            'labels': json.dumps(chart_labels),
+            'values': json.dumps(chart_values),
+        }
+    else:
+        context['chart_data'] = None
+    
+    # Reminder Logic
+    context['weight_reminder'] = None
+    if not weight_records.exists() and not initial_weight_data:
+        context['weight_reminder'] = {
+            'type': 'first_weight',
+            'message': f"No weight records yet for {pet.name}. Adding the first weight measurement will help track their health over time."
+        }
+    elif latest_record:
+        days_since_last = (timezone.now().date() - latest_record.recorded_at).days
+        if days_since_last > 30:
+            context['weight_reminder'] = {
+                'type': 'outdated',
+                'message': f"It's been {days_since_last} days since {pet.name}'s last weight record. Consider adding a new measurement."
+            }
+    elif initial_weight_data and not weight_records.exists():
+        context['weight_reminder'] = {
+            'type': 'needs_tracking',
+            'message': f"Start tracking {pet.name}'s weight progress by adding regular weight measurements."
+        }
+    
+    # Enhanced Sudden Weight Change Alert
+    context['weight_alert'] = None
+    if len(all_weight_points) >= 2:
+        latest_point = all_weight_points[-1]
+        previous_point = all_weight_points[-2]
+        
+        latest_weight = latest_point['weight']
+        previous_weight = previous_point['weight']
+        
+        if previous_weight > 0:
+            weight_change = latest_weight - previous_weight
+            percent_change = (weight_change / previous_weight) * 100
+            
+            if abs(percent_change) >= 10:  # 10% or more change
+                change_direction = "gained" if weight_change > 0 else "lost"
+                context['weight_alert'] = {
+                    'type': 'sudden_change',
+                    'message': f"⚠️ {pet.name} has {change_direction} {abs(weight_change):.1f}kg ({abs(percent_change):.1f}%) since the last measurement. Consider consulting your vet.",
+                    'change': weight_change,
+                    'percent_change': percent_change
+                }
+    
+    return render(request, 'pet/pet_detail.html', context)
+
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def export_pets_csv(request):
@@ -792,6 +934,36 @@ class PetEditWizard(SessionWizardView):
         
         messages.success(self.request, f"✅ {self.pet.name}'s profile has been updated!")
         return redirect('pet:my_pets')
+
+
+# ============================================================================
+# WEIGHT TRACKING VIEWS
+# ============================================================================
+
+@login_required
+def add_weight_record_view(request, pet_id):
+    """Add a new weight record for a pet"""
+    from .models import PetWeightRecord
+    from .forms import PetWeightRecordForm
+    
+    pet = get_object_or_404(Pet, pk=pet_id, user=request.user)
+    
+    if request.method == 'POST':
+        form = PetWeightRecordForm(request.POST)
+        if form.is_valid():
+            weight_record = form.save(commit=False)
+            weight_record.pet = pet
+            weight_record.save()
+            
+            messages.success(request, f"✅ Weight record for {pet.name} has been added successfully!")
+            return redirect('pet:pet_detail', pk=pet.id)
+    else:
+        form = PetWeightRecordForm()
+    
+    return render(request, 'pet/add_weight_record.html', {
+        'form': form,
+        'pet': pet
+    })
 
 
 

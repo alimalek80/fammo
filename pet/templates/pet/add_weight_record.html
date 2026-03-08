@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="max-w-md mx-auto bg-white rounded-xl shadow-lg p-8 mt-10">
+    <!-- Header -->
+    <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4">
+            <i class="fa-solid fa-weight-scale text-green-600 text-2xl"></i>
+        </div>
+        <h2 class="text-2xl font-bold text-gray-800">{% trans "Add Weight Record" %}</h2>
+        <p class="text-gray-600 mt-2">{% blocktrans with pet_name=pet.name %}for {{ pet_name }}{% endblocktrans %}</p>
+    </div>
+
+    <!-- Form -->
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Weight Field -->
+        <div>
+            <label for="{{ form.weight_kg.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                {{ form.weight_kg.label }}
+            </label>
+            {{ form.weight_kg }}
+            {% if form.weight_kg.help_text %}
+                <p class="mt-1 text-xs text-gray-500">{{ form.weight_kg.help_text }}</p>
+            {% endif %}
+            {% if form.weight_kg.errors %}
+                <div class="mt-1 text-xs text-red-600">
+                    {{ form.weight_kg.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Date Field -->
+        <div>
+            <label for="{{ form.recorded_at.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                {{ form.recorded_at.label }}
+            </label>
+            {{ form.recorded_at }}
+            {% if form.recorded_at.help_text %}
+                <p class="mt-1 text-xs text-gray-500">{{ form.recorded_at.help_text }}</p>
+            {% endif %}
+            {% if form.recorded_at.errors %}
+                <div class="mt-1 text-xs text-red-600">
+                    {{ form.recorded_at.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Note Field -->
+        <div>
+            <label for="{{ form.note.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                {{ form.note.label }}
+            </label>
+            {{ form.note }}
+            {% if form.note.help_text %}
+                <p class="mt-1 text-xs text-gray-500">{{ form.note.help_text }}</p>
+            {% endif %}
+            {% if form.note.errors %}
+                <div class="mt-1 text-xs text-red-600">
+                    {{ form.note.errors.0 }}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Form Buttons -->
+        <div class="flex flex-col space-y-3 pt-4">
+            <button type="submit" class="w-full px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors">
+                <i class="fa-solid fa-check mr-2"></i>
+                {% trans "Save Weight Record" %}
+            </button>
+            
+            <a href="{% url 'pet:pet_detail' pk=pet.id %}" 
+               class="w-full px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors text-center">
+                <i class="fa-solid fa-arrow-left mr-2"></i>
+                {% trans "Cancel" %}
+            </a>
+        </div>
+    </form>
+
+    <!-- Quick Tips -->
+    <div class="mt-8 p-4 bg-blue-50 rounded-lg">
+        <h3 class="text-sm font-medium text-blue-800 mb-2">
+            <i class="fa-solid fa-lightbulb mr-1"></i>
+            {% trans "Tips for accurate weight tracking" %}
+        </h3>
+        <ul class="text-xs text-blue-700 space-y-1">
+            <li>• {% trans "Weigh at the same time of day for consistency" %}</li>
+            <li>• {% trans "Use the same scale if possible" %}</li>
+            <li>• {% trans "Record weight before meals for best results" %}</li>
+            <li>• {% trans "Ask your vet for guidance on healthy weight ranges" %}</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

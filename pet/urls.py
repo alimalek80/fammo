@@ -2,6 +2,8 @@ from django.urls import path
 from . import views
 from .views import export_pets_csv, PetWizard, PetEditWizard, FORMS
 
+app_name = 'pet'
+
 urlpatterns = [
     path('create/', views.pet_form_view, name='create_pet'),
     path('wizard/', PetWizard.as_view(FORMS), name='pet_wizard'),
@@ -11,4 +13,6 @@ urlpatterns = [
     path('ajax/load-breeds/', views.load_breeds, name='ajax_load_breeds'),
     path('detail/<int:pk>/', views.pet_detail_view, name='pet_detail'),
     path('export/pets/', export_pets_csv, name='export_pets_csv'),
+    # Weight tracking URLs
+    path('<int:pet_id>/weight/add/', views.add_weight_record_view, name='add_weight_record'),
 ]

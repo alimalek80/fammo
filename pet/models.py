@@ -526,6 +526,60 @@ class PetConditionSnapshotHealthIssues(models.Model):
         unique_together = ['snapshot', 'health_issue']
 
 
+class PetWeightRecord(models.Model):
+    """Stores historical weight records for each pet"""
+    pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='weight_records')
+    weight_kg = models.DecimalField(max_digits=5, decimal_places=2, help_text="Weight in kilograms")
+    recorded_at = models.DateField(help_text="Date when the weight was recorded")
+    note = models.CharField(max_length=255, blank=True, null=True, help_text="Optional note about this weight record")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-recorded_at', '-created_at']
+        verbose_name = "Pet Weight Record"
+        verbose_name_plural = "Pet Weight Records"
+    
+    def __str__(self):
+        return f"{self.pet.name}: {self.weight_kg}kg on {self.recorded_at}"
+    
+    def save(self, *args, **kwargs):
+        """Override save to update the pet's current weight field with the latest weight"""
+        super().save(*args, **kwargs)
+        
+        # Update the pet's weight field with the most recent weight record
+        latest_record = PetWeightRecord.objects.filter(pet=self.pet).order_by('-recorded_at', '-created_at').first()
+        if latest_record and latest_record.weight_kg != self.pet.weight:
+            self.pet.weight = latest_record.weight_kg
+            self.pet.save(update_fields=['weight'])
+    
+    @property
+    def age_at_recording(self):
+        """Calculate pet's age when this weight was recorded"""
+        if not self.pet.birth_date:
+            return None
+        from dateutil.relativedelta import relativedelta
+        delta = relativedelta(self.recorded_at, self.pet.birth_date)
+        return {
+            'years': delta.years,
+            'months': delta.months,
+            'days': delta.days
+        }
+    
+    def get_percentage_change_from_previous(self):
+        """Calculate percentage change from the previous weight record"""
+        previous_record = PetWeightRecord.objects.filter(
+            pet=self.pet,
+            recorded_at__lt=self.recorded_at
+        ).order_by('-recorded_at', '-created_at').first()
+        
+        if not previous_record:
+            return None
+        
+        percent_change = ((self.weight_kg - previous_record.weight_kg) / previous_record.weight_kg) * 100
+        return round(float(percent_change), 2)
+
+
 
 
 

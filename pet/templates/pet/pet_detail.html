@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8 mt-10">
+<div class="max-w-6xl mx-auto bg-white rounded-xl shadow-lg p-8 mt-10">
     <!-- Pet Image Section -->
     <div class="flex justify-center mb-6">
         <div class="w-32 h-32 flex items-center justify-center rounded-full overflow-hidden
@@ -21,27 +21,253 @@
         </div>
     </div>
     
-    <h2 class="text-2xl font-bold mb-4 text-center">{{ pet.name }}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div>
-            <p><strong>{% trans "Type" %}:</strong> {{ pet.pet_type.name }}</p>
-            <p><strong>{% trans "Breed" %}:</strong> {{ pet.breed.name }}</p>
-            <p><strong>{% trans "Gender" %}:</strong> {{ pet.gender.name }}</p>
-            <p><strong>{% trans "Neutered" %}:</strong> {{ pet.neutered|yesno:_("Yes,No") }}</p>
-            <p><strong>{% trans "Age" %}:</strong> {{ pet.get_age_display }}</p>
-            <p><strong>{% trans "Weight" %}:</strong> {{ pet.weight }} kg</p>
+    <h2 class="text-3xl font-bold mb-6 text-center text-gray-800">{{ pet.name }}</h2>
+
+    <!-- Pet Basic Information -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-700">{% trans "Basic Information" %}</h3>
+            <div class="space-y-2">
+                <p><strong>{% trans "Type" %}:</strong> {{ pet.pet_type.name }}</p>
+                <p><strong>{% trans "Breed" %}:</strong> {{ pet.breed.name|default:"Unknown" }}</p>
+                <p><strong>{% trans "Gender" %}:</strong> {{ pet.gender.name|default:"Unknown" }}</p>
+                <p><strong>{% trans "Neutered" %}:</strong> {{ pet.neutered|yesno:_("Yes,No,Unknown") }}</p>
+                <p><strong>{% trans "Age" %}:</strong> {{ pet.get_age_display }}</p>
+            </div>
         </div>
-        <div>
-            <p><strong>{% trans "Body Type" %}:</strong> {{ pet.body_type.name }}</p>
-            <p><strong>{% trans "Activity Level" %}:</strong> {{ pet.activity_level.name }}</p>
-            <p><strong>{% trans "Food Types" %}:</strong> {{ pet.food_types.all|join:", " }}</p>
-            <p><strong>{% trans "Food Allergies" %}:</strong> {{ pet.food_allergies.all|join:", " }}</p>
-            <p><strong>{% trans "Health Issues" %}:</strong> {{ pet.health_issues.all|join:", " }}</p>
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-lg font-semibold mb-4 text-gray-700">{% trans "Health & Activity" %}</h3>
+            <div class="space-y-2">
+                <p><strong>{% trans "Body Type" %}:</strong> {{ pet.body_type.name|default:"Not specified" }}</p>
+                <p><strong>{% trans "Activity Level" %}:</strong> {{ pet.activity_level.name|default:"Not specified" }}</p>
+                <p><strong>{% trans "Food Types" %}:</strong> 
+                    {% if pet.food_types.all %}
+                        {{ pet.food_types.all|join:", " }}
+                    {% else %}
+                        Not specified
+                    {% endif %}
+                </p>
+                <p><strong>{% trans "Food Allergies" %}:</strong> 
+                    {% if pet.food_allergies.all %}
+                        {{ pet.food_allergies.all|join:", " }}
+                    {% else %}
+                        None known
+                    {% endif %}
+                </p>
+                <p><strong>{% trans "Health Issues" %}:</strong> 
+                    {% if pet.health_issues.all %}
+                        {{ pet.health_issues.all|join:", " }}
+                    {% else %}
+                        None reported
+                    {% endif %}
+                </p>
+            </div>
         </div>
     </div>
-    <div class="mt-8 text-center">
-        <a href="{% url 'pet:edit_pet' pet_id=pet.id %}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">{% trans "Edit Pet" %}</a>
-        <a href="{% url 'pet:my_pets' %}" class="ml-4 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">{% trans "Back to My Pets" %}</a>
+
+    <!-- Weight Tracking Section -->
+    <div class="mb-8">
+        <h3 class="text-2xl font-semibold mb-6 text-gray-800 border-b-2 border-blue-500 pb-2">
+            <i class="fa-solid fa-weight-scale text-blue-500 mr-2"></i>
+            {% trans "Weight Tracking" %}
+        </h3>
+
+        <!-- Weight Alerts and Reminders -->
+        {% if weight_alert %}
+            <div class="mb-4 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700">
+                <div class="flex items-start">
+                    <i class="fa-solid fa-triangle-exclamation text-yellow-600 mr-2 mt-1"></i>
+                    <p class="font-medium">{{ weight_alert.message }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if weight_reminder %}
+            <div class="mb-4 p-4 bg-blue-100 border-l-4 border-blue-500 text-blue-700">
+                <div class="flex items-start">
+                    <i class="fa-solid fa-info-circle text-blue-600 mr-2 mt-1"></i>
+                    <p>{{ weight_reminder.message }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Current Weight and Add Weight Action -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-gradient-to-r from-blue-50 to-blue-100 p-6 rounded-lg">
+                <h4 class="text-lg font-semibold mb-3 text-blue-800">{% trans "Current Weight" %}</h4>
+                {% if current_weight %}
+                    <p class="text-3xl font-bold text-blue-900 mb-2">{{ current_weight }} kg</p>
+                    {% if last_weight_date %}
+                        <p class="text-sm text-blue-600">
+                            {% trans "Last updated" %}: {{ last_weight_date|date:"M d, Y" }}
+                        </p>
+                    {% endif %}
+                {% else %}
+                    <p class="text-gray-600 italic">{% trans "No weight recorded yet" %}</p>
+                {% endif %}
+            </div>
+            
+            <div class="bg-gradient-to-r from-green-50 to-green-100 p-6 rounded-lg flex items-center justify-center">
+                <div class="text-center">
+                    <a href="{% url 'pet:add_weight_record' pet_id=pet.id %}" 
+                       class="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="fa-solid fa-plus mr-2"></i>
+                        {% trans "Add Weight Record" %}
+                    </a>
+                    <p class="text-sm text-green-600 mt-2">{% trans "Track your pet's weight progress" %}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weight Chart -->
+        {% if chart_data %}
+            <div class="mb-6 bg-white border rounded-lg p-6">
+                <h4 class="text-lg font-semibold mb-4 text-gray-800">{% trans "Weight Progress Chart" %}</h4>
+                <div class="relative" style="height: 400px;">
+                    <canvas id="weightChart"></canvas>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Weight History -->
+        <div class="bg-white border rounded-lg overflow-hidden">
+            <div class="px-6 py-4 border-b bg-gray-50">
+                <h4 class="text-lg font-semibold text-gray-800">
+                    {% trans "Weight History" %}
+                    {% if total_weight_records %}
+                        <span class="text-sm text-gray-600">({{ total_weight_records }} {% trans "total records" %})</span>
+                    {% endif %}
+                </h4>
+            </div>
+            
+            {% if weight_records %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    {% trans "Date" %}
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    {% trans "Weight" %}
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    {% trans "Note" %}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for record in weight_records %}
+                                <tr class="hover:bg-gray-50 {% if record.is_initial %}bg-blue-50{% endif %}">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ record.recorded_at|date:"M d, Y" }}
+                                        {% if record.is_initial %}
+                                            <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                Initial
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="text-sm font-medium text-gray-900">{{ record.weight_kg }} kg</span>
+                                    </td>
+                                    <td class="px-6 py-4 text-sm text-gray-600">
+                                        {{ record.note|default:"-" }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="px-6 py-8 text-center text-gray-500">
+                    <i class="fa-solid fa-weight-scale text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-lg">{% trans "No weight records yet" %}</p>
+                    <p class="text-sm">{% trans "Start tracking by adding your pet's first weight measurement" %}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap justify-center gap-4 pt-6 border-t">
+        <a href="{% url 'pet:edit_pet' pet_id=pet.id %}" 
+           class="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+            <i class="fa-solid fa-edit mr-2"></i>
+            {% trans "Edit Pet Profile" %}
+        </a>
+        <a href="{% url 'pet:my_pets' %}" 
+           class="px-6 py-3 bg-gray-200 text-gray-700 font-medium rounded-lg hover:bg-gray-300 transition-colors">
+            <i class="fa-solid fa-arrow-left mr-2"></i>
+            {% trans "Back to My Pets" %}
+        </a>
     </div>
 </div>
+
+<!-- Chart.js Script -->
+{% if chart_data %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('weightChart').getContext('2d');
+    const chartData = {
+        labels: {{ chart_data.labels|safe }},
+        datasets: [{
+            label: '{% trans "Weight (kg)" %}',
+            data: {{ chart_data.values|safe }},
+            borderColor: 'rgb(59, 130, 246)',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: 'rgb(59, 130, 246)',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7
+        }]
+    };
+
+    const config = {
+        type: 'line',
+        data: chartData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: '{% trans "Weight (kg)" %}'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '{% trans "Date" %}'
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.1)'
+                    }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+});
+</script>
+{% endif %}
 {% endblock %}
