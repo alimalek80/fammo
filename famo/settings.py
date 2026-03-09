@@ -345,6 +345,10 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'pet.tasks.create_weekly_condition_snapshots', 
         'schedule': crontab(hour=3, minute=0, day_of_week=1),  # Weekly Monday 3 AM
     },
+    'create-weight-notifications': {
+        'task': 'core.tasks.create_weight_update_notifications',
+        'schedule': crontab(hour=1, minute=30),  # Daily at 1:30 AM (before age updates)
+    },
 }
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

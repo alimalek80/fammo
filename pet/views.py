@@ -888,6 +888,16 @@ def add_weight_record_view(request, pet_id):
             weight_record._changed_by = request.user
             weight_record.save()
             
+            # Resolve any weight-related notifications for this pet
+            try:
+                from core.tasks import resolve_weight_notifications_for_pet
+                resolve_weight_notifications_for_pet.delay(pet.id)
+            except Exception as e:
+                # Log error but don't fail the weight record creation
+                import logging
+                logger = logging.getLogger(__name__)
+                logger.warning(f"Failed to resolve weight notifications for pet {pet.id}: {str(e)}")
+            
             messages.success(request, f"✅ Weight record for {pet.name} has been added successfully!")
             return redirect('pet:pet_detail', pk=pet.id)
     else:
