@@ -10,9 +10,10 @@ from django.conf import settings
 from django.views.generic import ListView, View
 from .models import HeroSection, VeterinarySectionAsset, SocialLinks, FAQ, ContactMessage, Lead, UserNotification
 from .forms import HeroSectionForm, SocialLinksForm, FAQForm, ContactForm
-from pet.models import PetType
+from pet.models import PetType, Pet
 from vets.models import Clinic
 from blog.models import BlogPost
+from aihub.models import AIRecommendation, AIHealthReport, RecommendationType
 from django.contrib.auth.hashers import make_password
 import string
 import random
@@ -44,6 +45,33 @@ def home(request):
             if first_name:
                 chat_placeholder = f"Hey {first_name}! What's your pet question today?"
     
+    # Get platform statistics for the animated stats section
+    User = get_user_model()
+    total_users = User.objects.count()
+    total_pets = Pet.objects.count()
+    total_meal_plans = AIRecommendation.objects.filter(type=RecommendationType.MEAL).count()
+    total_health_reports = AIHealthReport.objects.count()
+    
+    # Additional useful stats
+    try:
+        dog_type = PetType.objects.get(name='Dog')
+        total_dogs = Pet.objects.filter(pet_type=dog_type).count()
+    except PetType.DoesNotExist:
+        total_dogs = 0
+    
+    try:
+        cat_type = PetType.objects.get(name='Cat')
+        total_cats = Pet.objects.filter(pet_type=cat_type).count()
+    except PetType.DoesNotExist:
+        total_cats = 0
+    
+    total_reports = total_meal_plans + total_health_reports
+    total_verified_clinics = Clinic.objects.filter(
+        email_confirmed=True,
+        admin_approved=True,
+        is_verified=True
+    ).count()
+    
     return render(request, 'core/home.html', {
         'hero': hero_section, 
         "faqs": faqs,
@@ -51,6 +79,17 @@ def home(request):
         "featured_clinics": featured_clinics,
         "vet_section_asset": vet_section_asset,
         "latest_blog_posts": latest_blog_posts,
+        # Statistics for animated section
+        "stats": {
+            "total_users": total_users,
+            "total_pets": total_pets,
+            "total_reports": total_reports,
+            "total_meal_plans": total_meal_plans,
+            "total_health_reports": total_health_reports,
+            "total_dogs": total_dogs,
+            "total_cats": total_cats,
+            "total_verified_clinics": total_verified_clinics,
+        }
     })
 
 @login_required

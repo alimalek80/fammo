@@ -402,6 +402,89 @@
   scrollbar-width: none;  /* Firefox */
 }
 
+/* =====================================================================
+   7) ANIMATED STATISTICS SECTION
+   ===================================================================== */
+.famo-home .stats-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.famo-home .stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.famo-home .stat-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.famo-home .stat-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.famo-home .stat-label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+}
+
+.famo-home .stat-icon {
+  width: 60px;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.famo-home .stat-card:hover .stat-icon {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.1);
+}
+
+/* Animation for counting up numbers */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.famo-home .animate-counter {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.famo-home .animate-counter:nth-child(1) { animation-delay: 0.1s; }
+.famo-home .animate-counter:nth-child(2) { animation-delay: 0.2s; }
+.famo-home .animate-counter:nth-child(3) { animation-delay: 0.3s; }
+.famo-home .animate-counter:nth-child(4) { animation-delay: 0.4s; }
+
+/* Pulse animation for icons */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.famo-home .animate-pulse-icon {
+  animation: pulse 2s ease-in-out infinite;
+}
+
 /* Veterinary Professional Section */
 .famo-home .vet-section {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
@@ -461,6 +544,8 @@
         </div>
     </div>
 </section>
+
+
 
 <!-- HERO (full-bleed background) -->
 <section
@@ -628,6 +713,105 @@
                 </div>
                 <h4 class="text-xl font-bold mb-3">{% trans "Smart Pet Profiles" %}</h4>
                 <p class="text-slate-500 text-sm leading-relaxed">{% trans "Digital medical records and history accessible anytime, anywhere for your vets." %}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Platform Statistics Section -->
+<section class="stats-section py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-black text-white mb-4">{% trans "Trusted by Pet Owners Worldwide" %}</h2>
+            <div class="w-24 h-1.5 bg-yellow-400 mx-auto rounded-full"></div>
+            <p class="text-white/80 mt-4 text-lg">{% trans "Join thousands of pet parents who trust FAMO for their pet's health and nutrition" %}</p>
+        </div>
+        
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Total Reports Generated -->
+            <div class="stat-card rounded-2xl p-8 text-center animate-counter" data-count="{{ stats.total_reports }}">
+                <div class="stat-icon mx-auto animate-pulse-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white w-6 h-6">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14,2 14,8 20,8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10,9 9,9 8,9"></polyline>
+                    </svg>
+                </div>
+                <div class="stat-number counter-value" data-target="{{ stats.total_reports }}">0</div>
+                <div class="stat-label">{% trans "Reports Generated" %}</div>
+            </div>
+            
+            <!-- Total Pet Owners -->
+            <div class="stat-card rounded-2xl p-8 text-center animate-counter" data-count="{{ stats.total_users }}">
+                <div class="stat-icon mx-auto animate-pulse-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white w-6 h-6">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="stat-number counter-value" data-target="{{ stats.total_users }}">0</div>
+                <div class="stat-label">{% trans "Pet Owners" %}</div>
+            </div>
+            
+            <!-- Total Pets Registered -->
+            <div class="stat-card rounded-2xl p-8 text-center animate-counter" data-count="{{ stats.total_pets }}">
+                <div class="stat-icon mx-auto animate-pulse-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white w-6 h-6">
+                        <path d="M8 19a4 4 0 0 1 8 0"></path>
+                        <path d="M12 3c3 0 6 2.5 6 6a6 6 0 0 1-6 6 6 6 0 0 1-6-6c0-3.5 3-6 6-6Z"></path>
+                        <path d="M10 9v.01"></path>
+                        <path d="M14 9v.01"></path>
+                        <path d="M13 12c-.5.5-1 1-2 1s-1.5-.5-2-1"></path>
+                    </svg>
+                </div>
+                <div class="stat-number counter-value" data-target="{{ stats.total_pets }}">0</div>
+                <div class="stat-label">{% trans "Pets Registered" %}</div>
+            </div>
+            
+            <!-- Verified Partner Clinics -->
+            <div class="stat-card rounded-2xl p-8 text-center animate-counter" data-count="{{ stats.total_verified_clinics }}">
+                <div class="stat-icon mx-auto animate-pulse-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white w-6 h-6">
+                        <path d="M3 21h18"></path>
+                        <path d="m5 21 6-6"></path>
+                        <path d="m13 21 6-6"></path>
+                        <path d="M12 3v7"></path>
+                        <path d="M8 8v13"></path>
+                        <path d="M16 8v13"></path>
+                        <circle cx="12" cy="3" r="2"></circle>
+                    </svg>
+                </div>
+                <div class="stat-number counter-value" data-target="{{ stats.total_verified_clinics }}">0</div>
+                <div class="stat-label">{% trans "Partner Clinics" %}</div>
+            </div>
+        </div>
+        
+        <!-- Additional Info Row -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+            <!-- Nutrition Plans -->
+            <div class="text-center">
+                <div class="text-white/80 text-sm uppercase tracking-wider font-semibold mb-2">{% trans "Nutrition Plans" %}</div>
+                <div class="text-yellow-400 text-2xl font-bold counter-value" data-target="{{ stats.total_meal_plans }}">0</div>
+            </div>
+            
+            <!-- Health Reports -->
+            <div class="text-center">
+                <div class="text-white/80 text-sm uppercase tracking-wider font-semibold mb-2">{% trans "Health Reports" %}</div>
+                <div class="text-yellow-400 text-2xl font-bold counter-value" data-target="{{ stats.total_health_reports }}">0</div>
+            </div>
+            
+            <!-- Dogs Tracked -->
+            <div class="text-center">
+                <div class="text-white/80 text-sm uppercase tracking-wider font-semibold mb-2">{% trans "Dogs" %}</div>
+                <div class="text-yellow-400 text-2xl font-bold counter-value" data-target="{{ stats.total_dogs }}">0</div>
+            </div>
+            
+            <!-- Cats Tracked -->
+            <div class="text-center">
+                <div class="text-white/80 text-sm uppercase tracking-wider font-semibold mb-2">{% trans "Cats" %}</div>
+                <div class="text-yellow-400 text-2xl font-bold counter-value" data-target="{{ stats.total_cats }}">0</div>
             </div>
         </div>
     </div>
@@ -1081,6 +1265,93 @@
     };
     startIfMobile();
     window.addEventListener('resize', startIfMobile);
+  })();
+
+  // Animated Statistics Counter
+  (function(){
+    const observerOptions = {
+      threshold: 0.1, // Lower threshold to trigger earlier
+      rootMargin: '0px 0px -50px 0px' // Reduced margin
+    };
+
+    const animateCounter = (element) => {
+      const target = parseInt(element.getAttribute('data-target')) || 0;
+      console.log('Animating counter for target:', target); // Debug log
+      
+      // If target is 0, just show 0
+      if (target === 0) {
+        element.textContent = '0';
+        return;
+      }
+      
+      const increment = Math.max(Math.ceil(target / 50), 1); // Faster animation
+      let current = 0;
+      
+      const timer = setInterval(() => {
+        current += increment;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
+        }
+        
+        // Format large numbers with commas
+        const formatted = current.toLocaleString();
+        element.textContent = formatted;
+      }, 30); // Faster updates
+    };
+
+    // Also animate on page load if section is already visible
+    const animateVisibleCounters = () => {
+      const statsSection = document.querySelector('.stats-section');
+      if (statsSection) {
+        const rect = statsSection.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisible) {
+          console.log('Stats section is visible on load, starting animation'); // Debug log
+          const counters = statsSection.querySelectorAll('.counter-value');
+          counters.forEach((counter, index) => {
+            setTimeout(() => {
+              animateCounter(counter);
+            }, index * 100); // stagger animation
+          });
+        }
+      }
+    };
+
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          console.log('Stats section intersecting, starting animation'); // Debug log
+          const counters = entry.target.querySelectorAll('.counter-value');
+          counters.forEach((counter, index) => {
+            setTimeout(() => {
+              animateCounter(counter);
+            }, index * 100); // stagger animation
+          });
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        const statsSection = document.querySelector('.stats-section');
+        if (statsSection) {
+          statsObserver.observe(statsSection);
+          // Also try immediate animation if visible
+          setTimeout(animateVisibleCounters, 500);
+        }
+      });
+    } else {
+      const statsSection = document.querySelector('.stats-section');
+      if (statsSection) {
+        statsObserver.observe(statsSection);
+        // Also try immediate animation if visible
+        setTimeout(animateVisibleCounters, 500);
+      }
+    }
   })();
 </script>
 </div> <!-- Close famo-home div -->
