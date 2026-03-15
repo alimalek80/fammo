@@ -2401,3 +2401,158 @@ class DeleteUserNotificationView(APIView):
         )
         notification.delete()
         return Response({'message': 'Notification deleted'})
+
+
+# =============================================================================
+# BLOG API VIEWS
+# =============================================================================
+
+class BlogCategoryListView(generics.ListAPIView):
+    """
+    GET /api/v1/blog/categories/
+    
+    List all blog categories with basic information.
+    No authentication required.
+    """
+    from blog.models import BlogCategory
+    from api.serializers import BlogCategorySerializer
+    
+    queryset = BlogCategory.objects.all()
+    serializer_class = BlogCategorySerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class BlogPostMinimalListView(generics.ListAPIView):
+    """
+    GET /api/v1/blog/minimal/
+    
+    Returns minimal blog data: just titles and URLs.
+    Only published blogs are returned.
+    No authentication required.
+    
+    Query params:
+    - category: Filter by category slug
+    - language: Filter by language code (e.g., 'en', 'fa')
+    """
+    from blog.models import BlogPost
+    from api.serializers import BlogPostMinimalSerializer
+    from django.utils import timezone
+    
+    serializer_class = BlogPostMinimalSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        from blog.models import BlogPost
+        from django.utils import timezone
+        
+        queryset = BlogPost.objects.filter(
+            is_published=True,
+            published_at__isnull=False,
+            published_at__lte=timezone.now()
+        ).order_by('-published_at')
+        
+        # Filter by category if provided
+        category_slug = self.request.query_params.get('category', None)
+        if category_slug:
+            queryset = queryset.filter(category__slug=category_slug)
+        
+        # Filter by language if provided
+        language = self.request.query_params.get('language', None)
+        if language:
+            queryset = queryset.filter(language=language)
+        
+        return queryset
+
+
+class BlogPostListView(generics.ListAPIView):
+    """
+    GET /api/v1/blog/posts/
+    
+    Returns blog posts with moderate details (no full content).
+    Includes title, URL, categories, excerpt, image, author, views, ratings.
+    Only published blogs are returned.
+    No authentication required.
+    
+    Query params:
+    - category: Filter by category slug
+    - language: Filter by language code (e.g., 'en', 'fa')
+    - search: Search in title and meta_description
+    """
+    from blog.models import BlogPost
+    from api.serializers import BlogPostListSerializer
+    from django.utils import timezone
+    
+    serializer_class = BlogPostListSerializer
+    permission_classes = [permissions.AllowAny]
+    
+    def get_queryset(self):
+        from blog.models import BlogPost
+        from django.utils import timezone
+        from django.db.models import Q
+        
+        queryset = BlogPost.objects.filter(
+            is_published=True,
+            published_at__isnull=False,
+            published_at__lte=timezone.now()
+        ).prefetch_related('category', 'ratings').order_by('-published_at')
+        
+        # Filter by category if provided
+        category_slug = self.request.query_params.get('category', None)
+        if category_slug:
+            queryset = queryset.filter(category__slug=category_slug)
+        
+        # Filter by language if provided
+        language = self.request.query_params.get('language', None)
+        if language:
+            queryset = queryset.filter(language=language)
+        
+        # Search in title and description
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(
+                Q(title__icontains=search) | 
+                Q(meta_description__icontains=search)
+            )
+        
+        return queryset
+
+
+class BlogPostDetailView(generics.RetrieveAPIView):
+    """
+    GET /api/v1/blog/posts/<slug>/
+    
+    Returns detailed blog post with full content.
+    Only published blogs are returned.
+    No authentication required.
+    """
+    from blog.models import BlogPost
+    from api.serializers import BlogPostDetailSerializer
+    from django.utils import timezone
+    
+    serializer_class = BlogPostDetailSerializer
+    permission_classes = [permissions.AllowAny]
+    lookup_field = 'slug'
+    
+    def get_queryset(self):
+        from blog.models import BlogPost
+        from django.utils import timezone
+        
+        return BlogPost.objects.filter(
+            is_published=True,
+            published_at__isnull=False,
+            published_at__lte=timezone.now()
+        ).prefetch_related('category', 'ratings', 'comments')
+    
+    def retrieve(self, request, *args, **kwargs):
+        from blog.models import BlogPost
+        from django.db.models import F
+        
+        instance = self.get_object()
+        
+        # Increment view count
+        BlogPost.objects.filter(pk=instance.pk).update(views=F('views') + 1)
+        instance.refresh_from_db()
+        
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+

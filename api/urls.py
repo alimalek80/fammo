@@ -64,6 +64,11 @@ from .views import (
     UserNotificationsMarkAllReadView,
     UserUnreadNotificationsCountView,
     DeleteUserNotificationView,
+    # Blog views
+    BlogCategoryListView,
+    BlogPostMinimalListView,
+    BlogPostListView,
+    BlogPostDetailView,
 )
 from core.legal_viewsets import (
     LegalDocumentViewSet,
@@ -179,4 +184,10 @@ urlpatterns = [
     path("notifications/mark-all-read/", UserNotificationsMarkAllReadView.as_view(), name="api-user-notifications-mark-all-read"),
     path("notifications/<int:pk>/read/", UserNotificationMarkReadView.as_view(), name="api-user-notification-mark-read"),
     path("notifications/<int:pk>/", DeleteUserNotificationView.as_view(), name="api-user-notification-delete"),
+    
+    # Blog endpoints
+    path("blog/categories/", BlogCategoryListView.as_view(), name="api-blog-categories"),
+    path("blog/minimal/", BlogPostMinimalListView.as_view(), name="api-blog-minimal"),
+    path("blog/posts/", BlogPostListView.as_view(), name="api-blog-posts"),
+    path("blog/posts/<slug:slug>/", BlogPostDetailView.as_view(), name="api-blog-post-detail"),
 ]
