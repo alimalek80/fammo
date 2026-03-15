@@ -909,4 +909,68 @@ def add_weight_record_view(request, pet_id):
     })
 
 
+@login_required
+def calculate_pet_calories(request, pk):
+    """
+    Calculate and return calorie estimation for a specific pet via AJAX.
+    This view is called from the pet detail page when the user submits the calorie form.
+    """
+    pet = get_object_or_404(Pet, pk=pk, user=request.user)
+    
+    if request.method == 'POST':
+        goal = request.POST.get('goal', 'maintain')
+        
+        # Calculate calories using the pet method
+        calorie_data = pet.get_daily_calorie_estimate(goal)
+        
+        if calorie_data:
+            return JsonResponse({
+                'success': True,
+                'data': calorie_data,
+                'pet_name': pet.name,
+                'goal': goal
+            })
+        else:
+            return JsonResponse({
+                'success': False,
+                'error': 'Unable to calculate calories. Please ensure pet profile has weight and pet type.'
+            })
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
+
+
+@login_required
+def pet_calorie_calculator_page(request, pk):
+    """
+    Dedicated calorie calculator page for a specific pet with detailed information.
+    """
+    pet = get_object_or_404(Pet, pk=pk, user=request.user)
+    
+    # Calculate calories for all three goals
+    calories_data = {}
+    for goal in ['maintain', 'lose', 'gain']:
+        calories_data[goal] = pet.get_daily_calorie_estimate(goal)
+    
+    # Check if pet has required data for calculations
+    has_required_data = bool(pet.pet_type and pet.weight)
+    
+    context = {
+        'pet': pet,
+        'calories_data': calories_data,
+        'has_required_data': has_required_data,
+        'missing_data': []
+    }
+    
+    # Identify missing data for user feedback
+    if not has_required_data:
+        if not pet.pet_type:
+            context['missing_data'].append('Pet type')
+        if not pet.weight:
+            context['missing_data'].append('Weight')
+        if not pet.activity_level:
+            context['missing_data'].append('Activity level (will use default)')
+    
+    return render(request, 'pet/calorie_calculator.html', context)
+
+
 

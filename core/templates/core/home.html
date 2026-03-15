@@ -29,13 +29,11 @@
 /* color helpers (use when theme overrides Tailwind bg/text) */
 .famo-home .text-indigo { color:#4F46E5 !important; }
 .famo-home .bg-indigo   { background-color:#4F46E5 !important; }
-.famo-home .bg-green    { background-color:#10B981 !important; }
 .famo-home .bg-soft     { background-color:#EEF2FF !important; }
 
 /* optional, explicit background reset + solid bg helpers */
 .famo-home .bg-reset       { background: unset !important; opacity: 1 !important; }
 .famo-home .force-bg-indigo{ background-color: #4F46E5 !important; }
-.famo-home .force-bg-green { background-color: #10B981 !important; }
 .famo-home .force-bg-soft  { background-color: #EEF2FF !important; }
 
 /* full-bleed container (escape base container width) */
@@ -66,6 +64,12 @@
 /* small badge under the paragraph */
 .famo-home .hero-section span{
   background-color:rgba(16,185,129,.9) !important; color:#fff !important;
+}
+/* Remove green background from spans in pet cards */
+.famo-home .hero-section .pet-card-info span {
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
 }
 /* override green span background inside hero */
 .famo-home .hero-section span.highlight-orange {
@@ -632,34 +636,68 @@
                         </a>
                     </div>
                     <div class="space-y-4">
-                        {% if user.pets.all %}
-                            {% for pet in user.pets.all|slice:":2" %}
-                                <!-- Pet Card -->
-                                <div class="bg-white/10 rounded-2xl p-4 flex items-center gap-4 border border-white/10 hover:bg-white/20 transition-all cursor-pointer">
-                                    <div class="flex items-center gap-4">
-                                        {% if pet.image %}
-                                            <img src="{{ pet.image.url }}" class="w-16 h-16 rounded-xl object-cover" alt="{{ pet.name }}">
+                        {% if user_pets_calorie_data %}
+                            {% for pet_data in user_pets_calorie_data|slice:":3" %}
+                                <!-- Pet Card with Calorie Info -->
+                                <div class="bg-white/10 rounded-2xl p-4 border border-white/10 hover:bg-white/20 transition-all">
+                                    <div class="flex items-center gap-4 mb-3">
+                                        {% if pet_data.pet.image %}
+                                            <img src="{{ pet_data.pet.image.url }}" class="w-12 h-12 rounded-xl object-cover" alt="{{ pet_data.pet.name }}">
                                         {% else %}
-                                            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white text-2xl">
-                                                {% if pet.pet_type.name == 'Dog' %}🐕{% else %}🐱{% endif %}
+                                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white text-lg">
+                                                {% if pet_data.pet.pet_type.name == 'Dog' %}🐕{% else %}🐱{% endif %}
                                             </div>
                                         {% endif %}
                                         <div class="flex-1">
-                                            <h4 class="text-white font-bold">{{ pet.name }}</h4>
+                                            <h4 class="text-white font-bold text-sm">{{ pet_data.pet.name }}</h4>
                                             <p class="text-slate-300 text-xs">
-                                                {% if pet.breed %}{{ pet.breed.name }}{% endif %}{% if pet.breed and pet.age_years %} • {% endif %}{% if pet.age_years %}{{ pet.age_years }} {% trans "yrs" %}{% elif pet.age_months %}{{ pet.age_months }} {% trans "mos" %}{% endif %}
+                                                {{ pet_data.pet.pet_type.name|default:"" }}{% if pet_data.pet.weight %} • {{ pet_data.pet.weight }}kg{% endif %}
                                             </p>
-                                            <!-- Health Progress Bar -->
-                                            <div class="w-full bg-white/10 h-1.5 rounded-full mt-2">
-                                                <div class="{% if pet.pet_type.name == 'Dog' %}bg-yellow-400{% else %}bg-green-400{% endif %} h-full rounded-full" style="width: 85%"></div>
+                                        </div>
+                                        <a href="{% url 'pet:pet_detail' pk=pet_data.pet.id %}" class="text-white/50 hover:text-white transition-colors">
+                                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="m9 18 6-6-6-6"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Calorie Information -->
+                                    {% if pet_data.calorie_data %}
+                                        <div class="pet-card-info bg-slate-800/50 rounded-xl p-3 border border-slate-600/30">
+                                            <div class="flex justify-between items-center">
+                                                <span class="text-slate-300 text-xs">Daily Calories</span>
+                                                <span class="text-yellow-400 font-bold text-sm">{{ pet_data.calorie_data.daily_calories }}</span>
+                                            </div>
+                                            <div class="flex items-center mt-1">
+                                                <div class="w-full bg-slate-600/30 h-1 rounded-full">
+                                                    <div class="bg-yellow-400 h-full rounded-full" style="width: 75%"></div>
+                                                </div>
+                                                <span class="text-slate-400 text-xs ml-2">cal/day</span>
                                             </div>
                                         </div>
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-white/50 w-5 h-5">
-                                            <path d="m9 18 6-6-6-6"/>
-                                        </svg>
-                                    </div>
+                                    {% elif pet_data.has_complete_profile %}
+                                        <div class="pet-card-info bg-orange-500/20 rounded-xl p-3 border border-orange-400/20">
+                                            <p class="text-orange-200 text-xs">Unable to calculate calories</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="pet-card-info bg-white/5 rounded-xl p-3 border border-white/10">
+                                            <p class="text-white/50 text-xs text-center">Complete profile for calorie estimate</p>
+                                            <a href="{% url 'pet:edit_pet' pet_id=pet_data.pet.id %}" class="block w-full mt-2 bg-blue-500/20 text-blue-200 text-xs py-1.5 rounded-lg text-center hover:bg-blue-500/30 transition-colors">
+                                                Complete Profile
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
+                            
+                            <!-- Show More Link if there are more pets -->
+                            {% if user.pets.count > 3 %}
+                                <div class="text-center pt-2">
+                                    <a href="{% url 'pet:my_pets' %}" class="text-white/70 hover:text-white text-xs transition-colors">
+                                        View all {{ user.pets.count }} pets →
+                                    </a>
+                                </div>
+                            {% endif %}
                         {% else %}
                             <!-- No Pets Message -->
                             <div class="bg-white/5 rounded-2xl p-6 text-center border border-white/10">

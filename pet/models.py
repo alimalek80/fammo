@@ -622,6 +622,46 @@ class Pet(models.Model):
         ]
         return "\n".join(profile)
 
+    def get_daily_calorie_estimate(self, goal="maintain"):
+        """
+        Calculate daily calorie requirements for this pet.
+        
+        Args:
+            goal (str): Weight goal - "maintain", "lose", or "gain"
+            
+        Returns:
+            dict: Dictionary containing:
+                - rer: Resting Energy Requirement
+                - factor: Activity factor used
+                - daily_calories: Total daily calorie requirement
+            Returns None if required data is missing.
+        """
+        from .utils.calorie_calculator import calculate_pet_daily_calories
+        
+        # Check if we have the required basic data
+        if not self.pet_type or not self.weight:
+            return None
+        
+        # Get pet data
+        pet_type_name = self.pet_type.name
+        weight_kg = float(self.weight)
+        activity_name = self.activity_level.name if self.activity_level else None
+        neutered = self.neutered
+        
+        # Get current age
+        current_age = self.get_current_age()
+        age_years = current_age.get('years', 0)
+        
+        # Calculate calories
+        return calculate_pet_daily_calories(
+            pet_type_name=pet_type_name,
+            weight_kg=weight_kg,
+            activity_name=activity_name,
+            neutered=neutered,
+            goal=goal,
+            age_years=age_years
+        )
+
 
 # Age Tracking System Models
 

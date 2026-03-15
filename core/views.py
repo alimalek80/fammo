@@ -72,6 +72,19 @@ def home(request):
         is_verified=True
     ).count()
     
+    # Get pet calorie summaries for authenticated users
+    user_pets_calorie_data = []
+    if request.user.is_authenticated:
+        user_pets = Pet.objects.filter(user=request.user).select_related('pet_type', 'activity_level')
+        for pet in user_pets:
+            calorie_data = pet.get_daily_calorie_estimate()
+            calorie_summary = {
+                'pet': pet,
+                'calorie_data': calorie_data,
+                'has_complete_profile': bool(pet.pet_type and pet.weight)
+            }
+            user_pets_calorie_data.append(calorie_summary)
+    
     return render(request, 'core/home.html', {
         'hero': hero_section, 
         "faqs": faqs,
@@ -89,7 +102,9 @@ def home(request):
             "total_dogs": total_dogs,
             "total_cats": total_cats,
             "total_verified_clinics": total_verified_clinics,
-        }
+        },
+        # Pet calorie data for logged-in users
+        "user_pets_calorie_data": user_pets_calorie_data,
     })
 
 @login_required

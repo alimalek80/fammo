@@ -15,4 +15,7 @@ urlpatterns = [
     path('export/pets/', export_pets_csv, name='export_pets_csv'),
     # Weight tracking URLs
     path('<int:pet_id>/weight/add/', views.add_weight_record_view, name='add_weight_record'),
+    # Calorie calculator URLs
+    path('<int:pk>/calories/calculate/', views.calculate_pet_calories, name='calculate_calories'),
+    path('<int:pk>/calories/calculator/', views.pet_calorie_calculator_page, name='calorie_calculator'),
 ]
