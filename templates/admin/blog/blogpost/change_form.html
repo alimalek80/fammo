@@ -1,0 +1,12 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <link rel="stylesheet" href="{% static 'admin/css/markdownx_sidebyside.css' %}">
+{% endblock %}
+
+{% block after_field_sets %}
+    {{ block.super }}
+    <script src="{% static 'admin/js/markdownx_sidebyside.js' %}"></script>
+{% endblock %}

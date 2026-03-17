@@ -5,6 +5,17 @@
     transform: translateY(-100%);
 }
 
+/* Responsive navbar padding */
+@media (max-width: 1023px) {
+    nav#main-navbar {
+        padding: 1rem 0.5rem;
+    }
+    
+    .nav-container {
+        padding: 0 0.5rem;
+    }
+}
+
 /* Ensure hidden class works even if Tailwind fails */
 .hidden {
     display: none !important;

@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Single global click handler to close both dropdowns when clicking outside
+    // Single global click handler to close all dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         // Close mobile menu if clicking outside
         if (mobileMenuButton && mobileMenu) {
