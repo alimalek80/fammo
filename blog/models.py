@@ -20,6 +20,7 @@ class BlogPost(models.Model):
     category = models.ManyToManyField(BlogCategory, null=True, blank=True, related_name='posts')
     content = MarkdownxField()  # stores markdown text; safe to keep existing data
     image = models.ImageField(upload_to='blog_images/', blank=True, null=True)
+    image_alt = models.CharField(max_length=200, blank=True, null=True, help_text="Alternative text for the thumbnail image (improves accessibility and SEO)")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

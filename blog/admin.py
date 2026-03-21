@@ -23,7 +23,7 @@ class BlogPostAdmin(MarkdownxModelAdmin):  # use MarkdownxModelAdmin for assets
     list_filter = ("category", "author", "language", "is_published")
     search_fields = ("title", "content")
     fields = (
-        "title", "slug", "category", "content", "image", "author",
+        "title", "slug", "category", "content", "image", "image_alt", "author",
         "meta_description", "meta_keywords", "language", "is_published", "published_at"
     )
     filter_horizontal = ("category",)

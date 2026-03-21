@@ -4,9 +4,46 @@
 {% block extrahead %}
     {{ block.super }}
     <link rel="stylesheet" href="{% static 'admin/css/markdownx_sidebyside.css' %}">
+    <style>
+        .alt-text-help {
+            background-color: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        .alt-text-help h4 {
+            margin: 0 0 8px 0;
+            color: #1976D2;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .alt-text-help p {
+            margin: 4px 0;
+            font-size: 13px;
+            color: #444;
+        }
+        .alt-text-help code {
+            background-color: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #c7254e;
+        }
+    </style>
 {% endblock %}
 
 {% block after_field_sets %}
     {{ block.super }}
+    
+    <div class="alt-text-help">
+        <h4>📸 Adding Alt Text to Images</h4>
+        <p><strong>Thumbnail Image:</strong> Use the "Image alt" field above to describe your thumbnail image.</p>
+        <p><strong>Content Images (Markdown):</strong> When adding images in the content field, include descriptive alt text using this syntax:</p>
+        <p><code>![descriptive alt text here](image-url)</code></p>
+        <p><strong>Example:</strong> <code>![A brown Labrador dog playing fetch in a sunny park](https://example.com/dog.jpg)</code></p>
+        <p><strong>Why it matters:</strong> Alt text improves accessibility for screen readers and helps with SEO.</p>
+    </div>
+    
     <script src="{% static 'admin/js/markdownx_sidebyside.js' %}"></script>
 {% endblock %}
