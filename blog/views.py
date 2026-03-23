@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost, BlogComment, BlogRating, BlogCategory
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg, Count, F
+from django.db.models import Avg, Count, F, Q
 from urllib.parse import quote
 from django.utils.html import strip_tags
 from django.utils import timezone
@@ -9,12 +9,26 @@ from django.utils import timezone
 def blog_list(request):
     categories = BlogCategory.objects.all()
     selected_slug = request.GET.get('category')
+    search_query = request.GET.get('search', '').strip()
+    
     posts = BlogPost.objects.filter(
         published_at__isnull=False,
         published_at__lte=timezone.now()
     ).order_by('-published_at')
+    
     if selected_slug:
         posts = posts.filter(category__slug=selected_slug)
+    
+    # Search functionality
+    if search_query:
+        posts = posts.filter(
+            Q(title__icontains=search_query) |
+            Q(content__icontains=search_query) |
+            Q(author__email__icontains=search_query) |
+            Q(author__profile__first_name__icontains=search_query) |
+            Q(author__profile__last_name__icontains=search_query)
+        ).distinct()
+    
     return render(request, 'blog/blog_list.html', {
         'posts': posts,
         'categories': categories,
