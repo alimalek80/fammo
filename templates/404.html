@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}{% trans "Page Not Found" %} | FAMMO{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <div class="max-w-4xl w-full">
+        <!-- Main 404 Content -->
+        <div class="text-center mb-12">
+            <!-- Animated 404 Number -->
+            <div class="relative mb-8">
+                <h1 class="text-9xl md:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 animate-pulse">
+                    404
+                </h1>
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="text-6xl animate-bounce">
+                        <i class="fas fa-paw text-indigo-400 opacity-30"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Message -->
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                {% trans "Oops! Page Not Found" %}
+            </h2>
+            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+                {% trans "The page you're looking for seems to have wandered off. Don't worry, even the best-trained pets sometimes get lost!" %}
+            </p>
+
+            <!-- Search Bar -->
+            <div class="max-w-2xl mx-auto mb-12">
+                <form method="get" action="{% url 'blog:blog_list' %}" class="relative group">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                            <svg class="w-5 h-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </div>
+                        <input 
+                            type="text" 
+                            name="search" 
+                            placeholder="{% trans 'Try searching for what you need...' %}"
+                            class="w-full pl-12 pr-32 py-4 text-gray-900 placeholder-gray-400 bg-white border-2 border-gray-200 rounded-xl shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all duration-300"
+                        />
+                        <button 
+                            type="submit"
+                            class="absolute inset-y-0 right-2 flex items-center px-6 m-1 text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 font-semibold"
+                        >
+                            {% trans "Search" %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Quick Navigation Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <!-- Home Card -->
+            <a href="{% url 'core:home' %}" class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border-2 border-transparent hover:border-indigo-500 transform hover:-translate-y-1">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-home text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">{% trans "Home" %}</h3>
+                    <p class="text-gray-600 text-sm">{% trans "Go back to the homepage" %}</p>
+                </div>
+            </a>
+
+            <!-- Blog Card -->
+            <a href="{% url 'blog:blog_list' %}" class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border-2 border-transparent hover:border-purple-500 transform hover:-translate-y-1">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-blog text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">{% trans "Blog" %}</h3>
+                    <p class="text-gray-600 text-sm">{% trans "Read our latest articles" %}</p>
+                </div>
+            </a>
+
+            <!-- Pets Card -->
+            <a href="{% url 'pet:my_pets' %}" class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-6 border-2 border-transparent hover:border-pink-500 transform hover:-translate-y-1">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                        <i class="fas fa-paw text-white text-2xl"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">{% trans "My Pets" %}</h3>
+                    <p class="text-gray-600 text-sm">{% trans "Manage your furry friends" %}</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Latest Blog Posts -->
+        {% if latest_posts %}
+        <div class="mb-12">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
+                    <i class="fas fa-newspaper text-indigo-600 mr-2"></i>
+                    {% trans "Latest from Our Blog" %}
+                </h3>
+                <p class="text-gray-600">{% trans "While you're here, check out our newest articles" %}</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {% for post in latest_posts %}
+                <a href="{% url 'blog:blog_detail' post.slug %}" class="group bg-white rounded-xl shadow-md hover:shadow-2xl transition-all duration-300 overflow-hidden border-2 border-transparent hover:border-indigo-400 transform hover:-translate-y-2">
+                    {% if post.image %}
+                    <div class="relative overflow-hidden h-40">
+                        <img src="{{ post.image.url }}" alt="{{ post.image_alt|default:post.title }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    {% else %}
+                    <div class="h-40 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-blog text-white text-4xl opacity-50"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="p-5">
+                        <h4 class="text-lg font-bold text-gray-800 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">
+                            {{ post.title }}
+                        </h4>
+                        <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+                            {{ post.content|striptags|truncatewords:15 }}
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-gray-500">
+                            <div class="flex items-center space-x-1">
+                                <i class="fa-solid fa-calendar"></i>
+                                <span>{{ post.published_at|date:"M d, Y" }}</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <i class="fa-solid fa-eye"></i>
+                                <span>{{ post.views }}</span>
+                            </div>
+                        </div>
+                        <div class="mt-3 inline-flex items-center text-indigo-600 font-semibold text-sm group-hover:gap-2 transition-all">
+                            {% trans "Read More" %}
+                            <i class="fas fa-arrow-right ml-1 group-hover:ml-2 transition-all"></i>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            
+            <div class="text-center mt-8">
+                <a href="{% url 'blog:blog_list' %}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105">
+                    <i class="fas fa-book-open mr-2"></i>
+                    {% trans "View All Blog Posts" %}
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Additional Help Section -->
+        <div class="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-8 border border-indigo-100">
+            <div class="text-center">
+                <div class="inline-flex items-center justify-center w-12 h-12 bg-white rounded-full mb-4 shadow-md">
+                    <i class="fas fa-question-circle text-indigo-600 text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-3">{% trans "Need More Help?" %}</h3>
+                <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+                    {% trans "If you believe this is an error or need assistance, please don't hesitate to contact our support team." %}
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="mailto:support@fammo.com" class="inline-flex items-center px-6 py-3 bg-white text-indigo-600 rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 border-2 border-indigo-200">
+                        <i class="fas fa-envelope mr-2"></i>
+                        {% trans "Contact Support" %}
+                    </a>
+                    <button onclick="history.back()" class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all duration-200 hover:scale-105 hover:bg-indigo-700">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        {% trans "Go Back" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fun Error Codes Reference -->
+        <div class="mt-8 text-center">
+            <p class="text-sm text-gray-400 italic">
+                {% trans "Error Code: 404 - The resource you requested could not be found on this server." %}
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- Add custom animation styles -->
+<style>
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+    
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+</style>
+{% endblock %}

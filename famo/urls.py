@@ -6,8 +6,19 @@ from django.contrib import admin
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
 from userapp.views import reset_password_from_email
+from django.shortcuts import render
+from django.utils import timezone
 
 from userapp.views import account_deletion_view, privacy_policy_view
+
+# Custom 404 handler
+def custom_404(request, exception=None):
+    from blog.models import BlogPost
+    latest_posts = BlogPost.objects.filter(
+        published_at__isnull=False,
+        published_at__lte=timezone.now()
+    ).order_by('-published_at')[:3]
+    return render(request, '404.html', {'latest_posts': latest_posts}, status=404)
 
 urlpatterns = [
     # ✅ This is required for {% url 'set_language' %} to work
@@ -50,7 +61,12 @@ if settings.DEBUG:
     # Include django_browser_reload URLs only in DEBUG mode
     urlpatterns += [
         path("__reload__/", include("django_browser_reload.urls")),
+        # Test 404 page - visit http://localhost:8000/test-404/ to see the custom 404 page
+        path('test-404/', lambda request: custom_404(request), name='test_404'),
     ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Custom error handlers
+handler404 = 'famo.urls.custom_404'
