@@ -4,17 +4,200 @@
 
 {% block title %}{% trans "Page Not Found" %} | FAMMO{% endblock %}
 
+{% block extra_head %}
+<style>
+    .fammo-404-page {
+        min-height: 80vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1rem;
+    }
+
+    .fammo-404-shell {
+        width: 100%;
+        max-width: 64rem;
+    }
+
+    .fammo-404-hero {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .fammo-404-number-wrap {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .fammo-404-number {
+        margin: 0;
+        font-size: clamp(6rem, 18vw, 12rem);
+        line-height: 0.9;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+        color: transparent;
+        background: linear-gradient(90deg, #4f46e5 0%, #9333ea 50%, #db2777 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        animation: fammo-404-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    .fammo-404-paw {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: clamp(2.5rem, 7vw, 4rem);
+        color: rgba(129, 140, 248, 0.35);
+        pointer-events: none;
+        animation: fammo-404-bounce 1s infinite;
+    }
+
+    .fammo-404-title {
+        margin: 0 0 1rem;
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .fammo-404-copy {
+        max-width: 42rem;
+        margin: 0 auto 2rem;
+        font-size: 1.125rem;
+        line-height: 1.6;
+        color: #4b5563;
+    }
+
+    .fammo-404-search {
+        max-width: 42rem;
+        margin: 0 auto 3rem;
+    }
+
+    .fammo-404-search-form {
+        position: relative;
+    }
+
+    .fammo-404-search-icon {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        pointer-events: none;
+        transition: color 0.2s ease;
+    }
+
+    .fammo-404-search-form:focus-within .fammo-404-search-icon {
+        color: #4f46e5;
+    }
+
+    .fammo-404-search-input {
+        width: 100%;
+        min-height: 3.75rem;
+        padding: 1rem 9rem 1rem 3rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 0.75rem;
+        background: #fff;
+        color: #111827;
+        box-shadow: 0 10px 25px rgba(15, 23, 42, 0.1);
+        font-size: 1.125rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .fammo-404-search-input::placeholder {
+        color: #9ca3af;
+    }
+
+    .fammo-404-search-input:focus {
+        outline: none;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2), 0 10px 25px rgba(15, 23, 42, 0.1);
+    }
+
+    .fammo-404-search-button {
+        position: absolute;
+        top: 0.375rem;
+        right: 0.375rem;
+        bottom: 0.375rem;
+        min-width: 6rem;
+        padding: 0 1.5rem;
+        border: 0;
+        border-radius: 0.625rem;
+        background: linear-gradient(90deg, #4f46e5 0%, #9333ea 100%);
+        color: #fff;
+        font-size: 1.125rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+    }
+
+    .fammo-404-search-button:hover {
+        filter: brightness(0.96);
+        box-shadow: 0 8px 18px rgba(99, 102, 241, 0.28);
+    }
+
+    .fammo-404-search-button:focus {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.22);
+    }
+
+    @media (max-width: 640px) {
+        .fammo-404-search-input {
+            padding-right: 7.25rem;
+            font-size: 1rem;
+        }
+
+        .fammo-404-search-button {
+            min-width: 5.5rem;
+            padding: 0 1rem;
+            font-size: 1rem;
+        }
+    }
+
+    @keyframes fammo-404-pulse {
+        50% {
+            opacity: 0.8;
+        }
+    }
+
+    @keyframes fammo-404-bounce {
+        0%, 100% {
+            transform: translateY(-5%);
+            animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+        }
+        50% {
+            transform: translateY(0);
+            animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+        }
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="min-h-[80vh] flex items-center justify-center px-4 py-12">
-    <div class="max-w-4xl w-full">
+<div class="fammo-404-page min-h-[80vh] flex items-center justify-center px-4 py-12">
+    <div class="fammo-404-shell max-w-4xl w-full">
         <!-- Main 404 Content -->
-        <div class="text-center mb-12">
+        <div class="fammo-404-hero text-center mb-12">
             <!-- Animated 404 Number -->
-            <div class="relative mb-8">
-                <h1 class="text-9xl md:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 animate-pulse">
+            <div class="fammo-404-number-wrap relative mb-8">
+                <h1 class="fammo-404-number text-9xl md:text-[12rem] font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 animate-pulse">
                     404
                 </h1>
-                <div class="absolute inset-0 flex items-center justify-center">
+                <div class="fammo-404-paw absolute inset-0 flex items-center justify-center">
                     <div class="text-6xl animate-bounce">
                         <i class="fas fa-paw text-indigo-400 opacity-30"></i>
                     </div>
@@ -22,18 +205,18 @@
             </div>
 
             <!-- Error Message -->
-            <h2 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+            <h2 class="fammo-404-title text-3xl md:text-4xl font-bold text-gray-800 mb-4">
                 {% trans "Oops! Page Not Found" %}
             </h2>
-            <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p class="fammo-404-copy text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
                 {% trans "The page you're looking for seems to have wandered off. Don't worry, even the best-trained pets sometimes get lost!" %}
             </p>
 
             <!-- Search Bar -->
-            <div class="max-w-2xl mx-auto mb-12">
-                <form method="get" action="{% url 'blog:blog_list' %}" class="relative group">
+            <div class="fammo-404-search max-w-2xl mx-auto mb-12">
+                <form method="get" action="{% url 'blog:blog_list' %}" class="fammo-404-search-form relative group">
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                        <div class="fammo-404-search-icon absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400 group-focus-within:text-indigo-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
@@ -42,11 +225,11 @@
                             type="text" 
                             name="search" 
                             placeholder="{% trans 'Try searching for what you need...' %}"
-                            class="w-full pl-12 pr-32 py-4 text-gray-900 placeholder-gray-400 bg-white border-2 border-gray-200 rounded-xl shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all duration-300"
+                            class="fammo-404-search-input w-full pl-12 pr-32 py-4 text-gray-900 placeholder-gray-400 bg-white border-2 border-gray-200 rounded-xl shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-300 focus:border-indigo-500 transition-all duration-300"
                         />
                         <button 
                             type="submit"
-                            class="absolute inset-y-0 right-2 flex items-center px-6 m-1 text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 font-semibold"
+                            class="fammo-404-search-button absolute inset-y-0 right-2 flex items-center px-6 m-1 text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 transition-all duration-200 font-semibold"
                         >
                             {% trans "Search" %}
                         </button>
@@ -183,19 +366,4 @@
     </div>
 </div>
 
-<!-- Add custom animation styles -->
-<style>
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0px);
-        }
-        50% {
-            transform: translateY(-20px);
-        }
-    }
-    
-    .animate-float {
-        animation: float 3s ease-in-out infinite;
-    }
-</style>
 {% endblock %}
