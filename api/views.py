@@ -2464,14 +2464,15 @@ class BlogPostMinimalListView(generics.ListAPIView):
         return queryset
 
 
-class BlogPostListView(generics.ListAPIView):
+class BlogPostListCreateView(generics.ListCreateAPIView):
     """
     GET /api/v1/blog/posts/
+    POST /api/v1/blog/posts/
     
     Returns blog posts with moderate details (no full content).
     Includes title, URL, categories, excerpt, image, author, views, ratings.
-    Only published blogs are returned.
-    No authentication required.
+    GET only returns published blogs and requires no authentication.
+    POST allows staff users to create blog posts.
     
     Query params:
     - category: Filter by category slug
@@ -2479,11 +2480,22 @@ class BlogPostListView(generics.ListAPIView):
     - search: Search in title and meta_description
     """
     from blog.models import BlogPost
-    from api.serializers import BlogPostListSerializer
+    from blog.serializers import BlogPostCreateSerializer, BlogPostListSerializer
     from django.utils import timezone
     
-    serializer_class = BlogPostListSerializer
     permission_classes = [permissions.AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            from blog.serializers import BlogPostCreateSerializer
+            return BlogPostCreateSerializer
+        from blog.serializers import BlogPostListSerializer
+        return BlogPostListSerializer
     
     def get_queryset(self):
         from blog.models import BlogPost
@@ -2515,6 +2527,12 @@ class BlogPostListView(generics.ListAPIView):
             )
         
         return queryset
+
+    def perform_create(self, serializer):
+        if not (self.request.user.is_staff or self.request.user.is_superuser):
+            from rest_framework.exceptions import PermissionDenied
+            raise PermissionDenied("Only staff users can create blog posts.")
+        serializer.save(author=self.request.user)
 
 
 class BlogPostDetailView(generics.RetrieveAPIView):
@@ -2555,4 +2573,3 @@ class BlogPostDetailView(generics.RetrieveAPIView):
         
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
-

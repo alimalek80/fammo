@@ -67,7 +67,7 @@ from .views import (
     # Blog views
     BlogCategoryListView,
     BlogPostMinimalListView,
-    BlogPostListView,
+    BlogPostListCreateView,
     BlogPostDetailView,
 )
 from core.legal_viewsets import (
@@ -188,6 +188,6 @@ urlpatterns = [
     # Blog endpoints
     path("blog/categories/", BlogCategoryListView.as_view(), name="api-blog-categories"),
     path("blog/minimal/", BlogPostMinimalListView.as_view(), name="api-blog-minimal"),
-    path("blog/posts/", BlogPostListView.as_view(), name="api-blog-posts"),
+    path("blog/posts/", BlogPostListCreateView.as_view(), name="api-blog-posts"),
     path("blog/posts/<slug:slug>/", BlogPostDetailView.as_view(), name="api-blog-post-detail"),
 ]

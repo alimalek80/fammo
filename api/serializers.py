@@ -1,8 +1,13 @@
 from rest_framework import serializers
 from userapp.models import CustomUser, Profile
 from vets.models import Clinic, WorkingHours
-from blog.models import BlogPost, BlogCategory
-from django.utils import timezone
+from blog.serializers import (
+    BlogCategorySerializer,
+    BlogPostCreateSerializer,
+    BlogPostDetailSerializer,
+    BlogPostListSerializer,
+    BlogPostMinimalSerializer,
+)
 
 class CombinedClinicUserRegistrationSerializer(serializers.Serializer):
     # User fields
@@ -45,103 +50,3 @@ class CombinedClinicUserRegistrationSerializer(serializers.Serializer):
         if data['password'] != data['password_confirm']:
             raise serializers.ValidationError({'password_confirm': "Passwords do not match."})
         return data
-
-
-# Blog Serializers
-
-class BlogCategorySerializer(serializers.ModelSerializer):
-    """Serializer for blog categories"""
-    class Meta:
-        model = BlogCategory
-        fields = ['id', 'name', 'slug']
-
-
-class BlogPostMinimalSerializer(serializers.ModelSerializer):
-    """Minimal serializer with just title and URL"""
-    url = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = BlogPost
-        fields = ['id', 'title', 'slug', 'url']
-    
-    def get_url(self, obj):
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(f'/blog/{obj.slug}/')
-        return f'/blog/{obj.slug}/'
-
-
-class BlogPostListSerializer(serializers.ModelSerializer):
-    """List serializer with moderate details (no full content)"""
-    url = serializers.SerializerMethodField()
-    categories = BlogCategorySerializer(source='category', many=True, read_only=True)
-    author_name = serializers.CharField(source='author.get_full_name', read_only=True)
-    excerpt = serializers.CharField(read_only=True)
-    image_url = serializers.SerializerMethodField()
-    average_rating = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = BlogPost
-        fields = [
-            'id', 'title', 'slug', 'url', 'categories', 'excerpt', 
-            'image_url', 'author_name', 'published_at', 'views', 
-            'language', 'average_rating'
-        ]
-    
-    def get_url(self, obj):
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(f'/blog/{obj.slug}/')
-        return f'/blog/{obj.slug}/'
-    
-    def get_image_url(self, obj):
-        if obj.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
-        return None
-    
-    def get_average_rating(self, obj):
-        return obj.average_rating()
-
-
-class BlogPostDetailSerializer(serializers.ModelSerializer):
-    """Detailed serializer with full content"""
-    url = serializers.SerializerMethodField()
-    categories = BlogCategorySerializer(source='category', many=True, read_only=True)
-    author_name = serializers.CharField(source='author.get_full_name', read_only=True)
-    author_email = serializers.EmailField(source='author.email', read_only=True)
-    image_url = serializers.SerializerMethodField()
-    average_rating = serializers.SerializerMethodField()
-    total_comments = serializers.SerializerMethodField()
-    
-    class Meta:
-        model = BlogPost
-        fields = [
-            'id', 'title', 'slug', 'url', 'categories', 'content', 
-            'meta_description', 'meta_keywords', 'image_url', 
-            'author_name', 'author_email', 'created_at', 'updated_at',
-            'published_at', 'views', 'language', 'average_rating',
-            'total_comments'
-        ]
-    
-    def get_url(self, obj):
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(f'/blog/{obj.slug}/')
-        return f'/blog/{obj.slug}/'
-    
-    def get_image_url(self, obj):
-        if obj.image:
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
-        return None
-    
-    def get_average_rating(self, obj):
-        return obj.average_rating()
-    
-    def get_total_comments(self, obj):
-        return obj.comments.count()

@@ -10,12 +10,14 @@ Run tests:
 from django.test import TestCase
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 from rest_framework.test import APITestCase, APIClient
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from userapp.models import Profile
 from pet.models import Pet, PetType, Gender, Breed
+from blog.models import BlogCategory, BlogPost
 
 User = get_user_model()
 
@@ -64,6 +66,31 @@ class APIEndpointTests(APITestCase):
         
         # API client
         self.client = APIClient()
+
+        # Blog fixtures
+        self.blog_category = BlogCategory.objects.create(
+            name='Nutrition',
+            slug='nutrition'
+        )
+        self.published_post = BlogPost.objects.create(
+            title='Healthy Pet Habits',
+            slug='healthy-pet-habits',
+            content='Helpful markdown content',
+            author=self.user,
+            is_published=True,
+            published_at=timezone.now(),
+            language='en'
+        )
+        self.published_post.category.add(self.blog_category)
+
+        self.staff_user = User.objects.create_user(
+            email='staff@example.com',
+            password='StaffPass123!',
+            is_active=True,
+            is_staff=True
+        )
+        self.staff_refresh = RefreshToken.for_user(self.staff_user)
+        self.staff_access_token = str(self.staff_refresh.access_token)
     
     def authenticate(self):
         """Helper method to authenticate requests"""
@@ -258,6 +285,53 @@ class APIEndpointTests(APITestCase):
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['name'], 'Max')
+
+    # ==================== BLOG ENDPOINTS ====================
+
+    def test_blog_posts_list_is_public(self):
+        """Test GET /api/v1/blog/posts/ returns published blog posts without auth"""
+        url = reverse('api-blog-posts')
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data[0]['slug'], 'healthy-pet-habits')
+
+    def test_staff_can_create_blog_post(self):
+        """Test POST /api/v1/blog/posts/ allows staff users to create blog posts"""
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.staff_access_token}')
+        url = reverse('api-blog-posts')
+        data = {
+            'title': 'New Staff Post',
+            'content': '## Draft content',
+            'category_ids': [self.blog_category.id],
+            'meta_description': 'Short description',
+            'meta_keywords': 'pets, nutrition',
+            'language': 'en',
+            'is_published': True,
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['title'], 'New Staff Post')
+        self.assertEqual(response.data['categories'][0]['slug'], 'nutrition')
+        self.assertTrue(response.data['is_published'])
+        self.assertIsNotNone(response.data['published_at'])
+
+    def test_non_staff_cannot_create_blog_post(self):
+        """Test POST /api/v1/blog/posts/ rejects authenticated non-staff users"""
+        self.authenticate()
+        url = reverse('api-blog-posts')
+        data = {
+            'title': 'Blocked Post',
+            'content': 'No access',
+            'language': 'en',
+        }
+
+        response = self.client.post(url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         self.assertEqual(Pet.objects.filter(user=self.user).count(), 2)
     
     def test_get_pet_detail_authenticated(self):
