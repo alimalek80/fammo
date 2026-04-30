@@ -44,7 +44,18 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
 
 
-class BlogPostSitemap(Sitemap):
+class DynamicModelSitemap(Sitemap):
+    """Common multilingual sitemap behavior for translated models."""
+
+    i18n = True
+
+    def location(self, obj):
+        # Prefer explicit URLs so one missing get_absolute_url implementation
+        # does not take down the entire sitemap in production.
+        return obj.get_absolute_url()
+
+
+class BlogPostSitemap(DynamicModelSitemap):
     """
     Sitemap for published blog posts
     
@@ -54,12 +65,12 @@ class BlogPostSitemap(Sitemap):
     """
     changefreq = 'weekly'
     priority = 0.9
-    i18n = True  # CRITICAL: Enable i18n support
-    
     def items(self):
         """Return all published blog posts"""
         return BlogPost.objects.filter(
             is_published=True,
+            slug__isnull=False,
+            slug__gt='',
             published_at__isnull=False,
             published_at__lte=timezone.now()
         ).order_by('-published_at')
@@ -68,10 +79,7 @@ class BlogPostSitemap(Sitemap):
         """Return the last modification date"""
         return obj.updated_at
     
-    # No need to define location() - Django uses get_absolute_url() automatically
-
-
-class ForumQuestionSitemap(Sitemap):
+class ForumQuestionSitemap(DynamicModelSitemap):
     """
     Sitemap for forum questions
     
@@ -81,8 +89,6 @@ class ForumQuestionSitemap(Sitemap):
     """
     changefreq = 'daily'
     priority = 0.7
-    i18n = True  # CRITICAL: Enable i18n support
-    
     def items(self):
         """Return latest 200 forum questions to keep sitemap size reasonable"""
         return Question.objects.all().order_by('-created_at')[:200]
@@ -91,10 +97,7 @@ class ForumQuestionSitemap(Sitemap):
         """Return the last modification date"""
         return obj.updated_at
     
-    # No need to define location() - Django uses get_absolute_url() automatically
-
-
-class ClinicSitemap(Sitemap):
+class ClinicSitemap(DynamicModelSitemap):
     """
     Sitemap for verified partner veterinary clinics
     
@@ -104,11 +107,11 @@ class ClinicSitemap(Sitemap):
     """
     changefreq = 'weekly'
     priority = 0.8
-    i18n = True  # CRITICAL: Enable i18n support
-    
     def items(self):
         """Return only verified and approved clinics"""
         return Clinic.objects.filter(
+            slug__isnull=False,
+            slug__gt='',
             email_confirmed=True,
             admin_approved=True,
             is_verified=True
@@ -118,4 +121,3 @@ class ClinicSitemap(Sitemap):
         """Return the last modification date"""
         return obj.updated_at
     
-    # No need to define location() - Django uses get_absolute_url() automatically

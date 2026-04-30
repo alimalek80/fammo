@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
-from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps.views import index, sitemap
 from userapp.views import reset_password_from_email
 from django.shortcuts import render
 from django.utils import timezone
@@ -54,10 +54,9 @@ urlpatterns = [
         template_name='google18424ee3e3bbdebf.html',
         content_type='text/plain'
     ), name='google_verification'),
-    # CRITICAL: Dynamic Sitemap - MUST be outside i18n_patterns
-    # This prevents 500 errors with multilingual setup
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, 
-         name='django.contrib.sitemaps.views.sitemap'),
+    # CRITICAL: Dynamic sitemap routes must stay outside i18n_patterns.
+    path('sitemap.xml', index, {'sitemaps': sitemaps, 'sitemap_url_name': 'sitemap-section'}, name='sitemap-index'),
+    path('sitemap-<section>.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap-section'),
     # Robots.txt
     path('robots.txt', TemplateView.as_view(
         template_name='robots.txt',
