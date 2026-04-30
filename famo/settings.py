@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = config("SECRET_KEY")
 DEBUG = config("DEBUG", default=True, cast=bool)
-ALLOWED_HOSTS = ['fammo.ai', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['fammo.ai', 'www.fammo.ai', 'localhost', '127.0.0.1']
 
 # Site URL for email links
 SITE_URL = config("SITE_URL", default="https://fammo.ai")
