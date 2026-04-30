@@ -8,6 +8,7 @@ from django.contrib.auth import views as auth_views
 from userapp.views import reset_password_from_email
 from django.shortcuts import render
 from django.utils import timezone
+from django.views.generic import TemplateView
 
 from userapp.views import account_deletion_view, privacy_policy_view
 
@@ -30,6 +31,11 @@ urlpatterns = [
     # Legal pages outside i18n for direct access (required for app store)
     path('delete-account/', account_deletion_view, name='delete_account_direct'),
     path('privacy-policy/', privacy_policy_view, name='privacy_policy_direct'),
+    # Google Search Console verification
+    path('google18424ee3e3bbdebf.html', TemplateView.as_view(
+        template_name='google18424ee3e3bbdebf.html',
+        content_type='text/plain'
+    ), name='google_verification'),
 ]
 
 # Your actual app routes (web interface with i18n)
