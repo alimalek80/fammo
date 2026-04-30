@@ -219,6 +219,7 @@ LANGUAGES = [
 ]
 TIME_ZONE = 'UTC'
 USE_I18N = True
+PREFIX_DEFAULT_LANGUAGE = False  # Allow default language (en) without /en/ prefix
 USE_L10N = True
 USE_TZ = True
 LOCALE_PATHS = [
