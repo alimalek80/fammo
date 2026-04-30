@@ -14,9 +14,9 @@
     </div>
 
     <!-- Header -->
-    <div class="mb-8">
-        <h1 class="text-4xl font-bold mb-2">Ask a Question</h1>
-        <p class="text-gray-600">Get help from the FAMMO community</p>
+    <div class="mb-6">
+        <h1 class="text-2xl sm:text-4xl font-bold mb-1">Ask a Question</h1>
+        <p class="text-gray-600 text-sm sm:text-base">Get help from the FAMMO community</p>
     </div>
 
     <!-- Tips -->
@@ -36,7 +36,7 @@
     <!-- Question Form -->
     <div class="card bg-base-100 shadow-xl border border-base-300">
         <div class="card-body">
-            <form method="POST" class="space-y-6">
+            <form method="POST" enctype="multipart/form-data" class="space-y-6">
                 {% csrf_token %}
                 
                 <!-- Title -->
@@ -86,6 +86,54 @@
                     </label>
                 </div>
 
+                <!-- Image Upload -->
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text font-bold">Pet Photo <span class="font-normal text-gray-500">(optional)</span></span>
+                    </label>
+
+                    <!-- Drop zone -->
+                    <div id="drop-zone"
+                         class="relative border-2 border-dashed border-base-300 rounded-xl p-6 flex flex-col items-center justify-center gap-3 cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors"
+                         onclick="document.getElementById('id_image').click()">
+                        
+                        <!-- Preview (hidden until image selected) -->
+                        <div id="image-preview-wrap" class="hidden w-full flex flex-col items-center gap-3">
+                            <img id="image-preview" src="#" alt="Preview" class="max-h-56 rounded-xl object-contain shadow-md"/>
+                            <span id="image-filename" class="text-sm text-gray-500 truncate max-w-xs"></span>
+                            <button type="button" id="remove-image"
+                                class="btn btn-xs btn-error btn-outline gap-1">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                Remove photo
+                            </button>
+                        </div>
+
+                        <!-- Placeholder (shown when no image) -->
+                        <div id="drop-placeholder" class="flex flex-col items-center gap-2 pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-base-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <p class="text-sm font-medium text-gray-600">Click or drag &amp; drop a photo here</p>
+                            <p class="text-xs text-gray-400">JPG, PNG, WEBP • Auto-compressed to under 1 MB</p>
+                        </div>
+
+                        <!-- Hidden real input -->
+                        <input type="file" name="image" id="id_image"
+                               accept="image/*"
+                               class="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                               style="font-size:0"/>
+                    </div>
+
+                    {% if form.image.errors %}
+                    <label class="label">
+                        <span class="label-text-alt text-error">{{ form.image.errors.0 }}</span>
+                    </label>
+                    {% endif %}
+                </div>
+
                 <!-- Form Errors -->
                 {% if form.non_field_errors %}
                 <div class="alert alert-error">
@@ -94,12 +142,70 @@
                 {% endif %}
 
                 <!-- Actions -->
-                <div class="card-actions justify-end gap-2">
-                    <a href="{% url 'forum:question_list' %}" class="btn btn-ghost">Cancel</a>
-                    <button type="submit" class="btn btn-primary">Post Question</button>
+                <div class="card-actions justify-end gap-2 flex-col sm:flex-row">
+                    <a href="{% url 'forum:question_list' %}" class="btn btn-ghost w-full sm:w-auto">Cancel</a>
+                    <button type="submit" class="btn btn-primary w-full sm:w-auto">Post Question</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+{% block extra_js %}
+<script>
+(function () {
+    const input = document.getElementById('id_image');
+    const dropZone = document.getElementById('drop-zone');
+    const previewWrap = document.getElementById('image-preview-wrap');
+    const previewImg = document.getElementById('image-preview');
+    const fileName = document.getElementById('image-filename');
+    const placeholder = document.getElementById('drop-placeholder');
+    const removeBtn = document.getElementById('remove-image');
+
+    function showPreview(file) {
+        if (!file || !file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            previewImg.src = e.target.result;
+            fileName.textContent = file.name;
+            previewWrap.classList.remove('hidden');
+            placeholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+    }
+
+    input.addEventListener('change', () => {
+        if (input.files && input.files[0]) showPreview(input.files[0]);
+    });
+
+    removeBtn.addEventListener('click', e => {
+        e.stopPropagation();
+        input.value = '';
+        previewWrap.classList.add('hidden');
+        placeholder.classList.remove('hidden');
+        previewImg.src = '#';
+    });
+
+    // Drag and drop
+    dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.classList.add('border-primary', 'bg-primary/10');
+    });
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('border-primary', 'bg-primary/10');
+    });
+    dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('border-primary', 'bg-primary/10');
+        const file = e.dataTransfer.files[0];
+        if (file) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            input.files = dt.files;
+            showPreview(file);
+        }
+    });
+})();
+</script>
+{% endblock %}
 {% endblock %}

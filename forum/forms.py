@@ -7,7 +7,7 @@ class QuestionForm(forms.ModelForm):
     
     class Meta:
         model = Question
-        fields = ['title', 'category', 'body']
+        fields = ['title', 'category', 'body', 'image']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -21,11 +21,16 @@ class QuestionForm(forms.ModelForm):
                 'rows': 8,
                 'placeholder': 'Provide as much detail as possible: pet age, breed, symptoms, duration, etc.'
             }),
+            'image': forms.ClearableFileInput(attrs={
+                'class': 'form-control',
+                'accept': 'image/*',
+            }),
         }
         labels = {
             'title': 'Question Title',
             'category': 'Category',
             'body': 'Question Details',
+            'image': 'Pet Photo (optional)',
         }
 
 

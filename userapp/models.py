@@ -20,6 +20,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+    @property
+    def display_name(self):
+        try:
+            p = self.profile
+            name = f"{p.first_name} {p.last_name}".strip()
+            if name:
+                return name
+        except Exception:
+            pass
+        return self.email.split('@')[0]
     
 
 class Profile(models.Model):

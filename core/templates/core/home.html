@@ -493,6 +493,14 @@
 .famo-home .vet-section {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
 }
+
+/* Quick Ask responsive visibility */
+.qa-desktop { display: none; }
+.qa-mobile  { display: flex; }
+@media (min-width: 768px) {
+    .qa-desktop { display: flex; }
+    .qa-mobile  { display: none; }
+}
 </style>
 
 {% endblock %}
@@ -531,7 +539,8 @@
                 </button>
             </div>
         </form>
-        <div class="flex flex-wrap gap-2 mt-4 justify-center">
+        <!-- Desktop: all questions shown -->
+        <div class="qa-desktop flex-wrap gap-2 mt-4 justify-center">
             <span class="text-xs font-bold text-slate-400 uppercase tracking-widest mr-2 py-1">Quick Ask:</span>
             <button type="button" class="bg-white border border-slate-200 hover:border-yellow-500 px-3 py-1 rounded-full text-xs font-medium transition-colors" onclick="fillChatInput('Why is my cat sleeping more?')">
                 "Why is my cat sleeping more?"
@@ -546,8 +555,66 @@
                 "Puppy vaccination schedule"
             </button>
         </div>
+
+        <!-- Mobile: one question at a time, cycling with fade -->
+        <div class="qa-mobile items-center justify-center gap-2 mt-4">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">Quick Ask:</span>
+            <button id="quickAskMobile" type="button"
+                class="bg-white border border-slate-200 hover:border-yellow-500 px-3 py-1 rounded-full text-xs font-medium"
+                style="transition: opacity 0.5s ease;"
+                onclick="fillChatInput(this.dataset.question)">
+            </button>
+        </div>
+        <style>
+            #quickAskMobile.qa-fade-out { opacity: 0; }
+            #quickAskMobile.qa-fade-in  { opacity: 1; }
+        </style>
+        <script>
+        (function () {
+            var questions = [
+                'Why is my cat sleeping more?',
+                'Safe human foods for dogs',
+                'Weight loss diet plan',
+                'Puppy vaccination schedule'
+            ];
+            var idx = 0;
+            var btn = document.getElementById('quickAskMobile');
+            if (!btn) return;
+
+            function showQuestion(i) {
+                btn.classList.add('qa-fade-out');
+                btn.classList.remove('qa-fade-in');
+                setTimeout(function () {
+                    btn.dataset.question = questions[i];
+                    btn.textContent = '"' + questions[i] + '"';
+                    btn.classList.remove('qa-fade-out');
+                    btn.classList.add('qa-fade-in');
+                }, 500);
+            }
+
+            // Initialise immediately
+            btn.dataset.question = questions[0];
+            btn.textContent = '"' + questions[0] + '"';
+            btn.classList.add('qa-fade-in');
+
+            setInterval(function () {
+                idx = (idx + 1) % questions.length;
+                showQuestion(idx);
+            }, 3000);
+        })();
+        </script>
     </div>
 </section>
+
+<!-- Paw Talk engagement banner -->
+<div class="w-full bg-yellow-400 py-2 px-4">
+    <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 text-center">
+        <span class="text-sm font-semibold text-yellow-900">🐾 Got a pet problem? Share it with our community on <strong>Paw Talk</strong> — real answers from real pet lovers.</span>
+        <a href="{% url 'forum:question_list' %}" class="shrink-0 bg-yellow-900 text-yellow-400 hover:bg-yellow-800 text-xs font-bold px-4 py-1.5 rounded-full transition-colors">
+            Join the conversation →
+        </a>
+    </div>
+</div>
 
 
 

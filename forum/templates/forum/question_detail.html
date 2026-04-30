@@ -14,48 +14,67 @@
 
     <!-- Question -->
     <div class="card bg-base-100 shadow-xl border border-base-300 mb-6">
-        <div class="card-body">
+        <div class="card-body p-4 sm:p-6">
             <!-- Question Header -->
-            <div class="flex items-start gap-4 mb-4">
-                <div class="flex flex-col items-center gap-2">
+            <div class="flex items-start gap-3 mb-4">
+                <!-- Vote column -->
+                <div class="flex flex-col items-center gap-1 flex-shrink-0 w-10">
                     <button 
-                        class="btn btn-ghost btn-sm"
+                        class="btn btn-ghost btn-xs p-1"
                         onclick="vote('question', {{ question.pk }}, 'up')"
                         {% if not user.is_authenticated %}disabled{% endif %}
+                        title="Upvote"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                         </svg>
                     </button>
-                    
-                    <div class="text-2xl font-bold" id="question-{{ question.pk }}-votes">
+                    <div class="text-base font-bold leading-none" id="question-{{ question.pk }}-votes">
                         {{ question.get_vote_count }}
                     </div>
-                    
                     <button 
-                        class="btn btn-ghost btn-sm"
+                        class="btn btn-ghost btn-xs p-1"
                         onclick="vote('question', {{ question.pk }}, 'down')"
                         {% if not user.is_authenticated %}disabled{% endif %}
+                        title="Downvote"
                     >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
                 </div>
                 
-                <div class="flex-1">
-                    <h1 class="text-3xl font-bold mb-3">{{ question.title }}</h1>
+                <div class="flex-1 min-w-0">
+                    <h1 class="text-xl sm:text-3xl font-bold mb-2 leading-snug">{{ question.title }}</h1>
                     
-                    <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                        <span class="badge badge-lg badge-outline">{{ question.get_category_display }}</span>
-                        <span>Asked by <span class="font-medium">{{ question.author.username }}</span></span>
+                    <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-600 mb-4">
+                        <span class="badge badge-outline badge-sm">{{ question.get_category_display }}</span>
+                        <span>by <span class="font-medium">{{ question.author.display_name }}</span></span>
                         <span>{{ question.created_at|timesince }} ago</span>
                         <span>{{ question.views }} views</span>
                     </div>
                     
-                    <div class="prose max-w-none">
+                    <div class="prose prose-sm sm:prose max-w-none">
                         {{ question.body|linebreaks }}
                     </div>
+
+                    {% if question.image %}
+                    <div class="mt-4">
+                        <img src="{{ question.image.url }}"
+                             alt="Photo attached to question"
+                             class="rounded-xl max-h-96 w-auto object-contain shadow-md cursor-pointer"
+                             onclick="document.getElementById('img-modal').showModal()"/>
+                        <!-- Lightbox modal -->
+                        <dialog id="img-modal" class="modal modal-bottom sm:modal-middle">
+                            <div class="modal-box max-w-4xl p-2 bg-base-200">
+                                <img src="{{ question.image.url }}" alt="Full size photo" class="w-full rounded-xl object-contain max-h-[80vh]"/>
+                            </div>
+                            <form method="dialog" class="modal-backdrop">
+                                <button>close</button>
+                            </form>
+                        </dialog>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -63,44 +82,46 @@
 
     <!-- Answers Section -->
     <div class="mb-6">
-        <h2 class="text-2xl font-bold mb-4">
+        <h2 class="text-xl sm:text-2xl font-bold mb-4">
             {{ answers.count }} {% if answers.count == 1 %}Answer{% else %}Answers{% endif %}
         </h2>
         
         {% for answer in answers %}
         <div class="card bg-base-100 shadow-md border border-base-300 mb-4 {% if answer.is_accepted %}border-success border-2{% endif %}">
-            <div class="card-body">
-                <div class="flex items-start gap-4">
+            <div class="card-body p-4 sm:p-6">
+                <div class="flex items-start gap-3">
                     <!-- Vote Buttons -->
-                    <div class="flex flex-col items-center gap-2">
+                    <div class="flex flex-col items-center gap-1 flex-shrink-0 w-10">
                         <button 
-                            class="btn btn-ghost btn-sm"
+                            class="btn btn-ghost btn-xs p-1"
                             onclick="vote('answer', {{ answer.pk }}, 'up')"
                             {% if not user.is_authenticated %}disabled{% endif %}
+                            title="Upvote"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
                             </svg>
                         </button>
                         
-                        <div class="text-xl font-bold" id="answer-{{ answer.pk }}-votes">
+                        <div class="text-base font-bold leading-none" id="answer-{{ answer.pk }}-votes">
                             {{ answer.get_vote_count }}
                         </div>
                         
                         <button 
-                            class="btn btn-ghost btn-sm"
+                            class="btn btn-ghost btn-xs p-1"
                             onclick="vote('answer', {{ answer.pk }}, 'down')"
                             {% if not user.is_authenticated %}disabled{% endif %}
+                            title="Downvote"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
                         
                         {% if user == question.author and not answer.is_accepted %}
-                        <form method="POST" action="{% url 'forum:accept_answer' answer.pk %}" class="mt-2">
+                        <form method="POST" action="{% url 'forum:accept_answer' answer.pk %}" class="mt-1">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-success btn-sm" title="Accept as best answer">
+                            <button type="submit" class="btn btn-success btn-xs px-1" title="Accept as best answer">
                                 ✓
                             </button>
                         </form>
@@ -108,17 +129,17 @@
                     </div>
                     
                     <!-- Answer Content -->
-                    <div class="flex-1">
+                    <div class="flex-1 min-w-0">
                         {% if answer.is_accepted %}
-                        <div class="badge badge-success mb-2">✓ Accepted Answer</div>
+                        <div class="badge badge-success badge-sm mb-2">✓ Accepted Answer</div>
                         {% endif %}
                         
-                        <div class="prose max-w-none mb-4">
+                        <div class="prose prose-sm sm:prose max-w-none mb-3">
                             {{ answer.body|linebreaks }}
                         </div>
                         
-                        <div class="text-sm text-gray-600">
-                            Answered by <span class="font-medium">{{ answer.author.username }}</span>
+                        <div class="text-xs sm:text-sm text-gray-600">
+                            Answered by <span class="font-medium">{{ answer.author.display_name }}</span>
                             • {{ answer.created_at|timesince }} ago
                         </div>
                     </div>
@@ -136,19 +157,38 @@
     {% if user.is_authenticated %}
     <div class="card bg-base-100 shadow-xl border border-base-300">
         <div class="card-body">
-            <h3 class="card-title mb-4">Your Answer</h3>
+            <h3 class="text-xl font-bold mb-4">Your Answer</h3>
             <form method="POST">
                 {% csrf_token %}
-                {{ answer_form.as_p }}
-                <div class="card-actions justify-end mt-4">
-                    <button type="submit" class="btn btn-primary">Post Answer</button>
+                <div class="mb-4">
+                    <textarea
+                        name="body"
+                        id="id_body"
+                        rows="6"
+                        placeholder="Share your knowledge and experience..."
+                        class="textarea textarea-bordered w-full text-base resize-y focus:outline-none focus:ring-2 focus:ring-primary"
+                        required
+                    >{{ answer_form.body.value|default:'' }}</textarea>
+                    {% if answer_form.body.errors %}
+                    <ul class="mt-1 text-error text-sm list-none p-0">
+                        {% for error in answer_form.body.errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-primary px-8">Post Answer</button>
                 </div>
             </form>
         </div>
     </div>
     {% else %}
     <div class="alert alert-warning">
-        <span>Please <a href="{% url 'account_login' %}?next={{ request.path }}" class="link">login</a> to post an answer.</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/>
+        </svg>
+        <span>Please <a href="{% url 'account_login' %}?next={{ request.path }}" class="link font-medium">login</a> to post an answer.</span>
     </div>
     {% endif %}
 </div>
@@ -170,14 +210,25 @@ function getCookie(name) {
 }
 
 function vote(contentType, objectId, voteType) {
-    fetch(`/forum/vote/${contentType}/${objectId}/${voteType}/`, {
+    // Respect i18n URL prefix (e.g. /en/) from the current page URL
+    const langMatch = window.location.pathname.match(/^(\/[a-z]{2})\//);
+    const langPrefix = langMatch ? langMatch[1] : '';
+    fetch(`${langPrefix}/forum/vote/${contentType}/${objectId}/${voteType}/`, {
         method: 'POST',
+        credentials: 'same-origin',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
             'Content-Type': 'application/json',
         },
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            if (response.status === 403) throw new Error('You must be logged in to vote.');
+            if (response.status === 400) return response.json().then(d => { throw new Error(d.error || 'Bad request'); });
+            throw new Error(`Server error (${response.status})`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             const voteElement = document.getElementById(`${contentType}-${objectId}-votes`);
@@ -189,7 +240,7 @@ function vote(contentType, objectId, voteType) {
         }
     })
     .catch(error => {
-        console.error('Error:', error);
+        alert(error.message || 'Could not submit vote. Please try again.');
     });
 }
 </script>

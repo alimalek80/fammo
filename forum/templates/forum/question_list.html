@@ -6,17 +6,17 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
-    <div class="flex justify-between items-center mb-8">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
         <div>
-            <h1 class="text-4xl font-bold mb-2">🐾 Pet Forum</h1>
-            <p class="text-gray-600">Ask questions, share knowledge, and help fellow pet owners</p>
+            <h1 class="text-2xl sm:text-4xl font-bold mb-1">🐾 Pet Forum</h1>
+            <p class="text-gray-600 text-sm sm:text-base">Ask questions, share knowledge, and help fellow pet owners</p>
         </div>
         {% if user.is_authenticated %}
-        <a href="{% url 'forum:ask_question' %}" class="btn btn-primary">
+        <a href="{% url 'forum:ask_question' %}" class="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto">
             Ask Question
         </a>
         {% else %}
-        <a href="{% url 'account_login' %}" class="btn btn-primary">
+        <a href="{% url 'account_login' %}" class="btn btn-primary btn-sm sm:btn-md w-full sm:w-auto">
             Login to Ask
         </a>
         {% endif %}
@@ -69,39 +69,27 @@
         {% for question in questions %}
         <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-300">
             <div class="card-body">
-                <div class="flex gap-4">
-                    <!-- Vote Count -->
-                    <div class="flex flex-col items-center gap-2 min-w-[60px]">
-                        <div class="text-2xl font-bold">{{ question.get_vote_count }}</div>
-                        <div class="text-xs text-gray-500">votes</div>
-                    </div>
+                <!-- Question Content -->
+                <div class="flex-1 min-w-0">
+                    <a href="{% url 'forum:question_detail' question.pk %}" class="card-title text-base sm:text-lg hover:text-primary mb-1 leading-snug">
+                        {{ question.title }}
+                    </a>
                     
-                    <!-- Answer Count -->
-                    <div class="flex flex-col items-center gap-2 min-w-[60px]">
-                        <div class="text-2xl font-bold {% if question.is_answered %}text-success{% endif %}">
-                            {{ question.answer_count }}
-                        </div>
-                        <div class="text-xs text-gray-500">answers</div>
-                    </div>
+                    <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                        {{ question.body|truncatewords:25 }}
+                    </p>
                     
-                    <!-- Question Content -->
-                    <div class="flex-1">
-                        <a href="{% url 'forum:question_detail' question.pk %}" class="card-title text-lg hover:text-primary mb-2">
-                            {{ question.title }}
-                        </a>
-                        
-                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">
-                            {{ question.body|truncatewords:30 }}
-                        </p>
-                        
-                        <div class="flex items-center gap-4 text-sm">
-                            <span class="badge badge-outline">{{ question.get_category_display }}</span>
-                            <span class="text-gray-500">
-                                by <span class="font-medium">{{ question.author.username }}</span>
-                            </span>
-                            <span class="text-gray-500">{{ question.created_at|timesince }} ago</span>
-                            <span class="text-gray-500">{{ question.views }} views</span>
-                        </div>
+                    <!-- Stats row -->
+                    <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm">
+                        <span class="badge badge-outline badge-sm">{{ question.get_category_display }}</span>
+                        <span class="inline-flex items-center gap-1 text-gray-500">
+                            <span class="font-semibold {% if question.is_answered %}text-success{% endif %}">{{ question.answer_count }}</span> ans
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-gray-500">
+                            <span class="font-semibold">{{ question.get_vote_count }}</span> votes
+                        </span>
+                        <span class="text-gray-500">by <span class="font-medium">{{ question.author.display_name }}</span></span>
+                        <span class="text-gray-400">{{ question.created_at|timesince }} ago</span>
                     </div>
                 </div>
             </div>

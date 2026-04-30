@@ -98,7 +98,7 @@ def ask_question(request):
     """Create a new question"""
     
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
+        form = QuestionForm(request.POST, request.FILES)
         if form.is_valid():
             question = form.save(commit=False)
             question.author = request.user

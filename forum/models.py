@@ -1,9 +1,16 @@
+import io
+import os
+
 from django.db import models
 from django.conf import settings
+from django.core.files.base import ContentFile
+from django.db.models.signals import pre_save, post_delete
+from django.dispatch import receiver
 from django.utils import timezone
 from django.urls import reverse
 from django.contrib.contenttypes.fields import GenericForeignKey, GenericRelation
 from django.contrib.contenttypes.models import ContentType
+from PIL import Image
 
 
 class Question(models.Model):
@@ -42,6 +49,14 @@ class Question(models.Model):
     
     # Generic relation for votes
     votes = GenericRelation('Vote', related_query_name='question')
+
+    # Optional pet photo attached to the question
+    image = models.ImageField(
+        upload_to='forum/questions/',
+        blank=True,
+        null=True,
+        help_text='Optional photo (will be compressed to under 1 MB automatically)'
+    )
     
     class Meta:
         ordering = ['-created_at']
@@ -63,6 +78,41 @@ class Question(models.Model):
     def get_answer_count(self):
         """Get number of answers"""
         return self.answers.count()
+
+    def _compress_image(self):
+        """Compress self.image in-place to stay under 1 MB, preserving quality as much as possible."""
+        MAX_BYTES = 1 * 1024 * 1024  # 1 MB
+        MAX_DIMENSION = 1920
+
+        img = Image.open(self.image)
+
+        # Convert palette/RGBA to RGB for JPEG
+        if img.mode in ('RGBA', 'P', 'LA'):
+            background = Image.new('RGB', img.size, (255, 255, 255))
+            background.paste(img, mask=img.split()[-1] if img.mode in ('RGBA', 'LA') else None)
+            img = background
+        elif img.mode != 'RGB':
+            img = img.convert('RGB')
+
+        # Resize if too large, preserving aspect ratio
+        if max(img.size) > MAX_DIMENSION:
+            img.thumbnail((MAX_DIMENSION, MAX_DIMENSION), Image.LANCZOS)
+
+        # Iteratively reduce quality until under 1 MB
+        quality = 85
+        output = io.BytesIO()
+        while quality >= 40:
+            output.seek(0)
+            output.truncate(0)
+            img.save(output, format='JPEG', quality=quality, optimize=True)
+            if output.tell() <= MAX_BYTES:
+                break
+            quality -= 5
+
+        # Use a clean filename with .jpg extension
+        original_name = os.path.splitext(os.path.basename(self.image.name))[0]
+        new_name = f"{original_name}.jpg"
+        self.image.save(new_name, ContentFile(output.getvalue()), save=False)
 
 
 class Answer(models.Model):
@@ -135,3 +185,43 @@ class Vote(models.Model):
     
     def __str__(self):
         return f"{self.user.username} - {self.vote_type}"
+
+
+# ── Signals for Question image management ──────────────────────────────────────
+
+@receiver(pre_save, sender=Question)
+def compress_and_delete_old_image(sender, instance, **kwargs):
+    """Compress the newly uploaded image and delete the old one from disk."""
+    if not instance.pk:
+        # New question — just compress if an image was provided
+        if instance.image:
+            instance._compress_image()
+        return
+
+    try:
+        old = Question.objects.get(pk=instance.pk)
+    except Question.DoesNotExist:
+        return
+
+    old_image = old.image
+    new_image = instance.image
+
+    if new_image and new_image != old_image:
+        # Compress the new upload
+        instance._compress_image()
+        # Delete the old file from disk
+        if old_image:
+            if os.path.isfile(old_image.path):
+                os.remove(old_image.path)
+    elif not new_image and old_image:
+        # Image was cleared — delete old file
+        if os.path.isfile(old_image.path):
+            os.remove(old_image.path)
+
+
+@receiver(post_delete, sender=Question)
+def delete_image_on_question_delete(sender, instance, **kwargs):
+    """Remove the image file from disk when a question is deleted."""
+    if instance.image:
+        if os.path.isfile(instance.image.path):
+            os.remove(instance.image.path)

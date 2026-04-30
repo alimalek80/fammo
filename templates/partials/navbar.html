@@ -188,6 +188,9 @@
                     <a href="{% url 'blog:blog_list' %}" class="nav-link">
                         {% trans "Blog" %}
                     </a>
+                    <a href="{% url 'forum:question_list' %}" class="font-medium px-4 py-1.5 rounded-full text-sm transition duration-300 ease-in-out" style="background-color:#78350f;color:#facc15;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;" onmouseover="this.style.backgroundColor='#92400e'" onmouseout="this.style.backgroundColor='#78350f'">
+                        {% trans "Paw Talk" %}
+                    </a>
                 {% else %}
                     <a href="{% url 'core:about' %}" class="nav-link">
                         {% trans "About Us" %}
@@ -197,6 +200,9 @@
                     </a>
                     <a href="{% url 'blog:blog_list' %}" class="nav-link">
                         {% trans "Blog" %}
+                    </a>
+                    <a href="{% url 'forum:question_list' %}" class="font-medium px-4 py-1.5 rounded-full text-sm transition duration-300 ease-in-out" style="background-color:#78350f;color:#facc15;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;" onmouseover="this.style.backgroundColor='#92400e'" onmouseout="this.style.backgroundColor='#78350f'">
+                        {% trans "Paw Talk" %}
                     </a>
                     <a href="{% url 'core:contact' %}" class="nav-link">
                         {% trans "Contact Us" %}
@@ -220,9 +226,9 @@
                     </form>
                 </div>
 
-                <!-- Chat Button -->
+                <!-- Ask AI Button -->
                 <a href="{% url 'chat' %}" class="bg-orange-500 text-white hover:bg-orange-600 font-medium px-4 py-2 rounded-full transition duration-300 ease-in-out shadow-md hover:shadow-lg text-sm font-medium" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
-                    {% trans "Chat" %}
+                    {% trans "Ask AI" %}
                 </a>
                 
                 <!-- Trusted Partners Button -->
@@ -315,10 +321,11 @@
             <a href="{% url 'pet:my_pets' %}" class="block text-gray-600 hover:text-indigo-600 font-medium py-2 text-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">{% trans "My Pets" %}</a>
             <a href="{% url 'ai_history' %}" class="block text-gray-600 hover:text-indigo-600 font-medium py-2 text-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">{% trans "AI History" %}</a>
             <a href="{% url 'blog:blog_list' %}" class="block text-gray-600 hover:text-indigo-600 font-medium py-2 text-center" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; font-weight: 500;">{% trans "Blog" %}</a>
+            <a href="{% url 'forum:question_list' %}" class="block font-bold py-2 rounded-full text-center" style="background-color:#78350f;color:#facc15;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">{% trans "Paw Talk" %}</a>
             
             <!-- Action Buttons -->
             <div class="py-2 space-y-2">
-                <a href="{% url 'chat' %}" class="block bg-orange-500 text-white hover:bg-orange-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Chat" %}</a>
+                <a href="{% url 'chat' %}" class="block bg-orange-500 text-white hover:bg-orange-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Ask AI" %}</a>
                 <a href="{% url 'vets:partner_clinics' %}" class="block bg-green-500 text-white hover:bg-green-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Trusted Partners" %}</a>
             </div>
             
@@ -349,11 +356,12 @@
             <a href="{% url 'core:about' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "About Us" %}</a>
             <a href="{% url 'core:how_it_works' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "How it Works" %}</a>
             <a href="{% url 'blog:blog_list' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Blog" %}</a>
+            <a href="{% url 'forum:question_list' %}" class="block font-bold py-2 rounded-full text-center" style="background-color:#78350f;color:#facc15;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">{% trans "Paw Talk" %}</a>
             <a href="{% url 'core:contact' %}" class="block text-gray-800 hover:text-indigo-600 font-medium py-2 text-center">{% trans "Contact Us" %}</a>
             
             <!-- Action Buttons -->
             <div class="py-2 space-y-2">
-                <a href="{% url 'chat' %}" class="block bg-orange-500 text-white hover:bg-orange-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Chat" %}</a>
+                <a href="{% url 'chat' %}" class="block bg-orange-500 text-white hover:bg-orange-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Ask AI" %}</a>
                 <a href="{% url 'vets:partner_clinics' %}" class="block bg-green-500 text-white hover:bg-green-600 font-medium py-2 rounded-full text-center shadow-md hover:shadow-lg transition duration-300 ease-in-out">{% trans "Trusted Partners" %}</a>
             </div>
         {% endif %}
