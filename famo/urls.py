@@ -5,22 +5,12 @@ from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
 from django.contrib.auth import views as auth_views
-from django.contrib.sitemaps.views import sitemap
 from userapp.views import reset_password_from_email
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.generic import TemplateView
 
 from userapp.views import account_deletion_view, privacy_policy_view
-from .sitemaps import StaticViewSitemap, BlogPostSitemap, ForumQuestionSitemap, ClinicSitemap
-
-# Sitemap configuration
-sitemaps = {
-    'static': StaticViewSitemap,
-    'blog': BlogPostSitemap,
-    'forum': ForumQuestionSitemap,
-    'clinics': ClinicSitemap,
-}
 
 # Custom 404 handler
 def custom_404(request, exception=None):
@@ -47,7 +37,10 @@ urlpatterns = [
         content_type='text/plain'
     ), name='google_verification'),
     # Sitemap
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    path('sitemap.xml', TemplateView.as_view(
+        template_name='sitemap.xml',
+        content_type='application/xml'
+    ), name='sitemap'),
     # Robots.txt
     path('robots.txt', TemplateView.as_view(
         template_name='robots.txt',
