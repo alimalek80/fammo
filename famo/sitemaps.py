@@ -90,8 +90,15 @@ class ForumQuestionSitemap(DynamicModelSitemap):
     changefreq = 'daily'
     priority = 0.7
     def items(self):
-        """Return latest 200 forum questions to keep sitemap size reasonable"""
-        return Question.objects.all().order_by('-created_at')[:200]
+        """Return latest 200 forum questions. Returns empty list if table not migrated yet."""
+        from django.db import connection
+        from django.db.utils import OperationalError, ProgrammingError
+        try:
+            if 'forum_question' not in connection.introspection.table_names():
+                return []
+            return Question.objects.all().order_by('-created_at')[:200]
+        except (OperationalError, ProgrammingError):
+            return []
     
     def lastmod(self, obj):
         """Return the last modification date"""
