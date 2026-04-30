@@ -43,6 +43,7 @@ urlpatterns += i18n_patterns(
     path('subscription/', include('subscription.urls')),
     path('blog/', include('blog.urls')),
     path('chat/', include('chat.urls')),
+    path('forum/', include(('forum.urls', 'forum'), namespace='forum')),
     path('evidence/', include(('evidence.urls', 'evidence'), namespace='evidence')),
 )
 

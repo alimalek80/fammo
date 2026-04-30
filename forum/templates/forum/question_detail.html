@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}{{ question.title }} - Forum{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- Back Button -->
+    <div class="mb-4">
+        <a href="{% url 'forum:question_list' %}" class="btn btn-ghost btn-sm">
+            ← Back to Forum
+        </a>
+    </div>
+
+    <!-- Question -->
+    <div class="card bg-base-100 shadow-xl border border-base-300 mb-6">
+        <div class="card-body">
+            <!-- Question Header -->
+            <div class="flex items-start gap-4 mb-4">
+                <div class="flex flex-col items-center gap-2">
+                    <button 
+                        class="btn btn-ghost btn-sm"
+                        onclick="vote('question', {{ question.pk }}, 'up')"
+                        {% if not user.is_authenticated %}disabled{% endif %}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                        </svg>
+                    </button>
+                    
+                    <div class="text-2xl font-bold" id="question-{{ question.pk }}-votes">
+                        {{ question.get_vote_count }}
+                    </div>
+                    
+                    <button 
+                        class="btn btn-ghost btn-sm"
+                        onclick="vote('question', {{ question.pk }}, 'down')"
+                        {% if not user.is_authenticated %}disabled{% endif %}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="flex-1">
+                    <h1 class="text-3xl font-bold mb-3">{{ question.title }}</h1>
+                    
+                    <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                        <span class="badge badge-lg badge-outline">{{ question.get_category_display }}</span>
+                        <span>Asked by <span class="font-medium">{{ question.author.username }}</span></span>
+                        <span>{{ question.created_at|timesince }} ago</span>
+                        <span>{{ question.views }} views</span>
+                    </div>
+                    
+                    <div class="prose max-w-none">
+                        {{ question.body|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Answers Section -->
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold mb-4">
+            {{ answers.count }} {% if answers.count == 1 %}Answer{% else %}Answers{% endif %}
+        </h2>
+        
+        {% for answer in answers %}
+        <div class="card bg-base-100 shadow-md border border-base-300 mb-4 {% if answer.is_accepted %}border-success border-2{% endif %}">
+            <div class="card-body">
+                <div class="flex items-start gap-4">
+                    <!-- Vote Buttons -->
+                    <div class="flex flex-col items-center gap-2">
+                        <button 
+                            class="btn btn-ghost btn-sm"
+                            onclick="vote('answer', {{ answer.pk }}, 'up')"
+                            {% if not user.is_authenticated %}disabled{% endif %}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+                            </svg>
+                        </button>
+                        
+                        <div class="text-xl font-bold" id="answer-{{ answer.pk }}-votes">
+                            {{ answer.get_vote_count }}
+                        </div>
+                        
+                        <button 
+                            class="btn btn-ghost btn-sm"
+                            onclick="vote('answer', {{ answer.pk }}, 'down')"
+                            {% if not user.is_authenticated %}disabled{% endif %}
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+                        
+                        {% if user == question.author and not answer.is_accepted %}
+                        <form method="POST" action="{% url 'forum:accept_answer' answer.pk %}" class="mt-2">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-success btn-sm" title="Accept as best answer">
+                                ✓
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Answer Content -->
+                    <div class="flex-1">
+                        {% if answer.is_accepted %}
+                        <div class="badge badge-success mb-2">✓ Accepted Answer</div>
+                        {% endif %}
+                        
+                        <div class="prose max-w-none mb-4">
+                            {{ answer.body|linebreaks }}
+                        </div>
+                        
+                        <div class="text-sm text-gray-600">
+                            Answered by <span class="font-medium">{{ answer.author.username }}</span>
+                            • {{ answer.created_at|timesince }} ago
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">
+            <span>No answers yet. Be the first to help!</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Answer Form -->
+    {% if user.is_authenticated %}
+    <div class="card bg-base-100 shadow-xl border border-base-300">
+        <div class="card-body">
+            <h3 class="card-title mb-4">Your Answer</h3>
+            <form method="POST">
+                {% csrf_token %}
+                {{ answer_form.as_p }}
+                <div class="card-actions justify-end mt-4">
+                    <button type="submit" class="btn btn-primary">Post Answer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning">
+        <span>Please <a href="{% url 'account_login' %}?next={{ request.path }}" class="link">login</a> to post an answer.</span>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function vote(contentType, objectId, voteType) {
+    fetch(`/forum/vote/${contentType}/${objectId}/${voteType}/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const voteElement = document.getElementById(`${contentType}-${objectId}-votes`);
+            if (voteElement) {
+                voteElement.textContent = data.vote_count;
+            }
+        } else if (data.error) {
+            alert(data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+</script>
+{% endblock %}

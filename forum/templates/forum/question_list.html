@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load i18n %}
+
+{% block title %}Forum - Pet Questions & Answers{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-4xl font-bold mb-2">🐾 Pet Forum</h1>
+            <p class="text-gray-600">Ask questions, share knowledge, and help fellow pet owners</p>
+        </div>
+        {% if user.is_authenticated %}
+        <a href="{% url 'forum:ask_question' %}" class="btn btn-primary">
+            Ask Question
+        </a>
+        {% else %}
+        <a href="{% url 'account_login' %}" class="btn btn-primary">
+            Login to Ask
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="bg-base-200 rounded-lg p-4 mb-6">
+        <form method="GET" class="flex flex-col md:flex-row gap-4">
+            <!-- Search -->
+            <div class="flex-1">
+                <input 
+                    type="text" 
+                    name="search" 
+                    value="{{ search_query }}" 
+                    placeholder="Search questions..." 
+                    class="input input-bordered w-full"
+                />
+            </div>
+            
+            <!-- Category Filter -->
+            <div>
+                <select name="category" class="select select-bordered w-full md:w-48">
+                    <option value="">All Categories</option>
+                    {% for value, label in categories %}
+                    <option value="{{ value }}" {% if selected_category == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <!-- Sort -->
+            <div>
+                <select name="sort" class="select select-bordered w-full md:w-40">
+                    <option value="recent" {% if selected_sort == 'recent' %}selected{% endif %}>Recent</option>
+                    <option value="votes" {% if selected_sort == 'votes' %}selected{% endif %}>Most Voted</option>
+                    <option value="unanswered" {% if selected_sort == 'unanswered' %}selected{% endif %}>Unanswered</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-neutral">
+                Search
+            </button>
+        </form>
+    </div>
+
+    <!-- Questions List -->
+    {% if questions %}
+    <div class="space-y-4">
+        {% for question in questions %}
+        <div class="card bg-base-100 shadow-md hover:shadow-lg transition-shadow border border-base-300">
+            <div class="card-body">
+                <div class="flex gap-4">
+                    <!-- Vote Count -->
+                    <div class="flex flex-col items-center gap-2 min-w-[60px]">
+                        <div class="text-2xl font-bold">{{ question.get_vote_count }}</div>
+                        <div class="text-xs text-gray-500">votes</div>
+                    </div>
+                    
+                    <!-- Answer Count -->
+                    <div class="flex flex-col items-center gap-2 min-w-[60px]">
+                        <div class="text-2xl font-bold {% if question.is_answered %}text-success{% endif %}">
+                            {{ question.answer_count }}
+                        </div>
+                        <div class="text-xs text-gray-500">answers</div>
+                    </div>
+                    
+                    <!-- Question Content -->
+                    <div class="flex-1">
+                        <a href="{% url 'forum:question_detail' question.pk %}" class="card-title text-lg hover:text-primary mb-2">
+                            {{ question.title }}
+                        </a>
+                        
+                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">
+                            {{ question.body|truncatewords:30 }}
+                        </p>
+                        
+                        <div class="flex items-center gap-4 text-sm">
+                            <span class="badge badge-outline">{{ question.get_category_display }}</span>
+                            <span class="text-gray-500">
+                                by <span class="font-medium">{{ question.author.username }}</span>
+                            </span>
+                            <span class="text-gray-500">{{ question.created_at|timesince }} ago</span>
+                            <span class="text-gray-500">{{ question.views }} views</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span>No questions found. {% if user.is_authenticated %}<a href="{% url 'forum:ask_question' %}" class="link">Be the first to ask!</a>{% endif %}</span>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

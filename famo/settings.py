@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'ai_core.apps.AiCoreConfig',
     'subscription',
     'blog',
+    'forum',
     'markdownify',
     'widget_tweaks',
     'markdownx',
