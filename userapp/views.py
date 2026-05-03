@@ -354,11 +354,39 @@ def dashboard_view(request):
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
 def users_admin_view(request):
     User = get_user_model()
-    users = User.objects.all().prefetch_related('pets')
-    
+    users = User.objects.all().prefetch_related('pets').select_related('profile__subscription_plan')
+
+    total_users        = users.count()
+    active_users       = users.filter(is_active=True).count()
+    inactive_users     = users.filter(is_active=False).count()
+    staff_users        = users.filter(is_staff=True).count()
+    users_with_pets    = users.filter(pets__isnull=False).distinct().count()
+    users_without_pets = total_users - users_with_pets
+
+    # Search / filter
+    q = request.GET.get('q', '').strip()
+    status = request.GET.get('status', '')
+    if q:
+        users = users.filter(email__icontains=q)
+    if status == 'active':
+        users = users.filter(is_active=True)
+    elif status == 'inactive':
+        users = users.filter(is_active=False)
+    elif status == 'pets':
+        users = users.filter(pets__isnull=False).distinct()
+    elif status == 'no_pets':
+        users = users.filter(pets__isnull=True)
+
     return render(request, 'userapp/users_admin.html', {
         'users': users,
-        
+        'total_users': total_users,
+        'active_users': active_users,
+        'inactive_users': inactive_users,
+        'staff_users': staff_users,
+        'users_with_pets': users_with_pets,
+        'users_without_pets': users_without_pets,
+        'q': q,
+        'status': status,
     })
 
 def activate(request, uidb64, token):
