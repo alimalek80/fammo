@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Previews — Fammo Dev</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f1f5f9;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    /* ── Top bar ── */
+    .topbar {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      padding: 24px 32px;
+    }
+    .topbar h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+    .topbar p  { font-size: 0.9rem; opacity: 0.85; }
+
+    .dev-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 999px;
+      padding: 2px 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: .5px;
+      margin-left: 12px;
+      vertical-align: middle;
+    }
+
+    /* ── Main layout ── */
+    .main { max-width: 1000px; margin: 0 auto; padding: 32px 24px; }
+
+    /* ── Info banner ── */
+    .info-banner {
+      background: #fef9c3;
+      border: 1px solid #fde047;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 32px;
+      font-size: 0.88rem;
+      color: #713f12;
+    }
+    .info-banner strong { color: #92400e; }
+
+    /* ── Group section ── */
+    .group { margin-bottom: 36px; }
+
+    .group-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .group-header h2 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #334155;
+    }
+    .group-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 2px 10px;
+      border-radius: 999px;
+    }
+    .pill-indigo  { background: #e0e7ff; color: #3730a3; }
+    .pill-green   { background: #dcfce7; color: #15803d; }
+    .pill-blue    { background: #dbeafe; color: #1d4ed8; }
+    .pill-purple  { background: #f3e8ff; color: #7e22ce; }
+
+    /* ── Cards grid ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: box-shadow .15s, transform .15s;
+    }
+    .card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.09); transform: translateY(-2px); }
+
+    .card-title { font-size: 0.95rem; font-weight: 700; color: #1e293b; }
+    .card-subject {
+      font-size: 0.78rem;
+      color: #64748b;
+      font-family: monospace;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 4px 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-desc { font-size: 0.82rem; color: #64748b; line-height: 1.5; flex: 1; }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+    }
+    .recipient-tag {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .preview-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      text-decoration: none;
+      padding: 7px 16px;
+      border-radius: 7px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: opacity .15s;
+    }
+    .preview-btn:hover { opacity: .85; }
+
+    /* ── Footer ── */
+    .page-footer {
+      text-align: center;
+      padding: 24px;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1>📧 Fammo Email Previews <span class="dev-badge">DEV ONLY</span></h1>
+  <p>Preview all transactional emails sent by Fammo with realistic sample data.</p>
+</div>
+
+<div class="main">
+
+  <div class="info-banner">
+    <strong>⚠️ Development tool only.</strong>
+    This page is only visible when <code>DEBUG = True</code>.
+    Click any card to open the email in full — it renders exactly as users will receive it.
+  </div>
+
+  {% for group in groups %}
+  <div class="group">
+    <div class="group-header">
+      <h2>{{ group.name }}</h2>
+      <span class="group-pill pill-{{ group.color }}">{{ group.items|length }} email{{ group.items|length|pluralize }}</span>
+    </div>
+
+    <div class="cards">
+      {% for email in group.items %}
+      <div class="card">
+        <div class="card-title">{{ email.title }}</div>
+        <div class="card-subject" title="{{ email.subject }}">{{ email.subject }}</div>
+        <div class="card-desc">{{ email.description }}</div>
+        <div class="card-footer">
+          <span class="recipient-tag">→ {{ email.recipient }}</span>
+          <a href="{% url 'dev:email_preview_detail' email.key %}" target="_blank" class="preview-btn">
+            Preview ↗
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+
+</div>
+
+<div class="page-footer">
+  Fammo Dev Tools &mdash; visible only in DEBUG mode
+</div>
+
+</body>
+</html>

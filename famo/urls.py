@@ -90,6 +90,19 @@ urlpatterns += [
     
 ]
 
+from core.email_preview import email_preview_index, email_preview_detail
+
+_email_preview_urls = [
+    path('', email_preview_index, name='email_preview_index'),
+    path('<str:email_key>/', email_preview_detail, name='email_preview_detail'),
+]
+
+# Email preview tool — staff-only, works in both dev and production
+# Visit: /dev/emails/
+urlpatterns += [
+    path('dev/emails/', include((_email_preview_urls, 'dev'))),
+]
+
 if settings.DEBUG:
     # Include django_browser_reload URLs only in DEBUG mode
     urlpatterns += [
