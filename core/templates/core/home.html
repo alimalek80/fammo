@@ -1,9 +1,16 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 
-{% block title %}{% trans "Welcome to FAMMO" %}{% endblock %}
+{% block title %}FAMMO – AI-Powered Pet Care & Vet Booking Platform{% endblock %}
+
+{% block meta_description %}Discover FAMMO, the AI-powered platform for pet health, vet appointments, and personalized pet care advice for every pet owner.{% endblock %}
 
 {% block extra_head %}
+<link rel="alternate" hreflang="x-default" href="https://fammo.ai/" />
+<link rel="alternate" hreflang="en" href="https://fammo.ai/en/" />
+<link rel="alternate" hreflang="tr" href="https://fammo.ai/tr/" />
+<link rel="alternate" hreflang="nl" href="https://fammo.ai/nl/" />
+<link rel="alternate" hreflang="fi" href="https://fammo.ai/fi/" />
 {# Optional: font — safe to keep or remove #}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
