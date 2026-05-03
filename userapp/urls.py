@@ -29,6 +29,8 @@ urlpatterns = [
     path('translations/extract/', views.extract_translations_ajax, name='extract_translations'),
     path('translations/export-csv/', views.export_translations_csv, name='export_translations_csv'),
     path('translations/import-csv/', views.import_translations_csv, name='import_translations_csv'),
+    # Admin tools
+    path('email-previews/', views.dashboard_email_previews_view, name='dashboard_email_previews'),
     # API
     path('api/save-location/', views.SaveUserLocationAPIView.as_view(), name='save_location_api'),
 ]

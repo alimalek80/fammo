@@ -450,7 +450,7 @@ class PetWizard(SessionWizardView):
                                 'pet_name': form_data.get('name'),
                                 'is_pet_registration': True,
                             })
-                            send_mail(subject, message, 'noreply@famo-pet.com', [user_email], fail_silently=True)
+                            send_mail(subject, '', 'noreply@famo-pet.com', [user_email], html_message=message, fail_silently=True)
                             
                             messages.info(self.request, f"📧 We've sent a new activation email to {user_email}. Please check your email to activate your account and complete {form_data.get('name')}'s profile.")
                             return redirect('/')
@@ -532,7 +532,7 @@ class PetWizard(SessionWizardView):
                             'pet_name': form_data.get('name'),
                             'is_pet_registration': True,
                         })
-                        send_mail(subject, message, 'noreply@famo-pet.com', [user_email], fail_silently=True)
+                        send_mail(subject, '', 'noreply@famo-pet.com', [user_email], html_message=message, fail_silently=True)
                         
                         messages.success(self.request, f"📧 Account created! We've sent an activation email to {user_email}. Please check your email to activate your account and complete {form_data.get('name')}'s profile.")
                         return redirect('/')

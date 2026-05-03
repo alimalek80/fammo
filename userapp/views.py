@@ -229,7 +229,7 @@ def register_view(request):
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
-            send_mail(subject, message, None, [user.email])
+            send_mail(subject, '', None, [user.email], html_message=message)
             messages.success(request, _("Registration successful. Please check your email to activate your account."))
             return redirect('login')
         else:
@@ -579,6 +579,16 @@ def app_activation_redirect(request):
         'deep_link': f'fammo://login?activated=true&email={email}',
     }
     return render(request, 'userapp/app_activation_redirect.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff or u.is_superuser)
+def dashboard_email_previews_view(request):
+    from core.email_preview import EMAILS, EMAIL_GROUPS
+    groups = []
+    for group in EMAIL_GROUPS:
+        items = [{"key": k, **EMAILS[k]} for k in group["keys"] if k in EMAILS]
+        groups.append({**group, "items": items})
+    return render(request, 'userapp/dashboard_email_previews.html', {'groups': groups})
 
 
 @user_passes_test(lambda u: u.is_staff or u.is_superuser)
