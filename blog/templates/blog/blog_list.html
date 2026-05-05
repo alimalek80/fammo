@@ -54,7 +54,7 @@
                     </svg>
                     {% trans "Searching for:" %} <strong class="ml-1">"{{ request.GET.search }}"</strong>
                     {% if posts %}
-                        <span class="ml-2 px-2 py-0.5 bg-indigo-600 text-white rounded-full text-xs">{{ posts|length }}</span>
+                        <span class="ml-2 px-2 py-0.5 bg-indigo-600 text-white rounded-full text-xs">{{ page_obj.paginator.count }}</span>
                     {% endif %}
                 </span>
             </div>
@@ -131,5 +131,37 @@
         <div class="col-span-full text-center text-gray-400 text-lg">{% trans "No blog posts yet." %}</div>
         {% endfor %}
     </div>
+
+    {% if page_obj.has_other_pages %}
+    <div class="flex justify-center items-center gap-2 mt-10">
+        {% if page_obj.has_previous %}
+        <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}page={{ page_obj.previous_page_number }}"
+           class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 transition-colors">
+            &laquo;
+        </a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <span class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold">{{ num }}</span>
+            {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+            <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}page={{ num }}"
+               class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 transition-colors">
+                {{ num }}
+            </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}page={{ page_obj.next_page_number }}"
+           class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 transition-colors">
+            &raquo;
+        </a>
+        {% endif %}
+    </div>
+    <p class="text-center text-sm text-gray-400 mt-3">
+        {% trans "Page" %} {{ page_obj.number }} {% trans "of" %} {{ page_obj.paginator.num_pages }}
+    </p>
+    {% endif %}
 </section>
 {% endblock %}

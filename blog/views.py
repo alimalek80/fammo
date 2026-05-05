@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost, BlogComment, BlogRating, BlogCategory
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db.models import Avg, Count, F, Q
 from urllib.parse import quote
 from django.utils.html import strip_tags
@@ -29,10 +30,16 @@ def blog_list(request):
             Q(author__profile__last_name__icontains=search_query)
         ).distinct()
     
+    paginator = Paginator(posts, 9)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     return render(request, 'blog/blog_list.html', {
-        'posts': posts,
+        'posts': page_obj,
+        'page_obj': page_obj,
         'categories': categories,
         'selected_slug': selected_slug,
+        'search_query': search_query,
     })
 
 def blog_detail(request, slug):
