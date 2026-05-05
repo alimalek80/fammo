@@ -316,3 +316,15 @@
 </article>
 
 {% endblock %}
+
+{% block extra_js %}
+<script>
+  // Wrap every table inside .markdown-content in a scrollable div for mobile
+  document.querySelectorAll('.markdown-content table').forEach(function(table) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'markdown-table-scroll';
+    table.parentNode.insertBefore(wrapper, table);
+    wrapper.appendChild(table);
+  });
+</script>
+{% endblock %}

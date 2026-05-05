@@ -1,8 +1,44 @@
 /* static/css/markdown-table.css */
+
+/* Wrap tables in a scrollable container on all screens */
 .markdown-content table {
     border-collapse: collapse;
-    width: 100%;
+    min-width: 100%;
 }
+
+/* Make the prose table container scrollable */
+.markdown-content .table-wrapper,
+.markdown-content > table,
+.markdown-content p + table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Responsive wrapper injected by JS (see below) */
+.markdown-table-scroll {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    margin-bottom: 1em;
+}
+
+/* On small screens, let tables scroll rather than overflow */
+@media (max-width: 767px) {
+    .markdown-content table {
+        display: block;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: nowrap;
+    }
+
+    .markdown-content th,
+    .markdown-content td {
+        white-space: normal;
+        min-width: 100px;
+    }
+}
+
 .markdown-content th, .markdown-content td {
     border: 1px solid #d1d5db; /* Tailwind gray-300 */
     padding: 0.5em 1em;
