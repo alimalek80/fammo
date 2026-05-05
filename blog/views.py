@@ -7,20 +7,30 @@ from urllib.parse import quote
 from django.utils.html import strip_tags
 from django.utils import timezone
 
+SORT_OPTIONS = {
+    'newest':   '-published_at',
+    'oldest':   'published_at',
+    'views':    '-views',
+    'comments': '-comment_count',
+    'rating':   '-avg_rating',
+}
+
 def blog_list(request):
     categories = BlogCategory.objects.all()
     selected_slug = request.GET.get('category')
     search_query = request.GET.get('search', '').strip()
-    
+    sort_by = request.GET.get('sort', 'newest')
+    if sort_by not in SORT_OPTIONS:
+        sort_by = 'newest'
+
     posts = BlogPost.objects.filter(
         published_at__isnull=False,
         published_at__lte=timezone.now()
-    ).order_by('-published_at')
-    
+    )
+
     if selected_slug:
         posts = posts.filter(category__slug=selected_slug)
-    
-    # Search functionality
+
     if search_query:
         posts = posts.filter(
             Q(title__icontains=search_query) |
@@ -29,7 +39,15 @@ def blog_list(request):
             Q(author__profile__first_name__icontains=search_query) |
             Q(author__profile__last_name__icontains=search_query)
         ).distinct()
-    
+
+    if sort_by in ('comments', 'rating'):
+        if sort_by == 'comments':
+            posts = posts.annotate(comment_count=Count('comments')).order_by('-comment_count')
+        else:
+            posts = posts.annotate(avg_rating=Avg('ratings__value')).order_by('-avg_rating')
+    else:
+        posts = posts.order_by(SORT_OPTIONS[sort_by])
+
     paginator = Paginator(posts, 9)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -40,6 +58,7 @@ def blog_list(request):
         'categories': categories,
         'selected_slug': selected_slug,
         'search_query': search_query,
+        'sort_by': sort_by,
     })
 
 def blog_detail(request, slug):

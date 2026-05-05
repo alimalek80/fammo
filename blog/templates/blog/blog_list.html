@@ -62,18 +62,37 @@
         </form>
     </div>
 
+    <!-- Sort & Category row -->
+    <div class="flex flex-wrap justify-center items-center gap-3 mb-8">
+        <!-- Sort dropdown -->
+        <form method="get" action="{% url 'blog:blog_list' %}" id="sort-form">
+            {% if selected_slug %}<input type="hidden" name="category" value="{{ selected_slug }}">{% endif %}
+            {% if search_query %}<input type="hidden" name="search" value="{{ search_query }}">{% endif %}
+            <select name="sort" onchange="document.getElementById('sort-form').submit()"
+                class="select select-sm select-bordered text-sm font-medium text-gray-700 bg-white rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+                <option value="newest"   {% if sort_by == 'newest'   %}selected{% endif %}>{% trans "Newest" %}</option>
+                <option value="oldest"   {% if sort_by == 'oldest'   %}selected{% endif %}>{% trans "Oldest" %}</option>
+                <option value="views"    {% if sort_by == 'views'    %}selected{% endif %}>{% trans "Most Viewed" %}</option>
+                <option value="comments" {% if sort_by == 'comments' %}selected{% endif %}>{% trans "Most Comments" %}</option>
+                <option value="rating"   {% if sort_by == 'rating'   %}selected{% endif %}>{% trans "Top Rated" %}</option>
+            </select>
+        </form>
+
+        <div class="w-px h-6 bg-gray-200"></div>
+
     <!-- Category Filter Buttons -->
-    <div class="flex flex-wrap justify-center gap-2 mb-8">
-        <a href="{% url 'blog:blog_list' %}"
+    <div class="flex flex-wrap justify-center gap-2">
+        <a href="?{% if sort_by != 'newest' %}sort={{ sort_by }}{% endif %}"
            class="btn btn-sm {% if not selected_slug %}btn-primary text-white{% else %}btn-ghost{% endif %}">
             {% trans "All" %}
         </a>
         {% for cat in categories %}
-            <a href="?category={{ cat.slug }}"
+            <a href="?category={{ cat.slug }}{% if sort_by != 'newest' %}&sort={{ sort_by }}{% endif %}"
                class="btn btn-sm {% if selected_slug == cat.slug %}btn-primary text-white{% else %}btn-ghost{% endif %}">
                 {{ cat.name }}
             </a>
         {% endfor %}
+    </div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -135,7 +154,7 @@
     {% if page_obj.has_other_pages %}
     <div class="flex justify-center items-center gap-2 mt-10">
         {% if page_obj.has_previous %}
-        <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}page={{ page_obj.previous_page_number }}"
+        <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}{% if sort_by != 'newest' %}sort={{ sort_by }}&{% endif %}page={{ page_obj.previous_page_number }}"
            class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 transition-colors">
             &laquo;
         </a>
@@ -145,7 +164,7 @@
             {% if page_obj.number == num %}
             <span class="px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold">{{ num }}</span>
             {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
-            <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}page={{ num }}"
+            <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}{% if sort_by != 'newest' %}sort={{ sort_by }}&{% endif %}page={{ num }}"
                class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 transition-colors">
                 {{ num }}
             </a>
@@ -153,7 +172,7 @@
         {% endfor %}
 
         {% if page_obj.has_next %}
-        <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}page={{ page_obj.next_page_number }}"
+        <a href="?{% if selected_slug %}category={{ selected_slug }}&{% endif %}{% if search_query %}search={{ search_query }}&{% endif %}{% if sort_by != 'newest' %}sort={{ sort_by }}&{% endif %}page={{ page_obj.next_page_number }}"
            class="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-indigo-50 hover:border-indigo-400 hover:text-indigo-700 transition-colors">
             &raquo;
         </a>
