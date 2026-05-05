@@ -1,51 +1,72 @@
-/* static/css/markdown-table.css */
+/* ============================================================
+   Markdown Content – Responsive Tables
+   The JS snippet in blog_detail.html wraps every <table> inside
+   .markdown-content with a <div class="markdown-table-scroll">
+   at DOMContentLoaded.  This div owns the horizontal scroll so
+   the <table> itself never needs display:block (which breaks
+   Tailwind prose styles and thead/tbody layout).
+   ============================================================ */
 
-/* Wrap tables in a scrollable container on all screens */
-.markdown-content table {
-    border-collapse: collapse;
-    min-width: 100%;
-}
-
-/* Make the prose table container scrollable */
-.markdown-content .table-wrapper,
-.markdown-content > table,
-.markdown-content p + table {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Responsive wrapper injected by JS (see below) */
+/* 1. Scrollable wrapper (primary mechanism) */
 .markdown-table-scroll {
     display: block;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
     width: 100%;
-    margin-bottom: 1em;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+    overscroll-behavior-x: contain;    /* prevent page scroll bleed */
+    margin-bottom: 1.25em;
+    /* shadow hints that the table is scrollable */
+    background:
+        linear-gradient(to right, #fff 20%, transparent) left   / 30px 100% no-repeat local,
+        linear-gradient(to left,  #fff 20%, transparent) right  / 30px 100% no-repeat local,
+        radial-gradient(farthest-side at 0   50%, rgba(0,0,0,.10), transparent) left   / 10px 100% no-repeat scroll,
+        radial-gradient(farthest-side at 100% 50%, rgba(0,0,0,.10), transparent) right  / 10px 100% no-repeat scroll;
 }
 
-/* On small screens, let tables scroll rather than overflow */
+/* 2. Table fills the wrapper; cells wrap text naturally */
+.markdown-content table {
+    border-collapse: collapse;
+    width: 100%;   /* fill available space; wrapper scrolls if needed */
+}
+
+/* 3. Cell styling — !important beats Tailwind prose specificity */
+.markdown-content th,
+.markdown-content td {
+    border: 1px solid #d1d5db !important; /* Tailwind gray-300 */
+    padding: 0.6em 1em !important;
+    white-space: normal;  /* text wraps — no runaway wide columns */
+    min-width: 80px;      /* prevent columns from collapsing too thin */
+    max-width: 280px;     /* cap width so multiline text wraps, not stretches */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    vertical-align: top;
+}
+
+.markdown-content th {
+    background: #f3f4f6 !important;       /* Tailwind gray-100 */
+    font-weight: 600 !important;
+    text-align: left;
+}
+
+/* 4. CSS-only fallback for when JS is blocked/slow.
+      The table scrolls itself — not perfect but functional. */
 @media (max-width: 767px) {
-    .markdown-content table {
+    .markdown-content table:not(.wrapped) {
         display: block;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        white-space: nowrap;
+        width: 100%;
     }
 
-    .markdown-content th,
-    .markdown-content td {
-        white-space: normal;
-        min-width: 100px;
+    /* Slightly smaller text in tables on mobile */
+    .markdown-content table th,
+    .markdown-content table td {
+        font-size: 0.82em !important;
+        padding: 0.45em 0.65em !important;
     }
 }
 
-.markdown-content th, .markdown-content td {
-    border: 1px solid #d1d5db; /* Tailwind gray-300 */
-    padding: 0.5em 1em;
-}
-.markdown-content th {
-    background: #f3f4f6; /* Tailwind gray-100 */
-}
+/* 5. List styles */
 .markdown-content ul {
     list-style-type: disc !important;
     margin-left: 1.5em;

@@ -319,12 +319,24 @@
 
 {% block extra_js %}
 <script>
-  // Wrap every table inside .markdown-content in a scrollable div for mobile
-  document.querySelectorAll('.markdown-content table').forEach(function(table) {
-    var wrapper = document.createElement('div');
-    wrapper.className = 'markdown-table-scroll';
-    table.parentNode.insertBefore(wrapper, table);
-    wrapper.appendChild(table);
-  });
+  // Wrap every table inside .markdown-content in a scrollable div.
+  // Works on DOMContentLoaded so it fires before first paint.
+  // The 'wrapped' class disables the CSS-only fallback to avoid double handling.
+  (function () {
+    function wrapTables() {
+      document.querySelectorAll('.markdown-content table:not(.wrapped)').forEach(function (table) {
+        var wrapper = document.createElement('div');
+        wrapper.className = 'markdown-table-scroll';
+        table.classList.add('wrapped');
+        table.parentNode.insertBefore(wrapper, table);
+        wrapper.appendChild(table);
+      });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', wrapTables);
+    } else {
+      wrapTables(); // DOM already ready (script deferred / at bottom)
+    }
+  })();
 </script>
 {% endblock %}
