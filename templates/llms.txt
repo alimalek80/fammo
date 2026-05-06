@@ -1,0 +1,28 @@
+# FAMMO
+
+> FAMMO is an AI-powered pet care platform that provides personalized nutrition plans, health tracking, vet appointment booking, and expert pet advice for dogs and cats. Available on web and Android.
+
+FAMMO helps pet owners make better decisions about their pet's diet, health, and veterinary care using AI. The platform supports multiple languages (English, Turkish, Dutch, Finnish) and covers dogs and cats.
+
+## Platform
+
+- [Home](https://fammo.ai/): Main landing page with AI chat, feature overview, and quick access to all services.
+- [AI Chat](https://fammo.ai/chat/): Ask FAMMO's AI any question about your pet's health, diet, or behavior and receive personalized answers.
+- [Vet Booking](https://fammo.ai/vets/): Browse and book appointments with verified veterinarians.
+- [Subscription Plans](https://fammo.ai/subscription/): Overview of free and premium tiers.
+
+## Pet Health & Nutrition
+
+- [Blog](https://fammo.ai/blog/): AI-assisted articles on pet nutrition, health conditions, breed-specific care, and diet plans for dogs and cats.
+- [Forum](https://fammo.ai/forum/): Community Q&A where pet owners discuss health, behavior, and care topics.
+- [Evidence Library](https://fammo.ai/evidence/): Curated, science-backed references on pet nutrition and veterinary research.
+
+## Legal & Trust
+
+- [Privacy Policy](https://fammo.ai/privacy-policy/): How FAMMO collects, uses, and protects user data.
+- [Account Deletion](https://fammo.ai/delete-account/): Instructions and request form for removing a user account.
+
+## Technical
+
+- [Sitemap](https://fammo.ai/sitemap.xml): Full XML sitemap index for all public pages.
+- [API](https://fammo.ai/api/v1/): REST API used by the FAMMO Android application.

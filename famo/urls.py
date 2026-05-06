@@ -62,6 +62,11 @@ urlpatterns = [
         template_name='robots.txt',
         content_type='text/plain'
     ), name='robots_txt'),
+    # llms.txt — helps LLM crawlers understand site content
+    path('llms.txt', TemplateView.as_view(
+        template_name='llms.txt',
+        content_type='text/plain'
+    ), name='llms_txt'),
 ]
 
 # Your actual app routes (web interface with i18n)
