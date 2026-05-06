@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load i18n static %}
 
-{% block title %}FAMMO – AI-Powered Pet Care & Vet Booking Platform{% endblock %}
+{% block title %}FAMMO | AI-Powered Pet Nutrition & Health Tracking{% endblock %}
 
-{% block meta_description %}Discover FAMMO, the AI-powered platform for pet health, vet appointments, and personalized pet care advice for every pet owner.{% endblock %}
+{% block meta_description %}Discover FAMMO, the AI-driven pet nutrition platform. Get personalized diet plans for your dog or cat, track weight milestones, and manage pet expenses.{% endblock %}
 
 {% block extra_head %}
 <link rel="alternate" hreflang="x-default" href="https://fammo.ai/" />
@@ -11,6 +11,25 @@
 <link rel="alternate" hreflang="tr" href="https://fammo.ai/tr/" />
 <link rel="alternate" hreflang="nl" href="https://fammo.ai/nl/" />
 <link rel="alternate" hreflang="fi" href="https://fammo.ai/fi/" />
+
+<!-- Open Graph — Facebook, LinkedIn, WhatsApp, Telegram, Discord, iMessage -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://fammo.ai/">
+<meta property="og:title" content="FAMMO | AI-Powered Pet Nutrition & Health Tracking">
+<meta property="og:description" content="Discover FAMMO, the AI-driven pet nutrition platform. Get personalized diet plans for your dog or cat, track weight milestones, and manage pet expenses.">
+<meta property="og:image" content="https://fammo.ai{% static 'images/logo.png' %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="FAMMO">
+<meta property="og:locale" content="en_US">
+
+<!-- Twitter / X Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://fammo.ai/">
+<meta name="twitter:title" content="FAMMO | AI-Powered Pet Nutrition & Health Tracking">
+<meta name="twitter:description" content="Discover FAMMO, the AI-driven pet nutrition platform. Get personalized diet plans for your dog or cat, track weight milestones, and manage pet expenses.">
+<meta name="twitter:image" content="https://fammo.ai{% static 'images/logo.png' %}">
+
 {# Optional: font — safe to keep or remove #}
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
@@ -665,7 +684,7 @@
                 {% trans "Powered by FAMMO Diet Engine" %}
             </div>
             <h1 class="text-5xl md:text-7xl font-extrabold leading-tight text-white">
-                {% trans "Personalized" %} <br> <span class="text-yellow-400 !text-yellow-400 !bg-transparent" style="background: none !important; padding: 0 !important;">{% trans "Pet Nutrition" %}</span>
+                {% trans "AI-Powered" %} <br> <span class="text-yellow-400 !text-yellow-400 !bg-transparent" style="background: none !important; padding: 0 !important;">{% trans "Pet Nutrition" %}</span>
             </h1>
             <p class="text-lg text-slate-300 max-w-lg leading-relaxed">
                 {% trans "Get personalized meal plans and preventative health reports for your pets. Ensure your furry family members live longer and happier lives." %}
@@ -814,7 +833,7 @@
 <section id="why" class="py-24 bg-white w-full">
     <div class="w-full">
         <div class="text-center mb-16 px-4 sm:px-6 lg:px-8">
-            <h2 class="text-4xl font-black text-slate-900 mb-4">{% trans "Why Choose FAMMO?" %}</h2>
+            <h2 class="text-4xl font-black text-slate-900 mb-4">{% trans "Why Choose Our AI Pet Nutrition App?" %}</h2>
             <div class="w-24 h-1.5 bg-yellow-400 mx-auto rounded-full"></div>
         </div>
         <div class="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
