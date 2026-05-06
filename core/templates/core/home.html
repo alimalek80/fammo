@@ -751,7 +751,7 @@
                                 <div class="bg-white/10 rounded-2xl p-4 border border-white/10 hover:bg-white/20 transition-all">
                                     <div class="flex items-center gap-4 mb-3">
                                         {% if pet_data.pet.image %}
-                                            <img src="{{ pet_data.pet.image.url }}" class="w-12 h-12 rounded-xl object-cover" alt="{{ pet_data.pet.name }}">
+                                            <img src="{{ pet_data.pet.image.url }}" class="w-12 h-12 rounded-xl object-cover" alt="{{ pet_data.pet.name }}" loading="lazy">
                                         {% else %}
                                             <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-400 to-pink-400 flex items-center justify-center text-white text-lg">
                                                 {% if pet_data.pet.pet_type.name == 'Dog' %}🐕{% else %}🐱{% endif %}
@@ -990,7 +990,7 @@
                     <div class="min-w-[320px] bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col items-center text-center">
                         <div class="w-20 h-20 bg-slate-100 rounded-2xl mb-4 overflow-hidden">
                             {% if clinic.logo %}
-                                <img src="{{ clinic.logo.url }}" alt="{{ clinic.name }}" class="w-full h-full object-cover">
+                                <img src="{{ clinic.logo.url }}" alt="{{ clinic.name }}" class="w-full h-full object-cover" loading="lazy">
                             {% else %}
                                 <div class="w-full h-full bg-gradient-to-br from-blue-100 to-green-100 flex items-center justify-center">
                                     <i data-lucide="building-2" class="w-8 h-8 text-slate-600"></i>
@@ -1082,9 +1082,9 @@
                 <div class="relative">
                     <div class="absolute inset-0 bg-yellow-400 blur-[80px] opacity-20"></div>
                     {% if vet_section_asset and vet_section_asset.image %}
-                        <img src="{{ vet_section_asset.image.url }}" class="rounded-[3rem] relative z-10 border border-white/10 shadow-2xl" alt="{{ vet_section_asset.alt_text|default:_('Veterinary Professional') }}">
+                        <img src="{{ vet_section_asset.image.url }}" class="rounded-[3rem] relative z-10 border border-white/10 shadow-2xl" alt="{{ vet_section_asset.alt_text|default:_('Veterinary Professional') }}" loading="lazy">
                     {% else %}
-                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800" class="rounded-[3rem] relative z-10 border border-white/10 shadow-2xl" alt="{% trans 'Veterinary Professional' %}">
+                        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&q=80&w=800" class="rounded-[3rem] relative z-10 border border-white/10 shadow-2xl" alt="{% trans 'Veterinary Professional' %}" loading="lazy">
                     {% endif %}
                 </div>
             </div>
@@ -1110,7 +1110,7 @@
                     <a href="{% url 'blog:blog_detail' slug=post.slug %}" class="block">
                         <div class="relative overflow-hidden rounded-[2rem] mb-6">
                             {% if post.image %}
-                                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full aspect-video object-cover group-hover:scale-110 transition-transform duration-500">
+                                <img src="{{ post.image.url }}" alt="{{ post.title }}" class="w-full aspect-video object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
                             {% else %}
                                 <div class="w-full aspect-video bg-gradient-to-br from-orange-100 to-yellow-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
                                     <i data-lucide="file-text" class="w-12 h-12 text-orange-400"></i>
@@ -1175,7 +1175,7 @@
 
                 <div class="t-author">
                 {% if t.avatar_url %}
-                    <img src="{{ t.avatar_url }}" class="t-avatar" alt="{{ t.author }}">
+                    <img src="{{ t.avatar_url }}" class="t-avatar" alt="{{ t.author }}" loading="lazy">
                 {% else %}
                     <div class="t-avatar">{{ t.author|first|upper }}</div>
                 {% endif %}
