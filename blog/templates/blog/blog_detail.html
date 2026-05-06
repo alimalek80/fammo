@@ -20,6 +20,38 @@
     <meta name="twitter:image" content="{{ image_url }}" />
   {% endif %}
   <meta name="twitter:card" content="{% if image_url %}summary_large_image{% else %}summary{% endif %}" />
+
+  <!-- GEO: BlogPosting schema for LLMs and AI search engines -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "{{ post.title|striptags }}",
+    "description": "{{ post.meta_description|default:post.content|striptags|truncatewords:30 }}",
+    "url": "{{ absolute_url }}",
+    {% if image_url %}"image": "{{ image_url }}",{% endif %}
+    "datePublished": "{{ post.published_at|date:'c' }}",
+    "dateModified": "{{ post.updated_at|date:'c' }}",
+    "author": {
+      "@type": "Organization",
+      "@id": "https://fammo.ai/#organization",
+      "name": "FAMMO"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://fammo.ai/#organization",
+      "name": "FAMMO",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fammo.ai/static/images/favicon.png"
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "{{ absolute_url }}"
+    }
+  }
+  </script>
   {# Inline styles load LAST in <head>, overriding DaisyUI table.css + Tailwind prose in production #}
   <style>
     /* ── Markdown content container ── */

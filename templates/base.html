@@ -38,7 +38,37 @@
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
-    
+
+    <!-- GEO: Sitewide Organization + WebSite schema (all pages) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://fammo.ai/#organization",
+          "name": "FAMMO",
+          "url": "https://fammo.ai",
+          "logo": "https://fammo.ai/static/images/favicon.png",
+          "sameAs": []
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://fammo.ai/#website",
+          "url": "https://fammo.ai",
+          "name": "FAMMO",
+          "description": "AI-powered pet care, nutrition, and vet booking platform.",
+          "publisher": { "@id": "https://fammo.ai/#organization" },
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": "https://fammo.ai/search/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+          }
+        }
+      ]
+    }
+    </script>
+
     {% block extra_head %}{% endblock %}
     <meta name="description" content="{% block meta_description %}{% endblock %}">
     <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
