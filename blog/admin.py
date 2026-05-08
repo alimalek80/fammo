@@ -24,7 +24,9 @@ class BlogPostAdmin(MarkdownxModelAdmin):  # use MarkdownxModelAdmin for assets
     search_fields = ("title", "content")
     fields = (
         "title", "slug", "category", "content", "image", "image_alt", "author",
-        "meta_description", "meta_keywords", "language", "is_published", "published_at"
+        "meta_description", "meta_keywords",
+        "seo_title", "canonical_url", "og_image",
+        "language", "is_published", "published_at"
     )
     filter_horizontal = ("category",)
     actions = ['publish_selected_posts']

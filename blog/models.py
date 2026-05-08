@@ -28,6 +28,18 @@ class BlogPost(models.Model):
     published_at = models.DateTimeField(null=True, blank=True)
     meta_description = models.CharField(max_length=255, blank=True, null=True)
     meta_keywords = models.CharField(max_length=255, blank=True, null=True)
+    seo_title = models.CharField(
+        max_length=60, blank=True, null=True,
+        help_text="Custom page title for Google search results (max 60 chars). Falls back to post title if empty."
+    )
+    canonical_url = models.URLField(
+        blank=True, null=True,
+        help_text="Canonical URL for this post. Use to prevent duplicate-content penalties when the same content lives at multiple URLs."
+    )
+    og_image = models.ImageField(
+        upload_to='blog_og_images/', blank=True, null=True,
+        help_text="Dedicated image for social media sharing (Open Graph / Twitter Card). Falls back to the main thumbnail if empty."
+    )
     views = models.PositiveIntegerField(default=0)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES, default='en')
 

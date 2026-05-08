@@ -76,6 +76,15 @@ def blog_detail(request, slug):
     absolute_url = request.build_absolute_uri(request.path)
     image_url = request.build_absolute_uri(post.image.url) if getattr(post, "image", None) else ""
 
+    # og_image takes priority for social sharing; falls back to the main thumbnail
+    if post.og_image:
+        og_image_url = request.build_absolute_uri(post.og_image.url)
+    else:
+        og_image_url = image_url
+
+    # canonical_url: prefer the explicitly-set field, otherwise use the current page URL
+    canonical_url_final = post.canonical_url or absolute_url
+
     # Previous and next posts (by created_at)
     prev_post = BlogPost.objects.filter(created_at__lt=post.created_at).order_by('-created_at').first()
     next_post = BlogPost.objects.filter(created_at__gt=post.created_at).order_by('created_at').first()
@@ -108,6 +117,8 @@ def blog_detail(request, slug):
         'rating_count': rating_count,
         'absolute_url': absolute_url,
         'image_url': image_url,
+        'og_image_url': og_image_url,
+        'canonical_url_final': canonical_url_final,
         'share_text_encoded': share_text_encoded,
         'prev_post': prev_post,
         'next_post': next_post,
