@@ -86,6 +86,12 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{% url 'subscription_billing' %}" class="flex items-center px-5 py-3 rounded-lg font-medium hover:bg-emerald-100 hover:text-emerald-700 transition group">
+                        <i class="fa-solid fa-receipt mr-4 text-lg group-hover:scale-110 transition"></i>
+                        <span>{% trans "Billing" %}</span>
+                    </a>
+                </li>
+                <li>
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="w-full flex items-center px-5 py-3 rounded-lg font-medium hover:bg-red-500 hover:text-white transition group">

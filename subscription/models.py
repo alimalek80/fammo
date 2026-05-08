@@ -57,3 +57,37 @@ class AIUsage(models.Model):
         self.meal_used = 0
         self.health_used = 0
         self.save()
+
+
+class SubscriptionTransaction(models.Model):
+    STATUS_CHOICES = [
+        ('demo', _('Demo')),
+        ('pending', _('Pending')),
+        ('completed', _('Completed')),
+        ('failed', _('Failed')),
+        ('refunded', _('Refunded')),
+    ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='subscription_transactions'
+    )
+    plan = models.ForeignKey(
+        SubscriptionPlan,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='transactions'
+    )
+    amount = models.DecimalField(max_digits=8, decimal_places=2)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='demo')
+    card_last4 = models.CharField(max_length=4, blank=True)
+    # When a real gateway is integrated, store the gateway's transaction ID here
+    gateway_transaction_id = models.CharField(max_length=255, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user} — {self.plan} — {self.get_status_display()} — {self.created_at.strftime('%Y-%m-%d')}"

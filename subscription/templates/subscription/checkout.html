@@ -1,0 +1,149 @@
+{% extends "userapp/dashboard_base.html" %}
+{% load i18n %}
+
+{% block dashboard_content %}
+<div class="max-w-2xl mx-auto p-6 mt-10">
+
+    <!-- Demo Mode Banner -->
+    <div class="mb-6 flex items-start gap-3 rounded-xl bg-amber-50 border border-amber-300 px-5 py-4">
+        <svg class="w-6 h-6 text-amber-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z"/>
+        </svg>
+        <div>
+            <p class="font-semibold text-amber-800">Demo Mode — No payment will be charged</p>
+            <p class="text-sm text-amber-700 mt-0.5">
+                This is a demonstration checkout. The card below is a test card pre-filled for you.
+                When a real payment gateway is integrated, you will enter your actual card details here.
+            </p>
+        </div>
+    </div>
+
+    <div class="bg-white shadow-xl rounded-2xl overflow-hidden">
+
+        <!-- Header: Plan Summary -->
+        <div class="bg-indigo-600 px-8 py-6 text-white">
+            <p class="text-sm font-medium uppercase tracking-widest text-indigo-200">{% trans "Subscribing to" %}</p>
+            <h1 class="text-3xl font-extrabold mt-1">{{ plan.get_name_display }}</h1>
+            <p class="mt-2 text-5xl font-extrabold">
+                €{{ plan.price_eur }}<span class="text-xl font-medium text-indigo-200">/mo</span>
+            </p>
+        </div>
+
+        <!-- What's included -->
+        <div class="px-8 py-5 border-b border-gray-100 bg-gray-50">
+            <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 mb-3">{% trans "What's included" %}</p>
+            <ul class="space-y-2 text-sm text-gray-700">
+                <li class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    {% if plan.unlimited_meals %}Unlimited AI meal suggestions / month{% else %}{{ plan.monthly_meal_limit }} AI meal suggestions / month{% endif %}
+                </li>
+                <li class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    {% if plan.unlimited_health %}Unlimited health reports / month{% else %}{{ plan.monthly_health_limit }} health reports / month{% endif %}
+                </li>
+                <li class="flex items-center gap-2">
+                    <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    Up to {{ plan.pet_limit }} pet{{ plan.pet_limit|pluralize }}
+                </li>
+            </ul>
+        </div>
+
+        <!-- Payment Form -->
+        <form method="post" class="px-8 py-7 space-y-5">
+            {% csrf_token %}
+
+            <p class="text-sm font-semibold uppercase tracking-widest text-gray-500">{% trans "Payment Details" %}</p>
+
+            <!-- Card Number -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Card Number" %}</label>
+                <div class="relative">
+                    <input
+                        type="text"
+                        name="card_number"
+                        value="{{ demo_card }}"
+                        maxlength="19"
+                        placeholder="4242 4242 4242 4242"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-3 pr-12 text-gray-800 font-mono tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                    <!-- Card brand icons placeholder -->
+                    <div class="absolute right-3 top-1/2 -translate-y-1/2 flex gap-1">
+                        <svg class="w-8 h-5 text-gray-300" viewBox="0 0 38 24" fill="none">
+                            <rect width="38" height="24" rx="4" fill="#E5E7EB"/>
+                            <circle cx="15" cy="12" r="7" fill="#EF4444" opacity="0.8"/>
+                            <circle cx="23" cy="12" r="7" fill="#F59E0B" opacity="0.8"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expiry + CVC -->
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Expiry Date" %}</label>
+                    <input
+                        type="text"
+                        name="expiry"
+                        value="{{ demo_expiry }}"
+                        maxlength="5"
+                        placeholder="MM/YY"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-3 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "CVC" %}</label>
+                    <input
+                        type="text"
+                        name="cvc"
+                        value="{{ demo_cvc }}"
+                        maxlength="4"
+                        placeholder="123"
+                        class="w-full border border-gray-300 rounded-lg px-4 py-3 font-mono focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                </div>
+            </div>
+
+            <!-- Cardholder Name -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{% trans "Cardholder Name" %}</label>
+                <input
+                    type="text"
+                    name="cardholder_name"
+                    value="{{ demo_name }}"
+                    placeholder="Full name on card"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                >
+            </div>
+
+            <!-- Submit -->
+            <div class="pt-2">
+                <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl transition text-lg flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                    </svg>
+                    {% trans "Confirm Subscription" %} — €{{ plan.price_eur }}/mo
+                </button>
+                <p class="text-center text-xs text-gray-400 mt-3">
+                    {% trans "Demo mode: your plan activates instantly. No real charge." %}
+                </p>
+            </div>
+        </form>
+    </div>
+
+    <!-- Back link -->
+    <div class="text-center mt-6">
+        <a href="{% url 'subscription_plans' %}" class="text-sm text-gray-500 hover:text-indigo-600">
+            ← {% trans "Back to plans" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

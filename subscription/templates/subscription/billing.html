@@ -1,0 +1,178 @@
+{% extends "userapp/dashboard_base.html" %}
+{% load i18n %}
+
+{% block dashboard_content %}
+<div class="max-w-4xl mx-auto w-full px-4 py-8 space-y-10">
+
+    <h1 class="text-3xl font-extrabold text-gray-900">{% trans "Billing & Subscription" %}</h1>
+
+    <!-- ─── Current Plan ─────────────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 class="text-lg font-bold text-gray-800">{% trans "Current Plan" %}</h2>
+            <a href="{% url 'subscription_plans' %}"
+               class="text-sm text-indigo-600 hover:underline font-medium">
+                {% trans "Change plan" %} →
+            </a>
+        </div>
+
+        {% if current_plan %}
+        <div class="px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center">
+                    <svg class="w-7 h-7 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 3l14 9-14 9V3z"/>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-xl font-bold text-gray-900">{{ current_plan.get_name_display }}</p>
+                    <p class="text-sm text-gray-500">
+                        {% if current_plan.price_eur > 0 %}
+                            €{{ current_plan.price_eur }} / {% trans "month" %}
+                        {% else %}
+                            {% trans "Free" %}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-wrap gap-3 text-sm text-gray-600">
+                <span class="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-full px-3 py-1">
+                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    {% if current_plan.unlimited_meals %}{% trans "Unlimited meals" %}{% else %}{{ current_plan.monthly_meal_limit }} {% trans "meals/mo" %}{% endif %}
+                </span>
+                <span class="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-full px-3 py-1">
+                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    {% if current_plan.unlimited_health %}{% trans "Unlimited health" %}{% else %}{{ current_plan.monthly_health_limit }} {% trans "reports/mo" %}{% endif %}
+                </span>
+                <span class="inline-flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-full px-3 py-1">
+                    <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    {% trans "Up to" %} {{ current_plan.pet_limit }} {% trans "pet" %}{{ current_plan.pet_limit|pluralize }}
+                </span>
+            </div>
+        </div>
+        {% else %}
+        <div class="px-6 py-8 text-center text-gray-500">
+            <p class="mb-4">{% trans "You are not subscribed to any plan yet." %}</p>
+            <a href="{% url 'subscription_plans' %}"
+               class="inline-block bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-indigo-700 transition">
+                {% trans "Browse Plans" %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- ─── Upgrade Prompt (if not on top plan) ──────────────────────── -->
+    {% for plan in all_plans %}
+        {% if plan != current_plan and plan.price_eur > 0 %}
+        {% if forloop.last %}
+        <div class="rounded-2xl bg-indigo-50 border border-indigo-200 px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+                <p class="font-bold text-indigo-800 text-base">
+                    🚀 {% trans "Upgrade to" %} {{ plan.get_name_display }}
+                </p>
+                <p class="text-sm text-indigo-700 mt-0.5">
+                    {% trans "Unlock unlimited AI features — free during our Beta period." %}
+                </p>
+            </div>
+            <a href="{% url 'subscription_checkout' plan_id=plan.id %}"
+               class="flex-shrink-0 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm">
+                {% trans "Upgrade Free" %} →
+            </a>
+        </div>
+        {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    <!-- ─── Order History ─────────────────────────────────────────────── -->
+    <div class="bg-white rounded-2xl shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100">
+            <h2 class="text-lg font-bold text-gray-800">{% trans "Order History" %}</h2>
+        </div>
+
+        {% if transactions %}
+        <div class="divide-y divide-gray-50">
+            {% for tx in transactions %}
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <!-- Left: plan + date -->
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-gray-800 text-sm">
+                            {% if tx.plan %}{{ tx.plan.get_name_display }}{% else %}{% trans "Plan removed" %}{% endif %}
+                        </p>
+                        <p class="text-xs text-gray-400 mt-0.5">
+                            {{ tx.created_at|date:"N j, Y — g:i A" }} &nbsp;·&nbsp; #{{ tx.id }}
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Right: amount + card + status -->
+                <div class="flex items-center gap-4 flex-shrink-0">
+                    {% if tx.card_last4 %}
+                    <span class="text-xs text-gray-400 font-mono hidden sm:block">•••• {{ tx.card_last4 }}</span>
+                    {% endif %}
+
+                    <span class="text-sm font-semibold text-gray-700">
+                        {% if tx.amount > 0 %}€{{ tx.amount }}{% else %}{% trans "Free" %}{% endif %}
+                    </span>
+
+                    {% if tx.status == 'demo' %}
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700">
+                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                        {% trans "Demo" %}
+                    </span>
+                    {% elif tx.status == 'completed' %}
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                        {% trans "Paid" %}
+                    </span>
+                    {% elif tx.status == 'pending' %}
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                        {% trans "Pending" %}
+                    </span>
+                    {% elif tx.status == 'failed' %}
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                        {% trans "Failed" %}
+                    </span>
+                    {% elif tx.status == 'refunded' %}
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                        <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                        {% trans "Refunded" %}
+                    </span>
+                    {% endif %}
+
+                    <a href="{% url 'subscription_success' transaction_id=tx.id %}"
+                       class="text-xs text-indigo-500 hover:underline whitespace-nowrap">
+                        {% trans "View" %} →
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="px-6 py-10 text-center text-gray-400">
+            <svg class="w-12 h-12 mx-auto mb-3 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+            <p class="text-sm">{% trans "No orders yet." %}</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

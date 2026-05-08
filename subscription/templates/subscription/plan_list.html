@@ -5,6 +5,28 @@
 {% block dashboard_content %}
 <!-- Main container for the subscription plans page -->
 <div class="max-w-7xl mx-auto p-6 bg-white shadow-lg mt-10 rounded-lg">
+
+    <!-- Beta Banner -->
+    <div class="mb-8 flex items-start gap-4 rounded-2xl bg-green-50 border border-green-300 px-6 py-5">
+        <div class="flex-shrink-0 mt-0.5">
+            <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-green-100">
+                <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </span>
+        </div>
+        <div>
+            <p class="text-green-800 font-bold text-lg leading-snug">
+                🎉 We are currently in Beta — No credit card needed, no payment will be charged!
+            </p>
+            <p class="text-green-700 text-sm mt-1">
+                You can upgrade to any plan, including the <strong>Optimal</strong> plan, completely free during our beta period.
+                Enjoy all premium features now — we will notify you before real billing begins.
+            </p>
+        </div>
+    </div>
+
     <!-- Page heading -->
     <div class="text-center mb-12">
         <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl mb-4">
@@ -97,10 +119,13 @@
             {% endfor %}
         </div>
         <!-- Submit button for updating the selected plan -->
-        <div class="flex justify-center mt-8">
-            <button type="submit" class="w-full md:w-auto bg-indigo-600 text-white px-6 py-3 rounded-full font-semibold hover:bg-indigo-700 transition">
-                {% trans "Update Plan" %}
+        <div class="flex flex-col items-center mt-8 gap-3">
+            <button type="submit" class="w-full md:w-auto bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition text-lg">
+                {% trans "Continue with Selected Plan" %}
             </button>
+            <p class="text-sm text-gray-400">
+                {% trans "Free plans activate instantly. Paid plans proceed to checkout." %}
+            </p>
         </div>
     </form>
 </div>
