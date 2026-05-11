@@ -20,6 +20,10 @@ SITE_URL = config("SITE_URL", default="https://fammo.ai")
 # GOOGLE MAPS
 GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY", default="")
 
+# TELEGRAM NOTIFICATIONS
+TELEGRAM_BOT_TOKEN = config("TELEGRAM_BOT_TOKEN", default="")
+TELEGRAM_CHANNEL_ID = config("TELEGRAM_CHANNEL_ID", default="")
+
 # LOGGING
 LOGGING = {
     'version': 1,
@@ -74,6 +78,7 @@ INSTALLED_APPS = [
     'api',
     'corsheaders',
     'django_celery_beat',
+    'notifications',
 ]
 
 REST_FRAMEWORK = {
