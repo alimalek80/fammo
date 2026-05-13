@@ -1,3 +1,4 @@
+import re
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BlogPost, BlogComment, BlogRating, BlogCategory
 from django.contrib.auth.decorators import login_required
@@ -6,6 +7,25 @@ from django.db.models import Avg, Count, F, Q
 from urllib.parse import quote
 from django.utils.html import strip_tags
 from django.utils import timezone
+
+
+def _extract_faq_items(content):
+    """Parse ## FAQ / ## Frequently Asked Questions section from markdown."""
+    faq_section = re.search(
+        r'^#{1,3}\s+(?:FAQ|Frequently Asked Questions?|Common Questions?)[^\n]*\n+(.*?)(?=\n#{1,2}\s|\Z)',
+        content,
+        re.IGNORECASE | re.DOTALL | re.MULTILINE,
+    )
+    if not faq_section:
+        return []
+    faq_body = faq_section.group(1)
+    items = []
+    for m in re.finditer(r'^#{2,4}\s+(.+?)\n+(.*?)(?=\n#{2,4}\s|\Z)', faq_body, re.DOTALL | re.MULTILINE):
+        question = m.group(1).strip()
+        answer = re.sub(r'\s+', ' ', strip_tags(m.group(2))).strip()
+        if question and answer:
+            items.append({'question': question, 'answer': answer})
+    return items
 
 SORT_OPTIONS = {
     'newest':   '-published_at',
@@ -100,6 +120,19 @@ def blog_detail(request, slug):
 
     share_text_encoded = quote(share_text)  # safe for inserting directly into href
 
+    # Author display name for schema
+    author_name = ''
+    if post.author:
+        try:
+            p = post.author.profile
+            author_name = f"{p.first_name} {p.last_name}".strip()
+        except Exception:
+            pass
+        if not author_name and post.author.email:
+            author_name = post.author.email
+
+    faq_items = _extract_faq_items(post.content)
+
     user_rating = None
     if request.user.is_authenticated:
         user_rating = BlogRating.objects.filter(post=post, user=request.user).first()
@@ -122,6 +155,8 @@ def blog_detail(request, slug):
         'share_text_encoded': share_text_encoded,
         'prev_post': prev_post,
         'next_post': next_post,
+        'author_name': author_name,
+        'faq_items': faq_items,
     })
 
 @login_required

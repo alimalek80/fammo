@@ -60,9 +60,8 @@
     {% if post.meta_keywords %}"keywords": "{{ post.meta_keywords }}",{% endif %}
     {% with cats=post.category.all %}{% if cats %}"articleSection": "{{ cats.0.name }}",{% endif %}{% endwith %}
     "author": {
-      "@type": "Organization",
-      "@id": "https://fammo.ai/#organization",
-      "name": "FAMMO"
+      "@type": "{% if author_name %}Person{% else %}Organization{% endif %}",
+      "name": "{{ author_name|default:'FAMMO'|escapejs }}"
     },
     "publisher": {
       "@type": "Organization",
@@ -79,6 +78,28 @@
     }
   }
   </script>
+
+  {% if faq_items %}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {% for item in faq_items %}
+      {
+        "@type": "Question",
+        "name": "{{ item.question|escapejs }}",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "{{ item.answer|escapejs }}"
+        }
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  {% endif %}
+
   {# Inline styles load LAST in <head>, overriding DaisyUI table.css + Tailwind prose in production #}
   <style>
     /* ── Markdown content container ── */
