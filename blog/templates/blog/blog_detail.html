@@ -102,6 +102,9 @@
 
   {# Inline styles load LAST in <head>, overriding DaisyUI table.css + Tailwind prose in production #}
   <style>
+    html {
+      scroll-behavior: smooth;
+    }
     /* ── Markdown content container ── */
     .markdown-content {
       overflow-x: auto !important;
