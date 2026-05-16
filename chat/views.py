@@ -53,6 +53,7 @@ def chat(request, session_id=None):
     user_first = None
     pet_profiles = None
     primary_pet = None
+    user_pets = []
     session = None
     all_sessions = []
     history = []
@@ -100,8 +101,16 @@ def chat(request, session_id=None):
             "pet_type", "breed", "gender", "age_category", "body_type", "activity_level", "food_feeling", "food_importance", "treat_frequency"
         ).prefetch_related("food_types", "food_allergies", "health_issues")
         pets = list(pets_qs)
-        if pets:
+        user_pets = pets
+        # Allow switching active pet via ?pet_id= query param
+        requested_pet_id = request.GET.get('pet_id')
+        if requested_pet_id and pets:
+            matched = next((p for p in pets if str(p.id) == requested_pet_id), None)
+            if matched:
+                primary_pet = matched
+        if pets and not primary_pet:
             primary_pet = pets[0]
+        if pets:
             # build profiles string (for multiple pets include all)
             parts = []
             for idx, p in enumerate(pets, start=1):
@@ -125,6 +134,7 @@ def chat(request, session_id=None):
                 "error": "Please type a question or upload an image.",
                 "user_first": user_first,
                 "primary_pet": primary_pet,
+                "user_pets": user_pets,
                 "all_sessions": all_sessions,
                 "current_session": session,
             })
@@ -255,6 +265,7 @@ def chat(request, session_id=None):
         "history": history,
         "user_first": user_first,
         "primary_pet": primary_pet,
+        "user_pets": user_pets,
         "greeting": greeting,
         "all_sessions": all_sessions,
         "current_session": session,

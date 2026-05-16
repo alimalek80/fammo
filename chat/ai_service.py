@@ -32,8 +32,13 @@ BASE_SYSTEM_PROMPT = (
     "- If the user has NO name: address them as 'Dear user' and politely suggest: "
     "  'If you complete your profile, I can address you by your name!' Then answer their question.\n"
     "- When the user uploads an IMAGE:\n"
-    "  • If it's a PET FOOD package/label: analyze the ingredients, nutritional information, and suitability for the user's pet. "
-    "    Check against their pet's profile (breed, age, weight, allergies, health issues) and provide recommendations.\n"
+    "  • If it's a PET FOOD package/label:\n"
+    "    1. READ the label carefully: extract the actual product name, ingredients list, guaranteed analysis (protein/fat/fibre/moisture %) and feeding guide.\n"
+    "    2. CROSS-CHECK every ingredient and nutritional value against the pet's profile (breed, age, weight, health issues, known allergies).\n"
+    "    3. Give a clear, direct verdict: ✅ SUITABLE, ⚠️ SUITABLE WITH CAUTION, or ❌ NOT RECOMMENDED — state this prominently.\n"
+    "    4. Explain WHY, citing specific ingredients or values you read from the label and the pet's specific needs.\n"
+    "    5. Give a concrete feeding suggestion (e.g. portion size relative to the label's guide adjusted for the pet's weight).\n"
+    "    Do NOT give generic advice. Base your answer ONLY on what you can actually read in the image.\n"
     "  • If it's a PET PHOTO: help identify the breed, estimate age/size, note visible characteristics, and answer any questions about the pet.\n"
     "  • Be specific and helpful with image analysis, referencing details you can see in the image.\n"
     "- Keep responses concise (under 300 words) unless more detail is specifically requested.\n"
@@ -98,24 +103,27 @@ def _answer_with_vision(user_text: str, system_prompt: str, image_base64: str) -
     image_url = f"data:{image_base64}" if not image_base64.startswith("data:") else image_base64
     
     # Build content array for vision
-    content = []
-    if user_text:
-        content.append({"type": "text", "text": user_text})
-    content.append({
-        "type": "image_url",
-        "image_url": {
-            "url": image_url,
-            "detail": "low"  # Use low detail for faster processing
+    # If the user sent no text alongside the image, inject a default label-analysis request
+    effective_text = user_text if user_text else "Please analyse this image and tell me if it is suitable for my pet."
+
+    content = [
+        {"type": "text", "text": effective_text},
+        {
+            "type": "image_url",
+            "image_url": {
+                "url": image_url,
+                "detail": "high"  # High detail required to read food label text
+            }
         }
-    })
-    
+    ]
+
     response = client.chat.completions.create(
-        model="gpt-4o-mini",  # Supports vision and is fast
+        model="gpt-4o",  # Use full gpt-4o for reliable vision/text reading on labels
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": content}
         ],
-        max_tokens=500,
-        temperature=0.7,
+        max_tokens=700,
+        temperature=0.4,  # Lower temperature for more factual label reading
     )
     return response.choices[0].message.content.strip()

@@ -7,460 +7,477 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>{% trans "Pet Chat" %} - Fammo AI</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
         * { box-sizing: border-box; }
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #121212;
-            color: white;
-        }
-        
-        /* Main layout */
-        #app-container {
-            display: flex;
-            height: 100dvh;
-            height: 100vh;
-        }
-        @supports (height: 100dvh) {
-            #app-container { height: 100dvh; }
-        }
-        
-        /* Sidebar */
-        #sidebar {
-            width: 260px;
-            background-color: #171717;
-            border-right: 1px solid #2d2d2d;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
-            transition: transform 0.3s ease, width 0.3s ease;
-        }
-        #sidebar.collapsed {
-            transform: translateX(-100%);
-            width: 0;
-            border: none;
-        }
-        
-        /* Mobile sidebar overlay */
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow: hidden; background-color: #ffffff; color: #111827; }
+        #app-container { display: flex; height: 100dvh; }
+        @supports not (height: 100dvh) { #app-container { height: 100vh; } }
+        #sidebar { width: 288px; background-color: #f9fafb; border-right: 1px solid #f3f4f6; display: flex; flex-direction: column; flex-shrink: 0; }
         @media (max-width: 768px) {
-            #sidebar {
-                position: fixed;
-                left: 0;
-                top: 0;
-                height: 100%;
-                z-index: 50;
-                transform: translateX(-100%);
-            }
-            #sidebar.open {
-                transform: translateX(0);
-            }
-            #sidebar-overlay {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0,0,0,0.5);
-                z-index: 40;
-            }
-            #sidebar-overlay.show {
-                display: block;
-            }
+            #sidebar { position: fixed; left: 0; top: 0; height: 100%; z-index: 50; transform: translateX(-100%); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); width: 280px; }
+            #sidebar.open { transform: translateX(0); box-shadow: 8px 0 32px rgba(0,0,0,0.12); }
+            #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 40; backdrop-filter: blur(2px); }
+            #sidebar-overlay.show { display: block; }
         }
-        
-        /* Chat container */
-        #chat-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #1a1a1a;
-            min-width: 0;
-        }
-        
-        #chat-window {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 24px;
-            scroll-behavior: smooth;
-            min-height: 0;
-        }
-        
-        #input-container {
-            flex-shrink: 0;
-            background-color: #1a1a1a;
-            padding: 16px 24px;
-            padding-bottom: max(16px, env(safe-area-inset-bottom));
-            border-top: 1px solid #333;
-        }
-        
-        /* Scrollbar */
-        #chat-window::-webkit-scrollbar, #session-list::-webkit-scrollbar { width: 6px; }
-        #chat-window::-webkit-scrollbar-thumb, #session-list::-webkit-scrollbar-thumb { background-color: #4a4a4a; border-radius: 3px; }
-        #chat-window::-webkit-scrollbar-track, #session-list::-webkit-scrollbar-track { background-color: transparent; }
-        
-        /* Session item */
-        .session-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 12px;
-            margin: 2px 8px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background-color 0.15s;
-            position: relative;
-        }
-        .session-item:hover { background-color: #2a2a2a; }
-        .session-item.active { background-color: #2d2d2d; }
-        .session-item .delete-btn {
-            opacity: 0;
-            transition: opacity 0.15s;
-        }
+        #chat-container { flex: 1; display: flex; flex-direction: column; background-color: #ffffff; min-width: 0; }
+        #chat-window { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 24px 16px; scroll-behavior: smooth; min-height: 0; }
+        #input-container { flex-shrink: 0; padding: 10px 16px; padding-bottom: max(12px, env(safe-area-inset-bottom)); }
+        #chat-window::-webkit-scrollbar, #session-list::-webkit-scrollbar { width: 4px; }
+        #chat-window::-webkit-scrollbar-thumb, #session-list::-webkit-scrollbar-thumb { background-color: #e5e7eb; border-radius: 2px; }
+        #chat-window::-webkit-scrollbar-track { background: transparent; }
+        .session-item { display: flex; align-items: center; padding: 8px 12px; margin: 2px 8px; border-radius: 10px; cursor: pointer; transition: background-color 0.15s; text-decoration: none; color: inherit; position: relative; }
+        .session-item:hover { background-color: #f3f4f6; }
+        .session-item.active { background-color: #f0fdfa; color: #0d9488; }
+        .session-item .delete-btn { opacity: 0; transition: opacity 0.15s; }
         .session-item:hover .delete-btn { opacity: 1; }
-        
-        /* Loading dots */
-        @keyframes loading-dots { 0%,80%,100% { transform: scale(0); } 40% { transform: scale(1.0); } }
-        .dot { width: 8px; height: 8px; background-color: #5a94ff; border-radius: 50%; display: inline-block; margin: 0 2px; animation: loading-dots 1.4s infinite ease-in-out both; }
-        .dot:nth-child(1){ animation-delay:-0.32s; } .dot:nth-child(2){ animation-delay:-0.16s; }
-        
-        .group:hover .copy-action-wrapper { opacity: 1; }
-        
-        /* RTL support */
+        @keyframes loading-dots { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+        .dot { width: 7px; height: 7px; background-color: #0d9488; border-radius: 50%; display: inline-block; margin: 0 2px; animation: loading-dots 1.4s infinite ease-in-out both; }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        #user-input { min-height: 24px; max-height: 160px; resize: none; overflow-y: auto; line-height: 1.6; }
+        #pet-dropdown { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); min-width: 170px; z-index: 100; overflow: hidden; }
+        #pet-dropdown.open { display: block; }
+        .pet-option { display: flex; align-items: center; gap: 8px; padding: 10px 14px; cursor: pointer; font-size: 13.5px; transition: background 0.12s; }
+        .pet-option:hover { background: #f9fafb; }
+        .pet-option.selected { color: #0d9488; font-weight: 500; }
+        @keyframes msg-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .msg-animate { animation: msg-in 0.22s ease forwards; }
+        .msg-group:hover .copy-btn-wrap { opacity: 1 !important; }
+        .ai-bubble .prose p { margin: 0 0 6px; }
+        .ai-bubble .prose p:last-child { margin-bottom: 0; }
+        .ai-bubble .prose ul, .ai-bubble .prose ol { padding-left: 18px; margin: 6px 0; }
+        .ai-bubble .prose li { margin: 3px 0; }
+        .ai-bubble .prose strong { font-weight: 600; }
+        .ai-bubble .prose code { background: rgba(13,148,136,0.1); padding: 1px 5px; border-radius: 4px; font-size: 0.84em; }
+        .ai-bubble .prose pre { background: #f3f4f6; padding: 12px 14px; border-radius: 8px; overflow-x: auto; margin: 8px 0; font-size: 0.85em; }
+        #input-pill:focus-within { border-color: #0d9488 !important; box-shadow: 0 0 0 3px rgba(13,148,136,0.12); }
         .rtl-text { direction: rtl; text-align: right; unicode-bidi: isolate; }
-        
-        /* LIGHT MODE */
-        body.light-mode { background-color: #f3f4f6; color: #1f2937; }
-        body.light-mode #sidebar { background-color: #f9fafb; border-color: #e5e7eb; }
-        body.light-mode .session-item:hover { background-color: #e5e7eb; }
-        body.light-mode .session-item.active { background-color: #dbeafe; }
-        body.light-mode #chat-container { background-color: #ffffff; }
-        body.light-mode .bg-gray-900 { background-color: #f9fafb !important; border-color:#e5e7eb !important; color:#1f2937 !important; }
-        body.light-mode .border-gray-700 { border-color:#e5e7eb !important; }
-        body.light-mode #input-container {
-            background-color: transparent !important;
-            background-image: linear-gradient(to right, #22d3ee, #0d9488) !important;
-            border-top: 1px solid rgba(255,255,255,0.5) !important;
-        }
-        body.light-mode .bg-gray-800 { background-color:#e5e7eb !important; color:#1f2937 !important; }
-        body.light-mode .bg-gray-700 { background-color:#ffffff !important; color:#1f2937 !important; }
-        body.light-mode #user-input { border: 1px solid #d1d5db; }
-        body.light-mode .text-gray-400 { color: #6b7280 !important; }
-        body.light-mode .text-gray-500 { color: #6b7280 !important; }
+
+        /* ── DARK MODE ── */
+        body.dark { background-color: #0f172a; color: #f1f5f9; }
+        body.dark #sidebar { background-color: #1e293b; border-color: #334155; }
+        body.dark .session-item { color: #cbd5e1; }
+        body.dark .session-item:hover { background-color: #334155; }
+        body.dark .session-item.active { background-color: #134e4a; color: #2dd4bf; }
+        body.dark #chat-container { background-color: #0f172a; }
+        body.dark #chat-main-header { background-color: rgba(15,23,42,0.85) !important; border-color: #334155 !important; }
+        body.dark .ai-bubble { background-color: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+        body.dark .user-bubble { background-color: #0d9488 !important; }
+        body.dark #input-pill { background-color: #1e293b !important; border-color: #334155 !important; }
+        body.dark #user-input { color: #f1f5f9 !important; }
+        body.dark #user-input::placeholder { color: #64748b !important; }
+        body.dark #pet-dropdown { background: #1e293b; border-color: #334155; }
+        body.dark .pet-option:hover { background: #334155; }
+        body.dark .pet-selector-btn { background: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+        body.dark .new-chat-btn { background: #1e293b !important; border-color: #334155 !important; color: #f1f5f9 !important; }
+        body.dark .new-chat-btn:hover { background: #334155 !important; }
+        body.dark #sidebar-footer { border-color: #334155; }
+        body.dark .sidebar-header-border { border-color: #334155 !important; }
+        body.dark .section-label { color: #64748b !important; }
+        body.dark .user-name-text { color: #cbd5e1 !important; }
+        body.dark .theme-toggle-btn:hover { background: #334155 !important; }
+        body.dark .upload-btn:hover { background: #334155 !important; }
+        body.dark .ai-bubble .prose code { background: rgba(45,212,191,0.15); }
+        body.dark .ai-bubble .prose pre { background: #334155; }
+        body.dark #send-button:disabled { background: #334155 !important; color: #475569 !important; }
+        body.dark .disclaimer-text { color: #475569 !important; }
+        body.dark .error-box { background: rgba(127,29,29,0.3) !important; border-color: #7f1d1d !important; color: #fca5a5 !important; }
+        body.dark .copy-btn:hover { background: #334155 !important; }
+        body.dark .fammo-title { color: #f1f5f9 !important; }
+        body.dark .pet-dropdown-label { color: #64748b !important; }
+        body.dark .pet-dropdown-footer { border-color: #334155 !important; }
+        body.dark .pet-dropdown-add:hover { background: #334155 !important; color: #94a3b8 !important; }
     </style>
 </head>
 <body>
 
 <div id="app-container">
-    <!-- Sidebar Overlay (mobile) -->
+
+    <!-- Mobile overlay -->
     <div id="sidebar-overlay" onclick="toggleSidebar()"></div>
-    
-    <!-- Sidebar -->
+
+    <!-- ══════════ SIDEBAR ══════════ -->
     <aside id="sidebar">
-        <!-- Sidebar Header -->
-        <div class="p-3 border-b border-gray-700">
-            <a href="?new=1" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition text-sm font-medium">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 5v14M5 12h14"/>
-                </svg>
+        <div class="sidebar-header-border p-4 border-b border-gray-100">
+            <a href="?new=1" class="new-chat-btn flex items-center gap-2.5 px-4 py-2.5 rounded-xl bg-white border border-gray-200 hover:border-teal-300 hover:bg-teal-50 transition text-sm font-medium text-gray-700 shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-teal-600 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                 {% trans "New Chat" %}
             </a>
         </div>
-        
-        <!-- Session List -->
-        <div id="session-list" class="flex-1 overflow-y-auto py-2">
+        <div class="px-4 pt-3 pb-1">
+            <p class="section-label text-xs font-semibold text-gray-400 uppercase tracking-widest">{% trans "Recent" %}</p>
+        </div>
+        <div id="session-list" class="flex-1 overflow-y-auto pb-2">
             {% if user.is_authenticated %}
                 {% if all_sessions %}
                     {% for session in all_sessions %}
-                        <a href="{% url 'chat_session' session.id %}" 
+                        <a href="{% url 'chat_session' session.id %}"
                            class="session-item {% if current_session.id == session.id %}active{% endif %}"
                            data-session-id="{{ session.id }}">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-3 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                            </svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mr-2.5 flex-shrink-0 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             <span class="flex-1 truncate text-sm">{{ session.title|default:"New Chat" }}</span>
-                            <button type="button" class="delete-btn p-1 hover:bg-gray-600 rounded transition ml-1" 
-                                    data-delete-session="{{ session.id }}"
-                                    title="{% trans 'Delete' %}">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-gray-400 hover:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                                </svg>
+                            <button type="button" class="delete-btn p-1 hover:bg-red-50 rounded-lg transition ml-1"
+                                    data-delete-session="{{ session.id }}" title="{% trans 'Delete' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400 hover:text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
                             </button>
                         </a>
                     {% endfor %}
                 {% else %}
-                    <div class="px-4 py-8 text-center text-gray-500 text-sm">
-                        {% trans "No chat history yet" %}
+                    <div class="px-4 py-12 text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 mx-auto mb-3 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        <p class="text-sm text-gray-400">{% trans "No chat history yet" %}</p>
                     </div>
                 {% endif %}
             {% else %}
-                <div class="px-4 py-8 text-center text-gray-500 text-sm">
-                    <p class="mb-3">{% trans "Sign in to save your chat history" %}</p>
-                    <a href="{% url 'login' %}" class="text-blue-400 hover:underline">{% trans "Login" %}</a>
+                <div class="px-4 py-12 text-center">
+                    <p class="text-sm text-gray-500 mb-3">{% trans "Sign in to save your chat history" %}</p>
+                    <a href="{% url 'login' %}" class="text-sm text-teal-600 font-medium hover:underline">{% trans "Login" %}</a>
                 </div>
             {% endif %}
         </div>
-        
-        <!-- Sidebar Footer -->
-        <div class="p-3 border-t border-gray-700">
+        <div id="sidebar-footer" class="p-3 border-t border-gray-100">
             {% if user.is_authenticated %}
-                <div class="flex items-center gap-2 px-2 py-2 text-sm text-gray-400">
-                    <span class="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
-                        {{ user_first|slice:":1"|upper|default:"U" }}
-                    </span>
-                    <span class="truncate flex-1">{{ user_first|default:user.email }}</span>
+                <div class="flex items-center gap-2.5 px-2 py-2 mb-1">
+                    <span class="w-7 h-7 rounded-full bg-teal-600 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">{{ user_first|slice:":1"|upper|default:"U" }}</span>
+                    <span class="user-name-text truncate text-sm text-gray-700 flex-1">{{ user_first|default:user.email }}</span>
                 </div>
             {% endif %}
-            <button id="theme-toggle-sidebar" onclick="toggleTheme()" class="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-700 transition text-sm text-gray-400">
-                <span id="theme-icon-sidebar">🌙</span>
+            <button id="theme-toggle-sidebar" onclick="toggleTheme()" class="theme-toggle-btn w-full flex items-center gap-2.5 px-3 py-2 rounded-xl hover:bg-gray-100 transition text-sm text-gray-500">
+                <span id="theme-icon-sidebar" class="text-base">🌙</span>
                 <span id="theme-text-sidebar">{% trans "Dark mode" %}</span>
             </button>
         </div>
     </aside>
-    
-    <!-- Main Chat Area -->
+
+    <!-- ══════════ MAIN AREA ══════════ -->
     <div id="chat-container">
-        <!-- Header -->
-        <header class="p-4 border-b border-gray-700 flex items-center justify-between text-white bg-gray-900">
-            <div class="flex items-center gap-3">
-                <!-- Mobile menu button -->
-                <button id="menu-btn" onclick="toggleSidebar()" class="p-2 hover:bg-gray-700 rounded-lg transition md:hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M3 12h18M3 6h18M3 18h18"/>
-                    </svg>
+
+        <!-- Sticky header -->
+        <header id="chat-main-header" class="sticky top-0 z-30 px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white/80 backdrop-blur-md">
+            <div class="flex items-center gap-2.5">
+                <button onclick="toggleSidebar()" class="p-2 rounded-xl hover:bg-gray-100 transition md:hidden" aria-label="Menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
                 </button>
-                <a href="{% url 'core:home' %}" class="flex items-center hover:opacity-80 transition">
-                    <img src="{% static 'images/logo.png' %}" alt="FAMO Logo" class="h-6 w-auto mr-2">
+                <a href="{% url 'core:home' %}" class="flex items-center gap-2 hover:opacity-75 transition">
+                    <img src="{% static 'images/logo.png' %}" alt="Fammo Logo" class="h-7 w-auto">
                 </a>
-                <h1 class="text-lg font-semibold hidden sm:block">{% trans "Fammo AI Chat" %}</h1>
-            </div>
-            <div class="flex items-center gap-2">
-                {% if primary_pet %}
-                    <span class="hidden sm:inline text-sm px-2 py-1 rounded-lg bg-gray-800 border border-gray-700">🐾 {{ primary_pet.name }}</span>
-                {% endif %}
-                <a href="?new=1" class="text-sm px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg transition md:hidden">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 5v14M5 12h14"/>
+                <div class="hidden sm:flex items-center gap-1.5">
+                    <span class="font-semibold text-gray-900 text-base fammo-title">Fammo AI</span>
+                    <!-- Paw icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-teal-500" viewBox="0 0 24 24" fill="currentColor">
+                        <ellipse cx="12" cy="18" rx="4.5" ry="3.5"/><circle cx="7.5" cy="11.5" r="1.5"/><circle cx="16.5" cy="11.5" r="1.5"/><circle cx="10" cy="9" r="1.5"/><circle cx="14" cy="9" r="1.5"/>
                     </svg>
-                </a>
+                </div>
+            </div>
+
+            <!-- Pet selector -->
+            <div class="relative">
+                {% if primary_pet %}
+                    <button id="pet-selector-btn" onclick="togglePetDropdown()"
+                            class="pet-selector-btn flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3.5 py-1.5 text-sm font-medium text-gray-700 hover:border-teal-300 hover:bg-teal-50 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-teal-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <ellipse cx="12" cy="18" rx="4.5" ry="3.5"/><circle cx="7.5" cy="11.5" r="1.5"/><circle cx="16.5" cy="11.5" r="1.5"/><circle cx="10" cy="9" r="1.5"/><circle cx="14" cy="9" r="1.5"/>
+                        </svg>
+                        <span id="active-pet-name">{{ primary_pet.name }}</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                    </button>
+                    <div id="pet-dropdown">
+                        <div class="px-3 pt-2.5 pb-1.5">
+                            <p class="pet-dropdown-label text-xs font-semibold text-gray-400 uppercase tracking-widest">{% trans "Switch Pet" %}</p>
+                        </div>
+                        {% if user_pets %}
+                            {% for pet in user_pets %}
+                                <div class="pet-option {% if pet.id == primary_pet.id %}selected{% endif %}" data-pet-id="{{ pet.id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-teal-600 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                                        <ellipse cx="12" cy="18" rx="4.5" ry="3.5"/><circle cx="7.5" cy="11.5" r="1.5"/><circle cx="16.5" cy="11.5" r="1.5"/><circle cx="10" cy="9" r="1.5"/><circle cx="14" cy="9" r="1.5"/>
+                                    </svg>
+                                    <span class="flex-1">{{ pet.name }}</span>
+                                    {% if pet.id == primary_pet.id %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-teal-600 ml-auto flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                        <div class="pet-dropdown-footer border-t border-gray-100 mt-1 p-2">
+                            <a href="{% url 'core:home' %}" class="pet-dropdown-add flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition text-xs text-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                                {% trans "Add new pet" %}
+                            </a>
+                        </div>
+                    </div>
+                {% else %}
+                    <a href="{% url 'core:home' %}" class="flex items-center gap-2 bg-gray-50 border border-dashed border-gray-300 rounded-full px-3.5 py-1.5 text-sm text-gray-500 hover:border-teal-400 hover:text-teal-600 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                        {% trans "Add a pet" %}
+                    </a>
+                {% endif %}
             </div>
         </header>
 
-        <!-- Chat History -->
-        <main id="chat-window" role="log" class="flex flex-col space-y-4">
-            {% if history and history|length > 0 %}
-                {% for msg in history %}
-                    <div class="flex {% if msg.role == 'user' %}justify-end{% else %}justify-start{% endif %}">
-                        <div class="flex items-start max-w-xl group">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full {% if msg.role == 'user' %}bg-indigo-500 order-2 ml-3{% else %}bg-blue-500 mr-3{% endif %} flex items-center justify-center text-white font-bold text-sm">
-                                {% if msg.role == 'user' %}{% trans "You" %}{% else %}{% trans "AI" %}{% endif %}
-                            </div>
-                            <div class="message-content-wrapper flex items-end">
-                                <div class="copy-action-wrapper flex items-center {% if msg.role == 'user' %}order-1 mr-1.5{% else %}order-2 ml-1.5{% endif %} opacity-0 group-hover:opacity-100 transition text-gray-400">
-                                    <span class="copy-feedback text-xs text-green-400 opacity-0 transition-opacity mr-1.5">{% trans "Copied!" %}</span>
-                                    <button type="button" class="copy-btn p-1 hover:text-white hover:bg-gray-700 rounded-full transition" onclick="copyMessage(this)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                        </svg>
-                                    </button>
+        <!-- Chat messages -->
+        <main id="chat-window" role="log">
+            <div id="msg-container" class="max-w-3xl mx-auto w-full flex flex-col gap-5">
+
+                {% if history and history|length > 0 %}
+                    {% for msg in history %}
+                        {% if msg.role == 'user' %}
+                            <div class="msg-group flex justify-end" data-role="user">
+                                <div class="flex items-end gap-2 max-w-lg w-full justify-end">
+                                    <div class="copy-btn-wrap opacity-0 transition-opacity flex items-center gap-1">
+                                        <span class="copy-feedback text-xs text-teal-600 opacity-0 transition-opacity">{% trans "Copied!" %}</span>
+                                        <button type="button" onclick="copyMessage(this)" class="copy-btn p-1.5 hover:bg-gray-100 rounded-full transition text-gray-400">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                        </button>
+                                    </div>
+                                    <div class="user-bubble px-4 py-3 bg-teal-600 text-white rounded-2xl rounded-br-sm shadow-sm max-w-sm">
+                                        {% if msg.image_url %}<img src="{{ msg.image_url }}" alt="User image" class="rounded-lg max-w-full h-auto mb-2 opacity-95" style="max-width:260px;">{% endif %}
+                                        <div class="message-text text-sm leading-relaxed">{{ msg.text|markdownify }}</div>
+                                    </div>
                                 </div>
-                                <div class="message-bubble-content {% if msg.role == 'user' %}bg-indigo-600 order-2{% else %}bg-gray-800 order-1{% endif %} p-4 rounded-xl shadow-lg text-white">
-                                    {% if msg.image_url %}
-                                        <img src="{{ msg.image_url }}" alt="User image" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">
-                                    {% endif %}
-                                    <div class="message-text text-sm md:text-base prose prose-invert prose-sm max-w-none">{{ msg.text|markdownify }}</div>
-                                    {% if msg.suggestion_html %}
-                                        <div class="message-suggestion text-sm mt-2">{{ msg.suggestion_html|safe }}</div>
-                                    {% endif %}
+                            </div>
+                        {% else %}
+                            <div class="msg-group flex justify-start" data-role="ai">
+                                <div class="flex items-start gap-3 max-w-2xl w-full">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center shadow-sm mt-0.5">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+                                    </div>
+                                    <div class="flex flex-col gap-1 min-w-0 flex-1">
+                                        <span class="text-xs font-semibold text-teal-600">Fammo AI</span>
+                                        <div class="flex items-end gap-1.5">
+                                            <div class="ai-bubble px-4 py-3 bg-gray-50 border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm min-w-0">
+                                                {% if msg.image_url %}<img src="{{ msg.image_url }}" alt="" class="rounded-lg max-w-full h-auto mb-2" style="max-width:260px;">{% endif %}
+                                                <div class="message-text text-sm leading-relaxed prose prose-sm max-w-none">{{ msg.text|markdownify }}</div>
+                                                {% if msg.suggestion_html %}<div class="message-suggestion text-sm mt-2 pt-2 border-t border-gray-200">{{ msg.suggestion_html|safe }}</div>{% endif %}
+                                            </div>
+                                            <div class="copy-btn-wrap opacity-0 transition-opacity flex items-center pb-1 flex-shrink-0">
+                                                <button type="button" onclick="copyMessage(this)" class="copy-btn p-1.5 hover:bg-gray-100 rounded-full transition text-gray-400">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% else %}
+                    <div class="msg-group flex justify-start" data-role="ai">
+                        <div class="flex items-start gap-3 max-w-2xl w-full">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center shadow-sm mt-0.5">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <span class="text-xs font-semibold text-teal-600">Fammo AI</span>
+                                <div class="ai-bubble px-4 py-3 bg-gray-50 border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm">
+                                    <p class="message-text text-sm leading-relaxed">{% if greeting %}{{ greeting }}{% else %}{% trans "Hi! Ask me anything about dog & cat care." %}{% endif %}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <!-- Welcome message -->
-                <div class="flex justify-start">
-                    <div class="flex items-start max-w-xl group">
-                        <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold text-sm mr-3">{% trans "AI" %}</div>
-                        <div class="message-content-wrapper flex items-end">
-                            <div class="message-bubble-content bg-gray-800 order-1 p-4 rounded-xl shadow-lg text-white">
-                                <p class="message-text text-sm md:text-base">
-                                    {% if greeting %}{{ greeting }}{% else %}{% trans "Hi! Ask me anything about dog & cat care." %}{% endif %}
-                                </p>
+                    {% if primary_pet %}
+                        <div class="msg-group flex justify-start" data-role="ai">
+                            <div class="flex items-start gap-3 max-w-2xl w-full">
+                                <div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center shadow-sm mt-0.5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-xs font-semibold text-teal-600">Fammo AI</span>
+                                    <div class="ai-bubble px-4 py-3 bg-gray-50 border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm">
+                                        <p class="text-sm leading-relaxed">{% blocktrans with name=primary_pet.name %}Profile on file for {{ name }}{% endblocktrans %}{% if primary_pet.pet_type %} ({{ primary_pet.pet_type.name }}){% endif %}{% if primary_pet.breed %}, {{ primary_pet.breed.name }}{% endif %}{% if primary_pet.weight %}, {{ primary_pet.weight }} kg{% endif %}.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                {% if primary_pet %}
-                    <div class="flex justify-start">
-                        <div class="flex items-start max-w-xl">
-                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white font-bold text-sm">{% trans "AI" %}</div>
-                            <div class="bg-gray-800 p-4 rounded-xl shadow-lg text-white">
-                                <p class="text-sm md:text-base">
-                                    {% blocktrans with name=primary_pet.name %}Profile on file for {{ name }}{% endblocktrans %}{% if primary_pet.pet_type %} ({{ primary_pet.pet_type.name }}){% endif %}{% if primary_pet.breed %}, {{ primary_pet.breed.name }}{% endif %}{% if primary_pet.weight %}, {{ primary_pet.weight }} kg{% endif %}.
-                                </p>
-                            </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if error %}
+                    <div class="flex justify-center">
+                        <div class="error-box px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-xl max-w-md w-full">
+                            <p class="font-semibold text-sm mb-0.5">{% trans "Error:" %}</p>
+                            <p class="text-sm">{{ error }}</p>
                         </div>
                     </div>
                 {% endif %}
-            {% endif %}
 
-            {% if error %}
-                <div class="flex justify-center mt-4">
-                    <div class="p-3 bg-red-800 text-red-100 rounded-xl shadow-lg max-w-md">
-                        <p class="font-bold">{% trans "Error:" %}</p>
-                        <p>{{ error }}</p>
-                    </div>
-                </div>
-            {% endif %}
+            </div>
         </main>
 
-        <!-- Input Area -->
+        <!-- Input area -->
         <div id="input-container">
-            <form method="post" id="chat-form">
-                {% csrf_token %}
-                <input type="hidden" name="message" id="hidden-message-input">
-                <input type="hidden" name="image_data" id="hidden-image-data">
-                <div id="image-preview-container" class="mb-2 hidden"></div>
-                <div class="relative flex items-center w-full">
-                    <input type="file" id="image-input" accept="image/*" class="hidden">
-                    <button id="upload-image-btn" type="button" class="flex-shrink-0 p-2 mr-2 rounded-full text-gray-400 hover:text-blue-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/>
-                        </svg>
-                    </button>
-                    <textarea id="user-input" class="flex-1 resize-none bg-gray-700 text-white rounded-2xl p-4 pr-12 focus:outline-none focus:ring-2 focus:ring-blue-500 transition placeholder-gray-400 text-sm md:text-base" placeholder="{% trans 'Type your pet question…' %}" rows="1"></textarea>
-                    <button id="send-button" type="submit" class="absolute right-3 p-2 rounded-full bg-blue-600 text-white hover:bg-blue-700 transition disabled:bg-gray-600 disabled:opacity-50" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>
-                        </svg>
-                    </button>
-                </div>
-            </form>
+            <div class="max-w-3xl mx-auto">
+                <form method="post" id="chat-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="message" id="hidden-message-input">
+                    <input type="hidden" name="image_data" id="hidden-image-data">
+                    <div id="image-preview-container" class="mb-2 pl-1 hidden"></div>
+                    <div id="input-pill" class="flex items-end gap-1.5 bg-gray-50 border border-gray-200 rounded-3xl p-1.5 transition-all">
+                        <input type="file" id="image-input" accept="image/*" class="hidden">
+                        <button id="upload-image-btn" type="button" title="{% trans 'Attach image' %}"
+                                class="upload-btn flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-2xl text-gray-400 hover:text-teal-600 hover:bg-white transition mb-0.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+                        </button>
+                        <textarea id="user-input"
+                                  class="flex-1 bg-transparent text-gray-900 placeholder-gray-400 text-sm leading-relaxed focus:outline-none py-2 px-1"
+                                  placeholder="{% trans 'Ask about your pet…' %}" rows="1"></textarea>
+                        <button id="send-button" type="submit"
+                                class="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-2xl bg-teal-600 text-white hover:bg-teal-700 active:scale-95 transition-all disabled:bg-gray-200 disabled:text-gray-400 mb-0.5"
+                                disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+                        </button>
+                    </div>
+                </form>
+                <p class="disclaimer-text text-center text-xs text-gray-400 mt-2 px-4 leading-relaxed">
+                    {% trans "Fammo AI is for informational purposes. Always consult a vet for serious health concerns." %}
+                </p>
+            </div>
         </div>
+
     </div>
 </div>
 
 <script>
-    let chatWindow, userInput, sendButton, chatForm, csrfToken = '';
+    let chatWindow, userInput, sendButton, chatForm, msgContainer;
     let imageInput, uploadImageBtn, imagePreviewContainer;
     let sidebar, sidebarOverlay;
     const THEME_KEY = 'petChatTheme';
     let selectedImageBase64 = null, selectedImageMimeType = null;
     let isLoading = false;
+    let csrfToken = '';
 
-    function applyTheme(isLight) {
-        const iconSidebar = document.getElementById('theme-icon-sidebar');
-        const textSidebar = document.getElementById('theme-text-sidebar');
-        if (isLight) {
-            document.body.classList.add('light-mode');
-            if (iconSidebar) iconSidebar.textContent = '☀️';
-            if (textSidebar) textSidebar.textContent = 'Light mode';
+    function applyTheme(isDark) {
+        const icon = document.getElementById('theme-icon-sidebar');
+        const text = document.getElementById('theme-text-sidebar');
+        if (isDark) {
+            document.body.classList.add('dark');
+            if (icon) icon.textContent = '☀️';
+            if (text) text.textContent = '{% trans "Light mode" %}';
         } else {
-            document.body.classList.remove('light-mode');
-            if (iconSidebar) iconSidebar.textContent = '🌙';
-            if (textSidebar) textSidebar.textContent = 'Dark mode';
+            document.body.classList.remove('dark');
+            if (icon) icon.textContent = '🌙';
+            if (text) text.textContent = '{% trans "Dark mode" %}';
         }
-        localStorage.setItem(THEME_KEY, isLight ? 'light' : 'dark');
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
     }
-    
-    function toggleTheme() { applyTheme(!document.body.classList.contains('light-mode')); }
-    
+    function toggleTheme() { applyTheme(!document.body.classList.contains('dark')); }
+
     function toggleSidebar() {
         sidebar.classList.toggle('open');
         sidebarOverlay.classList.toggle('show');
     }
-    
-    function deleteSession(sessionId) {
-        if (!confirm('Delete this chat?')) return;
-        
-        // Debug: Check CSRF token
-        if (!csrfToken) {
-            console.error('CSRF token not found');
-            return;
+
+    function togglePetDropdown() {
+        const d = document.getElementById('pet-dropdown');
+        if (d) d.classList.toggle('open');
+    }
+    document.addEventListener('click', function(e) {
+        const btn = document.getElementById('pet-selector-btn');
+        const d = document.getElementById('pet-dropdown');
+        if (btn && d && !btn.contains(e.target) && !d.contains(e.target)) {
+            d.classList.remove('open');
         }
-        
-        // Use Django URL pattern instead of hardcoded URL
-        const deleteUrl = '{% url "delete_chat_session" 0 %}'.replace('0', sessionId);
-        console.log('Deleting session:', sessionId, 'URL:', deleteUrl);
-        
-        fetch(deleteUrl, {
+    });
+
+    function deleteSession(sessionId) {
+        if (!confirm('{% trans "Delete this chat?" %}')) return;
+        if (!csrfToken) return;
+        const url = '{% url "delete_chat_session" 0 %}'.replace('0', sessionId);
+        fetch(url, {
             method: 'POST',
-            headers: {
-                'X-CSRFToken': csrfToken,
-                'X-Requested-With': 'XMLHttpRequest',
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            console.log('Delete response status:', response.status);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return response.json();
+            headers: { 'X-CSRFToken': csrfToken, 'X-Requested-With': 'XMLHttpRequest', 'Content-Type': 'application/json' }
+        }).then(r => {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
         }).then(data => {
-            console.log('Delete response data:', data);
             if (data.success) {
                 const item = document.querySelector('[data-session-id="' + sessionId + '"]');
                 if (item) {
                     item.remove();
-                    console.log('Session deleted and removed from UI');
-                    
-                    // If we're currently viewing the deleted session, redirect to new chat
                     if (window.location.pathname.includes('/session/' + sessionId + '/')) {
                         window.location.href = '{% url "chat" %}';
                     }
-                } else {
-                    console.error('Could not find session item to remove');
                 }
-            } else {
-                console.error('Server reported failure:', data);
             }
-        }).catch(error => {
-            console.error('Delete request failed:', error);
-        });
+        }).catch(err => console.error('Delete failed:', err));
     }
 
     const checkSendButtonState = () => {
-        const hasText = userInput.value.trim().length > 0;
-        const hasImage = selectedImageBase64 !== null;
-        sendButton.disabled = !(hasText || hasImage) || isLoading;
+        sendButton.disabled = !(userInput.value.trim().length > 0 || selectedImageBase64 !== null) || isLoading;
     };
 
-    function adjustTextareaHeight(textarea) {
-        textarea.style.height = 'auto';
-        textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+    function adjustTextareaHeight(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 160) + 'px';
     }
 
     function clearImageInput() {
-        selectedImageBase64 = null;
-        selectedImageMimeType = null;
+        selectedImageBase64 = null; selectedImageMimeType = null;
         imageInput.value = '';
         imagePreviewContainer.innerHTML = '';
         imagePreviewContainer.classList.add('hidden');
         checkSendButtonState();
     }
 
+    function displayImagePreview(src) {
+        imagePreviewContainer.classList.remove('hidden');
+        imagePreviewContainer.innerHTML =
+            '<div class="relative inline-block rounded-xl overflow-hidden border border-gray-200">' +
+            '<img src="' + src + '" class="h-16 w-16 object-cover">' +
+            '<button id="clear-image-btn" type="button" class="absolute top-1 right-1 bg-black/60 text-white rounded-full w-5 h-5 flex items-center justify-center hover:bg-black/80 transition">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>' +
+            '</button></div>';
+        document.getElementById('clear-image-btn').addEventListener('click', clearImageInput);
+    }
+
     const scrollToBottom = () => { chatWindow.scrollTop = chatWindow.scrollHeight; };
 
     window.copyMessage = function(button) {
-        const container = button.closest('.message-content-wrapper');
-        const text = container.querySelector('.message-text').textContent.trim();
-        const feedback = container.querySelector('.copy-feedback');
-        navigator.clipboard.writeText(text).then(() => {
-            feedback.classList.add('opacity-100');
-            setTimeout(() => feedback.classList.remove('opacity-100'), 1500);
-        });
+        const group = button.closest('.msg-group');
+        if (!group) return;
+        const textEl = group.querySelector('.message-text');
+        if (!textEl) return;
+        const feedback = group.querySelector('.copy-feedback');
+        navigator.clipboard.writeText(textEl.textContent.trim()).then(() => {
+            if (feedback) { feedback.classList.add('opacity-100'); setTimeout(() => feedback.classList.remove('opacity-100'), 1500); }
+        }).catch(() => {});
     };
+
+    const BOT_AVATAR =
+        '<div class="flex-shrink-0 w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center shadow-sm mt-0.5">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2M20 14h2M15 13v2M9 13v2"/></svg></div>';
+
+    const COPY_BTN =
+        '<button type="button" onclick="copyMessage(this)" class="copy-btn p-1.5 hover:bg-gray-100 rounded-full transition text-gray-400">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+        '<rect width="13" height="13" x="9" y="9" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>';
 
     function renderMessage(role, text, image_url, isHtml) {
         const isUser = role === 'user';
         const el = document.createElement('div');
-        el.className = 'flex ' + (isUser ? 'justify-end' : 'justify-start');
-        const content = isHtml ? text : '<div class="message-text text-sm md:text-base prose prose-invert prose-sm max-w-none">' + text + '</div>';
-        const img = image_url ? '<img src="' + image_url + '" class="rounded-lg max-w-full h-auto mb-2 border border-gray-600" style="max-width:300px;">' : '';
-        el.innerHTML = '<div class="flex items-start max-w-xl group"><div class="flex-shrink-0 w-8 h-8 rounded-full ' + (isUser ? 'bg-indigo-500 order-2 ml-3' : 'bg-blue-500 mr-3') + ' flex items-center justify-center text-white font-bold text-sm">' + (isUser ? 'You' : 'AI') + '</div><div class="message-content-wrapper flex items-end"><div class="message-bubble-content ' + (isUser ? 'bg-indigo-600 order-2' : 'bg-gray-800 order-1') + ' p-4 rounded-xl shadow-lg text-white">' + img + content + '</div></div></div>';
-        chatWindow.appendChild(el);
+        el.className = 'msg-group flex msg-animate ' + (isUser ? 'justify-end' : 'justify-start');
+        el.setAttribute('data-role', isUser ? 'user' : 'ai');
+        const img = image_url ? '<img src="' + image_url + '" class="rounded-lg max-w-full h-auto mb-2 opacity-95" style="max-width:260px;">' : '';
+        if (isUser) {
+            const content = isHtml ? text : '<div class="message-text text-sm leading-relaxed">' + escapeHtml(text) + '</div>';
+            el.innerHTML =
+                '<div class="flex items-end gap-2 max-w-lg w-full justify-end">' +
+                '<div class="copy-btn-wrap opacity-0 transition-opacity flex items-center gap-1">' +
+                '<span class="copy-feedback text-xs text-teal-600 opacity-0 transition-opacity">Copied!</span>' + COPY_BTN + '</div>' +
+                '<div class="user-bubble px-4 py-3 bg-teal-600 text-white rounded-2xl rounded-br-sm shadow-sm max-w-sm">' + img + content + '</div></div>';
+        } else {
+            const content = isHtml ? text : '<div class="message-text text-sm leading-relaxed prose prose-sm max-w-none">' + escapeHtml(text) + '</div>';
+            el.innerHTML =
+                '<div class="flex items-start gap-3 max-w-2xl w-full">' + BOT_AVATAR +
+                '<div class="flex flex-col gap-1 min-w-0 flex-1"><span class="text-xs font-semibold text-teal-600">Fammo AI</span>' +
+                '<div class="flex items-end gap-1.5">' +
+                '<div class="ai-bubble px-4 py-3 bg-gray-50 border border-gray-100 text-gray-800 rounded-2xl rounded-tl-sm min-w-0">' + content + '</div>' +
+                '<div class="copy-btn-wrap opacity-0 transition-opacity flex items-center pb-1 flex-shrink-0">' + COPY_BTN + '</div>' +
+                '</div></div></div>';
+        }
+        msgContainer.appendChild(el);
         scrollToBottom();
         return el;
     }
@@ -468,43 +485,47 @@
     function renderLoadingIndicator() {
         const el = document.createElement('div');
         el.id = 'loading-indicator';
-        el.className = 'flex justify-start';
-        el.innerHTML = '<div class="flex items-start max-w-xl"><div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-500 mr-3 flex items-center justify-center text-white font-bold text-sm">AI</div><div class="bg-gray-800 p-4 rounded-xl shadow-lg text-white"><div class="flex items-center space-x-1"><span class="text-sm">Thinking...</span><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div></div>';
-        chatWindow.appendChild(el);
+        el.className = 'msg-group flex justify-start msg-animate';
+        el.innerHTML =
+            '<div class="flex items-start gap-3 max-w-2xl w-full">' + BOT_AVATAR +
+            '<div class="flex flex-col gap-1"><span class="text-xs font-semibold text-teal-600">Fammo AI</span>' +
+            '<div class="ai-bubble px-4 py-3.5 bg-gray-50 border border-gray-100 rounded-2xl rounded-tl-sm">' +
+            '<div class="flex items-center space-x-1"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>' +
+            '</div></div></div>';
+        msgContainer.appendChild(el);
         scrollToBottom();
         return el;
+    }
+
+    function escapeHtml(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
     async function sendChatMessage(query, imageData) {
         if (isLoading || (!query && !imageData)) return;
         isLoading = true;
-        const fullImageUrl = imageData ? 'data:' + imageData : null;
-        renderMessage('user', query, fullImageUrl, false);
+        renderMessage('user', query, imageData ? 'data:' + imageData : null, false);
         clearImageInput();
         const loadingEl = renderLoadingIndicator();
         checkSendButtonState();
-
         try {
             const formData = new FormData();
             formData.append('csrfmiddlewaretoken', csrfToken);
             formData.append('message', query);
             formData.append('image_data', imageData || '');
-
             const response = await fetch(chatForm.action || window.location.href, { method: 'POST', body: formData });
             if (!response.ok) throw new Error('Server error ' + response.status);
-
             const html = await response.text();
             const doc = new DOMParser().parseFromString(html, 'text/html');
-            const bubbles = doc.querySelectorAll('.justify-start .message-bubble-content');
-            let aiHtml = 'Error parsing response.';
+            const bubbles = doc.querySelectorAll('.ai-bubble');
+            let aiHtml = '{% trans "Sorry, I could not parse the response." %}';
             if (bubbles.length > 0) aiHtml = bubbles[bubbles.length - 1].innerHTML.trim();
-            
-            if (loadingEl && chatWindow.contains(loadingEl)) chatWindow.removeChild(loadingEl);
+            if (loadingEl && loadingEl.parentNode) loadingEl.parentNode.removeChild(loadingEl);
             renderMessage('ai', aiHtml, null, true);
         } catch (err) {
             console.error(err);
-            if (loadingEl && chatWindow.contains(loadingEl)) chatWindow.removeChild(loadingEl);
-            renderMessage('ai', '[Error: ' + err.message + ']', null, false);
+            if (loadingEl && loadingEl.parentNode) loadingEl.parentNode.removeChild(loadingEl);
+            renderMessage('ai', '<span class="text-red-500 text-sm">[Error: ' + err.message + ']</span>', null, true);
         } finally {
             isLoading = false;
             checkSendButtonState();
@@ -514,30 +535,24 @@
         }
     }
 
-    function displayImagePreview(src) {
-        imagePreviewContainer.classList.remove('hidden');
-        imagePreviewContainer.innerHTML = '<div class="relative inline-block border border-gray-600 rounded-lg overflow-hidden"><img src="' + src + '" class="h-16 w-16 object-cover"><button id="clear-image-btn" type="button" class="absolute top-1 right-1 bg-black bg-opacity-70 text-white rounded-full p-0.5 w-5 h-5 flex items-center justify-center text-xs hover:bg-opacity-100"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button></div>';
-        document.getElementById('clear-image-btn').addEventListener('click', clearImageInput);
-    }
-
     window.onload = function() {
-        chatWindow = document.getElementById('chat-window');
-        userInput = document.getElementById('user-input');
-        sendButton = document.getElementById('send-button');
-        chatForm = document.getElementById('chat-form');
-        imageInput = document.getElementById('image-input');
+        chatWindow   = document.getElementById('chat-window');
+        msgContainer = document.getElementById('msg-container');
+        userInput    = document.getElementById('user-input');
+        sendButton   = document.getElementById('send-button');
+        chatForm     = document.getElementById('chat-form');
+        imageInput   = document.getElementById('image-input');
         uploadImageBtn = document.getElementById('upload-image-btn');
         imagePreviewContainer = document.getElementById('image-preview-container');
-        sidebar = document.getElementById('sidebar');
+        sidebar      = document.getElementById('sidebar');
         sidebarOverlay = document.getElementById('sidebar-overlay');
 
-        var csrfEl = document.querySelector('[name=csrfmiddlewaretoken]');
+        const csrfEl = document.querySelector('[name=csrfmiddlewaretoken]');
         csrfToken = csrfEl ? csrfEl.value : '';
 
-        // Theme
-        var saved = localStorage.getItem(THEME_KEY);
-        var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-        applyTheme(saved === 'light' || (!saved && prefersLight));
+        const saved = localStorage.getItem(THEME_KEY);
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        applyTheme(saved === 'dark' || (!saved && prefersDark));
 
         userInput.addEventListener('input', function() { checkSendButtonState(); adjustTextareaHeight(userInput); });
         userInput.addEventListener('keydown', function(e) {
@@ -546,17 +561,17 @@
 
         chatForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            var query = userInput.value.trim();
+            const query = userInput.value.trim();
             if (!query && !selectedImageBase64) return;
             sendChatMessage(query, selectedImageBase64);
         });
 
-        uploadImageBtn.addEventListener('click', function() { imageInput.click(); });
+        uploadImageBtn.addEventListener('click', () => imageInput.click());
         imageInput.addEventListener('change', function(e) {
-            var file = e.target.files[0];
+            const file = e.target.files[0];
             if (file && file.type.startsWith('image/')) {
                 selectedImageMimeType = file.type;
-                var reader = new FileReader();
+                const reader = new FileReader();
                 reader.onload = function(ev) {
                     selectedImageBase64 = selectedImageMimeType + ';base64,' + ev.target.result.split(',')[1];
                     displayImagePreview(ev.target.result);
@@ -570,29 +585,29 @@
         checkSendButtonState();
         scrollToBottom();
 
-        // Check for pending question from home page quick ask
         const pendingQuestion = sessionStorage.getItem('pendingQuestion');
         const shouldCreateNewChat = sessionStorage.getItem('shouldCreateNewChat');
-        
         if (pendingQuestion && shouldCreateNewChat) {
-            // Clear the stored values
             sessionStorage.removeItem('pendingQuestion');
             sessionStorage.removeItem('shouldCreateNewChat');
-            
-            // Auto-send the question after a brief delay to ensure page is fully loaded
-            setTimeout(function() {
-                userInput.value = pendingQuestion;
-                sendChatMessage(pendingQuestion, null);
-            }, 500);
+            setTimeout(function() { userInput.value = pendingQuestion; sendChatMessage(pendingQuestion, null); }, 500);
         }
 
-        // Delete session button handlers
         document.querySelectorAll('[data-delete-session]').forEach(function(btn) {
             btn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                var sessionId = this.getAttribute('data-delete-session');
-                deleteSession(sessionId);
+                e.preventDefault(); e.stopPropagation();
+                deleteSession(this.getAttribute('data-delete-session'));
+            });
+        });
+
+        document.querySelectorAll('.pet-option').forEach(function(opt) {
+            opt.addEventListener('click', function() {
+                const petId = this.dataset.petId;
+                if (petId) {
+                    const url = new URL(window.location.href);
+                    url.searchParams.set('pet_id', petId);
+                    window.location.href = url.toString();
+                }
             });
         });
     };
