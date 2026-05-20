@@ -250,9 +250,10 @@ MARKDOWNIFY = {
     "default": {
         "WHITELIST_TAGS": [
             'a', 'abbr', 'acronym', 'b', 'blockquote', 'code', 'em', 'i', 'li',
-            'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'img', 'hr', 'br', 'table', 'thead', 'tbody', 'tr', 'th', 'td'
+            'ol', 'pre', 'strong', 'ul', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'img', 'hr', 'br', 'table', 'thead', 'tbody', 'tr', 'th', 'td',
+            'span', 'div', 'button',
         ],
-        "WHITELIST_ATTRS": ['href', 'src', 'alt', 'class', 'align', 'id'],
+        "WHITELIST_ATTRS": ['href', 'src', 'alt', 'class', 'align', 'id', 'target', 'rel', 'type'],
         "MARKDOWN_EXTENSIONS": [
             'markdown.extensions.fenced_code',
             'markdown.extensions.codehilite',
