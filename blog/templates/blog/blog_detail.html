@@ -8,7 +8,7 @@
     {{ post.meta_description|default:post.content|truncatewords:25|striptags }}
 {% endblock %}
 {% block meta_keywords %}
-    {{ post.meta_keywords|default:post.title }}, {{ post.category.name }}, FAMO, pet blog, pet health, pet nutrition
+  {{ post.meta_keywords|default:post.title }}{% for cat in post.category.all %}, {{ cat.name }}{% endfor %}, FAMO, pet blog, pet health, pet nutrition
 {% endblock %}
 {% block extra_head %}
   {# ── Crawl directive ── #}
@@ -258,10 +258,16 @@
         {{ post.content|markdownify }}
     </div>
 
-    <!-- Category Badge -->
-    <span class="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded">
-        {{ post.category.name }}
-    </span>
+    <!-- Category badges -->
+    {% with categories=post.category.all %}
+      {% if categories %}
+        <div class="flex flex-wrap gap-2 mb-2">
+          {% for cat in categories %}
+            <span class="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded">{{ cat.name }}</span>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
 
     <div class="divider divider-success">Rate it</div>
 
