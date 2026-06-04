@@ -557,17 +557,43 @@ def delete_topic(request, topic_id):
 @login_required
 @user_passes_test(is_writer_or_admin, login_url='/admin/login/')
 def upload_inline_image(request):
-    """Handle inline image uploads from the markdown editor."""
+    """Handle inline image uploads from the markdown editor (dashboard).
+
+    Accepts an optional ``custom_filename`` POST field so callers can supply a
+    SEO-friendly slug (e.g. ``golden-retriever-puppy-park``).  The value is
+    sanitised server-side: only lowercase ASCII letters, digits and hyphens are
+    kept; runs of other characters are collapsed to a single hyphen.
+    """
     if request.method != 'POST' or 'image' not in request.FILES:
         return JsonResponse({'error': 'Invalid request'}, status=400)
     image_file = request.FILES['image']
+    custom_filename = request.POST.get('custom_filename', '').strip()
 
     try:
+        import re as _re
+
         upload_dir = os.path.join(settings.MEDIA_ROOT, 'blog_inline')
         os.makedirs(upload_dir, exist_ok=True)
 
-        ext = os.path.splitext(image_file.name)[1] or '.png'
-        filename = f"blog_inline/{uuid.uuid4().hex}{ext}"
+        # Preserve the original extension; fall back to .png for clipboard images
+        ext = os.path.splitext(image_file.name)[1].lower() or '.png'
+
+        if custom_filename:
+            # Strip extension if the user accidentally included one
+            clean = _re.sub(r'\.[a-zA-Z]{2,5}$', '', custom_filename)
+            # Lowercase and replace anything that is not a letter/digit/hyphen
+            clean = _re.sub(r'[^a-z0-9]+', '-', clean.lower()).strip('-')
+            if not clean:
+                clean = uuid.uuid4().hex
+            base = f"blog_inline/{clean}"
+            filename = f"{base}{ext}"
+            # Avoid clobbering an existing file with the same name
+            counter = 1
+            while default_storage.exists(filename):
+                filename = f"{base}-{counter}{ext}"
+                counter += 1
+        else:
+            filename = f"blog_inline/{uuid.uuid4().hex}{ext}"
 
         saved_path = default_storage.save(filename, image_file)
         image_url = request.build_absolute_uri(default_storage.url(saved_path))
@@ -576,3 +602,48 @@ def upload_inline_image(request):
     except Exception as exc:
         logging.exception("Inline image upload failed")
         return JsonResponse({'error': str(exc)}, status=500)
+
+
+def markdownx_upload(request):
+    """Drop-in replacement for markdownx's /markdownx/upload/ endpoint.
+
+    Uses the original filename (sanitised) instead of a UUID, and returns the
+    markdownx-compatible JSON so the admin editor inserts the image correctly.
+    The alt text is pre-filled with the slug of the filename so editors already
+    have a meaningful, keyword-friendly placeholder to edit.
+    """
+    if not request.user.is_authenticated:
+        return JsonResponse({'image_code': '', 'status': 401, 'error': 'Authentication required'}, status=401)
+    if not (request.user.is_staff or request.user.is_superuser):
+        return JsonResponse({'image_code': '', 'status': 403, 'error': 'Forbidden'}, status=403)
+    if request.method != 'POST' or 'image' not in request.FILES:
+        return JsonResponse({'image_code': '', 'status': 400, 'error': 'No image provided'}, status=400)
+
+    image_file = request.FILES['image']
+
+    try:
+        import re as _re
+
+        ext = os.path.splitext(image_file.name)[1].lower() or '.png'
+        base_name = os.path.splitext(image_file.name)[0]
+        # Sanitise: lowercase, non-alphanumeric → hyphen, strip leading/trailing hyphens
+        clean = _re.sub(r'[^a-z0-9]+', '-', base_name.lower()).strip('-') or uuid.uuid4().hex[:8]
+
+        upload_dir = os.path.join(settings.MEDIA_ROOT, 'markdownx')
+        os.makedirs(upload_dir, exist_ok=True)
+
+        filename = f"markdownx/{clean}{ext}"
+        counter = 1
+        while default_storage.exists(filename):
+            filename = f"markdownx/{clean}-{counter}{ext}"
+            counter += 1
+
+        saved_path = default_storage.save(filename, image_file)
+        image_url = request.build_absolute_uri(default_storage.url(saved_path))
+
+        # Pre-fill alt text with the filename slug so editors have a useful starting point
+        image_code = f'![{clean}]({image_url})'
+        return JsonResponse({'image_code': image_code, 'status': 200})
+    except Exception as exc:
+        logging.exception("Markdownx image upload failed")
+        return JsonResponse({'image_code': '', 'status': 500, 'error': str(exc)}, status=500)

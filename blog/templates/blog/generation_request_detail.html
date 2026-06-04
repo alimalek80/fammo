@@ -295,6 +295,67 @@
     </main>
 </div>
 
+<!-- SEO Image Upload Modal -->
+<div id="seo-img-modal"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
+            z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:#fff;border-radius:12px;padding:28px 32px;
+                width:480px;max-width:92vw;box-shadow:0 24px 64px rgba(0,0,0,0.28);">
+        <h3 style="margin:0 0 20px;font-size:17px;font-weight:700;color:#0f172a;">
+            📸 Insert Image with SEO Filename
+        </h3>
+
+        <div id="seo-img-preview" style="display:none;text-align:center;margin-bottom:16px;">
+            <img id="seo-img-preview-img"
+                 style="max-height:110px;max-width:100%;border-radius:8px;border:1px solid #e2e8f0;">
+        </div>
+
+        <div style="margin-bottom:14px;">
+            <label style="display:block;font-size:11px;font-weight:700;color:#64748b;
+                          text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">
+                SEO Filename
+                <span style="font-weight:400;color:#94a3b8;">(no extension · use hyphens)</span>
+            </label>
+            <input id="seo-img-filename" type="text" required
+                   placeholder="e.g. golden-retriever-puppy-park"
+                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm
+                          focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+            <p style="margin:5px 0 0;font-size:11px;color:#94a3b8;">
+                Becomes the URL path — keep it descriptive &amp; keyword-rich.
+            </p>
+        </div>
+
+        <div style="margin-bottom:22px;">
+            <label style="display:block;font-size:11px;font-weight:700;color:#64748b;
+                          text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;">
+                Alt Text
+            </label>
+            <input id="seo-img-alt" type="text"
+                   placeholder="Describe the image for screen readers &amp; SEO"
+                   class="w-full px-4 py-2.5 border border-slate-200 rounded-lg text-sm
+                          focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+        </div>
+
+        <div id="seo-img-error"
+             style="display:none;margin-bottom:14px;padding:8px 12px;
+                    background:#fef2f2;border:1px solid #fecaca;border-radius:6px;
+                    font-size:13px;color:#dc2626;"></div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-end;">
+            <button id="seo-img-cancel" type="button"
+                    class="px-5 py-2 border border-slate-200 bg-white text-slate-600
+                           rounded-lg text-sm font-medium hover:bg-slate-50 transition">
+                Cancel
+            </button>
+            <button id="seo-img-submit" type="button"
+                    class="px-5 py-2 bg-indigo-600 text-white rounded-lg text-sm
+                           font-semibold hover:bg-indigo-700 transition">
+                Upload &amp; Insert
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
 function copyToClipboard(platform) {
     const contentId = platform + '-content';
@@ -344,8 +405,112 @@ document.addEventListener('DOMContentLoaded', () => {
     const paneWrite = document.getElementById('pane-write');
     const panePreview = document.getElementById('pane-preview');
     const uploadEndpoint = "{% url 'blog:upload_inline_image' %}";
-    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
+    // Read CSRF from the cookie first (works even if the form is not rendered),
+    // fall back to the hidden form input.
+    const csrfCookieMatch = document.cookie.match(/csrftoken=([^;]+)/);
+    const csrfToken = (csrfCookieMatch ? csrfCookieMatch[1] : null)
+                      || document.querySelector('input[name="csrfmiddlewaretoken"]')?.value;
     if (!editor || !preview) return;
+
+    // ---- SEO Image Upload Modal ------------------------------------------------
+    const modal       = document.getElementById('seo-img-modal');
+    const filenameInp = document.getElementById('seo-img-filename');
+    const altInp      = document.getElementById('seo-img-alt');
+    const submitBtn   = document.getElementById('seo-img-submit');
+    const cancelBtn   = document.getElementById('seo-img-cancel');
+    const errorBox    = document.getElementById('seo-img-error');
+    const previewBox  = document.getElementById('seo-img-preview');
+    const previewImg  = document.getElementById('seo-img-preview-img');
+
+    let pendingFile = null;
+
+    function slugify(str) {
+        return str
+            .replace(/\.[^.]+$/, '')
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+    }
+
+    function openImageModal(file) {
+        pendingFile = file;
+        filenameInp.value = slugify(file.name);
+        altInp.value = '';
+        errorBox.style.display = 'none';
+        errorBox.textContent = '';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Upload & Insert';
+        previewBox.style.display = 'none';
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            previewImg.src = e.target.result;
+            previewBox.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+
+        modal.style.display = 'flex';
+        setTimeout(() => filenameInp.focus(), 60);
+    }
+
+    function closeImageModal() {
+        modal.style.display = 'none';
+        pendingFile = null;
+    }
+
+    async function submitImageUpload() {
+        errorBox.style.display = 'none';
+        const filename = filenameInp.value.trim();
+        const altText  = altInp.value.trim();
+        if (!filename) {
+            errorBox.textContent = 'Please enter an SEO filename.';
+            errorBox.style.display = 'block';
+            filenameInp.focus();
+            return;
+        }
+        if (!pendingFile) return;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Uploading…';
+
+        const formData = new FormData();
+        formData.append('image', pendingFile);
+        formData.append('custom_filename', filename);
+
+        try {
+            const response = await fetch(uploadEndpoint, {
+                method: 'POST',
+                headers: { 'X-CSRFToken': csrfToken },
+                body: formData,
+            });
+            if (!response.ok) throw new Error('Server error ' + response.status);
+            const data = await response.json();
+            if (data.error) throw new Error(data.error);
+            if (data.url) {
+                const alt = altText || filename;
+                insertAtCursor(`![${alt}](${data.url})`);
+            }
+            closeImageModal();
+        } catch (err) {
+            console.error('Image upload failed', err);
+            errorBox.textContent = 'Upload failed: ' + err.message;
+            errorBox.style.display = 'block';
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Upload & Insert';
+        }
+    }
+
+    cancelBtn.addEventListener('click', closeImageModal);
+    submitBtn.addEventListener('click', submitImageUpload);
+    modal.addEventListener('click', (e) => { if (e.target === modal) closeImageModal(); });
+    modal.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeImageModal();
+        if (e.key === 'Enter' && document.activeElement !== cancelBtn) {
+            e.preventDefault();
+            submitImageUpload();
+        }
+    });
+    // ---------------------------------------------------------------------------
 
     const render = () => {
         const raw = editor.value || '';
@@ -388,35 +553,12 @@ document.addEventListener('DOMContentLoaded', () => {
         editor.dispatchEvent(new Event('input'));
     };
 
-    const uploadImageFile = async (file) => {
-        if (!file || !file.type.startsWith('image/')) return;
-        if (!csrfToken) return;
-
-        const formData = new FormData();
-        formData.append('image', file);
-
-        try {
-            const response = await fetch(uploadEndpoint, {
-                method: 'POST',
-                headers: { 'X-CSRFToken': csrfToken },
-                body: formData,
-            });
-
-            if (!response.ok) throw new Error('upload failed');
-            const data = await response.json();
-            if (data.url) {
-                insertAtCursor(`![${file.name}](${data.url})`);
-            }
-        } catch (err) {
-            console.error('Image upload failed', err);
-            alert('Image upload failed. Please try again.');
-        }
-    };
-
     const handleFiles = (fileList) => {
-        const files = Array.from(fileList || []);
-        if (!files.length) return;
-        files.forEach(uploadImageFile);
+        const images = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
+        if (!images.length) return;
+        // Show modal for the first image; subsequent ones (rare) are queued after the
+        // user submits, but for simplicity we only handle one at a time here.
+        openImageModal(images[0]);
     };
 
     editor.addEventListener('paste', (event) => {

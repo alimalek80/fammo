@@ -12,6 +12,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 
 from userapp.views import account_deletion_view, privacy_policy_view
+from blog.dashboard_views import markdownx_upload
 
 # Import sitemaps
 from .sitemaps import (
@@ -42,7 +43,10 @@ def custom_404(request, exception=None):
 urlpatterns = [
     # ✅ This is required for {% url 'set_language' %} to work
     path('i18n/', include('django.conf.urls.i18n')),
-    path('markdownx/', include('markdownx.urls')),  # move outside i18n for uploads
+    # Override markdownx upload to use SEO-friendly filenames instead of UUIDs.
+    # Must come BEFORE the markdownx include so Django matches it first.
+    path('markdownx/upload/', markdownx_upload, name='markdownx_upload_seo'),
+    path('markdownx/', include('markdownx.urls')),  # markdownify still uses markdownx
     # API routes should be outside i18n_patterns for mobile apps
     path('api/v1/', include('api.urls')),
     path('api/v1/ai/', include(('ai_core.urls', 'ai_core'), namespace='ai_core')),

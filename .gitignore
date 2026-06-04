@@ -22,6 +22,7 @@ staticfiles/
 tailwindcss.exe
 tailwindcss
 node_modules/
+tailwindcss.exe
 
 # Local environment files
 .env

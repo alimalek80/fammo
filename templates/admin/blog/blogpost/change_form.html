@@ -45,5 +45,9 @@
         <p><strong>Why it matters:</strong> Alt text improves accessibility for screen readers and helps with SEO.</p>
     </div>
     
+    {# Pass the upload URL with the correct locale prefix to the JS #}
+    <script>
+        window.BLOG_INLINE_UPLOAD_URL = "{% url 'blog:upload_inline_image' %}";
+    </script>
     <script src="{% static 'admin/js/markdownx_sidebyside.js' %}"></script>
 {% endblock %}

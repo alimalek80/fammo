@@ -2,13 +2,13 @@
 {% load i18n %}
 {% load static %}
 {% load markdownify %}
-{% block title %}{{ post.seo_title|default:post.title }} | FAMO{% endblock %}
+{% block title %}{{ post.seo_title|default:post.title }} | FAMMO{% endblock %}
 
 {% block meta_description %}
     {{ post.meta_description|default:post.content|truncatewords:25|striptags }}
 {% endblock %}
 {% block meta_keywords %}
-  {{ post.meta_keywords|default:post.title }}{% for cat in post.category.all %}, {{ cat.name }}{% endfor %}, FAMO, pet blog, pet health, pet nutrition
+  {{ post.meta_keywords|default:post.title }}{% for cat in post.category.all %}, {{ cat.name }}{% endfor %}, FAMMO, pet blog, pet health, pet nutrition
 {% endblock %}
 {% block extra_head %}
   {# ── Crawl directive ── #}
@@ -18,7 +18,7 @@
   <link rel="canonical" href="{{ canonical_url_final }}" />
 
   {# ── Open Graph – core ── #}
-  <meta property="og:site_name" content="FAMO" />
+  <meta property="og:site_name" content="FAMMO" />
   <meta property="og:locale" content="{{ post.language|default:'en' }}_{{ post.language|default:'en'|upper }}" />
   <meta property="og:type" content="article" />
   <meta property="og:url" content="{{ canonical_url_final }}" />
