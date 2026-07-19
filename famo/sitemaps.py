@@ -47,7 +47,7 @@ class StaticViewSitemap(Sitemap):
 class DynamicModelSitemap(Sitemap):
     """Common multilingual sitemap behavior for translated models."""
 
-    i18n = True
+    i18n = False
 
     def location(self, obj):
         # Prefer explicit URLs so one missing get_absolute_url implementation

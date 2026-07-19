@@ -1,6 +1,6 @@
 from django.conf.urls.i18n import i18n_patterns
 from django.views.i18n import set_language
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf import settings
 from django.contrib import admin
 from django.conf.urls.static import static
@@ -9,7 +9,7 @@ from django.contrib.sitemaps.views import index, sitemap
 from userapp.views import reset_password_from_email
 from django.shortcuts import render
 from django.utils import timezone
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
 
 from userapp.views import account_deletion_view, privacy_policy_view
 from blog.dashboard_views import markdownx_upload
@@ -71,6 +71,16 @@ urlpatterns = [
         template_name='llms.txt',
         content_type='text/plain'
     ), name='llms_txt'),
+
+    # 301 redirects for old /blog/ URLs → /en/blog/
+    re_path(
+        r'^blog/(?P<path>.*)$',
+        RedirectView.as_view(
+            url='/en/blog/%(path)s',
+            permanent=True,
+        ),
+        name='blog-legacy-redirect',
+    ),
 ]
 
 # Your actual app routes (web interface with i18n)

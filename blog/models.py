@@ -3,6 +3,8 @@ from django.conf import settings
 from django.utils.text import slugify
 from django.utils import timezone
 from markdownx.models import MarkdownxField
+from django.urls import reverse
+from django.utils.translation import override as translation_override
 
 # Get language choices from settings
 LANGUAGE_CHOICES = getattr(settings, 'LANGUAGES', [('en', 'English')])
@@ -64,8 +66,8 @@ class BlogPost(models.Model):
         super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        from django.urls import reverse
-        return reverse('blog:blog_detail', kwargs={'slug': self.slug})
+        with translation_override('en'):
+            return reverse('blog:blog_detail', kwargs={'slug': self.slug})
 
     def __str__(self):
         return self.title

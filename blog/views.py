@@ -7,6 +7,8 @@ from django.db.models import Avg, Count, F, Q
 from urllib.parse import quote
 from django.utils.html import strip_tags
 from django.utils import timezone
+from django.urls import reverse
+from django.utils.translation import override as translation_override
 
 
 def _extract_faq_items(content):
@@ -102,8 +104,10 @@ def blog_detail(request, slug):
     else:
         og_image_url = image_url
 
-    # canonical_url: prefer the explicitly-set field, otherwise use the current page URL
-    canonical_url_final = post.canonical_url or absolute_url
+    # canonical_url: always force /en/ prefix regardless of which URL was requested
+    with translation_override('en'):
+        en_path = reverse('blog:blog_detail', kwargs={'slug': post.slug})
+    canonical_url_final = post.canonical_url or request.build_absolute_uri(en_path)
 
     # Previous and next posts (by created_at)
     prev_post = BlogPost.objects.filter(created_at__lt=post.created_at).order_by('-created_at').first()

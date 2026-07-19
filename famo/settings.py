@@ -225,7 +225,7 @@ LANGUAGES = [
 ]
 TIME_ZONE = 'UTC'
 USE_I18N = True
-PREFIX_DEFAULT_LANGUAGE = False  # Allow default language (en) without /en/ prefix
+PREFIX_DEFAULT_LANGUAGE = True  # Require /en/ prefix for default language too (prevents /blog/ + /en/blog/ duplicate URLs)
 USE_L10N = True
 USE_TZ = True
 LOCALE_PATHS = [
