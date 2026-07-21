@@ -16,6 +16,14 @@ class BlogCategory(models.Model):
     def __str__(self):
         return self.name
 
+class PublishedManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(
+            is_published=True,
+            published_at__isnull=False,
+            published_at__lte=timezone.now()
+        )
+
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)  # Allow blank for auto-generation
@@ -44,6 +52,9 @@ class BlogPost(models.Model):
     )
     views = models.PositiveIntegerField(default=0)
     language = models.CharField(max_length=5, choices=LANGUAGE_CHOICES, default='en')
+
+    objects = models.Manager()       # keep default for admin
+    published = PublishedManager()   # use this for all public views
 
     def average_rating(self):
         ratings = self.ratings.all()

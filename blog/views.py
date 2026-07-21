@@ -46,6 +46,7 @@ def blog_list(request):
         sort_by = 'newest'
 
     posts = BlogPost.objects.filter(
+        is_published=True,
         published_at__isnull=False,
         published_at__lte=timezone.now()
     )
@@ -87,6 +88,7 @@ def blog_detail(request, slug):
     post = get_object_or_404(
         BlogPost,
         slug=slug,
+        is_published=True,
         published_at__isnull=False,
         published_at__lte=timezone.now()
     )
@@ -110,8 +112,16 @@ def blog_detail(request, slug):
     canonical_url_final = post.canonical_url or request.build_absolute_uri(en_path)
 
     # Previous and next posts (by created_at)
-    prev_post = BlogPost.objects.filter(created_at__lt=post.created_at).order_by('-created_at').first()
-    next_post = BlogPost.objects.filter(created_at__gt=post.created_at).order_by('created_at').first()
+    prev_post = BlogPost.objects.filter(
+        is_published=True,
+        published_at__isnull=False,
+        created_at__lt=post.created_at
+    ).order_by('-created_at').first()
+    next_post = BlogPost.objects.filter(
+        is_published=True,
+        published_at__isnull=False,
+        created_at__gt=post.created_at
+    ).order_by('created_at').first()
 
 
     # short description (match template truncation length if you want)
